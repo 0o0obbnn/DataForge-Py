@@ -1,0 +1,35 @@
+# 配置文件示例: 用户基础信息生成
+generators:
+  - generator_type: idcard
+    count: 10
+    validate: true
+    unique: true
+    parameters:
+      region: "北京"
+      gender: "ANY"
+      birth_date_range: ["1980-01-01", "2000-12-31"]
+      valid: true
+  
+  - generator_type: phone
+    count: 10
+    validate: true
+    unique: true
+    parameters:
+      operator: "ANY"
+      valid: true
+  
+  - generator_type: bankcard
+    count: 10
+    validate: true
+    unique: true
+    parameters:
+      type: "BOTH"
+      issuer: "ANY"
+      valid: true
+
+# 输出配置
+output:
+  format: "json"
+  file: "user_data.json"
+  pretty: true
+  encoding: "utf-8"

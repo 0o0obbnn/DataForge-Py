@@ -1,0 +1,129 @@
+{
+  "provinces": [
+    {"code": "110000", "name": "北京市", "short": "京", "type": "municipality"},
+    {"code": "120000", "name": "天津市", "short": "津", "type": "municipality"},
+    {"code": "130000", "name": "河北省", "short": "冀", "type": "province"},
+    {"code": "140000", "name": "山西省", "short": "晋", "type": "province"},
+    {"code": "150000", "name": "内蒙古自治区", "short": "蒙", "type": "autonomous_region"},
+    {"code": "210000", "name": "辽宁省", "short": "辽", "type": "province"},
+    {"code": "220000", "name": "吉林省", "short": "吉", "type": "province"},
+    {"code": "230000", "name": "黑龙江省", "short": "黑", "type": "province"},
+    {"code": "310000", "name": "上海市", "short": "沪", "type": "municipality"},
+    {"code": "320000", "name": "江苏省", "short": "苏", "type": "province"},
+    {"code": "330000", "name": "浙江省", "short": "浙", "type": "province"},
+    {"code": "340000", "name": "安徽省", "short": "皖", "type": "province"},
+    {"code": "350000", "name": "福建省", "short": "闽", "type": "province"},
+    {"code": "360000", "name": "江西省", "short": "赣", "type": "province"},
+    {"code": "370000", "name": "山东省", "short": "鲁", "type": "province"},
+    {"code": "410000", "name": "河南省", "short": "豫", "type": "province"},
+    {"code": "420000", "name": "湖北省", "short": "鄂", "type": "province"},
+    {"code": "430000", "name": "湖南省", "short": "湘", "type": "province"},
+    {"code": "440000", "name": "广东省", "short": "粤", "type": "province"},
+    {"code": "450000", "name": "广西壮族自治区", "short": "桂", "type": "autonomous_region"},
+    {"code": "460000", "name": "海南省", "short": "琼", "type": "province"},
+    {"code": "500000", "name": "重庆市", "short": "渝", "type": "municipality"},
+    {"code": "510000", "name": "四川省", "short": "川", "type": "province"},
+    {"code": "520000", "name": "贵州省", "short": "贵", "type": "province"},
+    {"code": "530000", "name": "云南省", "short": "云", "type": "province"},
+    {"code": "540000", "name": "西藏自治区", "short": "藏", "type": "autonomous_region"},
+    {"code": "610000", "name": "陕西省", "short": "陕", "type": "province"},
+    {"code": "620000", "name": "甘肃省", "short": "甘", "type": "province"},
+    {"code": "630000", "name": "青海省", "short": "青", "type": "province"},
+    {"code": "640000", "name": "宁夏回族自治区", "short": "宁", "type": "autonomous_region"},
+    {"code": "650000", "name": "新疆维吾尔自治区", "short": "新", "type": "autonomous_region"},
+    {"code": "710000", "name": "台湾省", "short": "台", "type": "province"},
+    {"code": "810000", "name": "香港特别行政区", "short": "港", "type": "special_region"},
+    {"code": "820000", "name": "澳门特别行政区", "short": "澳", "type": "special_region"}
+  ],
+  "major_cities": {
+    "110000": [
+      {"code": "110100", "name": "北京市", "districts": [
+        {"code": "110101", "name": "东城区", "zipcode": "100010"},
+        {"code": "110102", "name": "西城区", "zipcode": "100032"},
+        {"code": "110105", "name": "朝阳区", "zipcode": "100020"},
+        {"code": "110106", "name": "丰台区", "zipcode": "100071"},
+        {"code": "110107", "name": "石景山区", "zipcode": "100043"},
+        {"code": "110108", "name": "海淀区", "zipcode": "100080"},
+        {"code": "110109", "name": "门头沟区", "zipcode": "102300"},
+        {"code": "110111", "name": "房山区", "zipcode": "102400"},
+        {"code": "110112", "name": "通州区", "zipcode": "101100"},
+        {"code": "110113", "name": "顺义区", "zipcode": "101300"},
+        {"code": "110114", "name": "昌平区", "zipcode": "102200"},
+        {"code": "110115", "name": "大兴区", "zipcode": "102600"},
+        {"code": "110116", "name": "怀柔区", "zipcode": "101400"},
+        {"code": "110117", "name": "平谷区", "zipcode": "101200"},
+        {"code": "110118", "name": "密云区", "zipcode": "101500"},
+        {"code": "110119", "name": "延庆区", "zipcode": "102100"}
+      ]}
+    ],
+    "310000": [
+      {"code": "310100", "name": "上海市", "districts": [
+        {"code": "310101", "name": "黄浦区", "zipcode": "200001"},
+        {"code": "310104", "name": "徐汇区", "zipcode": "200030"},
+        {"code": "310105", "name": "长宁区", "zipcode": "200050"},
+        {"code": "310106", "name": "静安区", "zipcode": "200040"},
+        {"code": "310107", "name": "普陀区", "zipcode": "200333"},
+        {"code": "310109", "name": "虹口区", "zipcode": "200080"},
+        {"code": "310110", "name": "杨浦区", "zipcode": "200082"},
+        {"code": "310112", "name": "闵行区", "zipcode": "201100"},
+        {"code": "310113", "name": "宝山区", "zipcode": "201900"},
+        {"code": "310114", "name": "嘉定区", "zipcode": "201800"},
+        {"code": "310115", "name": "浦东新区", "zipcode": "200120"},
+        {"code": "310116", "name": "金山区", "zipcode": "201500"},
+        {"code": "310117", "name": "松江区", "zipcode": "201600"},
+        {"code": "310118", "name": "青浦区", "zipcode": "201700"},
+        {"code": "310120", "name": "奉贤区", "zipcode": "201400"},
+        {"code": "310151", "name": "崇明区", "zipcode": "202150"}
+      ]}
+    ],
+    "440000": [
+      {"code": "440100", "name": "广州市", "districts": [
+        {"code": "440103", "name": "荔湾区", "zipcode": "510145"},
+        {"code": "440104", "name": "越秀区", "zipcode": "510030"},
+        {"code": "440105", "name": "海珠区", "zipcode": "510220"},
+        {"code": "440106", "name": "天河区", "zipcode": "510630"},
+        {"code": "440111", "name": "白云区", "zipcode": "510080"},
+        {"code": "440112", "name": "黄埔区", "zipcode": "510700"},
+        {"code": "440113", "name": "番禺区", "zipcode": "511400"},
+        {"code": "440114", "name": "花都区", "zipcode": "510800"},
+        {"code": "440115", "name": "南沙区", "zipcode": "511458"},
+        {"code": "440117", "name": "从化区", "zipcode": "510900"},
+        {"code": "440118", "name": "增城区", "zipcode": "511300"}
+      ]},
+      {"code": "440300", "name": "深圳市", "districts": [
+        {"code": "440303", "name": "罗湖区", "zipcode": "518001"},
+        {"code": "440304", "name": "福田区", "zipcode": "518033"},
+        {"code": "440305", "name": "南山区", "zipcode": "518052"},
+        {"code": "440306", "name": "宝安区", "zipcode": "518101"},
+        {"code": "440307", "name": "龙岗区", "zipcode": "518172"},
+        {"code": "440308", "name": "盐田区", "zipcode": "518083"},
+        {"code": "440309", "name": "龙华区", "zipcode": "518109"},
+        {"code": "440310", "name": "坪山区", "zipcode": "518118"},
+        {"code": "440311", "name": "光明区", "zipcode": "518106"}
+      ]}
+    ],
+    "330000": [
+      {"code": "330100", "name": "杭州市", "districts": [
+        {"code": "330102", "name": "上城区", "zipcode": "310002"},
+        {"code": "330103", "name": "下城区", "zipcode": "310006"},
+        {"code": "330104", "name": "江干区", "zipcode": "310016"},
+        {"code": "330105", "name": "拱墅区", "zipcode": "310011"},
+        {"code": "330106", "name": "西湖区", "zipcode": "310013"},
+        {"code": "330108", "name": "滨江区", "zipcode": "310051"},
+        {"code": "330109", "name": "萧山区", "zipcode": "311200"},
+        {"code": "330110", "name": "余杭区", "zipcode": "311100"},
+        {"code": "330111", "name": "富阳区", "zipcode": "311400"},
+        {"code": "330112", "name": "临安区", "zipcode": "311300"}
+      ]}
+    ]
+  },
+  "street_types": [
+    "路", "街", "巷", "胡同", "大道", "大街", "小区", "花园",
+    "广场", "公园", "中心", "城", "苑", "庭", "园", "村",
+    "里", "弄", "号院", "新村", "社区", "小镇"
+  ],
+  "building_types": [
+    "号", "号楼", "号院", "号楼", "单元", "室", "户", "门",
+    "A座", "B座", "C座", "D座", "东座", "西座", "南座", "北座"
+  ]
+}

@@ -1,0 +1,23 @@
+# DataForge核心依赖
+PyYAML>=6.0
+click>=8.0.0  # 可选，如果需要更强大的CLI功能
+pydantic>=2.0.0
+
+# 数据处理
+faker>=15.0.0  # 作为补充数据源
+python-dateutil>=2.8.0
+
+# Web API依赖
+fastapi>=0.100.0
+uvicorn[standard]>=0.20.0
+
+# 开发依赖（可选）
+pytest>=6.0
+pytest-cov>=2.10
+black>=22.0
+flake8>=4.0
+mypy>=0.910
+
+# 文档依赖（可选）
+mkdocs>=1.4
+mkdocs-material>=8.0
