@@ -1,0 +1,76 @@
+{
+  "id": "template_20250916_095802",
+  "name": "用户信息模板",
+  "description": "包含姓名、年龄、邮箱、手机号的用户信息生成模板",
+  "category": "用户数据",
+  "fields": [
+    {
+      "id": "field_1",
+      "name": "姓名",
+      "type": "name",
+      "generator": "name",
+      "parameters": {
+        "type": "full"
+      },
+      "required": true,
+      "description": "用户真实姓名"
+    },
+    {
+      "id": "field_2",
+      "name": "年龄",
+      "type": "age",
+      "generator": "age",
+      "parameters": {
+        "min": 18,
+        "max": 65
+      },
+      "required": true,
+      "description": "用户年龄"
+    },
+    {
+      "id": "field_3",
+      "name": "邮箱",
+      "type": "email",
+      "generator": "email",
+      "parameters": {},
+      "required": true,
+      "description": "用户邮箱地址"
+    },
+    {
+      "id": "field_4",
+      "name": "手机号",
+      "type": "phone",
+      "generator": "phone",
+      "parameters": {},
+      "required": true,
+      "description": "用户手机号码"
+    }
+  ],
+  "generationConfig": {
+    "count": 1000,
+    "format": "CSV",
+    "formatOptions": {
+      "csvDelimiter": ",",
+      "jsonPrettyPrint": true,
+      "sqlTableName": "users"
+    }
+  },
+  "metadata": {
+    "createdAt": "2025-09-16T09:58:02.808726",
+    "updatedAt": "2025-09-16T09:58:02.808733",
+    "author": "test_user",
+    "version": "1.0.0",
+    "tags": [
+      "用户",
+      "基础信息",
+      "测试"
+    ],
+    "isPublic": false
+  },
+  "statistics": {
+    "usageCount": 0,
+    "downloadCount": 0,
+    "rating": 0,
+    "reviews": 0
+  }
+}

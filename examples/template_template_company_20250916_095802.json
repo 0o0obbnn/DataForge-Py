@@ -1,0 +1,53 @@
+{
+  "id": "template_company_20250916_095802",
+  "name": "企业信息模板",
+  "description": "企业基础信息生成模板",
+  "category": "企业数据",
+  "fields": [
+    {
+      "id": "field_1",
+      "name": "企业名称",
+      "type": "company_name",
+      "generator": "company_name",
+      "parameters": {},
+      "required": true,
+      "description": "企业名称"
+    },
+    {
+      "id": "field_2",
+      "name": "统一社会信用代码",
+      "type": "uscc",
+      "generator": "uscc",
+      "parameters": {},
+      "required": true,
+      "description": "企业统一社会信用代码"
+    }
+  ],
+  "generationConfig": {
+    "count": 1000,
+    "format": "CSV",
+    "formatOptions": {
+      "csvDelimiter": ",",
+      "jsonPrettyPrint": true,
+      "sqlTableName": "users"
+    }
+  },
+  "metadata": {
+    "createdAt": "2025-09-16T09:58:02.839188",
+    "updatedAt": "2025-09-16T09:58:02.839195",
+    "author": "test_user",
+    "version": "1.0.0",
+    "tags": [
+      "用户",
+      "基础信息",
+      "测试"
+    ],
+    "isPublic": false
+  },
+  "statistics": {
+    "usageCount": 0,
+    "downloadCount": 0,
+    "rating": 0,
+    "reviews": 0
+  }
+}
