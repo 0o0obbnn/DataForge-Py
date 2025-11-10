@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend Download Test</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>DataForge Frontend Download Test</h1>
+    <button id="testDownload">Test CSV Download</button>
+    <div id="result"></div>
+
+    <script>
+        // Mock data for testing
+        const testData = [
+            {"name":"周磊","age":20,"email":"5u7k7sock1@ojlajo.net","phone":"15 36611 2148"},
+            {"name":"刘丽","age":45,"email":"1oocpp9@ewixatoh.cn","phone":"19 93154 2932"},
+            {"name":"王涛","age":27,"email":"eom3rq@azua.cn","phone":"15 44120 5689"}
+        ];
+
+        // Simplified export function
+        function downloadCSV(data, filename) {
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => headers.map(field => {
+                    const value = row[field];
+                    if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+                        return `"${value.replace(/"/g, '""')}"`;
+                    }
+                    return value;
+                }).join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('testDownload').addEventListener('click', function() {
+            downloadCSV(testData, 'test_data.csv');
+            document.getElementById('result').innerHTML = '<p style="color: green;">✅ CSV download triggered successfully!</p>';
+        });
+    </script>
+</body>
+</html>

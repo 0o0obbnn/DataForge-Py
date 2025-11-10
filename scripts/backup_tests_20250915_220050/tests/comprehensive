@@ -1,0 +1,374 @@
+#!/usr/bin/env python3
+"""
+DataForge 账号认证类生成器综合测试
+验证所有账号认证相关生成器的功能和集成
+"""
+
+import json
+import sys
+
+from dataforge.core.factory import GeneratorConfig, default_factory, default_registry
+from dataforge.generators.auth.auth_token import AuthTokenGenerator
+
+# 导入并注册所有认证类生成器
+from dataforge.generators.auth.email_verification import EmailVerificationGenerator
+from dataforge.generators.auth.session_id import SessionIDGenerator
+from dataforge.generators.auth.sms_verification import SMSVerificationGenerator
+
+
+def register_all_auth_generators():
+    """注册所有认证类生成器"""
+    generators = {
+        "email_verification": EmailVerificationGenerator,
+        "sms_verification": SMSVerificationGenerator,
+        "auth_token": AuthTokenGenerator,
+        "session_id": SessionIDGenerator,
+    }
+
+    for name, generator_class in generators.items():
+        if not default_registry.is_registered(name):
+            default_registry.register(name, generator_class)
+
+
+def test_email_verification():
+    """测试邮箱验证码生成器"""
+    print("📧 测试邮箱验证码生成器...")
+
+    configs = [
+        {"length": 6, "complexity": "numeric", "expires_in": 1800},
+        {"length": 8, "complexity": "medium", "prefix": "VF", "expires_in": 3600},
+        {
+            "length": 6,
+            "complexity": "strong",
+            "case_sensitive": True,
+            "expires_in": 900,
+        },
+    ]
+
+    results = []
+    for config in configs:
+        try:
+            generator_config = GeneratorConfig(
+                generator_type="email_verification", parameters=config
+            )
+            generator = default_factory.create_generator(generator_config)
+
+            # 生成验证码
+            verification_data = generator.generate_single()
+
+            # 验证验证码
+            is_valid = generator.validate(verification_data)
+
+            # 测试验证功能
+            test_result = generator.verify_code(
+                verification_data.copy(), verification_data["code"]
+            )
+
+            results.append(
+                {
+                    "config": config,
+                    "code": verification_data["code"],
+                    "valid": is_valid,
+                    "verify_result": test_result,
+                    "expiry": verification_data["expiry_time"],
+                }
+            )
+
+            print(f"   ✅ 配置 {config} -> 验证码: {verification_data['code']}")
+
+        except Exception as e:
+            print(f"   ❌ 配置 {config} -> 错误: {e}")
+            results.append({"config": config, "error": str(e)})
+
+    return results
+
+
+def test_sms_verification():
+    """测试短信验证码生成器"""
+    print("📱 测试短信验证码生成器...")
+
+    configs = [
+        {"length": 6, "carrier": "CMCC", "format": "text"},
+        {"length": 4, "carrier": "CUCC", "format": "voice"},
+        {"length": 6, "carrier": "CTCC", "template": "SMS_LOGIN"},
+    ]
+
+    results = []
+    for config in configs:
+        try:
+            generator_config = GeneratorConfig(
+                generator_type="sms_verification", parameters=config
+            )
+            generator = default_factory.create_generator(generator_config)
+
+            # 生成验证码
+            verification_data = generator.generate_single()
+
+            # 获取短信内容
+            sms_content = generator.get_sms_content(verification_data)
+
+            # 验证验证码
+            is_valid = generator.validate(verification_data)
+
+            results.append(
+                {
+                    "config": config,
+                    "code": verification_data["code"],
+                    "sms_content": sms_content,
+                    "valid": is_valid,
+                    "carrier": verification_data.get("carrier_name", "Unknown"),
+                }
+            )
+
+            print(f"   ✅ 配置 {config} -> 验证码: {verification_data['code']}")
+            print(f"   📨 短信内容: {sms_content}")
+
+        except Exception as e:
+            print(f"   ❌ 配置 {config} -> 错误: {e}")
+            results.append({"config": config, "error": str(e)})
+
+    return results
+
+
+def test_auth_token():
+    """测试认证令牌生成器"""
+    print("🔐 测试认证令牌生成器...")
+
+    configs = [
+        {"algorithm": "HS256", "expiry_hours": 24, "user_id": "user_123"},
+        {"algorithm": "RS256", "expiry_hours": 1, "scope": ["read"]},
+        {"algorithm": "HS256", "expiry_hours": 168, "include_refresh": True},
+    ]
+
+    results = []
+    for config in configs:
+        try:
+            generator_config = GeneratorConfig(
+                generator_type="auth_token", parameters=config
+            )
+            generator = default_factory.create_generator(generator_config)
+
+            # 生成令牌
+            token_data = generator.generate_single()
+
+            # 验证令牌
+            is_valid = generator.validate(token_data)
+
+            # 获取令牌信息
+            token_info = generator.get_token_info(token_data)
+
+            results.append(
+                {
+                    "config": config,
+                    "access_token": token_data["access_token"][:20] + "...",
+                    "valid": is_valid,
+                    "token_info": token_info,
+                    "has_refresh": "refresh_token" in token_data,
+                }
+            )
+
+            print(f"   ✅ 配置 {config} -> 令牌有效: {is_valid}")
+
+        except Exception as e:
+            print(f"   ❌ 配置 {config} -> 错误: {e}")
+            results.append({"config": config, "error": str(e)})
+
+    return results
+
+
+def test_session_id():
+    """测试会话ID生成器"""
+    print("🎯 测试会话ID生成器...")
+
+    configs = [
+        {"length": 32, "encoding": "hex", "device_type": "web"},
+        {
+            "length": 24,
+            "encoding": "base64",
+            "device_type": "mobile",
+            "include_user_agent": True,
+        },
+        {
+            "length": 28,
+            "encoding": "urlsafe",
+            "device_type": "tablet",
+            "include_ip": True,
+        },
+    ]
+
+    results = []
+    for config in configs:
+        try:
+            generator_config = GeneratorConfig(
+                generator_type="session_id", parameters=config
+            )
+            generator = default_factory.create_generator(generator_config)
+
+            # 生成会话ID
+            session_data = generator.generate_single()
+
+            # 验证会话
+            is_valid = generator.validate(session_data)
+
+            # 检查是否过期
+            is_expired = generator.is_expired(session_data)
+
+            results.append(
+                {
+                    "config": config,
+                    "session_id": session_data["session_id"][:16] + "...",
+                    "valid": is_valid,
+                    "expired": is_expired,
+                    "device_type": session_data["device_type"],
+                    "csrf_token": session_data["csrf_token"][:10] + "...",
+                }
+            )
+
+            print(
+                f"   ✅ 配置 {config} -> 会话ID: {session_data['session_id'][:16]}..."
+            )
+
+        except Exception as e:
+            print(f"   ❌ 配置 {config} -> 错误: {e}")
+            results.append({"config": config, "error": str(e)})
+
+    return results
+
+
+def test_integration_flow():
+    """测试认证流程集成"""
+    print("🔗 测试认证流程集成...")
+
+    try:
+        # 1. 生成用户会话
+        session_config = GeneratorConfig(
+            generator_type="session_id",
+            parameters={"device_type": "web", "include_ip": True},
+        )
+        session_gen = default_factory.create_generator(session_config)
+        session_data = session_gen.generate_single()
+
+        # 2. 生成认证令牌
+        token_config = GeneratorConfig(
+            generator_type="auth_token",
+            parameters={"user_id": "user_integration_test", "expiry_hours": 1},
+        )
+        token_gen = default_factory.create_generator(token_config)
+        token_data = token_gen.generate_single()
+
+        # 3. 生成邮箱验证码
+        email_config = GeneratorConfig(
+            generator_type="email_verification",
+            parameters={"length": 6, "expires_in": 900},
+        )
+        email_gen = default_factory.create_generator(email_config)
+        email_data = email_gen.generate_single()
+
+        # 4. 生成短信验证码
+        sms_config = GeneratorConfig(
+            generator_type="sms_verification",
+            parameters={"length": 6, "carrier": "CMCC"},
+        )
+        sms_gen = default_factory.create_generator(sms_config)
+        sms_data = sms_gen.generate_single()
+
+        integration_result = {
+            "session": {
+                "id": session_data["session_id"][:16] + "...",
+                "csrf": session_data["csrf_token"][:10] + "...",
+            },
+            "token": {
+                "access": token_data["access_token"][:20] + "...",
+                "expires": token_data["expires_at"],
+            },
+            "email_verification": email_data["code"],
+            "sms_verification": sms_data["code"],
+            "all_valid": all(
+                [
+                    session_gen.validate(session_data),
+                    token_gen.validate(token_data),
+                    email_gen.validate(email_data),
+                    sms_gen.validate(sms_data),
+                ]
+            ),
+        }
+
+        print(f"   ✅ 集成测试成功 -> 所有组件有效: {integration_result['all_valid']}")
+
+        return integration_result
+
+    except Exception as e:
+        print(f"   ❌ 集成测试失败 -> 错误: {e}")
+        return {"error": str(e)}
+
+
+def main():
+    """主测试函数"""
+    print("🚀 DataForge 账号认证类生成器综合测试")
+    print("=" * 60)
+
+    # 注册所有认证类生成器
+    register_all_auth_generators()
+
+    # 运行各项测试
+    email_results = test_email_verification()
+    sms_results = test_sms_verification()
+    token_results = test_auth_token()
+    session_results = test_session_id()
+    integration_result = test_integration_flow()
+
+    # 汇总结果
+    print("\n📊 测试结果汇总:")
+    print("-" * 40)
+
+    all_tests = [
+        ("邮箱验证码", email_results),
+        ("短信验证码", sms_results),
+        ("认证令牌", token_results),
+        ("会话ID", session_results),
+        ("集成测试", [integration_result]),
+    ]
+
+    total_passed = 0
+    total_tests = 0
+
+    for test_name, results in all_tests:
+        passed = sum(1 for r in results if "error" not in r)
+        total = len(results)
+        total_passed += passed
+        total_tests += total
+
+        status = "✅" if passed == total else "❌"
+        print(f"{status} {test_name}: {passed}/{total} 通过")
+
+    print(
+        f"\n📈 总体通过率: {total_passed}/{total_tests} ({total_passed / total_tests * 100:.1f}%)"
+    )
+
+    # 生成详细报告
+    report = {
+        "email_verification": email_results,
+        "sms_verification": sms_results,
+        "auth_token": token_results,
+        "session_id": session_results,
+        "integration": integration_result,
+        "summary": {
+            "total_tests": total_tests,
+            "passed": total_passed,
+            "success_rate": total_passed / total_tests,
+        },
+    }
+
+    with open("auth_generators_test_report.json", "w", encoding="utf-8") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+
+    if total_passed == total_tests:
+        print("🎉 所有账号认证类生成器测试通过！")
+        return 0
+    else:
+        print("⚠️  部分测试失败，请查看 auth_generators_test_report.json")
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

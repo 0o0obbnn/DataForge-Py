@@ -1,10 +1,24 @@
 """
 数值生成器模块
 """
-from .number import GenericIntegerGenerator, GenericDecimalGenerator, GenericRandomNumberGenerator
 
+from .advanced import (
+    CurrencyGenerator,
+    DecimalGenerator as AdvancedDecimalGenerator,
+    IntegerGenerator,
+    PercentageGenerator,
+    ScientificNumberGenerator,
+)
+from .number import NumberGenerator
+from .decimal import DecimalGenerator
+
+# 自动注册所有生成器类
 __all__ = [
-    'GenericIntegerGenerator',
-    'GenericDecimalGenerator', 
-    'GenericRandomNumberGenerator'
+    "NumberGenerator",
+    "DecimalGenerator",
+    "AdvancedDecimalGenerator",
+    "IntegerGenerator",
+    "PercentageGenerator",
+    "CurrencyGenerator",
+    "ScientificNumberGenerator",
 ]

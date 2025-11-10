@@ -1,0 +1,12 @@
+# Development Dependencies
+httpx
+pytest
+pytest-asyncio
+pytest-cov
+black
+flake8
+mypy
+
+# Documentation Dependencies
+mkdocs
+mkdocs-material

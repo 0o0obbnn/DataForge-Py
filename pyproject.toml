@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dataforge"
-version = "0.1.0"
+version = "1.0.0"
 description = "High-efficiency, flexible, and highly configurable test data generation tool"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -12,9 +12,9 @@ license = {text = "MIT"}
 authors = [
     {name = "DataForge Team", email = "team@dataforge.com"}
 ]
-keywords = ["test", "data", "generation", "mock", "faker"]
+keywords = ["test", "data", "generation", "mock", "faker", "chinese", "localization"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -24,6 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Testing",
     "Topic :: Utilities",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 dependencies = [
@@ -31,6 +32,8 @@ dependencies = [
     "pydantic>=2.0.0",
     "PyYAML>=6.0.0",
     "pandas>=2.0.0",
+    "faker>=15.0.0",
+    "python-dateutil>=2.8.0",
 ]
 
 [project.optional-dependencies]
@@ -38,6 +41,7 @@ dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "pytest-mock>=3.10.0",
+    "pytest-freezegun>=0.4.2",
     "black>=23.0.0",
     "isort>=5.12.0",
     "ruff>=0.1.0",
@@ -46,6 +50,8 @@ dev = [
 api = [
     "fastapi>=0.100.0",
     "uvicorn[standard]>=0.23.0",
+    "python-jose[cryptography]>=3.3.0",
+    "passlib[bcrypt]>=1.7.4",
 ]
 performance = [
     "numpy>=1.24.0",
@@ -75,7 +81,13 @@ uscc = "dataforge.generators.basic.uscc:USCCGenerator"
 packages = ["dataforge"]
 
 [tool.setuptools.package-data]
-dataforge = ["data/**/*.json", "data/**/*.csv", "data/**/*.yaml"]
+dataforge = [
+    "data/**/*.json", 
+    "data/**/*.csv", 
+    "data/**/*.yaml",
+    "config/templates/**/*.yaml",
+    "config/templates/**/*.json"
+]
 
 [tool.black]
 line-length = 88
@@ -103,6 +115,10 @@ line_length = 88
 known_first_party = ["dataforge"]
 
 [tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
 select = [
     "E",  # pycodestyle errors
     "W",  # pycodestyle warnings
@@ -117,10 +133,8 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
 ]
-line-length = 88
-target-version = "py39"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
 [tool.mypy]
@@ -156,7 +170,10 @@ markers = [
     "unit: Unit tests",
     "integration: Integration tests",
     "performance: Performance tests",
+    "e2e: End-to-end tests",
+    "stress: Stress tests",
     "security: Security tests",
+    "slow: Slow-running tests",
 ]
 
 [tool.coverage.run]
@@ -176,3 +193,22 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = [
+    "-ra",
+    "--strict-markers", 
+    "--strict-config",
+    "--tb=short",
+    "--disable-warnings",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:distutils.*",
+    "ignore::DeprecationWarning:pytest_freezegun.*",
+    "ignore::UserWarning",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

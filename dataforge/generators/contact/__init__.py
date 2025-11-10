@@ -1,18 +1,8 @@
 """
-联系/通信类生成器模块
+联系方式生成器模块
 """
-from .communication import (
-    GenericVerificationCodeGenerator,
-    GenericFaxNumberGenerator,
-    GenericURLGenerator,
-    GenericFilePathGenerator,
-    GenericMimeTypeGenerator
-)
 
-__all__ = [
-    'GenericVerificationCodeGenerator',
-    'GenericFaxNumberGenerator',
-    'GenericURLGenerator',
-    'GenericFilePathGenerator',
-    'GenericMimeTypeGenerator'
-]
+# 导入所有联系方式生成器以触发注册
+from . import phone, email, landline, communication
+
+__all__ = ["phone", "email", "landline", "communication"]

@@ -1,0 +1,269 @@
+/* DataForge Web Console - Base Styles */
+/* 科技感·未来风基础样式配置 */
+
+/* 全局CSS变量 - 基于设计系统 */
+:root {
+  /* 主色调 (Primary/Base) */
+  --df-primary-bg: #1A1A2E;         /* 深空蓝 - 背景主色 */
+  --df-secondary-bg: #282845;       /* 深邃紫 - 卡片、面板背景 */
+  
+  /* 辅助色 (Accent/Interactive) */
+  --df-accent-primary: #8E5DFF;     /* 未来紫 - 主要交互色 */
+  --df-accent-success: #00E676;     /* 霓虹绿 - 成功提示 */
+  --df-accent-error: #FF5252;       /* 警告红 - 错误提示 */
+  --df-accent-warning: #FFC107;     /* 提示黄 - 警告状态 */
+  
+  /* 中性色 (Neutral) */
+  --df-text-primary: #E0E0E0;       /* 亮灰 - 主要文本 */
+  --df-text-secondary: #B0B0B0;     /* 中灰 - 次要文本 */
+  --df-text-disabled: #4A4A6D;      /* 暗灰 - 禁用状态 */
+  
+  /* 间距系统 - 基于8px栅格 */
+  --df-spacing-xs: 4px;
+  --df-spacing-sm: 8px;
+  --df-spacing-md: 16px;
+  --df-spacing-lg: 24px;
+  --df-spacing-xl: 32px;
+  --df-spacing-2xl: 40px;
+  
+  /* 字体系统 */
+  --df-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --df-font-family-code: 'JetBrains Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+  
+  --df-font-size-xs: 12px;
+  --df-font-size-sm: 14px;
+  --df-font-size-base: 16px;
+  --df-font-size-lg: 18px;
+  --df-font-size-xl: 20px;
+  --df-font-size-2xl: 24px;
+  --df-font-size-3xl: 32px;
+  
+  /* 圆角系统 */
+  --df-radius-sm: 4px;
+  --df-radius-md: 6px;
+  --df-radius-lg: 8px;
+  --df-radius-xl: 12px;
+  
+  /* 阴影系统 */
+  --df-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --df-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --df-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --df-shadow-glow: 0 0 20px rgba(142, 93, 255, 0.3);
+  
+  /* 过渡动画 */
+  --df-transition-fast: all 0.15s ease;
+  --df-transition-base: all 0.3s ease;
+  --df-transition-slow: all 0.5s ease;
+  
+  /* Z-index系统 */
+  --df-z-dropdown: 1000;
+  --df-z-sticky: 1020;
+  --df-z-fixed: 1030;
+  --df-z-modal-backdrop: 1040;
+  --df-z-modal: 1050;
+  --df-z-popover: 1060;
+  --df-z-tooltip: 1070;
+  --df-z-toast: 1080;
+}
+
+/* 全局重置 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 基础HTML元素样式 */
+html {
+  height: 100%;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--df-font-family-base);
+  font-size: var(--df-font-size-sm);
+  line-height: 1.5;
+  color: var(--df-text-primary);
+  background-color: var(--df-primary-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  min-height: 100vh;
+  background-color: var(--df-primary-bg);
+}
+
+/* 滚动条样式定制 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--df-primary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--df-text-disabled);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--df-text-secondary);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--df-primary-bg);
+}
+
+/* 选中文本样式 */
+::selection {
+  background-color: var(--df-accent-primary);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: var(--df-accent-primary);
+  color: white;
+}
+
+/* 焦点样式 */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--df-accent-primary);
+  outline-offset: 2px;
+}
+
+/* 链接样式 */
+a {
+  color: var(--df-accent-primary);
+  text-decoration: none;
+  transition: var(--df-transition-fast);
+}
+
+a:hover {
+  color: var(--df-accent-success);
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--df-text-primary);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: var(--df-spacing-sm);
+}
+
+h1 { font-size: var(--df-font-size-3xl); }
+h2 { font-size: var(--df-font-size-2xl); }
+h3 { font-size: var(--df-font-size-xl); }
+h4 { font-size: var(--df-font-size-lg); }
+h5 { font-size: var(--df-font-size-base); }
+h6 { font-size: var(--df-font-size-sm); }
+
+/* 段落样式 */
+p {
+  margin-bottom: var(--df-spacing-md);
+  line-height: 1.6;
+}
+
+/* 代码样式 */
+code {
+  font-family: var(--df-font-family-code);
+  font-size: 0.9em;
+  background-color: var(--df-secondary-bg);
+  padding: 2px 6px;
+  border-radius: var(--df-radius-sm);
+  color: var(--df-accent-success);
+}
+
+pre {
+  font-family: var(--df-font-family-code);
+  background-color: var(--df-secondary-bg);
+  padding: var(--df-spacing-md);
+  border-radius: var(--df-radius-lg);
+  overflow-x: auto;
+  line-height: 1.4;
+  margin-bottom: var(--df-spacing-md);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* 表单元素基础样式 */
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* 图片响应式 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 表格样式 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--df-spacing-md);
+}
+
+th, td {
+  padding: var(--df-spacing-sm);
+  text-align: left;
+  border-bottom: 1px solid var(--df-text-disabled);
+}
+
+th {
+  font-weight: 600;
+  color: var(--df-text-primary);
+  background-color: var(--df-secondary-bg);
+}
+
+/* 工具类 - 可见性控制 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 响应式断点工具类 */
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hidden-desktop {
+    display: none !important;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}

@@ -1,16 +1,26 @@
 """
 地址生成器
 """
-import random
+import random  # TODO: Convert to secrets
+import secrets
 import json
 import os
 from typing import Optional, Dict, Any, List
-from ...core.generator import ValidatedDataGenerator, GeneratorConfig, GenerationContext, GeneratorType
+
+from ...core.types import GeneratorType
+from ...core.generator import DataGenerator, GeneratorConfig, GenerationContext
 from ...core.factory import register_generator
 from ...core.cache import get_cached_data, get_data_file_path, LazyDataLoader
 
+# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
+# Conversion patterns:
+#   random.randint(a, b) → secrets.randbelow(b - a + 1) + a
+#   random.randrange(n) → secrets.randbelow(n)
+#   For statistical distributions, consider if CSPRNG is necessary
 
-class AddressGenerator(ValidatedDataGenerator[str]):
+
+
+class AddressGenerator(DataGenerator[str]):
     """中国地址生成器"""
     
     def _setup(self) -> None:
@@ -99,8 +109,12 @@ class AddressGenerator(ValidatedDataGenerator[str]):
     
     def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
         """生成原始地址"""
-        # 1. 选择省份
-        province_info = self._select_province()
+        # 如果指定了city但没有指定province，需要先找到city所属的province
+        if self.city and not self.province:
+            province_info = self._find_province_by_city(self.city)
+        else:
+            # 1. 选择省份
+            province_info = self._select_province()
         
         # 2. 选择城市和区县
         city_info, district_info = self._select_city_district(province_info)
@@ -115,18 +129,36 @@ class AddressGenerator(ValidatedDataGenerator[str]):
         
         return full_address
     
+    def _find_province_by_city(self, city_name: str) -> Dict[str, str]:
+        """根据城市名查找所属省份"""
+        # 遍历所有省份的城市数据
+        for province in self.regions_data['provinces']:
+            province_code = province['code']
+            cities_data = self.regions_data.get('major_cities', {}).get(province_code, [])
+            
+            for city in cities_data:
+                if (city['name'] == city_name or 
+                    city_name in city['name'] or
+                    city['name'].startswith(city_name)):
+                    return province
+        
+        # 如果找不到，返回随机省份
+        return secrets.choice(self.regions_data['provinces'])
+    
     def _select_province(self) -> Dict[str, str]:
         """选择省份"""
         if self.province:
-            # 查找指定省份
+            # 查找指定省份（支持模糊匹配）
             for province in self.regions_data['provinces']:
                 if (province['name'] == self.province or 
                     province['code'] == self.province or
-                    province['short'] == self.province):
+                    province['short'] == self.province or
+                    self.province in province['name'] or
+                    province['name'].startswith(self.province)):
                     return province
         
         # 随机选择省份
-        return random.choice(self.regions_data['provinces'])
+        return secrets.choice(self.regions_data['provinces'])
     
     def _select_city_district(self, province_info: Dict[str, str]) -> tuple:
         """选择城市和区县"""
@@ -138,18 +170,29 @@ class AddressGenerator(ValidatedDataGenerator[str]):
         if not cities_data:
             # 如果没有具体城市数据，生成虚拟城市名
             city_info = {
-                'name': f"{random.choice(self.street_names)}{random.choice(['市', '县', '区'])}",
+                'name': f"{secrets.choice(self.street_names)}{secrets.choice(['市', '县', '区'])}",
                 'code': f"{province_code[:4]}01"
             }
             district_info = {
-                'name': f"{random.choice(self.street_names)}{random.choice(['区', '县', '镇'])}",
+                'name': f"{secrets.choice(self.street_names)}{secrets.choice(['区', '县', '镇'])}",
                 'code': f"{city_info['code']}01",
                 'zipcode': f"{random.randint(100000, 999999)}"
             }
             return city_info, district_info
         
-        # 随机选择城市
-        city_data = random.choice(cities_data)
+        # 如果指定了城市，查找匹配的城市
+        city_data = None
+        if self.city:
+            for city in cities_data:
+                if (city['name'] == self.city or 
+                    self.city in city['name'] or
+                    city['name'].startswith(self.city)):
+                    city_data = city
+                    break
+        
+        # 如果没有找到指定城市或没有指定城市，随机选择
+        if not city_data:
+            city_data = secrets.choice(cities_data)
         city_info = {
             'name': city_data['name'],
             'code': city_data['code']
@@ -158,7 +201,7 @@ class AddressGenerator(ValidatedDataGenerator[str]):
         # 随机选择区县
         districts = city_data.get('districts', [])
         if districts:
-            district_data = random.choice(districts)
+            district_data = secrets.choice(districts)
             district_info = {
                 'name': district_data['name'],
                 'code': district_data['code'],
@@ -167,7 +210,7 @@ class AddressGenerator(ValidatedDataGenerator[str]):
         else:
             # 生成虚拟区县
             district_info = {
-                'name': f"{random.choice(self.street_names)}{random.choice(['区', '县'])}",
+                'name': f"{secrets.choice(self.street_names)}{secrets.choice(['区', '县'])}",
                 'code': f"{city_info['code']}01",
                 'zipcode': f"{random.randint(100000, 999999)}"
             }
@@ -180,29 +223,29 @@ class AddressGenerator(ValidatedDataGenerator[str]):
         
         if self.detail_level in ['STREET', 'COMMUNITY', 'FULL']:
             # 生成街道
-            street_name = random.choice(self.street_names)
-            direction = random.choice(self.directions) if random.random() < 0.3 else ''
-            street_type = random.choice(self.regions_data.get('street_types', ['路', '街']))
+            street_name = secrets.choice(self.street_names)
+            direction = secrets.choice(self.directions) if (secrets.randbelow(1000000) / 1000000) < 0.3 else ''
+            street_type = secrets.choice(self.regions_data.get('street_types', ['路', '街']))
             result['street'] = f"{direction}{street_name}{street_type}"
         
         if self.detail_level in ['COMMUNITY', 'FULL']:
             # 生成小区/社区
-            prefix = random.choice(self.address_prefixes) if random.random() < 0.4 else ''
-            community_name = random.choice(self.community_names)
+            prefix = secrets.choice(self.address_prefixes) if (secrets.randbelow(1000000) / 1000000) < 0.4 else ''
+            community_name = secrets.choice(self.community_names)
             result['community'] = f"{prefix}{community_name}"
         
         if self.detail_level == 'FULL':
             # 生成门牌号
             building_num = random.randint(1, 999)
-            building_unit = random.choice(self.building_units) if random.random() < 0.6 else ''
+            building_unit = secrets.choice(self.building_units) if (secrets.randbelow(1000000) / 1000000) < 0.6 else ''
             
             unit_num = ''
             room_num = ''
             
-            if random.random() < 0.7:  # 70%概率有单元号
+            if (secrets.randbelow(1000000) / 1000000) < 0.7:  # 70%概率有单元号
                 unit_num = f"{random.randint(1, 6)}单元"
             
-            if random.random() < 0.8:  # 80%概率有房间号
+            if (secrets.randbelow(1000000) / 1000000) < 0.8:  # 80%概率有房间号
                 floor = random.randint(1, 30)
                 room = random.randint(1, 8)
                 room_num = f"{floor:02d}{room:02d}室"
@@ -310,6 +353,11 @@ class AddressGenerator(ValidatedDataGenerator[str]):
     @property
     def supported_parameters(self) -> List[str]:
         return ['country', 'province', 'city', 'district', 'detail_level', 'zipcode']
+
+    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+        """生成单个数据项"""
+        return self._generate_raw(context)
+
 
 
 @register_generator('address', ['addr', '地址'])

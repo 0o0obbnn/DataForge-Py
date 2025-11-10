@@ -1,0 +1,344 @@
+"""
+媒体文件模拟生成器
+
+生成各种媒体文件的模拟数据，包括图片、音频、视频等
+支持生成文件元数据、技术参数、格式信息等
+"""
+
+import hashlib
+import random
+import secrets
+from dataclasses import dataclass
+from typing import Optional, Union
+
+from ...core.factory import register_generator
+from ...core.generator import (
+    DataGenerator,
+    GenerationContext,
+    GeneratorType,
+)
+
+
+@dataclass
+class MediaFileInfo:
+    """媒体文件信息数据模型"""
+    filename: str
+    file_path: str
+    file_size: int
+    file_type: str
+    mime_type: str
+    format: str
+    duration: Optional[float] = None
+    dimensions: Optional[dict[str, Union[int, float]]] = None
+    metadata: Optional[dict[str, Union[str, int, float]]] = None
+
+
+class MediaFileGenerator(DataGenerator[dict[str, Union[str, int, float]]]):
+    """媒体文件模拟生成器
+
+    功能特性：
+    - 生成图片、音频、视频文件的模拟数据
+    - 包含文件元数据、技术参数、格式信息
+    - 支持多种文件格式和编解码器
+    """
+
+    def __init__(self, config):
+        super().__init__(config)
+        self._generator_type = GeneratorType.ADVANCED
+        self._supported_parameters = [
+            "media_type", "format", "size_range", "include_metadata", "include_path"
+        ]
+
+    def _setup(self) -> None:
+        """初始化媒体文件生成器参数"""
+        self.media_type = self.parameters.get("media_type", "image").lower()
+        self.format = self.parameters.get("format", "jpg").lower()
+        self.size_range = self.parameters.get("size_range", "medium").lower()
+        self.include_metadata = self.parameters.get("include_metadata", True)
+        self.include_path = self.parameters.get("include_path", True)
+
+        # 媒体类型配置
+        self.media_configs = {
+            "image": {
+                "formats": ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"],
+                "mime_types": {
+                    "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
+                    "gif": "image/gif", "bmp": "image/bmp", "webp": "image/webp",
+                    "svg": "image/svg+xml", "tiff": "image/tiff"
+                },
+                "size_ranges": {
+                    "small": (100, 1024 * 500),      # 100KB - 500KB
+                    "medium": (1024 * 500, 1024 * 5000),  # 500KB - 5MB
+                    "large": (1024 * 5000, 1024 * 50000)  # 5MB - 50MB
+                },
+                "dimensions": {
+                    "small": [(800, 600), (1024, 768), (1280, 720)],
+                    "medium": [(1920, 1080), (2560, 1440), (2048, 1536)],
+                    "large": [(3840, 2160), (4096, 2304), (5120, 2880)]
+                }
+            },
+            "audio": {
+                "formats": ["mp3", "wav", "flac", "aac", "ogg", "wma", "m4a"],
+                "mime_types": {
+                    "mp3": "audio/mpeg", "wav": "audio/wav", "flac": "audio/flac",
+                    "aac": "audio/aac", "ogg": "audio/ogg", "wma": "audio/x-ms-wma",
+                    "m4a": "audio/mp4"
+                },
+                "size_ranges": {
+                    "small": (1024 * 100, 1024 * 1000),    # 100KB - 1MB
+                    "medium": (1024 * 1000, 1024 * 10000), # 1MB - 10MB
+                    "large": (1024 * 10000, 1024 * 100000) # 10MB - 100MB
+                },
+                "durations": {
+                    "small": (30, 180),    # 30秒 - 3分钟
+                    "medium": (180, 600),  # 3分钟 - 10分钟
+                    "large": (600, 3600)   # 10分钟 - 1小时
+                }
+            },
+            "video": {
+                "formats": ["mp4", "avi", "mkv", "mov", "wmv", "flv", "webm", "3gp"],
+                "mime_types": {
+                    "mp4": "video/mp4", "avi": "video/x-msvideo", "mkv": "video/x-matroska",
+                    "mov": "video/quicktime", "wmv": "video/x-ms-wmv", "flv": "video/x-flv",
+                    "webm": "video/webm", "3gp": "video/3gpp"
+                },
+                "size_ranges": {
+                    "small": (1024 * 1000, 1024 * 50000),    # 1MB - 50MB
+                    "medium": (1024 * 50000, 1024 * 500000), # 50MB - 500MB
+                    "large": (1024 * 500000, 1024 * 5000000) # 500MB - 5GB
+                },
+                "durations": {
+                    "small": (30, 300),     # 30秒 - 5分钟
+                    "medium": (300, 1800),  # 5分钟 - 30分钟
+                    "large": (1800, 7200)   # 30分钟 - 2小时
+                },
+                "resolutions": {
+                    "small": [(640, 480), (854, 480), (1280, 720)],
+                    "medium": [(1920, 1080), (2560, 1440)],
+                    "large": [(3840, 2160), (4096, 2160)]
+                }
+            }
+        }
+
+        # 文件路径模板
+        self.path_templates = {
+            "windows": [
+                "C:\\Users\\{username}\\Pictures\\{filename}",
+                "D:\\Media\\{media_type}s\\{year}\\{month}\\{filename}",
+                "E:\\Projects\\{project}\\assets\\{media_type}s\\{filename}",
+            ],
+            "linux": [
+                "/home/{username}/{media_type}s/{filename}",
+                "/media/storage/{media_type}s/{year}/{month}/{filename}",
+                "/var/www/{project}/assets/{media_type}s/{filename}",
+            ],
+            "mac": [
+                "/Users/{username}/Pictures/{filename}",
+                "/Volumes/Media/{media_type}s/{year}/{month}/{filename}",
+                "/Users/{username}/Documents/Projects/{project}/assets/{media_type}s/{filename}",
+            ]
+        }
+
+        # 项目和工作目录
+        self.projects = ["website", "mobile_app", "marketing", "training", "archive"]
+        self.usernames = ["user", "admin", "developer", "designer", "content"]
+
+    def _generate_filename(self, media_type: str, format: str) -> str:
+        """生成文件名"""
+        import time
+
+        # 时间戳
+        timestamp = int(time.time())
+
+        # 随机标识符
+        random_id = ''.join(random.choices('0123456789abcdef', k=8))
+
+        # 生成文件名
+        filename = f"{media_type}_{timestamp}_{random_id}.{format}"
+        return filename
+
+    def _generate_file_size(self, size_range: str, media_type: str) -> int:
+        """生成文件大小"""
+        config = self.media_configs[media_type]
+        min_size, max_size = config["size_ranges"][size_range]
+        return secrets.randbelow(max_size - min_size + 1) + min_size
+
+    def _generate_dimensions(self, media_type: str, size_range: str) -> dict[str, Union[int, float]]:
+        """生成分辨率/尺寸信息"""
+        if media_type not in ["image", "video"]:
+            return {}
+
+        config = self.media_configs[media_type]
+        dimensions = random.choice(config["dimensions"][size_range])
+
+        return {
+            "width": dimensions[0],
+            "height": dimensions[1],
+            "aspect_ratio": round(dimensions[0] / dimensions[1], 2)
+        }
+
+    def _generate_duration(self, media_type: str, size_range: str) -> float:
+        """生成时长信息"""
+        if media_type not in ["audio", "video"]:
+            return 0.0
+
+        config = self.media_configs[media_type]
+        min_duration, max_duration = config["durations"][size_range]
+        return round(random.uniform(min_duration, max_duration), 2)
+
+    def _generate_metadata(self, media_type: str, format: str, file_size: int) -> dict[str, Union[str, int, float]]:
+        """生成详细元数据"""
+        import time
+
+        # 基础元数据
+        metadata = {
+            "file_size": file_size,
+            "file_size_human": self._format_file_size(file_size),
+            "creation_time": int(time.time()),
+            "modification_time": int(time.time()) + secrets.randbelow(86400 * 30 + 1),
+            "checksum_md5": hashlib.md5(f"{time.time()}_{(secrets.randbelow(1000000) / 1000000)}".encode()).hexdigest(),
+            "checksum_sha256": hashlib.sha256(f"{time.time()}_{(secrets.randbelow(1000000) / 1000000)}".encode()).hexdigest(),
+        }
+
+        # 媒体类型特定元数据
+        if media_type == "image":
+            metadata.update({
+                "color_mode": random.choice(["RGB", "CMYK", "Grayscale", "RGBA"]),
+                "bit_depth": random.choice([8, 16, 24, 32]),
+                "dpi": random.choice([72, 96, 150, 200, 300]),
+                "compression": random.choice(["JPEG", "PNG", "LZW", "None"]),
+            })
+        elif media_type == "audio":
+            metadata.update({
+                "sample_rate": random.choice([8000, 22050, 44100, 48000, 96000]),
+                "bit_rate": random.choice([128, 192, 256, 320, 512]),
+                "channels": random.choice([1, 2, 6]),
+                "codec": random.choice(["MP3", "AAC", "FLAC", "WAV", "OGG"]),
+            })
+        elif media_type == "video":
+            metadata.update({
+                "frame_rate": random.choice([24, 25, 30, 50, 60]),
+                "bit_rate": secrets.randbelow(49001) + 1000,
+                "codec": random.choice(["H.264", "H.265", "VP9", "AV1", "MPEG-4"]),
+                "audio_codec": random.choice(["AAC", "MP3", "AC3", "DTS"]),
+            })
+
+        return metadata
+
+    def _format_file_size(self, size_bytes: int) -> str:
+        """格式化文件大小"""
+        size = float(size_bytes)
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"
+
+    def _generate_file_path(self, filename: str, media_type: str) -> str:
+        """生成文件路径"""
+        import time
+
+        # 选择操作系统类型
+        os_type = random.choice(["windows", "linux", "mac"])
+        templates = self.path_templates[os_type]
+
+        # 生成路径变量
+        current_time = time.localtime()
+        variables = {
+            "username": random.choice(self.usernames),
+            "media_type": media_type,
+            "year": str(current_time.tm_year),
+            "month": f"{current_time.tm_mon:02d}",
+            "project": random.choice(self.projects),
+            "filename": filename,
+        }
+
+        # 选择并格式化路径模板
+        template = random.choice(templates)
+        return template.format(**variables)
+
+    def _generate_raw(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int, float]]:
+        """生成媒体文件数据"""
+        # 验证媒体类型和格式
+        if self.media_type not in self.media_configs:
+            self.media_type = "image"
+
+        config = self.media_configs[self.media_type]
+        if self.format not in config["formats"]:
+            self.format = random.choice(config["formats"])
+
+        # 生成基础信息
+        filename = self._generate_filename(self.media_type, self.format)
+        file_size = self._generate_file_size(self.size_range, self.media_type)
+        mime_type = config["mime_types"][self.format]
+
+        result = {
+            "filename": filename,
+            "file_type": self.media_type,
+            "format": self.format,
+            "mime_type": mime_type,
+            "file_size": file_size,
+            "file_size_human": self._format_file_size(file_size),
+        }
+
+        # 添加维度信息
+        if self.media_type in ["image", "video"]:
+            dimensions = self._generate_dimensions(self.media_type, self.size_range)
+            result.update(dimensions)
+
+        # 添加时长信息
+        if self.media_type in ["audio", "video"]:
+            duration = self._generate_duration(self.media_type, self.size_range)
+            result["duration_seconds"] = duration
+            result["duration_human"] = f"{duration} seconds"
+
+        # 添加路径信息
+        if self.include_path:
+            result["file_path"] = self._generate_file_path(filename, self.media_type)
+
+        # 添加元数据
+        if self.include_metadata:
+            metadata = self._generate_metadata(self.media_type, self.format, file_size)
+            result["metadata"] = metadata
+
+        return result
+
+    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int, float]]:
+        """生成单个媒体文件数据项"""
+        return self._generate_raw(context)
+
+    def validate(self, data: dict[str, Union[str, int, float]]) -> bool:
+        """验证生成的媒体文件数据"""
+        required_fields = ["filename", "file_type", "format", "file_size"]
+
+        for field in required_fields:
+            if field not in data:
+                return False
+
+        # 验证文件大小
+        file_size = data["file_size"]
+        if not isinstance(file_size, int) or file_size <= 0:
+            return False
+
+        # 验证文件类型
+        file_type = data["file_type"]
+        if file_type not in ["image", "audio", "video"]:
+            return False
+
+        return True
+
+    @property
+    def generator_type(self) -> GeneratorType:
+        """返回生成器类型"""
+        return self._generator_type
+
+    @property
+    def supported_parameters(self) -> list[str]:
+        """返回支持的参数列表"""
+        return self._supported_parameters
+
+
+@register_generator("media_file", ["media", "media_file", "image", "audio", "video", "file"])
+class GenericMediaFileGenerator(MediaFileGenerator):
+    """通用媒体文件生成器注册版本"""
+    pass

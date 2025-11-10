@@ -1,0 +1,405 @@
+"""
+结构化数据生成器测试
+
+测试JSON、XML、YAML生成器的功能和正确性。
+"""
+
+import json
+import xml.etree.ElementTree as ET
+
+import pytest
+import yaml
+
+from dataforge.core.generator import GeneratorConfig
+from dataforge.generators.structured import (
+    GenericJSONGenerator,
+    GenericXMLGenerator,
+    GenericYAMLGenerator,
+)
+
+
+class TestJSONGenerator:
+    """JSON生成器测试"""
+
+    def test_basic_json_generation(self):
+        """测试基础JSON生成"""
+        config = GeneratorConfig(
+            generator_type="json",
+            parameters={
+                "depth": 3,
+                "array_size": (1, 3),
+                "use_null": True
+            }
+        )
+        generator = GenericJSONGenerator(config)
+
+        json_str = generator.generate_single()
+        parsed = json.loads(json_str)
+
+        assert isinstance(parsed, dict)
+        assert generator.validate(json_str)
+
+    def test_json_schema_validation(self):
+        """测试JSON Schema验证"""
+        config = GeneratorConfig(
+            generator_type="json",
+            parameters={
+                "template": "user",
+                "depth": 2
+            }
+        )
+        generator = GenericJSONGenerator(config)
+
+        json_str = generator.generate_single()
+        parsed = json.loads(json_str)
+
+        # 验证基本结构
+        assert "name" in parsed
+        assert "email" in parsed
+        assert isinstance(parsed["name"], str)
+        assert isinstance(parsed["email"], str)
+
+    def test_json_batch_generation(self):
+        """测试批量JSON生成"""
+        config = GeneratorConfig(
+            generator_type="json",
+            parameters={"depth": 2}
+        )
+        generator = GenericJSONGenerator(config)
+
+        batch = generator.generate_batch(5)
+        assert len(batch) == 5
+
+        for json_str in batch:
+            assert generator.validate(json_str)
+            parsed = json.loads(json_str)
+            assert isinstance(parsed, dict)
+
+    def test_nested_json_structure(self):
+        """测试嵌套JSON结构"""
+        config = GeneratorConfig(
+            generator_type="json",
+            parameters={
+                "depth": 4,
+                "array_size": (2, 4)
+            }
+        )
+        generator = GenericJSONGenerator(config)
+
+        json_str = generator.generate_single()
+        parsed = json.loads(json_str)
+
+        # 验证嵌套结构
+        def check_depth(obj, current_depth=0):
+            if isinstance(obj, dict):
+                if current_depth >= 4:
+                    return all(not isinstance(v, (dict, list)) for v in obj.values())
+                return any(isinstance(v, (dict, list)) for v in obj.values())
+            elif isinstance(obj, list):
+                return any(isinstance(item, (dict, list)) for item in obj)
+            return True
+
+        assert check_depth(parsed)
+
+
+class TestXMLGenerator:
+    """XML生成器测试"""
+
+    def test_basic_xml_generation(self):
+        """测试基础XML生成"""
+        config = GeneratorConfig(
+            generator_type="xml",
+            parameters={
+                "root_name": "test",
+                "depth": 2,
+                "use_attributes": True
+            }
+        )
+        generator = GenericXMLGenerator(config)
+
+        xml_str = generator.generate_single()
+        root = ET.fromstring(xml_str)
+
+        assert root.tag == "test"
+        assert generator.validate(xml_str)
+
+    def test_xml_with_namespace(self):
+        """测试带命名空间的XML"""
+        import re
+
+        config = GeneratorConfig(
+            generator_type="xml",
+            parameters={
+                "root_name": "data",
+                "use_namespace": True,
+                "namespace": "http://example.com/schema"
+            }
+        )
+        generator = GenericXMLGenerator(config)
+
+        xml_str = generator.generate_single()
+
+        # 使用正则表达式验证xmlns属性
+        xmlns_pattern = r'xmlns="([^"]*)"'
+        match = re.search(xmlns_pattern, xml_str)
+
+        assert match is not None, "xmlns attribute not found"
+        assert match.group(1) == "http://example.com/schema"
+
+    def test_xml_with_attributes(self):
+        """测试带属性的XML"""
+        config = GeneratorConfig(
+            generator_type="xml",
+            parameters={
+                "root_name": "user",
+                "use_attributes": True,
+                "depth": 1
+            }
+        )
+        generator = GenericXMLGenerator(config)
+
+        xml_str = generator.generate_single()
+        root = ET.fromstring(xml_str)
+
+        # 验证根元素或子元素有属性
+        has_attributes = bool(root.attrib) or any(
+            bool(child.attrib) for child in root
+        )
+        assert has_attributes
+
+    def test_xml_batch_generation(self):
+        """测试批量XML生成"""
+        config = GeneratorConfig(
+            generator_type="xml",
+            parameters={"depth": 2}
+        )
+        generator = GenericXMLGenerator(config)
+
+        batch = generator.generate_batch(3)
+        assert len(batch) == 3
+
+        for xml_str in batch:
+            assert generator.validate(xml_str)
+            root = ET.fromstring(xml_str)
+            assert root is not None
+
+    def test_xml_templates(self):
+        """测试XML模板"""
+        templates = ["user", "product", "config"]
+
+        for template in templates:
+            config = GeneratorConfig(
+                generator_type="xml",
+                parameters={"template": template, "depth": 2}
+            )
+            generator = GenericXMLGenerator(config)
+
+            xml_str = generator.generate_single()
+            root = ET.fromstring(xml_str)
+
+            assert root.tag == template
+
+
+class TestYAMLGenerator:
+    """YAML生成器测试"""
+
+    def test_basic_yaml_generation(self):
+        """测试基础YAML生成"""
+        config = GeneratorConfig(
+            generator_type="yaml",
+            parameters={
+                "depth": 3,
+                "use_anchors": False,
+                "use_comments": False
+            }
+        )
+        generator = GenericYAMLGenerator(config)
+
+        yaml_str = generator.generate_single()
+        parsed = yaml.safe_load(yaml_str)
+
+        assert isinstance(parsed, dict)
+        assert generator.validate(yaml_str)
+
+    def test_yaml_with_anchors(self):
+        """测试带锚点的YAML"""
+        config = GeneratorConfig(
+            generator_type="yaml",
+            parameters={
+                "depth": 2,
+                "use_anchors": True,
+                "use_aliases": True
+            }
+        )
+        generator = GenericYAMLGenerator(config)
+
+        yaml_str = generator.generate_single()
+        parsed = yaml.safe_load(yaml_str)
+
+        assert isinstance(parsed, dict)
+
+    def test_yaml_with_multiline_strings(self):
+        """测试多行字符串的YAML"""
+        config = GeneratorConfig(
+            generator_type="yaml",
+            parameters={
+                "depth": 2,
+                "use_multiline_strings": True
+            }
+        )
+        generator = GenericYAMLGenerator(config)
+
+        yaml_str = generator.generate_single()
+        parsed = yaml.safe_load(yaml_str)
+
+        assert isinstance(parsed, dict)
+
+    def test_yaml_batch_generation(self):
+        """测试批量YAML生成"""
+        config = GeneratorConfig(
+            generator_type="yaml",
+            parameters={"depth": 2}
+        )
+        generator = GenericYAMLGenerator(config)
+
+        batch = generator.generate_batch(4)
+        assert len(batch) == 4
+
+        for yaml_str in batch:
+            assert generator.validate(yaml_str)
+            parsed = yaml.safe_load(yaml_str)
+            assert isinstance(parsed, dict)
+
+    def test_yaml_templates(self):
+        """测试YAML模板"""
+        templates = ["config", "docker", "api"]
+
+        for template in templates:
+            config = GeneratorConfig(
+                generator_type="yaml",
+                parameters={"template": template, "depth": 2}
+            )
+            generator = GenericYAMLGenerator(config)
+
+            yaml_str = generator.generate_single()
+            parsed = yaml.safe_load(yaml_str)
+
+            assert isinstance(parsed, dict)
+
+
+class TestStructuredDataValidation:
+    """结构化数据验证测试"""
+
+    def test_json_validation(self):
+        """测试JSON验证"""
+        config = GeneratorConfig(
+            generator_type="json",
+            parameters={}
+        )
+        generator = GenericJSONGenerator(config)
+
+        # 有效JSON
+        valid_json = '{"name": "test", "value": 123}'
+        assert generator.validate(valid_json)
+
+        # 无效JSON
+        invalid_json = '{"name": "test", "value": 123'
+        assert not generator.validate(invalid_json)
+
+    def test_xml_validation(self):
+        """测试XML验证"""
+        config = GeneratorConfig(
+            generator_type="xml",
+            parameters={}
+        )
+        generator = GenericXMLGenerator(config)
+
+        # 有效XML
+        valid_xml = '<root><item>test</item></root>'
+        assert generator.validate(valid_xml)
+
+        # 无效XML
+        invalid_xml = '<root><item>test</item>'
+        assert not generator.validate(invalid_xml)
+
+    def test_yaml_validation(self):
+        """测试YAML验证"""
+        config = GeneratorConfig(
+            generator_type="yaml",
+            parameters={}
+        )
+        generator = GenericYAMLGenerator(config)
+
+        # 有效YAML
+        valid_yaml = 'name: test\nvalue: 123'
+        assert generator.validate(valid_yaml)
+
+        # 无效YAML
+        invalid_yaml = 'name: test\n  value: 123'
+        assert not generator.validate(invalid_yaml)
+
+
+class TestStructuredDataIntegration:
+    """结构化数据集成测试"""
+
+    def test_cross_format_consistency(self):
+        """测试跨格式一致性"""
+        # 测试不同格式生成器都能正常工作
+        configs = [
+            GeneratorConfig(
+                generator_type="json",
+                parameters={"depth": 2}
+            ),
+            GeneratorConfig(
+                generator_type="json",
+                parameters={"template": "user"}
+            ),
+            GeneratorConfig(
+                generator_type="json",
+                parameters={"array_size": (2, 3)}
+            )
+        ]
+
+        for config in configs:
+            json_gen = GenericJSONGenerator(config)
+            xml_gen = GenericXMLGenerator(config)
+            yaml_gen = GenericYAMLGenerator(config)
+
+            # 每个生成器都应该能生成有效数据
+            json_data = json_gen.generate_single()
+            xml_data = xml_gen.generate_single()
+            yaml_data = yaml_gen.generate_single()
+
+            assert json_gen.validate(json_data)
+            assert xml_gen.validate(xml_data)
+            assert yaml_gen.validate(yaml_data)
+
+    def test_parameter_validation(self):
+        """测试参数验证"""
+        # 测试支持的参数
+        json_gen = GenericJSONGenerator(GeneratorConfig(
+            generator_type="json",
+            parameters={}
+        ))
+        xml_gen = GenericXMLGenerator(GeneratorConfig(
+            generator_type="xml",
+            parameters={}
+        ))
+        yaml_gen = GenericYAMLGenerator(GeneratorConfig(
+            generator_type="yaml",
+            parameters={}
+        ))
+
+        assert isinstance(json_gen.supported_parameters, list)
+        assert isinstance(xml_gen.supported_parameters, list)
+        assert isinstance(yaml_gen.supported_parameters, list)
+
+        # 参数列表不应为空
+        assert len(json_gen.supported_parameters) > 0
+        assert len(xml_gen.supported_parameters) > 0
+        assert len(yaml_gen.supported_parameters) > 0
+
+
+if __name__ == "__main__":
+    # 运行测试
+    pytest.main([__file__, "-v"])

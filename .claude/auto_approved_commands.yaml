@@ -1,0 +1,147 @@
+# Claude Code Auto-Approved Commands Configuration
+# 配置说明：此文件定义 Claude Code 可以无需用户确认自动执行的命令
+
+# ========================================
+# 安全命令（只读操作，无风险）
+# ========================================
+safe_read_commands:
+  - "git status"              # 查看 Git 状态
+  - "git branch"              # 查看分支
+  - "git log"                 # 查看提交历史
+  - "git diff"                # 查看差异
+  - "git show"                # 查看提交内容
+  - "python --version"        # 查看 Python 版本
+  - "pip --version"           # 查看 pip 版本
+  - "pip list"                # 列出已安装包
+  - "pip show *"              # 查看包信息
+  - "npm --version"           # 查看 npm 版本
+  - "npm list"                # 列出 npm 包
+  - "node --version"          # 查看 Node 版本
+  - "mvn --version"           # 查看 Maven 版本
+  - "mvn dependency:tree"     # 查看依赖树
+  - "ls *"                    # 列出文件
+  - "dir *"                   # Windows 列出文件
+  - "pwd"                     # 当前目录
+  - "echo *"                  # 输出文本
+  - "cat *"                   # 读取文件内容
+  - "type *"                  # Windows 读取文件
+  - "head *"                  # 读取文件头部
+  - "tail *"                  # 读取文件尾部
+  - "find *"                  # 查找文件
+  - "grep *"                  # 搜索文本
+  - "which *"                 # 查找命令路径
+  - "where *"                 # Windows 查找命令
+
+# ========================================
+# 开发命令（需要但风险可控）
+# ========================================
+development_commands:
+  # 文件操作（项目内安全操作）
+  - "mkdir *"                 # 创建目录
+  - "mv *"                    # 移动/重命名文件（项目内）
+  - "cp *"                    # 复制文件（项目内）
+  - "touch *"                 # 创建空文件
+  - "move *"                  # Windows 移动文件
+  - "copy *"                  # Windows 复制文件
+  - "rename *"                # Windows 重命名
+
+  # Python 开发
+  - "python -m *"             # 运行 Python 模块
+  - "python *.py"             # 运行 Python 脚本
+  - "pip install *"           # 安装 Python 包
+  - "pip uninstall *"         # 卸载 Python 包（需确认）
+  - "pytest *"                # 运行测试
+  - "black *"                 # 代码格式化
+  - "isort *"                 # 导入排序
+  - "ruff check *"            # 代码检查
+  - "mypy *"                  # 类型检查
+
+  # Git 操作
+  - "git add *"               # 添加文件到暂存区
+  - "git commit *"            # 提交更改
+  - "git checkout -b *"       # 创建新分支
+  - "git checkout *"          # 切换分支
+  - "git pull"                # 拉取更新
+  - "git fetch"               # 获取远程更新
+  - "git merge *"             # 合并分支
+
+  # Node.js 开发
+  - "npm install *"           # 安装 npm 包
+  - "npm run *"               # 运行 npm 脚本
+  - "npm test"                # 运行测试
+  - "npm build"               # 构建项目
+  - "npx *"                   # 执行 npm 包
+
+  # Maven 构建
+  - "mvn clean"               # 清理构建
+  - "mvn compile"             # 编译
+  - "mvn test"                # 运行测试
+  - "mvn package"             # 打包
+  - "mvn install"             # 安装到本地仓库
+
+# ========================================
+# PowerShell 命令
+# ========================================
+powershell_commands:
+  - "powershell -Command 'Get-Command *'"     # 查找命令
+  - "powershell -Command 'Get-Process *'"     # 查看进程
+  - "powershell -Command 'Get-Item *'"        # 获取项目信息
+  - "powershell -Command 'Test-Path *'"       # 测试路径
+
+# ========================================
+# 高风险命令（需要用户明确确认）
+# ========================================
+require_confirmation:
+  - "rm *"                    # 删除文件
+  - "del *"                   # Windows 删除
+  - "git push"                # 推送到远程
+  - "git push --force"        # 强制推送
+  - "git reset --hard"        # 硬重置
+  - "git clean -fd"           # 清理未跟踪文件
+  - "pip uninstall *"         # 卸载包
+  - "npm uninstall *"         # 卸载 npm 包
+  - "mvn clean install"       # Maven 清理安装（可能删除文件）
+  - "powershell -Command 'Remove-Item *'"  # PowerShell 删除
+
+# ========================================
+# 禁止命令（绝对不允许）
+# ========================================
+forbidden_commands:
+  - "rm -rf /"                # 危险的系统删除
+  - "format *"                # 格式化磁盘
+  - "shutdown *"              # 关闭系统
+  - "restart *"               # 重启系统
+  - "del /f /s /q C:\\*"      # 危险的 Windows 删除
+
+# ========================================
+# DataForge 项目特定命令
+# ========================================
+project_specific:
+  # CLI 测试
+  - "dataforge generate *"            # 生成测试数据
+  - "dataforge --help"                # 查看帮助
+
+  # API 服务
+  - "uvicorn dataforge.api.main:app --reload"  # 启动开发服务器
+  - "python -m dataforge.api.main"             # 启动 API
+
+  # 测试执行
+  - "pytest tests/"                   # 运行所有测试
+  - "pytest tests/ -m unit"           # 运行单元测试
+  - "pytest tests/ -m integration"    # 运行集成测试
+  - "pytest tests/ --cov=dataforge"   # 运行测试+覆盖率
+
+  # 代码质量
+  - "black dataforge/"                # 格式化项目代码
+  - "isort dataforge/"                # 排序导入
+  - "ruff check dataforge/"           # 检查代码
+  - "mypy dataforge/"                 # 类型检查
+
+# ========================================
+# 配置说明
+# ========================================
+# 1. 所有模式匹配使用通配符 *
+# 2. 安全命令会自动执行
+# 3. 开发命令会显示通知后执行
+# 4. 高风险命令需要用户明确确认
+# 5. 禁止命令会被拦截并警告

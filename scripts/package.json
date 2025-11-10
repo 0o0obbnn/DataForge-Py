@@ -1,0 +1,32 @@
+{
+  "name": "data_forge_py",
+  "version": "1.0.0",
+  "description": "DataForge是一款高效、灵活且高度可配置的测试数据生成工具，专注于为软件测试团队提供高质量、真实且多样化的测试数据，特别针对中国本土化数据生成进行了深度优化。",
+  "main": "test-playwright.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0o0obbnn/DataForge-Py.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/0o0obbnn/DataForge-Py/issues"
+  },
+  "homepage": "https://github.com/0o0obbnn/DataForge-Py#readme",
+  "dependencies": {
+    "playwright": "^1.55.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

@@ -1,0 +1,16 @@
+# DataForge Core Dependencies
+PyYAML
+click
+pydantic
+
+# Data Processing
+faker
+python-dateutil
+pandas
+
+# Web API Dependencies
+fastapi
+uvicorn[standard]
+python-jose[cryptography]
+passlib[bcrypt]
+redis

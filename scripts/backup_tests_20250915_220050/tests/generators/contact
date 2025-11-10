@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""
+测试电子邮件生成器（简化版）
+"""
+
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# 确保导入电子邮件生成器以触发注册
+
+from dataforge.core.factory import default_factory
+from dataforge.core.generator import GeneratorConfig
+
+
+def test_email_generation():
+    """测试电子邮件生成"""
+    print("=== 测试电子邮件生成 ===")
+
+    # 测试不同域名类型的电子邮件生成
+    for domain_type in ["RANDOM", "REAL", "CUSTOM"]:
+        if domain_type == "CUSTOM":
+            config = GeneratorConfig(
+                generator_type="email",
+                parameters={
+                    "domain_type": domain_type,
+                    "domains": ["dataforge.cn", "test.dataforge.org"],
+                },
+            )
+        else:
+            config = GeneratorConfig(
+                generator_type="email", parameters={"domain_type": domain_type}
+            )
+
+        generator = default_factory.create_generator(config)
+        email = generator.generate()
+        print(f"域名类型: {domain_type}")
+        print(f"生成的电子邮件: {email}")
+        print(f"校验结果: {generator.validate(email)}")
+        print()
+
+    # 测试包含中文字符的电子邮件生成
+    print("=== 测试中文字符电子邮件生成 ===")
+    config = GeneratorConfig(
+        generator_type="email",
+        parameters={
+            "include_chinese": True,
+            "domain_type": "REAL",  # 使用真实域名避免中文域名问题
+        },
+    )
+
+    generator = default_factory.create_generator(config)
+    for i in range(5):
+        email = generator.generate()
+        print(f"生成的中文电子邮件 {i + 1}: {email}")
+        print(f"校验结果: {generator.validate(email)}")
+        print()
+
+
+def test_email_validation():
+    """测试电子邮件验证"""
+    print("=== 测试电子邮件验证 ===")
+
+    # 测试有效的电子邮件地址
+    valid_emails = [
+        "test@example.com",
+        "user123@gmail.com",
+        "test.email@qq.com",
+        "user_name@163.com",
+        "test-email@outlook.com",
+        "张三@qq.com",
+        "李四123@163.com",
+    ]
+
+    print("测试有效邮箱:")
+    config = GeneratorConfig(generator_type="email", parameters={})
+    generator = default_factory.create_generator(config)
+
+    for email in valid_emails:
+        result = generator.validate(email)
+        print(f"邮箱: {email} - 验证结果: {result}")
+
+    print("\n测试无效邮箱:")
+    invalid_emails = [
+        "invalid.email",
+        "@example.com",
+        "test@",
+        "test..test@example.com",
+        "test@.com",
+        "",
+    ]
+
+    for email in invalid_emails:
+        result = generator.validate(email)
+        print(f"邮箱: {email} - 验证结果: {result}")
+    print()
+
+
+def main():
+    """主测试函数"""
+    print("DataForge 电子邮件生成器测试（简化版）")
+    print("=" * 50)
+
+    test_email_generation()
+    test_email_validation()
+
+    print("所有测试完成！")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

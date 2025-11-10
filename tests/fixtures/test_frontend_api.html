@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataForge API 测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1677ff;
+            text-align: center;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+        }
+        button {
+            background: #1677ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0958d9;
+        }
+        .result {
+            background: #f6f8fa;
+            border: 1px solid #d1d9e0;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            border-color: #52c41a;
+            background: #f6ffed;
+        }
+        .error {
+            border-color: #ff4d4f;
+            background: #fff2f0;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 DataForge API 前后端联调测试</h1>
+        
+        <div class="test-section">
+            <h3>1. 健康检查</h3>
+            <button onclick="testHealth()">测试健康检查</button>
+            <div id="health-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. 获取生成器列表</h3>
+            <button onclick="testGenerators()">获取生成器列表</button>
+            <div id="generators-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. 数据生成测试</h3>
+            <div>
+                <label>生成器类型:</label>
+                <select id="generator-type">
+                    <option value="name">姓名生成器</option>
+                    <option value="email">邮箱生成器</option>
+                    <option value="phone">手机号生成器</option>
+                    <option value="idcard">身份证生成器</option>
+                </select>
+                <label>数量:</label>
+                <input type="number" id="count" value="3" min="1" max="10">
+                <button onclick="testGenerate()">生成数据</button>
+            </div>
+            <div id="generate-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. 批量生成测试</h3>
+            <button onclick="testBatchGenerate()">批量生成用户数据</button>
+            <div id="batch-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. 错误处理测试</h3>
+            <button onclick="testError()">测试不存在的生成器</button>
+            <div id="error-result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(API_BASE + url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            element.className = 'result ' + (result.success ? 'success' : 'error');
+            
+            if (result.success) {
+                element.textContent = JSON.stringify(result.data, null, 2);
+            } else {
+                element.textContent = `错误: ${result.error || result.data?.detail || '未知错误'}`;
+            }
+        }
+
+        async function testHealth() {
+            const result = await makeRequest('/health');
+            displayResult('health-result', result);
+        }
+
+        async function testGenerators() {
+            const result = await makeRequest('/generators');
+            displayResult('generators-result', result);
+        }
+
+        async function testGenerate() {
+            const generatorType = document.getElementById('generator-type').value;
+            const count = parseInt(document.getElementById('count').value);
+            
+            const requestBody = {
+                generator_type: generatorType,
+                count: count,
+                parameters: getDefaultParameters(generatorType),
+                output_format: 'json'
+            };
+
+            const result = await makeRequest(`/generate/${generatorType}`, {
+                method: 'POST',
+                body: JSON.stringify(requestBody)
+            });
+            
+            displayResult('generate-result', result);
+        }
+
+        async function testBatchGenerate() {
+            const requestBody = {
+                generators: [
+                    { generator_type: 'name', parameters: { gender: 'FEMALE' } },
+                    { generator_type: 'email', parameters: { type: 'COMMON' } },
+                    { generator_type: 'phone', parameters: { type: 'MOBILE' } }
+                ],
+                count: 3,
+                output_format: 'json'
+            };
+
+            const result = await makeRequest('/batch/generate', {
+                method: 'POST',
+                body: JSON.stringify(requestBody)
+            });
+            
+            displayResult('batch-result', result);
+        }
+
+        async function testError() {
+            const result = await makeRequest('/generate/nonexistent', {
+                method: 'POST',
+                body: JSON.stringify({
+                    generator_type: 'nonexistent',
+                    count: 1
+                })
+            });
+            
+            displayResult('error-result', result);
+        }
+
+        function getDefaultParameters(generatorType) {
+            const defaults = {
+                name: { gender: 'FEMALE' },
+                email: { type: 'COMMON' },
+                phone: { type: 'MOBILE' },
+                idcard: { region: '110000' }
+            };
+            return defaults[generatorType] || {};
+        }
+
+        // 页面加载时自动测试健康检查
+        window.onload = function() {
+            testHealth();
+        };
+    </script>
+</body>
+</html>

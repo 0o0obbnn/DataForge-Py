@@ -1,0 +1,28 @@
+...........s.s.......................................................... [ 13%]
+...................ssssssss.........sssssssssssssssss................... [ 26%]
+..............................sssssssss................................. [ 39%]
+...........sssssssss.......ss................sssssssss.................. [ 52%]
+................sssssssss.......sssssssss............................... [ 65%]
+........................................................................ [ 79%]
+........................................................................ [ 92%]
+..........................................                               [100%]
+============================== warnings summary ===============================
+D:\python\Lib\site-packages\pytest_freezegun.py:17: 1092 warnings
+  D:\python\Lib\site-packages\pytest_freezegun.py:17: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+    if LooseVersion(pytest.__version__) < LooseVersion('3.6.0'):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+SKIPPED [1] tests\unit\test_core\test_generator_interface.py:36: Generators directory not found: F:\projects\data_forge_py\data_forge_py\tests\unit\dataforge\generators
+SKIPPED [1] tests\unit\test_core\test_relations.py:14: Data relation derivation - advanced feature not fully implemented
+SKIPPED [1] tests\unit\test_core\test_relations.py:55: Dependency ordering - advanced feature not fully implemented
+SKIPPED [8] tests\unit\test_generators\test_basic\test_context_aware.py: ContextAwareGenerator not implemented - advanced feature
+SKIPPED [8] tests\unit\test_generators\test_basic\test_enhanced_generators.py: EnhancedGenerator not implemented - advanced feature
+SKIPPED [9] tests\unit\test_generators\test_basic\test_extended_profile.py: ExtendedProfileGenerator not implemented - advanced feature
+SKIPPED [9] tests\unit\test_generators\test_basic\test_name_optimized.py: NameOptimizedGenerator not implemented - advanced feature
+SKIPPED [9] tests\unit\test_generators\test_contact\test_landline.py: LandlineGenerator not implemented yet
+SKIPPED [2] tests\unit\test_generators\test_datetime\test_datetime_comprehensive.py: EnhancedTimestampGenerator - advanced feature not fully implemented
+SKIPPED [9] tests\unit\test_generators\test_finance\test_advanced.py: AdvancedFinanceGenerator not implemented - advanced feature
+SKIPPED [9] tests\unit\test_generators\test_finance\test_future.py: FutureCodeGenerator not implemented - advanced feature
+SKIPPED [9] tests\unit\test_generators\test_finance\test_streaming.py: StreamingFinanceGenerator not implemented - advanced feature
+472 passed, 75 skipped, 1092 warnings in 0.75s

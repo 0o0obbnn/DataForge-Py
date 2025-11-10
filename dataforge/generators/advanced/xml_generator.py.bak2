@@ -1,0 +1,282 @@
+"""
+XML数据生成器
+
+提供XML格式数据的生成，支持属性、注释和嵌套结构。
+"""
+
+import random
+import re
+from datetime import datetime
+from typing import Any, Optional
+
+from dataforge.core.generator import DataGenerator, GeneratorConfig
+
+from ...core.types import GeneratorType
+
+
+class XMLGenerator(DataGenerator):
+    """XML数据生成器基类"""
+
+    def __init__(self, config: GeneratorConfig):
+        super().__init__(config)
+        self.depth = self.config.parameters.get("depth", 4)
+        self.use_attributes = self.config.parameters.get("use_attributes", True)
+        self.use_comments = self.config.parameters.get("use_comments", False)
+
+    def _generate_tag_name(self) -> str:
+        """生成有效的XML标签名"""
+        words = [
+            "user", "data", "config", "settings", "value", "item", "property",
+            "name", "title", "description", "status", "type", "category", "level",
+            "amount", "count", "size", "length", "width", "height", "weight",
+            "color", "style", "format", "mode", "option", "flag", "tag",
+            "label", "code", "id", "key", "index", "position", "order"
+        ]
+        return random.choice(words)
+
+    def _generate_attribute_name(self) -> str:
+        """生成属性名"""
+        return self._generate_tag_name()
+
+    def _generate_attribute_value(self) -> str:
+        """生成属性值"""
+        words = [
+            "active", "inactive", "pending", "completed", "success", "failed",
+            "enabled", "disabled", "true", "false", "yes", "no", "on", "off",
+            "red", "blue", "green", "yellow", "black", "white", "large", "small",
+            "high", "low", "fast", "slow", "new", "old", "first", "last"
+        ]
+        return random.choice(words)
+
+    def _generate_text_content(self) -> str:
+        """生成文本内容"""
+        words = [
+            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
+            "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
+            "magna", "aliqua", "enim", "ad", "minim", "veniam", "quis", "nostrud",
+            "exercitation", "ullamco", "laboris", "nisi", "aliquip", "ex", "ea", "commodo",
+            "consequat", "duis", "aute", "irure", "in", "reprehenderit", "voluptate",
+            "velit", "esse", "cillum", "fugiat", "nulla", "pariatur", "excepteur", "sint",
+            "occaecat", "cupidatat", "non", "proident", "sunt", "culpa", "qui", "officia",
+            "deserunt", "mollit", "anim", "id", "est", "laborum"
+        ]
+        return ' '.join(random.choices(words, k=random.randint(2, 8)))
+
+    def _build_xml_string(self, root_name: str) -> str:
+        """构建XML字符串"""
+        lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+
+        # 构建根元素开始标签
+        root_start = f'<{root_name}'
+
+        # 添加xmlns作为普通属性（避免命名空间处理）
+        use_namespace = self.config.parameters.get("use_namespace", False)
+        namespace = self.config.parameters.get("namespace", "http://example.com/schema")
+
+        if use_namespace:
+            root_start += f' xmlns="{namespace}"'
+
+        # 添加其他属性
+        if self.use_attributes:
+            root_start += f' id="{secrets.randbelow(100) + 1}" type="generated"'
+
+        root_start += '>'
+        lines.append(root_start)
+
+        # 添加子元素
+        lines.append('  <name>test_data</name>')
+        lines.append(f'  <timestamp>{datetime.now().isoformat()}</timestamp>')
+
+        # 关闭根元素
+        lines.append(f'</{root_name}>')
+
+        return '\n'.join(lines)
+
+    def _build_template_xml_string(self, template_name: str, template_config: dict[str, Any]) -> str:
+        """构建模板XML字符串"""
+        structure = template_config.get("structure", {})
+
+        lines = ['<?xml version="1.0" encoding="UTF-8"?>']
+
+        # 构建根元素开始标签
+        root_start = f'<{template_name}'
+
+        # 添加xmlns作为普通属性（避免命名空间处理）
+        use_namespace = self.config.parameters.get("use_namespace", False)
+        namespace = self.config.parameters.get("namespace", "http://example.com/schema")
+
+        if use_namespace:
+            root_start += f' xmlns="{namespace}"'
+
+        # 添加其他属性
+        if self.use_attributes:
+            root_start += f' id="{secrets.randbelow(100) + 1}" type="generated"'
+
+        root_start += '>'
+        lines.append(root_start)
+
+        # 添加子元素
+        for key, value in structure.items():
+            lines.append(f'  <{key}>{value}</{key}>')
+
+        # 关闭根元素
+        lines.append(f'</{template_name}>')
+
+        return '\n'.join(lines)
+
+    def generate_single(self, context: Optional[dict[str, Any]] = None) -> str:
+        """生成单个XML数据"""
+        template = self.config.parameters.get("template")
+        root_name = self.config.parameters.get("root_name", "root")
+
+        if template and template in self._get_xml_templates():
+            template_config = self._get_xml_templates()[template]
+            return self._build_template_xml_string(template, template_config)
+        else:
+            return self._build_xml_string(root_name)
+
+    def validate(self, value: str) -> bool:
+        """验证XML格式"""
+        try:
+            value = value.strip()
+            if not value:
+                return False
+
+            # 移除XML声明（如果存在）
+            if value.startswith('<?xml'):
+                end_decl = value.find('?>')
+                if end_decl != -1:
+                    value = value[end_decl + 2:].strip()
+
+            # 检查是否有开始和结束标签
+            start_match = re.search(r'<(\w+)(\s[^>]*)?>', value)
+            if not start_match:
+                return False
+
+            root_name = start_match.group(1)
+
+            # 检查是否有对应的结束标签
+            close_pattern = f'</{root_name}>'
+            if close_pattern not in value:
+                return False
+
+            # 检查标签是否平衡
+            open_tags = re.findall(r'<(\w+)(\s[^>]*)?>', value)
+            close_tags = re.findall(r'</(\w+)>', value)
+
+            return len(open_tags) == len(close_tags)
+        except Exception:
+            return False
+
+    def _get_xml_templates(self) -> dict[str, dict[str, Any]]:
+        """获取XML模板配置"""
+        return {
+            "user": {
+                "structure": {
+                    "name": "test_user",
+                    "email": "test@example.com",
+                    "active": "true"
+                }
+            },
+            "product": {
+                "structure": {
+                    "name": "sample_product",
+                    "price": "99.99"
+                }
+            },
+            "config": {
+                "structure": {
+                    "setting": "value",
+                    "version": "1.0"
+                }
+            }
+        }
+
+
+
+    @property
+    def generator_type(self) -> GeneratorType:
+        """返回生成器类型"""
+        return GeneratorType.ADVANCED
+
+    @property
+    def supported_parameters(self) -> list[str]:
+        """返回支持的参数列表"""
+        return []
+class GenericXMLGenerator(XMLGenerator):
+    """通用XML数据生成器"""
+
+    def __init__(self, config: GeneratorConfig):
+        super().__init__(config)
+        self._setup()
+
+    def _setup(self) -> None:
+        """初始化设置"""
+        self.depth = self.config.parameters.get("depth", 3)
+        self.use_attributes = self.config.parameters.get("use_attributes", True)
+        self.template = self.config.parameters.get("template")
+
+    def generate_single(self, context=None) -> str:
+        """生成原始XML字符串"""
+        template = self.config.parameters.get("template")
+        root_name = self.config.parameters.get("root_name", "root")
+
+        if template and template in self._get_xml_templates():
+            template_config = self._get_xml_templates()[template]
+            return self._build_template_xml_string(template, template_config)
+        else:
+            return self._build_xml_string(root_name)
+
+    def validate(self, data: str) -> bool:
+        """验证XML格式"""
+        try:
+            data = data.strip()
+            if not data:
+                return False
+
+            # 移除XML声明（如果存在）
+            if data.startswith('<?xml'):
+                end_decl = data.find('?>')
+                if end_decl != -1:
+                    data = data[end_decl + 2:].strip()
+
+            # 检查是否有开始和结束标签
+            start_match = re.search(r'<(\w+)(\s[^>]*)?>', data)
+            if not start_match:
+                return False
+
+            root_name = start_match.group(1)
+
+            # 检查是否有对应的结束标签
+            close_pattern = f'</{root_name}>'
+            if close_pattern not in data:
+                return False
+
+            # 检查标签是否平衡
+            open_tags = re.findall(r'<(\w+)(\s[^>]*)?>', data)
+            close_tags = re.findall(r'</(\w+)>', data)
+
+            return len(open_tags) == len(close_tags)
+        except Exception:
+            return False
+
+    @property
+    def generator_type(self):
+        """获取生成器类型"""
+        return "structured"
+
+    @property
+    def supported_parameters(self) -> list[str]:
+        """获取支持的参数列表"""
+        return [
+            "depth",
+            "use_namespace",
+            "namespace",
+            "use_attributes",
+            "template",
+            "root_name"
+        ]
+
+    def _get_xml_templates(self) -> dict[str, dict[str, Any]]:
+        """获取XML模板配置"""
+        return super()._get_xml_templates()

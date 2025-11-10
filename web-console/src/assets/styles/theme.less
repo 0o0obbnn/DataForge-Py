@@ -1,0 +1,53 @@
+// DataForge Web Console - 科技感·未来风主题配置
+// 基于 Ant Design Vue 深色模式定制
+
+// 主色调 (Primary/Base)
+@primary-bg: #1A1A2E;          // 深空蓝 - 背景主色
+@secondary-bg: #282845;        // 深邃紫 - 卡片、面板背景
+
+// 辅助色 (Accent/Interactive)
+@accent-primary: #8E5DFF;      // 未来紫 - 主要交互色
+@accent-success: #00E676;      // 霓虹绿 - 成功提示
+@accent-error: #FF5252;        // 警告红 - 错误提示
+@accent-warning: #FFC107;      // 提示黄 - 警告状态
+
+// 中性色 (Neutral)
+@text-primary: #E0E0E0;        // 亮灰 - 主要文本
+@text-secondary: #B0B0B0;      // 中灰 - 次要文本
+@text-disabled: #4A4A6D;       // 暗灰 - 禁用状态
+
+// 组件覆盖变量
+@primary-color: @accent-primary;
+@success-color: @accent-success;
+@error-color: @accent-error;
+@warning-color: @accent-warning;
+
+@body-background: @primary-bg;
+@component-background: @secondary-bg;
+@text-color: @text-primary;
+@text-color-secondary: @text-secondary;
+@disabled-color: @text-disabled;
+
+@border-color-base: @text-disabled;
+@border-radius-base: 8px;
+
+// 按钮主题
+@btn-primary-bg: linear-gradient(135deg, @accent-primary, lighten(@accent-primary, 10%));
+@btn-default-bg: transparent;
+@btn-default-border: @accent-primary;
+
+// 输入框主题
+@input-bg: @secondary-bg;
+@input-border-color: @text-disabled;
+@input-placeholder-color: @text-secondary;
+
+// 卡片主题
+@card-background: @secondary-bg;
+@card-radius: @border-radius-base;
+@card-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+// 菜单主题
+@menu-dark-bg: @primary-bg;
+@menu-dark-item-active-bg: @secondary-bg;
+@menu-dark-selected-item-icon-color: @accent-primary;
+@menu-dark-selected-item-text-color: @text-primary;
