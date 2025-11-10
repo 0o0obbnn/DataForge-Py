@@ -214,3 +214,62 @@ test-results/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# DataForge project reorganization
+# Temporary analysis and debugging files in root
+analyze_*.py
+check_*.py
+count_*.py
+compare_*.py
+create_*.py
+find_*.py
+generate_*.py
+test_*.py
+validation_*.py
+simple_test.py
+integration_test.py
+final_*.py
+run_*.py
+setup_*.py
+
+# Temporary reports and results
+*_report*.txt
+*_result*.txt
+*_status*.txt
+*_summary*.txt
+*_list*.txt
+*_detail*.txt
+current_status.txt
+latest_result.txt
+final_result.txt
+identifier_test.txt
+auth_fixed.txt
+
+# Temporary markdown reports
+*_report_*.md
+*_status_*.md
+*_plan_*.md
+*_fix_*.md
+final_*.md
+fix_*.md
+
+# Test execution logs
+test_execution_log_*.txt
+test_output.txt
+failed_tests*.txt
+unit_test_results.txt
+test_results*.txt
+
+# Environment and config backup
+.env.backup
+*.env.bak
+
+# IDE specific files (beyond what's already covered)
+*.swp
+*.swo
+*~
+
+# Backup directories
+backup_*/
+*_backup*/
+archive_*/

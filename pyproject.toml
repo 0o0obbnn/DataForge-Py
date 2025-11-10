@@ -194,21 +194,4 @@ exclude_lines = [
     "if TYPE_CHECKING:",
 ]
 
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = [
-    "-ra",
-    "--strict-markers", 
-    "--strict-config",
-    "--tb=short",
-    "--disable-warnings",
-]
-filterwarnings = [
-    "ignore::DeprecationWarning:distutils.*",
-    "ignore::DeprecationWarning:pytest_freezegun.*",
-    "ignore::UserWarning",
-]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
+
