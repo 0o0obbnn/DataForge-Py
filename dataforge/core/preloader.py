@@ -441,13 +441,15 @@ def get_preload_stats() -> dict[str, Any]:
     status = default_preloader.get_loading_status()
 
     # 检查是否所有数据源都加载完成
-    is_preloaded = all(s in ("success", "skipped") for s in status.values()) if status else False
+    is_preloaded = (
+        all(s in ("success", "skipped") for s in status.values()) if status else False
+    )
     is_preloading = any(s == "loading" for s in status.values())
 
     return {
         "is_preloaded": is_preloaded,
         "is_preloading": is_preloading,
-        "status": status
+        "status": status,
     }
 
 
@@ -461,6 +463,7 @@ def wait_for_data_preload(timeout: float = 30.0) -> bool:
         是否在超时前完成预加载
     """
     import time
+
     start_time = time.time()
 
     while time.time() - start_time < timeout:
@@ -481,11 +484,7 @@ def get_performance_stats() -> dict[str, Any]:
     Returns:
         性能统计信息（当前为空实现）
     """
-    return {
-        "preload_time": 0.0,
-        "cache_hits": 0,
-        "cache_misses": 0
-    }
+    return {"preload_time": 0.0, "cache_hits": 0, "cache_misses": 0}
 
 
 # 在模块加载时自动注册核心数据源

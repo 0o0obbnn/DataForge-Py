@@ -10,10 +10,10 @@ import secrets
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, Optional, Union, ClassVar
-from ...core.types import GeneratorType
+from typing import Any, ClassVar, Optional, Union
 
 from ...core.factory import register_generator
+
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
 #   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
@@ -23,11 +23,13 @@ from ...core.generator import (
     DataGenerator,
     GenerationContext,
 )
+from ...core.types import GeneratorType
 
 
 @dataclass
 class UserBehavior:
     """用户行为数据模型"""
+
     user_id: str
     session_id: str
     action_type: str
@@ -38,7 +40,9 @@ class UserBehavior:
     action_details: dict[str, Union[str, int, float]]
 
 
-class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[Any]]]]):
+class UserBehaviorGenerator(
+    DataGenerator[dict[str, Union[str, int, float, list[Any]]]]
+):
     """用户行为数据生成器
 
     功能特性：
@@ -50,11 +54,31 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
 
     # 以 ClassVar 形式声明参数模式，避免与同名 @property 冲突
     PARAMETER_SCHEMA: ClassVar[dict[str, dict[str, str | bool | int]]] = {
-        "behavior_type": {"type": "str", "description": "行为类型 (browse/click/search/purchase/login)", "default": "browse"},
-        "include_user_profile": {"type": "bool", "description": "是否包含用户画像", "default": True},
-        "include_device": {"type": "bool", "description": "是否包含设备信息", "default": True},
-        "include_location": {"type": "bool", "description": "是否包含地理位置", "default": True},
-        "time_range": {"type": "str", "description": "时间范围 (recent/day/week/month)", "default": "recent"},
+        "behavior_type": {
+            "type": "str",
+            "description": "行为类型 (browse/click/search/purchase/login)",
+            "default": "browse",
+        },
+        "include_user_profile": {
+            "type": "bool",
+            "description": "是否包含用户画像",
+            "default": True,
+        },
+        "include_device": {
+            "type": "bool",
+            "description": "是否包含设备信息",
+            "default": True,
+        },
+        "include_location": {
+            "type": "bool",
+            "description": "是否包含地理位置",
+            "default": True,
+        },
+        "time_range": {
+            "type": "str",
+            "description": "时间范围 (recent/day/week/month)",
+            "default": "recent",
+        },
         "user_count": {"type": "int", "description": "用户数量范围", "default": 1000},
     }
 
@@ -73,42 +97,94 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
                 "name": "页面浏览",
                 "weight": 0.4,
                 "duration_range": (5, 300),
-                "pages": ["home", "product", "category", "article", "search", "checkout", "profile"]
+                "pages": [
+                    "home",
+                    "product",
+                    "category",
+                    "article",
+                    "search",
+                    "checkout",
+                    "profile",
+                ],
             },
             "click": {
                 "name": "点击事件",
                 "weight": 0.3,
-                "elements": ["button", "link", "image", "video", "form", "menu", "banner"],
-                "actions": ["click", "hover", "focus", "submit", "play", "pause"]
+                "elements": [
+                    "button",
+                    "link",
+                    "image",
+                    "video",
+                    "form",
+                    "menu",
+                    "banner",
+                ],
+                "actions": ["click", "hover", "focus", "submit", "play", "pause"],
             },
             "search": {
                 "name": "搜索行为",
                 "weight": 0.15,
                 "query_types": ["product", "content", "user", "location", "category"],
-                "result_counts": [0, 5, 10, 20, 50, 100]
+                "result_counts": [0, 5, 10, 20, 50, 100],
             },
             "purchase": {
                 "name": "购买行为",
                 "weight": 0.1,
                 "amount_range": (10, 1000),
-                "categories": ["electronics", "clothing", "books", "food", "beauty", "home"],
-                "payment_methods": ["alipay", "wechat", "credit_card", "debit_card", "cash"]
+                "categories": [
+                    "electronics",
+                    "clothing",
+                    "books",
+                    "food",
+                    "beauty",
+                    "home",
+                ],
+                "payment_methods": [
+                    "alipay",
+                    "wechat",
+                    "credit_card",
+                    "debit_card",
+                    "cash",
+                ],
             },
             "login": {
                 "name": "登录行为",
                 "weight": 0.05,
                 "methods": ["password", "sms", "social", "biometric"],
-                "success_rate": 0.95
-            }
+                "success_rate": 0.95,
+            },
         }
 
         # 用户画像数据
         self.age_ranges = [(18, 25), (26, 35), (36, 45), (46, 55), (56, 65)]
         self.genders = ["male", "female", "other"]
-        self.regions = ["北京", "上海", "广州", "深圳", "杭州", "成都", "武汉", "西安", "南京", "重庆"]
+        self.regions = [
+            "北京",
+            "上海",
+            "广州",
+            "深圳",
+            "杭州",
+            "成都",
+            "武汉",
+            "西安",
+            "南京",
+            "重庆",
+        ]
         self.interests = [
-            "technology", "fashion", "sports", "music", "travel", "food", "gaming",
-            "reading", "movies", "photography", "fitness", "art", "cooking", "gardening"
+            "technology",
+            "fashion",
+            "sports",
+            "music",
+            "travel",
+            "food",
+            "gaming",
+            "reading",
+            "movies",
+            "photography",
+            "fitness",
+            "art",
+            "cooking",
+            "gardening",
         ]
 
         # 设备信息
@@ -116,7 +192,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
         self.operating_systems = {
             "desktop": ["Windows 10", "Windows 11", "macOS", "Linux", "Chrome OS"],
             "mobile": ["iOS", "Android", "HarmonyOS"],
-            "tablet": ["iPadOS", "Android", "Windows"]
+            "tablet": ["iPadOS", "Android", "Windows"],
         }
         self.browsers = ["Chrome", "Safari", "Firefox", "Edge", "Opera", "IE"]
 
@@ -131,13 +207,22 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "https://example.com/user/profile",
             "https://example.com/search",
             "https://example.com/blog/article-123",
-            "https://example.com/contact"
+            "https://example.com/contact",
         ]
 
         self.product_names = [
-            "iPhone 15 Pro", "MacBook Air M2", "Nike Air Max", "Adidas Ultraboost",
-            "Sony WH-1000XM5", "Samsung Galaxy S24", "Xiaomi 14", "Dell XPS 13",
-            "Kindle Paperwhite", "AirPods Pro 2", "Nintendo Switch", "PlayStation 5"
+            "iPhone 15 Pro",
+            "MacBook Air M2",
+            "Nike Air Max",
+            "Adidas Ultraboost",
+            "Sony WH-1000XM5",
+            "Samsung Galaxy S24",
+            "Xiaomi 14",
+            "Dell XPS 13",
+            "Kindle Paperwhite",
+            "AirPods Pro 2",
+            "Nintendo Switch",
+            "PlayStation 5",
         ]
 
     def _generate_user_id(self) -> str:
@@ -183,7 +268,9 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "region": region,
             "interests": interests,
             "user_level": secrets.choice(["new", "regular", "vip", "premium"]),
-            "registration_date": (datetime.now() - timedelta(days=secrets.randbelow(365) + 1)).strftime("%Y-%m-%d")
+            "registration_date": (
+                datetime.now() - timedelta(days=secrets.randbelow(365) + 1)
+            ).strftime("%Y-%m-%d"),
         }
 
     def _generate_device_info(self) -> dict[str, str]:
@@ -200,8 +287,10 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "operating_system": os,
             "browser": browser,
             "device_id": device_id,
-            "screen_resolution": secrets.choice(["1920x1080", "1366x768", "2560x1440", "1280x720", "375x667", "414x896"]),
-            "user_agent": self._generate_user_agent(device_type, os, browser)
+            "screen_resolution": secrets.choice(
+                ["1920x1080", "1366x768", "2560x1440", "1280x720", "375x667", "414x896"]
+            ),
+            "user_agent": self._generate_user_agent(device_type, os, browser),
         }
 
     def _generate_user_agent(self, device_type: str, os: str, browser: str) -> str:
@@ -210,15 +299,17 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "desktop": {
                 "Chrome": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{secrets.randbelow(31) + 90}.0.0.0 Safari/537.36",
                 "Safari": f"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/{secrets.randbelow(4) + 14}.0 Safari/605.1.15",
-                "Firefox": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:{secrets.randbelow(21) + 90}.0) Gecko/20100101 Firefox/{secrets.randbelow(21) + 90}.0"
+                "Firefox": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:{secrets.randbelow(21) + 90}.0) Gecko/20100101 Firefox/{secrets.randbelow(21) + 90}.0",
             },
             "mobile": {
                 "Chrome": f"Mozilla/5.0 (iPhone; CPU iPhone OS {secrets.randbelow(4) + 14}_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/{secrets.randbelow(31) + 90}.0.0.0 Mobile/15E148 Safari/604.1",
-                "Safari": f"Mozilla/5.0 (iPhone; CPU iPhone OS {secrets.randbelow(4) + 14}_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/{secrets.randbelow(4) + 14}.0 Mobile/15E148 Safari/604.1"
-            }
+                "Safari": f"Mozilla/5.0 (iPhone; CPU iPhone OS {secrets.randbelow(4) + 14}_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/{secrets.randbelow(4) + 14}.0 Mobile/15E148 Safari/604.1",
+            },
         }
 
-        return user_agents.get(device_type, user_agents["desktop"]).get(browser, user_agents["desktop"]["Chrome"])
+        return user_agents.get(device_type, user_agents["desktop"]).get(
+            browser, user_agents["desktop"]["Chrome"]
+        )
 
     def _generate_location_info(self) -> dict[str, Union[str, float]]:
         """生成地理位置信息"""
@@ -233,7 +324,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "武汉": (30.5928, 114.3055),
             "西安": (34.3416, 108.9398),
             "南京": (32.0603, 118.7969),
-            "重庆": (29.4316, 106.9123)
+            "重庆": (29.4316, 106.9123),
         }
 
         city = secrets.choice(list(cities.keys()))
@@ -249,20 +340,27 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "longitude": round(lng + lng_offset, 6),
             "country": "中国",
             "timezone": "Asia/Shanghai",
-            "ip_address": f"{secrets.randbelow(255) + 1}.{secrets.randbelow(255) + 1}.{secrets.randbelow(255) + 1}.{secrets.randbelow(255) + 1}"
+            "ip_address": f"{secrets.randbelow(255) + 1}.{secrets.randbelow(255) + 1}.{secrets.randbelow(255) + 1}.{secrets.randbelow(255) + 1}",
         }
 
-    def _generate_action_details(self, behavior_type: str) -> dict[str, Union[str, int, float]]:
+    def _generate_action_details(
+        self, behavior_type: str
+    ) -> dict[str, Union[str, int, float]]:
         """生成行为详情"""
         config = self.behavior_types[behavior_type]
 
         if behavior_type == "browse":
             page = secrets.choice(config["pages"])
-            duration = secrets.randbelow(config["duration_range"][1] - config["duration_range"][0] + 1) + config["duration_range"][0]
+            duration = (
+                secrets.randbelow(
+                    config["duration_range"][1] - config["duration_range"][0] + 1
+                )
+                + config["duration_range"][0]
+            )
             return {
                 "page": page,
                 "duration_seconds": duration,
-                "scroll_depth": secrets.randbelow(100 + 1)
+                "scroll_depth": secrets.randbelow(100 + 1),
             }
         elif behavior_type == "click":
             element = secrets.choice(config["elements"])
@@ -272,7 +370,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
                 "action": action,
                 "x_coordinate": secrets.randbelow(1920 + 1),
                 "y_coordinate": secrets.randbelow(1080 + 1),
-                "click_count": secrets.randbelow(5) + 1
+                "click_count": secrets.randbelow(5) + 1,
             }
         elif behavior_type == "search":
             query_type = secrets.choice(config["query_types"])
@@ -282,7 +380,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
                 "query": query,
                 "query_type": query_type,
                 "result_count": results,
-                "click_through": secrets.randbelow(min(results, 5 + 1))
+                "click_through": secrets.randbelow(min(results, 5 + 1)),
             }
         elif behavior_type == "purchase":
             amount = round(random.uniform(*config["amount_range"]), 2)
@@ -293,7 +391,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
                 "amount": amount,
                 "category": category,
                 "payment_method": payment,
-                "quantity": secrets.randbelow(5) + 1
+                "quantity": secrets.randbelow(5) + 1,
             }
         elif behavior_type == "login":
             method = secrets.choice(config["methods"])
@@ -301,7 +399,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             return {
                 "login_method": method,
                 "success": success,
-                "attempts": secrets.randbelow(3) + 1 if not success else 1
+                "attempts": secrets.randbelow(3) + 1 if not success else 1,
             }
         # 默认分支，确保返回值
         return {"status": 0}
@@ -315,12 +413,14 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             query = f"{secrets.choice(self.behavior_types['search']['query_types'])} {secrets.choice(self.product_names)}"
             return f"https://example.com/search?q={query.replace(' ', '+')}"
         elif behavior_type == "purchase":
-            product = secrets.choice(self.product_names).replace(' ', '-').lower()
+            product = secrets.choice(self.product_names).replace(" ", "-").lower()
             return f"https://example.com/product/{product}"
         else:
             return secrets.choice(self.page_urls)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int, float, list[Any]]]:
+    def _generate_raw(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int, float, list[Any]]]:
         """生成用户行为数据"""
         # 验证行为类型
         if self.behavior_type not in self.behavior_types:
@@ -340,7 +440,7 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
             "action_name": self.behavior_types[self.behavior_type]["name"],
             "timestamp": timestamp,
             "page_url": page_url,
-            "action_details": action_details
+            "action_details": action_details,
         }
 
         # 添加用户画像
@@ -359,7 +459,13 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
 
     def validate(self, data: dict[str, Union[str, int, float, list[Any]]]) -> bool:
         """验证生成的用户行为数据"""
-        required_fields = ["user_id", "session_id", "action_type", "timestamp", "page_url"]
+        required_fields = [
+            "user_id",
+            "session_id",
+            "action_type",
+            "timestamp",
+            "page_url",
+        ]
 
         for field in required_fields:
             if field not in data:
@@ -376,7 +482,9 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
 
         return True
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int, float, list[Any]]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int, float, list[Any]]]:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -388,18 +496,27 @@ class UserBehaviorGenerator(DataGenerator[dict[str, Union[str, int, float, list[
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["behavior_type", "include_device", "include_location", "include_user_profile", "time_range", "user_count"]
+        return [
+            "behavior_type",
+            "include_device",
+            "include_location",
+            "include_user_profile",
+            "time_range",
+            "user_count",
+        ]
 
 
-
-@register_generator("user_behavior", ["user_behavior", "行为数据", "用户行为", "analytics"])
+@register_generator(
+    "user_behavior", ["user_behavior", "行为数据", "用户行为", "analytics"]
+)
 class GenericUserBehaviorGenerator(UserBehaviorGenerator):
     """通用用户行为数据生成器注册版本"""
+
     pass
 
-
-
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int, float, list[Any]]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int, float, list[Any]]]:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -416,13 +533,17 @@ class GenericUserBehaviorGenerator(UserBehaviorGenerator):
     def validate(self, data: dict[str, Union[str, int, float, list[Any]]]) -> bool:
         """验证生成的数据"""
         return super().validate(data)
+
+
 @register_generator("analytics", ["analytics", "分析数据", "用户分析", "行为分析"])
 class GenericAnalyticsGenerator(UserBehaviorGenerator):
     """通用分析数据生成器注册版本"""
+
     pass
 
-
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int, float, list[Any]]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int, float, list[Any]]]:
         """生成单个数据项"""
         return self._generate_raw(context)
 

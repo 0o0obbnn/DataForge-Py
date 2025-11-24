@@ -1,17 +1,15 @@
-from typing import Optional
-
-from ...core.generator import GenerationContext
-
 """
 多语言文本生成器
 支持生成中文、英文、日文等多种语言的文本内容
 """
 
 import secrets
+from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
     DataGenerator,
+    GenerationContext,
     GeneratorType,
 )
 
@@ -210,7 +208,9 @@ class MultilingualTextGenerator(DataGenerator):
         )
 
         # 生成长度
-        target_length = secrets.randbelow(self.max_length - self.min_length + 1) + self.min_length
+        target_length = (
+            secrets.randbelow(self.max_length - self.min_length + 1) + self.min_length
+        )
 
         if self.text_type == "word":
             # 生成单个词汇
@@ -317,16 +317,14 @@ class MultilingualTextGenerator(DataGenerator):
 
         return info
 
-
-
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
+
+
 # 注册通用生成器
 @register_generator("multilingual_text")
 class GenericMultilingualTextGenerator(MultilingualTextGenerator):
     """通用多语言文本生成器"""
 
     pass
-
-

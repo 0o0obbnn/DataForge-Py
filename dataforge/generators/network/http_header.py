@@ -1,28 +1,27 @@
-from ...core.types import GeneratorType
-
 """
 HTTP头生成器
 """
 
 import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 import string
 from typing import Any, Optional
 
+from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
 #   random.randint(a, b) → secrets.randbelow(b - a + 1) + a
 #   random.randrange(n) → secrets.randbelow(n)
 #   For statistical distributions, consider if CSPRNG is necessary
-
 
 
 class HTTPHeaderValidator(Validator):
@@ -49,22 +48,21 @@ class HTTPHeaderValidator(Validator):
         return "Invalid HTTP header format"
 
 
+@register_generator("http_header", aliases=["headers", "user_agent"])
 class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
     """HTTP头生成器"""
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.header_type = self.parameters.get(
-            "type", "REQUEST"
-        )  # REQUEST, RESPONSE, CUSTOM
-        self.include_common = self.parameters.get("include_common", True)
-        self.include_user_agent = self.parameters.get("include_user_agent", True)
-        self.include_cookies = self.parameters.get("include_cookies", False)
-        self.include_auth = self.parameters.get("include_auth", False)
-        self.custom_headers = self.parameters.get("custom_headers", {})
-        self.min_headers = self.parameters.get("min_headers", 3)
-        self.max_headers = self.parameters.get("max_headers", 10)
-        self.validator = HTTPHeaderValidator()
+        self.header_type = "REQUEST"  # REQUEST, RESPONSE, CUSTOM
+        self.include_common = True
+        self.include_user_agent = True
+        self.include_cookies = False
+        self.include_auth = False
+        self.custom_headers = {}
+        self.min_headers = 3
+        self.max_headers = 10
+        self.validator = None
 
         # 常见HTTP请求头
         self.common_request_headers = {
@@ -104,6 +102,7 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
         ]
 
     def _setup(self) -> None:
+        """配置生成器参数"""
         self.header_type = self.parameters.get(
             "type", "REQUEST"
         )  # REQUEST, RESPONSE, CUSTOM
@@ -114,10 +113,9 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
         self.custom_headers = self.parameters.get("custom_headers", {})
         self.min_headers = self.parameters.get("min_headers", 3)
         self.max_headers = self.parameters.get("max_headers", 10)
+        self.validator = HTTPHeaderValidator()
 
-    def generate(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, str]:
+    def generate(self, context: Optional[GenerationContext] = None) -> dict[str, str]:
         """生成原始HTTP头"""
         headers = {}
 
@@ -135,7 +133,10 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
                 **self.common_request_headers,
                 **self.common_response_headers,
             }
-            num_headers = secrets.randbelow(self.max_headers - self.min_headers + 1) + self.min_headers
+            num_headers = (
+                secrets.randbelow(self.max_headers - self.min_headers + 1)
+                + self.min_headers
+            )
             selected_headers = random.sample(
                 list(all_headers.items()), min(num_headers, len(all_headers))
             )
@@ -172,7 +173,9 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
 
         if self.include_common:
             # 随机选择一些常见响应头
-            num_common = secrets.randbelow(len(self.common_response_headers) - 3 + 1) + 3
+            num_common = (
+                secrets.randbelow(len(self.common_response_headers) - 3 + 1) + 3
+            )
             common_headers = random.sample(
                 list(self.common_response_headers.items()), num_common
             )
@@ -223,7 +226,9 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
         import email.utils
         from datetime import datetime, timedelta, timezone
 
-        expires = datetime.now(timezone.utc) + timedelta(hours=secrets.randbelow(24) + 1)
+        expires = datetime.now(timezone.utc) + timedelta(
+            hours=secrets.randbelow(24) + 1
+        )
         return email.utils.formatdate(expires.timestamp(), usegmt=True)
 
     def _generate_date_header(self) -> str:
@@ -291,7 +296,9 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, str]:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -303,14 +310,22 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["custom_headers", "include_auth", "include_common", "include_cookies", "include_user_agent", "max_headers", "min_headers", "type"]
+        return [
+            "custom_headers",
+            "include_auth",
+            "include_common",
+            "include_cookies",
+            "include_user_agent",
+            "max_headers",
+            "min_headers",
+            "type",
+        ]
 
     def validate(self, data: dict[str, str]) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class GenericHTTPHeaderGenerator(HTTPHeaderGenerator):

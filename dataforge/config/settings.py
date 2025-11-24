@@ -6,8 +6,7 @@
 
 import logging
 import os
-import secrets
-from typing import List
+
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -23,11 +22,11 @@ class AppSettings(BaseModel):
     docs_url: str = "/docs"
     redoc_url: str = "/redoc"
 
-    # 环境设置
-    development_mode: bool = os.getenv("DEVELOPMENT", "false").lower() == "true"
+    # 环境设置 - 在__init__中动态计算
+    development_mode: bool = False
 
     # CORS设置
-    allowed_origins: List[str] = []
+    allowed_origins: list[str] = []
 
     # Redis设置
     redis_host: str = os.getenv("REDIS_HOST", "localhost")
@@ -35,10 +34,13 @@ class AppSettings(BaseModel):
 
     # JWT认证设置
     jwt_secret_key: str = ""
-    jwt_algorithm: str = "HS256"
-    jwt_expiration_minutes: int = 30
+    jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
+    jwt_expiration_minutes: int = int(os.getenv("JWT_EXPIRATION_MINUTES", "30"))
 
     def __init__(self, **data):
+        # 在实例化时计算development_mode
+        if "development_mode" not in data:
+            data["development_mode"] = os.getenv("DEVELOPMENT", "false").lower() == "true"
         super().__init__(**data)
         self._initialize_security_settings()
 
@@ -118,4 +120,11 @@ def get_settings() -> AppSettings:
 
 
 # 为了向后兼容，提供settings属性
-settings = get_settings()
+class _SettingsProperty:
+    """Settings属性访问器，确保延迟初始化"""
+    
+    def __get__(self, obj, objtype=None):
+        return get_settings()
+
+
+settings = _SettingsProperty()

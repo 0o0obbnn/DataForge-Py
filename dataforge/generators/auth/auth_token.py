@@ -24,7 +24,7 @@ class AuthTokenGenerator(DataGenerator[str]):
     - 支持多种哈希算法
     - 包含用户ID和权限信息
     - 支持刷新令牌机制
-    
+
     返回类型：
     - 默认返回字符串（仅access_token）
     - 设置 string_only=False 返回完整字典
@@ -176,7 +176,7 @@ class AuthTokenGenerator(DataGenerator[str]):
         if isinstance(data, str):
             parts = data.split(".")
             return len(parts) == 3 and all(len(part) > 0 for part in parts)
-        
+
         # 如果是字典，验证完整数据
         if not isinstance(data, dict):
             return False
@@ -228,8 +228,8 @@ class AuthTokenGenerator(DataGenerator[str]):
         except Exception as e:
             return {"valid": False, "error": str(e)}
 
-
-
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Any]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Any]:
         """生成单个令牌数据项（返回包含access_token等字段的字典）"""
         return self._generate_raw(context)

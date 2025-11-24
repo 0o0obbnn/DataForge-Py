@@ -1,17 +1,16 @@
-from ...core.types import GeneratorType
-
 """
 地理坐标生成器模块
 支持生成各种地理坐标格式
 """
 
 import random
-import secrets
 from typing import Optional
 
-from dataforge.core.context import GenerationContext
-from dataforge.core.generator import DataGenerator, GeneratorConfig
-from dataforge.core.protocols import Validator
+from ...core.context import GenerationContext
+from ...core.factory import register_generator
+from ...core.generator import DataGenerator, GeneratorConfig
+from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 
 class GeoCoordinatesValidator(Validator):
@@ -69,17 +68,27 @@ class GeoCoordinatesValidator(Validator):
         return "Invalid geographical coordinate format"
 
 
+@register_generator("geo_coordinates", aliases=["geo", "coordinates", "location"])
 class GeoCoordinatesGenerator(DataGenerator[str]):
     """地理坐标生成器"""
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.format = self.parameters.get("format", "decimal")
-        self.precision = self.parameters.get("precision", 6)
-        self.region = self.parameters.get("region", "global")
-        self.include_altitude = self.parameters.get("include_altitude", False)
-        self.altitude_range = self.parameters.get("altitude_range", (-100, 5000))
-        self.validator = GeoCoordinatesValidator(self.format, self.include_altitude)
+        self.format = "decimal"
+        self.precision = 6
+        self.region = "global"
+        self.include_altitude = False
+        self.altitude_range = (-100, 5000)
+        self.validator = None
+
+        # 区域边界定义
+        self.region_bounds = {
+            "global": ((-90, 90), (-180, 180)),
+            "china": ((18.0, 53.5), (73.5, 135.0)),
+            "us": ((24.5, 49.5), (-125.0, -66.5)),
+            "europe": ((35.0, 71.0), (-25.0, 40.0)),
+            "asia": ((10.0, 55.0), (60.0, 150.0)),
+        }
 
         # 区域边界定义
         self.region_bounds = {
@@ -97,25 +106,23 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
         self.region = self.parameters.get("region", "global")
         self.include_altitude = self.parameters.get("include_altitude", False)
         self.altitude_range = self.parameters.get("altitude_range", (-100, 5000))
+        self.include_dst = self.parameters.get("include_dst", False)
+        self.output_format = self.parameters.get("output_format", "decimal")
+        self.validator = GeoCoordinatesValidator(self.format, self.include_altitude)
 
     def generate(self, context: Optional[GenerationContext] = None) -> str:
         """生成原始地理坐标"""
         lat, lon = self._generate_coordinates()
 
-        if self.format == "decimal":
-            result = self._format_decimal(lat, lon)
-        elif self.format == "dms":
-            result = self._format_dms(lat, lon)
-        elif self.format == "utm":
-            result = self._format_utm(lat, lon)
-        else:
-            result = self._format_decimal(lat, lon)
-
-        if self.include_altitude:
-            altitude = random.uniform(self.altitude_range[0], self.altitude_range[1])
-            result += f",{altitude:.1f}"
-
-        return result
+        if self.output_format == "dict":
+            # 将字典转换为字符串格式以匹配基类返回类型
+            return f"{{'lat': {lat}, 'lng': {lon}}}"
+        elif self.output_format == "dms":
+            return self._format_dms(lat, lon)
+        elif self.output_format == "utm":
+            return self._format_utm(lat, lon)
+        else:  # decimal (default)
+            return self._format_decimal(lat, lon)
 
     def _generate_coordinates(self) -> tuple[float, float]:
         """生成随机坐标"""
@@ -144,11 +151,7 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
             direction = (
                 "N"
                 if is_latitude and decimal >= 0
-                else "S"
-                if is_latitude
-                else "E"
-                if decimal >= 0
-                else "W"
+                else "S" if is_latitude else "E" if decimal >= 0 else "W"
             )
             return f"{degrees}°{minutes}'{seconds:.2f}\" {direction}"
 
@@ -187,7 +190,7 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
                         info["altitude"] = float(parts[2])
                 except ValueError:
                     pass
-        
+
         return info
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
@@ -206,13 +209,18 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
 
 
 class GenericGeoCoordinatesGenerator(GeoCoordinatesGenerator):
     """通用地理坐标生成器"""
+
+    def __init__(self, config: GeneratorConfig):
+        super().__init__(config)
+        # 确保 validator 被正确初始化
+        self.validator = GeoCoordinatesValidator(self.format, self.include_altitude)
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
@@ -236,4 +244,6 @@ class GenericGeoCoordinatesGenerator(GeoCoordinatesGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        return self.validator.validate(data)
+        if self.validator is not None and hasattr(self.validator, "validate"):
+            return self.validator.validate(data)
+        return True

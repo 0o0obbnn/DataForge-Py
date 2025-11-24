@@ -5,25 +5,16 @@
 """
 
 import random  # TODO: Convert to secrets
-import secrets
 import re
-from ...core.types import (
-GeneratorType
-)
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
-from ...core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
 )
+from ...core.types import GeneratorType
 
 
 @register_generator("stock_code", aliases=["stock", "equity"])
@@ -111,7 +102,9 @@ class StockCodeGenerator(DataGenerator[str]):
         sector_info = self.hk_codes[selected_sector]
         code_range = sector_info["range"]
 
-        code = str(secrets.randbelow(code_range[1] - code_range[0] + 1) + code_range[0]).zfill(4)
+        code = str(
+            secrets.randbelow(code_range[1] - code_range[0] + 1) + code_range[0]
+        ).zfill(4)
 
         if self.include_suffix and self.format == "FULL":
             code += ".HK"
@@ -199,11 +192,8 @@ class StockCodeGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-
 @register_generator("stock_code", ["股票代码", "stock", "股票"])
 class GenericStockCodeGenerator(StockCodeGenerator):
     """通用股票代码生成器注册版本"""
 
     pass
-
-

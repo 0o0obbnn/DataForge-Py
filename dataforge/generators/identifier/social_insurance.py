@@ -1,8 +1,5 @@
-from ...core.types import GeneratorType
-
 """社保/医保号生成器"""
 
-import random  # TODO: Convert to secrets
 import secrets
 from typing import Optional
 
@@ -13,13 +10,13 @@ from ...core.generator import (
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
 #   random.randint(a, b) → secrets.randbelow(b - a + 1) + a
 #   random.randrange(n) → secrets.randbelow(n)
 #   For statistical distributions, consider if CSPRNG is necessary
-
 
 
 class SocialInsuranceNumberValidator(Validator):
@@ -117,14 +114,16 @@ class SocialInsuranceNumberGenerator(DataGenerator[str]):
         self.format_style = self.parameters.get(
             "format", "STANDARD"
         )  # 格式: STANDARD, NO_SEPARATOR
-        self.country = self.parameters.get("country", "china").lower()  # 国家: china, usa
+        self.country = self.parameters.get(
+            "country", "china"
+        ).lower()  # 国家: china, usa
 
     def generate(self, context: Optional[GenerationContext] = None) -> str:
         """生成原始社保/医保号"""
         # 根据国家生成不同格式
         if self.country == "usa":
             return self._generate_us_ssn()
-        
+
         # 默认生成中国社保号
         if not self.valid:
             return self._generate_invalid_number()
@@ -145,7 +144,7 @@ class SocialInsuranceNumberGenerator(DataGenerator[str]):
 
     def _generate_us_ssn(self) -> str:
         """生成美国社会安全号码 (SSN)
-        
+
         格式: XXX-XX-XXXX
         - 前3位: Area Number (001-899, 不包括666)
         - 中2位: Group Number (01-99)
@@ -155,19 +154,19 @@ class SocialInsuranceNumberGenerator(DataGenerator[str]):
         area = secrets.randbelow(899) + 1
         while area == 666:
             area = secrets.randbelow(899) + 1
-        
+
         # 生成Group Number (01-99)
         group = secrets.randbelow(99) + 1
-        
+
         # 生成Serial Number (0001-9999)
         serial = secrets.randbelow(9999) + 1
-        
+
         # 格式化
         if self.format_style.upper() == "NO_SEPARATOR":
             return f"{area:03d}{group:02d}{serial:04d}"
         else:
             return f"{area:03d}-{group:02d}-{serial:04d}"
-    
+
     def _select_region_code(self) -> str:
         """选择行政区划代码"""
         if self.region_code:
@@ -256,13 +255,14 @@ class SocialInsuranceNumberGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
 
 
-
-@register_generator("chinese_social_insurance", aliases=["社保号", "医保号", "social_insurance"])
+@register_generator(
+    "chinese_social_insurance", aliases=["社保号", "医保号", "social_insurance"]
+)
 class ChineseSocialInsuranceGenerator(SocialInsuranceNumberGenerator):
     """中国社保/医保号生成器注册版本"""
 

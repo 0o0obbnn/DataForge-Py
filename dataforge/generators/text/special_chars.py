@@ -5,31 +5,15 @@
 
 import random  # TODO: Convert to secrets
 import secrets
-from ...core.types import (
-GeneratorType
-)
 from typing import Optional
 
 from dataforge.core.factory import register_generator
-from dataforge.core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from dataforge.core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+
+from ...core.types import GeneratorType
 
 
 class SpecialCharGenerator(DataGenerator[str]):
@@ -549,7 +533,9 @@ class SpecialCharGenerator(DataGenerator[str]):
         self.include_emoji: bool = self.parameters.get("include_emoji", True)
         self.include_special: bool = self.parameters.get("include_special", True)
         self.unicode_range: Optional[str] = self.parameters.get("unicode_range", None)
-        self.custom_chars: Optional[list[str]] = self.parameters.get("custom_chars", None)
+        self.custom_chars: Optional[list[str]] = self.parameters.get(
+            "custom_chars", None
+        )
 
     def _get_special_chars(self) -> list[str]:
         """获取特殊字符集合"""
@@ -597,7 +583,6 @@ class SpecialCharGenerator(DataGenerator[str]):
         return self.generate(context)
 
 
-
 class UnicodeSymbolGenerator(DataGenerator[str]):
     """Unicode符号生成器"""
 
@@ -641,8 +626,12 @@ class UnicodeSymbolGenerator(DataGenerator[str]):
         self.character_count: int = self.parameters.get("character_count", 1)
         self.exclude_ascii: bool = self.parameters.get("exclude_ascii", True)
         self.include_control: bool = self.parameters.get("include_control", False)
-        self.custom_range_start: Optional[int] = self.parameters.get("custom_range_start", None)
-        self.custom_range_end: Optional[int] = self.parameters.get("custom_range_end", None)
+        self.custom_range_start: Optional[int] = self.parameters.get(
+            "custom_range_start", None
+        )
+        self.custom_range_end: Optional[int] = self.parameters.get(
+            "custom_range_end", None
+        )
 
     def _get_unicode_range(self) -> tuple[int, int]:
         """获取Unicode范围"""
@@ -704,7 +693,6 @@ class UnicodeSymbolGenerator(DataGenerator[str]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 # 注册生成器

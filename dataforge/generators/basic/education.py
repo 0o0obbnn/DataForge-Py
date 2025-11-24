@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 #!/usr/bin/env python3
 """
 教育水平/学历信息生成器
@@ -8,11 +6,12 @@ from ...core.types import GeneratorType
 """
 
 import random
-from typing import Any, Optional
+from typing import Optional
 
+from dataforge.core.context import GenerationContext
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GeneratorConfig
-from dataforge.core.context import GenerationContext
+from dataforge.core.types import GeneratorType
 
 
 @register_generator("education")
@@ -40,10 +39,7 @@ class EducationGenerator(DataGenerator):
     def __init__(self, config: Optional[GeneratorConfig] = None):
         # 如果没有提供config，创建一个默认的
         if config is None:
-            config = GeneratorConfig(
-                generator_type="education",
-                parameters={}
-            )
+            config = GeneratorConfig(generator_type="education", parameters={})
         super().__init__(config)
         self._setup()
 
@@ -211,7 +207,7 @@ class EducationGenerator(DataGenerator):
             system = "INTERNATIONAL"
         else:
             system = self.parameters.get("system", "CHINA").upper()
-        
+
         level = self.parameters.get("level", "UNIVERSITY").upper()
         format_type = self.parameters.get("format", "DEGREE").upper()
 
@@ -278,8 +274,6 @@ class EducationGenerator(DataGenerator):
 
         return False
 
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -289,6 +283,8 @@ class EducationGenerator(DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return ["system", "level", "format"]
+
+
 @register_generator("generic_education")
 class GenericEducationGenerator(DataGenerator):
     """通用教育生成器
@@ -299,10 +295,7 @@ class GenericEducationGenerator(DataGenerator):
     def __init__(self, config: Optional[GeneratorConfig] = None):
         # 如果没有提供config，创建一个默认的
         if config is None:
-            config = GeneratorConfig(
-                generator_type="education",
-                parameters={}
-            )
+            config = GeneratorConfig(generator_type="education", parameters={})
         super().__init__(config)
         self._setup()
 
@@ -347,7 +340,6 @@ class GenericEducationGenerator(DataGenerator):
         all_levels = self.education_levels + self.international_levels
         s = data.strip()
         return bool(s) and (s in all_levels)
-
 
     @property
     def generator_type(self) -> GeneratorType:

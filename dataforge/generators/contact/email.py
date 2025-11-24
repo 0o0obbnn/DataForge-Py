@@ -2,21 +2,18 @@
 电子邮件生成器
 """
 
-import secrets
 import re
+import secrets
 import string
-from ...core.types import (
-GeneratorType
-)
 from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 
 class EmailValidator(Validator):
@@ -58,14 +55,18 @@ class EmailGenerator(DataGenerator[str]):
             "domain_type", "RANDOM"
         )  # RANDOM, REAL, ENTERPRISE, CUSTOM
         # 支持domains和custom_domains两种参数名
-        self.custom_domains = self.parameters.get("domains", None) or self.parameters.get("custom_domains", None)
+        self.custom_domains = self.parameters.get(
+            "domains", None
+        ) or self.parameters.get("custom_domains", None)
         self.include_subdomain = self.parameters.get("include_subdomain", True)
         self.username_length = self.parameters.get("username_length", (5, 10))
         self.include_chinese = self.parameters.get(
             "include_chinese", False
         )  # 是否包含中文字符
         self.valid = self.parameters.get("valid", True)  # 是否生成有效邮箱
-        self.allow_name_based = self.parameters.get("allow_name_based", True)  # 是否允许基于姓名生成
+        self.allow_name_based = self.parameters.get(
+            "allow_name_based", True
+        )  # 是否允许基于姓名生成
 
         # 初始化验证器
         self.validator = EmailValidator()
@@ -135,7 +136,10 @@ class EmailGenerator(DataGenerator[str]):
                 return self._generate_username_from_name(name_data)
 
         # 随机生成用户名
-        length = secrets.randbelow(self.username_length[1] - self.username_length[0] + 1) + self.username_length[0]
+        length = (
+            secrets.randbelow(self.username_length[1] - self.username_length[0] + 1)
+            + self.username_length[0]
+        )
 
         # 基础字符集
         chars = string.ascii_lowercase + string.digits + "_-."
@@ -175,7 +179,8 @@ class EmailGenerator(DataGenerator[str]):
         min_len, max_len = self.username_length
         if len(username) < min_len:
             username += "".join(
-                secrets.choice(string.ascii_lowercase + string.digits) for _ in range(min_len - len(username))
+                secrets.choice(string.ascii_lowercase + string.digits)
+                for _ in range(min_len - len(username))
             )
         elif len(username) > max_len:
             username = username[:max_len]
@@ -186,14 +191,46 @@ class EmailGenerator(DataGenerator[str]):
         """简单的中文名转拼音（使用映射表）"""
         # 常见姓氏和名字字符的拼音映射
         chinese_pinyin_map = {
-            "张": "zhang", "王": "wang", "李": "li", "赵": "zhao", "刘": "liu",
-            "陈": "chen", "杨": "yang", "黄": "huang", "周": "zhou", "吴": "wu",
-            "徐": "xu", "孙": "sun", "胡": "hu", "朱": "zhu", "高": "gao",
-            "林": "lin", "何": "he", "郭": "guo", "马": "ma", "罗": "luo",
-            "三": "san", "四": "si", "五": "wu", "六": "liu", "七": "qi",
-            "八": "ba", "九": "jiu", "十": "shi", "一": "yi", "二": "er",
-            "明": "ming", "华": "hua", "强": "qiang", "军": "jun", "伟": "wei",
-            "磊": "lei", "洋": "yang", "勇": "yong", "刚": "gang", "峰": "feng",
+            "张": "zhang",
+            "王": "wang",
+            "李": "li",
+            "赵": "zhao",
+            "刘": "liu",
+            "陈": "chen",
+            "杨": "yang",
+            "黄": "huang",
+            "周": "zhou",
+            "吴": "wu",
+            "徐": "xu",
+            "孙": "sun",
+            "胡": "hu",
+            "朱": "zhu",
+            "高": "gao",
+            "林": "lin",
+            "何": "he",
+            "郭": "guo",
+            "马": "ma",
+            "罗": "luo",
+            "三": "san",
+            "四": "si",
+            "五": "wu",
+            "六": "liu",
+            "七": "qi",
+            "八": "ba",
+            "九": "jiu",
+            "十": "shi",
+            "一": "yi",
+            "二": "er",
+            "明": "ming",
+            "华": "hua",
+            "强": "qiang",
+            "军": "jun",
+            "伟": "wei",
+            "磊": "lei",
+            "洋": "yang",
+            "勇": "yong",
+            "刚": "gang",
+            "峰": "feng",
         }
 
         result = ""
@@ -233,7 +270,9 @@ class EmailGenerator(DataGenerator[str]):
 
     def _generate_word(self, length_range=(3, 8)) -> str:
         """生成域名部分的随机单词"""
-        length = secrets.randbelow(length_range[1] - length_range[0] + 1) + length_range[0]
+        length = (
+            secrets.randbelow(length_range[1] - length_range[0] + 1) + length_range[0]
+        )
         return "".join(secrets.choice(string.ascii_lowercase) for _ in range(length))
 
     def _generate_invalid_email(self) -> str:
@@ -307,7 +346,6 @@ class EmailGenerator(DataGenerator[str]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("email", ["e-mail", "电子邮件", "邮箱"])

@@ -11,6 +11,7 @@ from typing import Any, Optional, Union
 
 import yaml
 
+from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
 
 from ...core.types import GeneratorType
@@ -26,7 +27,8 @@ class YAMLGenerator(DataGenerator):
         array_param = self.config.parameters.get("array_size", (1, 5))
         try:
             self.array_size: tuple[int, int] = (
-                int(array_param[0]), int(array_param[1])
+                int(array_param[0]),
+                int(array_param[1]),
             )
         except Exception:
             self.array_size = (1, 5)
@@ -41,11 +43,41 @@ class YAMLGenerator(DataGenerator):
     def _generate_key_name(self) -> str:
         """生成有效的YAML键名"""
         words = [
-            "user", "data", "config", "settings", "value", "item", "property",
-            "name", "title", "description", "status", "type", "category", "level",
-            "amount", "count", "size", "length", "width", "height", "weight",
-            "color", "style", "format", "mode", "option", "flag", "tag",
-            "label", "code", "id", "key", "index", "position", "order"
+            "user",
+            "data",
+            "config",
+            "settings",
+            "value",
+            "item",
+            "property",
+            "name",
+            "title",
+            "description",
+            "status",
+            "type",
+            "category",
+            "level",
+            "amount",
+            "count",
+            "size",
+            "length",
+            "width",
+            "height",
+            "weight",
+            "color",
+            "style",
+            "format",
+            "mode",
+            "option",
+            "flag",
+            "tag",
+            "label",
+            "code",
+            "id",
+            "key",
+            "index",
+            "position",
+            "order",
         ]
         return random.choice(words)
 
@@ -55,14 +87,68 @@ class YAMLGenerator(DataGenerator):
             length = secrets.randbelow(26) + 5
 
         words = [
-            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
-            "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
-            "magna", "aliqua", "enim", "ad", "minim", "veniam", "quis", "nostrud",
-            "exercitation", "ullamco", "laboris", "nisi", "aliquip", "ex", "ea", "commodo",
-            "consequat", "duis", "aute", "irure", "in", "reprehenderit", "voluptate",
-            "velit", "esse", "cillum", "fugiat", "nulla", "pariatur", "excepteur", "sint",
-            "occaecat", "cupidatat", "non", "proident", "sunt", "culpa", "qui", "officia",
-            "deserunt", "mollit", "anim", "id", "est", "laborum"
+            "lorem",
+            "ipsum",
+            "dolor",
+            "sit",
+            "amet",
+            "consectetur",
+            "adipiscing",
+            "elit",
+            "sed",
+            "do",
+            "eiusmod",
+            "tempor",
+            "incididunt",
+            "ut",
+            "labore",
+            "et",
+            "dolore",
+            "magna",
+            "aliqua",
+            "enim",
+            "ad",
+            "minim",
+            "veniam",
+            "quis",
+            "nostrud",
+            "exercitation",
+            "ullamco",
+            "laboris",
+            "nisi",
+            "aliquip",
+            "ex",
+            "ea",
+            "commodo",
+            "consequat",
+            "duis",
+            "aute",
+            "irure",
+            "in",
+            "reprehenderit",
+            "voluptate",
+            "velit",
+            "esse",
+            "cillum",
+            "fugiat",
+            "nulla",
+            "pariatur",
+            "excepteur",
+            "sint",
+            "occaecat",
+            "cupidatat",
+            "non",
+            "proident",
+            "sunt",
+            "culpa",
+            "qui",
+            "officia",
+            "deserunt",
+            "mollit",
+            "anim",
+            "id",
+            "est",
+            "laborum",
         ]
 
         if self.use_multiline_strings and (secrets.randbelow(1000000) / 1000000) > 0.7:
@@ -71,10 +157,10 @@ class YAMLGenerator(DataGenerator):
             num_lines = secrets.randbelow(3) + 2
             for _ in range(num_lines):
                 line_words = random.choices(words, k=secrets.randbelow(6) + 3)
-                lines.append(' '.join(line_words))
+                lines.append(" ".join(line_words))
             return "\n".join(lines)
         else:
-            return ' '.join(random.choices(words, k=min(length // 4, 8)))
+            return " ".join(random.choices(words, k=min(length // 4, 8)))
 
     def _generate_numeric_value(self) -> Union[int, float]:
         """生成数值"""
@@ -92,7 +178,10 @@ class YAMLGenerator(DataGenerator):
         if depth >= self.depth:
             return [self._generate_primitive_value()]
 
-        size = secrets.randbelow(self.array_size[1] - self.array_size[0] + 1) + self.array_size[0]
+        size = (
+            secrets.randbelow(self.array_size[1] - self.array_size[0] + 1)
+            + self.array_size[0]
+        )
         items = []
 
         for _ in range(size):
@@ -181,23 +270,18 @@ class YAMLGenerator(DataGenerator):
         data = {
             "name": "test_user",
             "value": "sample_data",
-            "timestamp": str(datetime.now())
+            "timestamp": str(datetime.now()),
         }
         return yaml.dump(data, default_flow_style=False, allow_unicode=True)
 
     def _generate_yaml_with_anchors(self) -> str:
         """生成带锚点的YAML数据"""
         data = {
-            "defaults": {
-                "user": {
-                    "name": "test_user",
-                    "email": "test@example.com"
-                }
-            },
+            "defaults": {"user": {"name": "test_user", "email": "test@example.com"}},
             "users": [
                 {"<<": "*user_defaults", "id": 1},
-                {"<<": "*user_defaults", "id": 2}
-            ]
+                {"<<": "*user_defaults", "id": 2},
+            ],
         }
         return yaml.dump(data, default_flow_style=False, allow_unicode=True)
 
@@ -206,10 +290,10 @@ class YAMLGenerator(DataGenerator):
 
         # 配置YAML输出
         yaml_config = {
-            'default_flow_style': False,
-            'allow_unicode': True,
-            'width': 1000,  # 防止自动换行
-            'indent': 2
+            "default_flow_style": False,
+            "allow_unicode": True,
+            "width": 1000,  # 防止自动换行
+            "indent": 2,
         }
 
         yaml_str = yaml.dump(data, **yaml_config)
@@ -230,11 +314,11 @@ class YAMLGenerator(DataGenerator):
         except yaml.YAMLError:
             return False
 
-    def generate_batch(self, count: int, context: Optional[GenerationContext] = None) -> list[str]:
+    def generate_batch(
+        self, count: int, context: Optional[GenerationContext] = None
+    ) -> list[str]:
         """批量生成YAML数据"""
         return [self._generate_yaml() for _ in range(count)]
-
-
 
     @property
     def generator_type(self) -> GeneratorType:
@@ -258,6 +342,8 @@ class YAMLGenerator(DataGenerator):
         """
         data = self._generate_dict_value()
         return yaml.safe_dump(data, default_flow_style=False, allow_unicode=True)
+
+
 class GenericYAMLGenerator(YAMLGenerator):
     """通用YAML数据生成器"""
 
@@ -302,10 +388,7 @@ class GenericYAMLGenerator(YAMLGenerator):
                 "config": {
                     "name": "test_config",
                     "version": 1.0,
-                    "settings": {
-                        "debug": True,
-                        "timeout": 30
-                    }
+                    "settings": {"debug": True, "timeout": 30},
                 }
             }
 
@@ -333,7 +416,7 @@ class GenericYAMLGenerator(YAMLGenerator):
             "use_null",
             "template",
             "use_anchors",
-            "use_aliases"
+            "use_aliases",
         ]
 
     def _get_yaml_templates(self) -> dict[str, dict[str, Any]]:
@@ -344,27 +427,25 @@ class GenericYAMLGenerator(YAMLGenerator):
                     "name": "test_user",
                     "email": "test@example.com",
                     "age": 25,
-                    "active": True
+                    "active": True,
                 }
             },
             "config": {
                 "structure": {
                     "name": "app_config",
                     "version": "1.0.0",
-                    "settings": {
-                        "debug": True,
-                        "timeout": 30
-                    }
+                    "settings": {"debug": True, "timeout": 30},
                 }
             },
             "api": {
                 "structure": {
                     "name": "api_response",
                     "status": "success",
-                    "data": {
-                        "id": 1,
-                        "value": "test"
-                    }
+                    "data": {"id": 1, "value": "test"},
                 }
-            }
+            },
         }
+
+
+# 注册生成器
+register_generator("yaml_generator", ["yaml"])(YAMLGenerator)

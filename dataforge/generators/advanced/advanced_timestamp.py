@@ -2,7 +2,6 @@
 高级时间戳/日期时间生成器 - 符合DEVELOPMENT_PLAN.md的P0级要求
 """
 
-import random  # TODO: Convert to secrets
 import secrets
 import time
 from datetime import datetime, timedelta, timezone
@@ -26,7 +25,6 @@ from ...core.types import GeneratorType
 #   For statistical distributions, consider if CSPRNG is necessary
 
 
-
 @register_generator("advanced_timestamp", ["高级时间戳", "时间戳"])
 class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
     """
@@ -48,9 +46,9 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
 
         # 兼容旧版配置格式
         from ...core.generator import GeneratorConfig
+
         generator_config = GeneratorConfig(
-            generator_type="advanced_timestamp",
-            parameters=config
+            generator_type="advanced_timestamp", parameters=config
         )
         super().__init__(generator_config)
 
@@ -69,7 +67,9 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         self.end_date = self.parameters.get("end_date")
 
         # 相对时间设置
-        self.relative_to = self.parameters.get("relative_to", "NOW")  # NOW, TODAY, YESTERDAY, TOMORROW
+        self.relative_to = self.parameters.get(
+            "relative_to", "NOW"
+        )  # NOW, TODAY, YESTERDAY, TOMORROW
         self.offset_days = self.parameters.get("offset_days", 0)
         self.offset_hours = self.parameters.get("offset_hours", 0)
         self.offset_minutes = self.parameters.get("offset_minutes", 0)
@@ -77,7 +77,9 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         # 自定义格式
         self.custom_format = self.parameters.get("custom_format", "%Y-%m-%d %H:%M:%S")
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
+    def _generate_raw(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, str]:
         """生成时间戳"""
         # 获取基础时间
         base_time = self._get_base_datetime()
@@ -87,7 +89,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
             offset = timedelta(
                 days=self.offset_days,
                 hours=self.offset_hours,
-                minutes=self.offset_minutes
+                minutes=self.offset_minutes,
             )
             base_time += offset
 
@@ -107,7 +109,9 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         # 解析开始日期
         if self.start_date:
             try:
-                start_dt = datetime.fromisoformat(self.start_date.replace('Z', '+00:00'))
+                start_dt = datetime.fromisoformat(
+                    self.start_date.replace("Z", "+00:00")
+                )
             except ValueError:
                 start_dt = datetime.strptime(self.start_date, "%Y-%m-%dT%H:%M:%S")
         else:
@@ -116,7 +120,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         # 解析结束日期
         if self.end_date:
             try:
-                end_dt = datetime.fromisoformat(self.end_date.replace('Z', '+00:00'))
+                end_dt = datetime.fromisoformat(self.end_date.replace("Z", "+00:00"))
             except ValueError:
                 end_dt = datetime.strptime(self.end_date, "%Y-%m-%dT%H:%M:%S")
         else:
@@ -124,9 +128,13 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
 
         # 确保在范围内
         if dt < start_dt:
-            dt = start_dt + timedelta(seconds=secrets.randbelow(int((end_dt - start_dt).total_seconds()) + 1))
+            dt = start_dt + timedelta(
+                seconds=secrets.randbelow(int((end_dt - start_dt).total_seconds()) + 1)
+            )
         elif dt > end_dt:
-            dt = start_dt + timedelta(seconds=secrets.randbelow(int((end_dt - start_dt).total_seconds()) + 1))
+            dt = start_dt + timedelta(
+                seconds=secrets.randbelow(int((end_dt - start_dt).total_seconds()) + 1)
+            )
 
         # 随机生成在范围内的日期
         total_seconds = int((end_dt - start_dt).total_seconds())
@@ -143,9 +151,13 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         if self.relative_to == "TODAY":
             return now.replace(hour=0, minute=0, second=0, microsecond=0)
         elif self.relative_to == "YESTERDAY":
-            return (now - timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            return (now - timedelta(days=1)).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
         elif self.relative_to == "TOMORROW":
-            return (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            return (now + timedelta(days=1)).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
         elif self.relative_to == "NOW":
             return now
         else:
@@ -161,6 +173,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
             # 尝试使用pytz时区
             try:
                 import pytz
+
                 tz = pytz.timezone(self.timezone)
                 return tz.localize(dt)
             except ImportError:
@@ -206,7 +219,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
                 if data.isdigit():
                     timestamp = int(data)
                 elif self.output_format == "ISO":
-                    datetime.fromisoformat(data.replace('Z', '+00:00'))
+                    datetime.fromisoformat(data.replace("Z", "+00:00"))
                     return True
                 elif self.output_format == "CUSTOM":
                     datetime.strptime(data, self.custom_format)
@@ -244,23 +257,24 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
     @property
     def supported_parameters(self) -> list[str]:
         return [
-            "precision",           # 精度: SECONDS, MILLISECONDS, MICROSECONDS, NANOSECONDS
-            "format",              # 格式: UNIX, ISO, CUSTOM, STRING
-            "timezone_aware",      # 是否使用时区
-            "timezone",            # 时区: UTC, LOCAL, 具体时区名
-            "start_date",          # 开始日期 (ISO格式)
-            "end_date",            # 结束日期 (ISO格式)
-            "relative_to",         # 相对时间: NOW, TODAY, YESTERDAY, TOMORROW
-            "offset_days",         # 天数偏移
-            "offset_hours",        # 小时偏移
-            "offset_minutes",      # 分钟偏移
-            "custom_format"        # 自定义格式字符串
+            "precision",  # 精度: SECONDS, MILLISECONDS, MICROSECONDS, NANOSECONDS
+            "format",  # 格式: UNIX, ISO, CUSTOM, STRING
+            "timezone_aware",  # 是否使用时区
+            "timezone",  # 时区: UTC, LOCAL, 具体时区名
+            "start_date",  # 开始日期 (ISO格式)
+            "end_date",  # 结束日期 (ISO格式)
+            "relative_to",  # 相对时间: NOW, TODAY, YESTERDAY, TOMORROW
+            "offset_days",  # 天数偏移
+            "offset_hours",  # 小时偏移
+            "offset_minutes",  # 分钟偏移
+            "custom_format",  # 自定义格式字符串
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, str]:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("datetime_range", ["日期时间范围", "时间范围"])
@@ -281,9 +295,9 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
             config = {}
 
         from ...core.generator import GeneratorConfig
+
         generator_config = GeneratorConfig(
-            generator_type="datetime_range",
-            parameters=config
+            generator_type="datetime_range", parameters=config
         )
         super().__init__(generator_config)
 
@@ -308,7 +322,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
             "US": "%m/%d/%Y %I:%M:%S %p",
             "CN": "%Y年%m月%d日 %H时%M分%S秒",
             "RANGE": "%Y-%m-%d %H:%M:%S 至 %Y-%m-%d %H:%M:%S",
-            "DURATION": "%Y-%m-%d %H:%M:%S (持续 %d天 %d小时 %d分钟)"
+            "DURATION": "%Y-%m-%d %H:%M:%S (持续 %d天 %d小时 %d分钟)",
         }
 
     def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
@@ -317,7 +331,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
         duration = timedelta(
             days=self.duration_days,
             hours=self.duration_hours,
-            minutes=self.duration_minutes
+            minutes=self.duration_minutes,
         )
 
         # 获取起始时间
@@ -347,6 +361,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
         else:
             try:
                 import pytz
+
                 tz = pytz.timezone(self.timezone)
                 return tz.localize(dt)
             except ImportError:
@@ -376,7 +391,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
             pattern = self.format_patterns[self.format]
             return start.strftime(pattern)
         else:
-            return start.strftime('%Y-%m-%d %H:%M:%S')
+            return start.strftime("%Y-%m-%d %H:%M:%S")
 
     def validate(self, data: str) -> bool:
         """验证日期时间范围字符串"""
@@ -386,7 +401,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
                 "%Y-%m-%d %H:%M:%S",
                 "%Y-%m-%dT%H:%M:%S",
                 "%Y-%m-%d",
-                "%Y年%m月%d日 %H时%M分%S秒"
+                "%Y年%m月%d日 %H时%M分%S秒",
             ]
 
             # 先尝试直接解析
@@ -437,17 +452,16 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         return [
-            "format",              # 输出格式: ISO, SQL, US, CN, RANGE, DURATION
-            "duration_days",       # 持续天数
-            "duration_hours",      # 持续小时数
-            "duration_minutes",    # 持续分钟数
-            "start_datetime",      # 开始日期时间 (ISO格式)
-            "end_datetime",        # 结束日期时间 (ISO格式)
-            "include_timezone",    # 是否包含时区信息
-            "timezone"            # 时区设置
+            "format",  # 输出格式: ISO, SQL, US, CN, RANGE, DURATION
+            "duration_days",  # 持续天数
+            "duration_hours",  # 持续小时数
+            "duration_minutes",  # 持续分钟数
+            "start_datetime",  # 开始日期时间 (ISO格式)
+            "end_datetime",  # 结束日期时间 (ISO格式)
+            "include_timezone",  # 是否包含时区信息
+            "timezone",  # 时区设置
         ]
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-

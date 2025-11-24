@@ -5,13 +5,11 @@
 import random  # TODO: Convert to secrets
 import secrets
 import string
-from ...core.types import (
-GeneratorType
-)
 from typing import Any, Optional, Union
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
+from ...core.types import GeneratorType
 
 
 class StringGenerator(DataGenerator[str]):
@@ -50,7 +48,10 @@ class StringGenerator(DataGenerator[str]):
         """生成原始字符串"""
         # 确定长度
         if self.min_length is not None and self.max_length is not None:
-            length = secrets.randbelow(self.max_length - self.min_length + 1) + self.min_length
+            length = (
+                secrets.randbelow(self.max_length - self.min_length + 1)
+                + self.min_length
+            )
         else:
             length = self.length
 
@@ -127,7 +128,7 @@ class StringGenerator(DataGenerator[str]):
         pattern = self.format_pattern
         if not pattern:
             return ""
-        
+
         result = ""
 
         for char in pattern:
@@ -199,7 +200,6 @@ class StringGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-
 class BooleanGenerator(DataGenerator[Union[bool, str]]):
     """布尔值生成器"""
 
@@ -218,7 +218,10 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
     ) -> Union[bool, str, None]:
         """生成原始布尔值"""
         # 处理null值
-        if self.null_ratio > 0 and (secrets.randbelow(1000000) / 1000000) < self.null_ratio:
+        if (
+            self.null_ratio > 0
+            and (secrets.randbelow(1000000) / 1000000) < self.null_ratio
+        ):
             return None
 
         # 生成布尔值
@@ -274,7 +277,9 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
     def supported_parameters(self) -> list[str]:
         return ["true_ratio", "format", "custom_values", "null_ratio"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[bool, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[bool, str]:
         """生成单个数据项"""
         result = self._generate_raw(context)
         # 确保不返回None，因为函数签名不允许None
@@ -282,7 +287,6 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
             # 如果返回None，返回默认的布尔值
             return self._format_output(True)
         return result
-
 
 
 class EnumGenerator(DataGenerator[Any]):
@@ -348,13 +352,11 @@ class EnumGenerator(DataGenerator[Any]):
         return self._generate_raw(context)
 
 
-
 @register_generator("string", ["str", "text", "字符串"])
 class GenericStringGenerator(StringGenerator):
     """通用字符串生成器注册版本"""
 
     pass
-
 
 
 @register_generator("boolean", ["bool", "布尔"])
@@ -364,7 +366,6 @@ class GenericBooleanGenerator(BooleanGenerator):
     pass
 
 
-
 # Removed invalid top-level overrides for GenericBooleanGenerator
 # These functions incorrectly shadow class methods and break type contracts.
 @register_generator("enum", ["choice", "枚举"])
@@ -372,5 +373,3 @@ class GenericEnumGenerator(EnumGenerator):
     """通用枚举生成器注册版本"""
 
     pass
-
-

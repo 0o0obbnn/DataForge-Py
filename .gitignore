@@ -216,7 +216,7 @@ ehthumbs.db
 Thumbs.db
 
 # DataForge project reorganization
-# Temporary analysis and debugging files in root
+# Temporary analysis and debugging files (should be in tools/ or scripts/)
 analyze_*.py
 check_*.py
 count_*.py
@@ -232,7 +232,7 @@ final_*.py
 run_*.py
 setup_*.py
 
-# Temporary reports and results
+# Temporary reports and results (should be in docs/reports/)
 *_report*.txt
 *_result*.txt
 *_status*.txt
@@ -245,7 +245,7 @@ final_result.txt
 identifier_test.txt
 auth_fixed.txt
 
-# Temporary markdown reports
+# Temporary markdown reports (should be in docs/reports/)
 *_report_*.md
 *_status_*.md
 *_plan_*.md
@@ -253,7 +253,7 @@ auth_fixed.txt
 final_*.md
 fix_*.md
 
-# Test execution logs
+# Test execution logs (should be in docs/reports/)
 test_execution_log_*.txt
 test_output.txt
 failed_tests*.txt
@@ -273,3 +273,13 @@ test_results*.txt
 backup_*/
 *_backup*/
 archive_*/
+
+# Additional ignore patterns for reorganized structure
+# Root directory should only contain essential files
+# All temporary files should be in appropriate subdirectories
+
+# Backup files (added by audit)
+*.bak
+*.bak2
+*.backup
+*~

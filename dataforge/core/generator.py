@@ -25,19 +25,19 @@ class GeneratorConfig:
     validate: bool = True
     unique: bool = False
     related_fields: Optional[dict[str, str]] = None
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """获取参数值，兼容字典接口
-        
+
         此方法使GeneratorConfig对象具有类似字典的get方法，
         确保现有生成器代码无需修改即可正常工作。
         """
         return self.parameters.get(key, default)
-    
+
     def __getitem__(self, key: str) -> Any:
         """支持字典式访问"""
         return self.parameters[key]
-    
+
     def __contains__(self, key: str) -> bool:
         """支持in操作符"""
         return key in self.parameters
@@ -69,9 +69,8 @@ class DataGenerator(ABC, Generic[T]):
             self._setup()
         except Exception as e:
             raise GeneratorConfigError(
-                f"Generator setup failed: {str(e)}",
-                config.generator_type
-            )
+                f"Generator setup failed: {str(e)}", config.generator_type
+            ) from e
 
     def _setup(self) -> None:
         """初始化设置，子类可覆盖以设置特定参数"""
@@ -161,14 +160,12 @@ class DataGenerator(ABC, Generic[T]):
         """
         if count <= 0:
             raise DataGenerationError(
-                "Count must be positive",
-                self.config.generator_type
+                "Count must be positive", self.config.generator_type
             )
 
         try:
             return [self.generate_single(context) for _ in range(count)]
         except Exception as e:
             raise DataGenerationError(
-                f"Batch generation failed: {str(e)}",
-                self.config.generator_type
-            )
+                f"Batch generation failed: {str(e)}", self.config.generator_type
+            ) from e

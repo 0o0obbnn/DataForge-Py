@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 物流单号生成器
 
@@ -8,8 +6,8 @@ from ...core.types import GeneratorType
 """
 
 import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 from dataclasses import dataclass
 from typing import Optional, Union
 
@@ -17,9 +15,9 @@ from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
-    GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -28,10 +26,10 @@ from ...core.protocols import Validator
 #   For statistical distributions, consider if CSPRNG is necessary
 
 
-
 @dataclass
 class TrackingInfo:
     """物流单号信息数据模型"""
+
     tracking_number: str
     carrier: str
     service_type: str
@@ -144,9 +142,36 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
 
         # 主要城市列表
         self.cities = [
-            "北京", "上海", "广州", "深圳", "杭州", "南京", "苏州", "天津", "武汉", "成都",
-            "重庆", "西安", "长沙", "青岛", "济南", "大连", "沈阳", "哈尔滨", "长春", "郑州",
-            "石家庄", "太原", "昆明", "贵阳", "南宁", "福州", "厦门", "南昌", "合肥", "海口",
+            "北京",
+            "上海",
+            "广州",
+            "深圳",
+            "杭州",
+            "南京",
+            "苏州",
+            "天津",
+            "武汉",
+            "成都",
+            "重庆",
+            "西安",
+            "长沙",
+            "青岛",
+            "济南",
+            "大连",
+            "沈阳",
+            "哈尔滨",
+            "长春",
+            "郑州",
+            "石家庄",
+            "太原",
+            "昆明",
+            "贵阳",
+            "南宁",
+            "福州",
+            "厦门",
+            "南昌",
+            "合肥",
+            "海口",
         ]
 
     def _generate_tracking_number(self, carrier: str) -> str:
@@ -161,9 +186,9 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
         prefix_length = len(prefix)
         target_length = config["length"]
         digits_length = target_length - prefix_length
-        
+
         # 生成数字部分
-        digits = ''.join(str(secrets.randbelow(10)) for _ in range(digits_length))
+        digits = "".join(str(secrets.randbelow(10)) for _ in range(digits_length))
         tracking_number = f"{prefix}{digits}"
 
         return tracking_number
@@ -202,19 +227,16 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
             "delivery_days": str(delivery_days),
         }
 
-    def generate(self, context: Optional[GenerationContext] = None) -> Union[str, dict[str, Union[str, int]]]:
+    def generate(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int]]:
         """生成物流单号数据
-        
+
         Returns:
-            如果string_only=True，返回物流单号字符串
-            否则返回包含完整信息的字典
+            包含完整信息的字典
         """
         # 生成物流单号
         tracking_number = self._generate_tracking_number(self.carrier)
-
-        # 如果只需要字符串，直接返回
-        if self.parameters.get('string_only', False):
-            return tracking_number
 
         # 获取快递公司信息
         carrier_info = self.carrier_config.get(self.carrier, self.carrier_config["SF"])
@@ -234,10 +256,12 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
         }
 
         if self.include_cities:
-            result.update({
-                "origin_city": origin_city,
-                "destination_city": destination_city,
-            })
+            result.update(
+                {
+                    "origin_city": origin_city,
+                    "destination_city": destination_city,
+                }
+            )
 
         if self.include_date:
             date_info = self._generate_date_info()
@@ -245,15 +269,13 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
 
         return result
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[str, dict[str, Union[str, int]]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int]]:
         """生成单个数据项
-        
-        默认返回物流单号字符串，除非明确设置string_only=False
+
+        返回包含完整物流信息的字典
         """
-        # 如果没有明确设置string_only，默认为True（返回字符串）
-        if 'string_only' not in self.parameters:
-            self.parameters['string_only'] = True
-        
         return self.generate(context)
 
     @property
@@ -266,31 +288,28 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
         """返回支持的参数列表"""
         return ["carrier", "include_cities", "include_date", "service_type"]
 
-    def validate(self, data: Union[str, dict[str, Union[str, int]]]) -> bool:
+    def validate(self, data: dict[str, Union[str, int]]) -> bool:
         """验证生成的数据
-        
+
         Args:
-            data: 物流单号字符串或包含完整信息的字典
+            data: 包含完整信息的字典
         """
         # 类型检查
-        if not isinstance(data, (str, dict)):
+        if not isinstance(data, dict):
             return False
-            
-        # 如果是字符串，转换为dict格式进行验证
-        if isinstance(data, str):
-            data = {"tracking_number": data}
-        
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 @register_generator("generic_tracking_number", aliases=["tracking_number", "物流单号"])
 class GenericTrackingNumberGenerator(LogisticsGenerator):
     """通用物流单号生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int]]:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -319,25 +338,28 @@ class GenericWaybillGenerator(LogisticsGenerator):
         super()._setup()
 
         # 运单号通常更长，修复正则表达式以匹配所有前缀
-        self.carrier_config.update({
-            "SF": {
-                "name": "顺丰货运",
-                "prefix": ["SF", "SFH", "SFW"],
-                "length": 15,
-                # 修复正则：匹配所有前缀，数字长度动态调整
-                "pattern": r"^(SF|SFH|SFW)\d{12,15}$",
-            },
-            "JD": {
-                "name": "京东货运",
-                "prefix": ["JDW", "JDH"],
-                "length": 18,
-                # 修复正则：匹配所有前缀，确保总长度符合要求
-                "pattern": r"^(JDW|JDH)\d{14,16}$",
-            },
-        })
+        self.carrier_config.update(
+            {
+                "SF": {
+                    "name": "顺丰货运",
+                    "prefix": ["SF", "SFH", "SFW"],
+                    "length": 15,
+                    # 修复正则：匹配所有前缀，数字长度动态调整
+                    "pattern": r"^(SF|SFH|SFW)\d{12,15}$",
+                },
+                "JD": {
+                    "name": "京东货运",
+                    "prefix": ["JDW", "JDH"],
+                    "length": 18,
+                    # 修复正则：匹配所有前缀，确保总长度符合要求
+                    "pattern": r"^(JDW|JDH)\d{14,16}$",
+                },
+            }
+        )
 
-
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int]]:
         """生成单个数据项"""
         return self.generate(context)
 

@@ -1,14 +1,13 @@
 import time
 from datetime import datetime, timedelta
-from ...core.types import (
-GeneratorType
-)
 from typing import Optional, Union
 
 import pytz
 
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
 from dataforge.core.protocols import Validator
+
+from ...core.types import GeneratorType
 
 
 class EnhancedTimestampValidator(Validator):
@@ -21,7 +20,7 @@ class EnhancedTimestampValidator(Validator):
                 if data.isdigit():
                     timestamp = int(data)
                 elif "ISO" in data.upper():  # Check for ISO format string
-                    datetime.fromisoformat(data.replace('Z', '+00:00'))
+                    datetime.fromisoformat(data.replace("Z", "+00:00"))
                     return True
                 else:
                     return False
@@ -53,8 +52,7 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
         # 兼容旧版配置格式
         if isinstance(config, dict):
             generator_config = GeneratorConfig(
-                generator_type="enhanced_timestamp",
-                parameters=config
+                generator_type="enhanced_timestamp", parameters=config
             )
         else:
             generator_config = config
@@ -73,7 +71,9 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
         self.relative_to = self.parameters.get("relative_to", "EPOCH")
         self.offset_seconds = self.parameters.get("offset_seconds", 0)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> Union[int, float, str]:
+    def generate(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, float, str]:
         """生成原始时间戳"""
         base_time = self._get_base_time()
 
@@ -110,7 +110,9 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
         if self.relative_to == "NOW":
             base_time = datetime.now()
         elif self.relative_to == "TODAY":
-            base_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            base_time = datetime.now().replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
         elif self.relative_to == "YESTERDAY":
             base_time = (datetime.now() - timedelta(days=1)).replace(
                 hour=0, minute=0, second=0, microsecond=0
@@ -138,8 +140,8 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
                 end_dt = datetime.fromisoformat(self.end_date)
 
             if start_dt and end_dt:
-                import random  # TODO: Convert to secrets
                 import secrets
+
                 delta = end_dt - start_dt
                 random_seconds = secrets.randbelow(int(delta.total_seconds()) + 1)
                 base_time = start_dt + timedelta(seconds=random_seconds)
@@ -150,7 +152,9 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
 
         return base_time
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[int, float, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, float, str]:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -162,14 +166,22 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["end_date", "offset_seconds", "output_format", "precision", "relative_to", "start_date", "timezone", "timezone_aware"]
+        return [
+            "end_date",
+            "offset_seconds",
+            "output_format",
+            "precision",
+            "relative_to",
+            "start_date",
+            "timezone",
+            "timezone_aware",
+        ]
 
     def validate(self, data: Union[int, float, str]) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class DateTimeRangeValidator(Validator):
@@ -187,7 +199,7 @@ class DateTimeRangeValidator(Validator):
                 "%Y-%m-%dT%H:%M:%S.%f%z",
                 "%Y/%m/%d %H:%M:%S",
                 "%m/%d/%Y %I:%M:%S %p",
-                "%Y年%m月%d日 %H时%M分%S秒"
+                "%Y年%m月%d日 %H时%M分%S秒",
             ]
 
             for fmt in formats:
@@ -199,7 +211,7 @@ class DateTimeRangeValidator(Validator):
 
             # 尝试ISO格式
             try:
-                datetime.fromisoformat(data.replace('Z', '+00:00'))
+                datetime.fromisoformat(data.replace("Z", "+00:00"))
                 return True
             except ValueError:
                 return False
@@ -223,8 +235,7 @@ class DateTimeRangeGenerator(DataGenerator[str]):
         # 兼容旧版配置格式
         if isinstance(config, dict):
             generator_config = GeneratorConfig(
-                generator_type="datetime_range",
-                parameters=config
+                generator_type="datetime_range", parameters=config
             )
         else:
             generator_config = config
@@ -256,7 +267,6 @@ class DateTimeRangeGenerator(DataGenerator[str]):
             end_dt = datetime.now() + timedelta(days=30)
 
         # 生成范围内的随机时间
-        import random  # TODO: Convert to secrets
         import secrets
 
         delta = end_dt - start_dt
@@ -275,7 +285,7 @@ class DateTimeRangeGenerator(DataGenerator[str]):
         if self.format == "ISO":
             return dt.isoformat()
         elif self.format == "ISO_MS":
-            return dt.isoformat(timespec='milliseconds')
+            return dt.isoformat(timespec="milliseconds")
         elif self.format == "SQL":
             return dt.strftime("%Y-%m-%d %H:%M:%S")
         elif self.format == "US":
@@ -299,11 +309,16 @@ class DateTimeRangeGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["end_datetime", "format", "include_timezone", "start_datetime", "timezone"]
+        return [
+            "end_datetime",
+            "format",
+            "include_timezone",
+            "start_datetime",
+            "timezone",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-

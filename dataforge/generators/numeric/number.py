@@ -18,12 +18,14 @@ class NumberGenerator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> Union[int, float]:
+    def _generate_raw(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, float]:
         """生成数字"""
         num_type = self.parameters.get("type", "integer")
         min_val = self.parameters.get("min", 0)
         max_val = self.parameters.get("max", 100)
-        
+
         if num_type == "float":
             return self._generate_float(min_val, max_val)
         else:
@@ -43,13 +45,15 @@ class NumberGenerator(DataGenerator):
         """验证数字"""
         if not isinstance(data, (int, float)):
             return False
-            
-        min_val = self.parameters.get("min", float('-inf'))
-        max_val = self.parameters.get("max", float('inf'))
-        
+
+        min_val = self.parameters.get("min", float("-inf"))
+        max_val = self.parameters.get("max", float("inf"))
+
         return min_val <= data <= max_val
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[int, float]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, float]:
         """生成单个数据项"""
         return self._generate_raw(context)
 

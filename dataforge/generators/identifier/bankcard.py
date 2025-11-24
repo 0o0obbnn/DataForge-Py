@@ -2,9 +2,8 @@
 银行卡号生成器
 """
 
-import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
@@ -23,7 +22,6 @@ from ...core.types import GeneratorType
 #   For statistical distributions, consider if CSPRNG is necessary
 
 
-
 class BankCardValidator(Validator):
     """Validator for bank card numbers."""
 
@@ -33,7 +31,7 @@ class BankCardValidator(Validator):
 
     def validate(self, data: str, strict: bool = False) -> bool:
         """校验银行卡号
-        
+
         Args:
             data: 银行卡号
             strict: 是否进行严格校验（包括BIN和Luhn）
@@ -60,7 +58,7 @@ class BankCardValidator(Validator):
 
             # 验证Luhn校验
             return self._validate_luhn(clean_number)
-        
+
         return True
 
     def _is_valid_bin(self, card_number: str) -> bool:
@@ -85,6 +83,7 @@ class BankCardValidator(Validator):
 
     def _calculate_luhn_checksum(self, number: str) -> int:
         """计算Luhn校验和"""
+
         def digits_of(n):
             return [int(d) for d in str(n)]
 
@@ -200,6 +199,7 @@ class BankCardGenerator(DataGenerator[str]):
 
     def _calculate_luhn_checksum(self, number: str) -> int:
         """计算Luhn校验和"""
+
         def digits_of(n):
             return [int(d) for d in str(n)]
 
@@ -216,7 +216,7 @@ class BankCardGenerator(DataGenerator[str]):
     def _calculate_luhn_check_digit(self, number: str) -> int:
         """计算Luhn校验位"""
         # 先计算不带校验位的校验和
-        checksum = self._calculate_luhn_checksum(number + '0')
+        checksum = self._calculate_luhn_checksum(number + "0")
         return (10 - checksum % 10) % 10
 
     def _format_card_number(self, card_number: str) -> str:
@@ -280,20 +280,19 @@ class BankCardGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据
-        
+
         默认使用严格模式验证（包括Luhn校验）
         """
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             # 默认使用严格模式
             return self.validator.validate(data, strict=True)
         return True
 
     def _luhn_validate(self, card_number: str) -> bool:
         """Luhn算法验证（用于测试兼容性）"""
-        if hasattr(self, 'validator') and hasattr(self.validator, '_validate_luhn'):
+        if hasattr(self, "validator") and hasattr(self.validator, "_validate_luhn"):
             return self.validator._validate_luhn(card_number)
         return False
-
 
 
 @register_generator("generic_bankcard", aliases=["通用银行卡", "银行卡通用"])
@@ -312,6 +311,6 @@ class GenericBankCardGenerator(BankCardGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

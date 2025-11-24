@@ -5,12 +5,11 @@
 
 import logging
 import os
-from typing import List, Tuple
 
 logger = logging.getLogger(__name__)
 
 
-def check_security_configuration() -> Tuple[bool, List[str]]:
+def check_security_configuration() -> tuple[bool, list[str]]:
     """检查安全配置
 
     Returns:
@@ -44,10 +43,14 @@ def check_security_configuration() -> Tuple[bool, List[str]]:
         issues.append("❌ ERROR: CORS allows all origins (*) in production")
     else:
         # 如果设置了CORS，验证格式
-        origins_list = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
+        origins_list = [
+            origin.strip() for origin in cors_origins.split(",") if origin.strip()
+        ]
         for origin in origins_list:
             if not origin.startswith(("http://", "https://")):
-                issues.append(f"⚠️  WARNING: CORS origin '{origin}' should start with http:// or https://")
+                issues.append(
+                    f"⚠️  WARNING: CORS origin '{origin}' should start with http:// or https://"
+                )
 
     # 检查Redis配置（如果使用）
     redis_host = os.getenv("REDIS_HOST")

@@ -11,9 +11,6 @@ import secrets
 import uuid
 from collections.abc import AsyncGenerator
 from datetime import datetime
-from ...core.types import (
-GeneratorType
-)
 from typing import Any, Optional
 
 from ...core.generator import (
@@ -22,6 +19,7 @@ from ...core.generator import (
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -49,7 +47,6 @@ from ...core.protocols import Validator
 #   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
 #   random.randrange(n) → secrets.randbelow(n)
 #   For statistical distributions, consider if CSPRNG is necessary
-
 
 
 class StreamConfig:
@@ -176,7 +173,6 @@ class StreamPriceGenerator(DataGenerator[dict]):
         return True
 
 
-
 class StreamOrderbookValidator(Validator):
     """Validator for StreamOrderbookGenerator parameters."""
 
@@ -299,7 +295,6 @@ class StreamOrderbookGenerator(DataGenerator[dict]):
         return True
 
 
-
 class StreamTradeValidator(Validator):
     """Validator for StreamTradeGenerator parameters."""
 
@@ -345,7 +340,10 @@ class StreamTradeGenerator(DataGenerator[dict]):
 
                 # 生成交易数据
                 price = random.uniform(50, 500)
-                quantity = secrets.randbelow(self.max_quantity - self.min_quantity + 1) + self.min_quantity
+                quantity = (
+                    secrets.randbelow(self.max_quantity - self.min_quantity + 1)
+                    + self.min_quantity
+                )
                 side = secrets.choice(["BUY", "SELL"])
 
                 trade_data = {
@@ -367,7 +365,10 @@ class StreamTradeGenerator(DataGenerator[dict]):
         """同步生成单条交易数据"""
         symbol = secrets.choice(self.symbols)
         price = random.uniform(50, 500)
-        quantity = secrets.randbelow(self.max_quantity - self.min_quantity + 1) + self.min_quantity
+        quantity = (
+            secrets.randbelow(self.max_quantity - self.min_quantity + 1)
+            + self.min_quantity
+        )
 
         return {
             "type": "TRADE",
@@ -396,7 +397,6 @@ class StreamTradeGenerator(DataGenerator[dict]):
     def validate(self, data: dict) -> bool:
         """验证生成的数据"""
         return True
-
 
 
 class StreamNewsValidator(Validator):
@@ -508,4 +508,3 @@ class StreamNewsGenerator(DataGenerator[dict]):
     def validate(self, data: dict) -> bool:
         """验证生成的数据"""
         return True
-

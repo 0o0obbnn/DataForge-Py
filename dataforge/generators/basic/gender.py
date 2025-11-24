@@ -5,13 +5,13 @@
 import secrets
 from typing import Any, Optional
 
-from ...core.types import GeneratorType
+from ...core.context import ExtendedGenerationContext
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
 )
-from ...core.context import ExtendedGenerationContext
+from ...core.types import GeneratorType
 
 
 class GenderGenerator(DataGenerator[str]):
@@ -115,7 +115,11 @@ class GenderGenerator(DataGenerator[str]):
     def _weighted_choice(self, options: list[str]) -> str:
         """根据权重选择性别"""
         if len(options) == 2:  # 二元性别
-            return options[0] if (secrets.randbelow(1000000) / 1000000) < self.male_ratio else options[1]
+            return (
+                options[0]
+                if (secrets.randbelow(1000000) / 1000000) < self.male_ratio
+                else options[1]
+            )
 
         # 多元性别，使用默认权重
         weights = []
@@ -147,7 +151,7 @@ class GenderGenerator(DataGenerator[str]):
         weights = [w / total_weight for w in weights]
 
         # 随机选择
-        rand = (secrets.randbelow(1000000) / 1000000)
+        rand = secrets.randbelow(1000000) / 1000000
         cumulative = 0
         for i, weight in enumerate(weights):
             cumulative += weight
@@ -298,7 +302,7 @@ class GenderGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """校验性别数据
-        
+
         验证是否为有效的性别值（支持常用格式，但不包括单字母缩写）
         """
         if not isinstance(data, str):
@@ -307,13 +311,22 @@ class GenderGenerator(DataGenerator[str]):
         # 定义有效的性别值（排除单字母缩写如M/F）
         valid_genders = {
             # 英文
-            "Male", "Female", "MALE", "FEMALE",
+            "Male",
+            "Female",
+            "MALE",
+            "FEMALE",
             # 中文
-            "男", "女",
+            "男",
+            "女",
             # 扩展选项
-            "Other", "OTHER", "其他",
-            "Non-binary", "NON_BINARY",
-            "Prefer not to say", "PREFER_NOT_TO_SAY", "不便透露",
+            "Other",
+            "OTHER",
+            "其他",
+            "Non-binary",
+            "NON_BINARY",
+            "Prefer not to say",
+            "PREFER_NOT_TO_SAY",
+            "不便透露",
         }
 
         # 添加未知选项（如果允许）
@@ -391,14 +404,11 @@ class GenderGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-
 @register_generator("gender", ["性别", "sex"])
 class ChineseGenderGenerator(GenderGenerator):
     """中国性别生成器注册版本"""
 
     pass
-
-
 
 
 @register_generator("gender", ["性别"])

@@ -143,11 +143,11 @@ class ChineseTextGenerator(DataGenerator[str]):
     def generate(self, context: Optional[GenerationContext] = None) -> str:
         return self._generate_raw(context)
 
-
-
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
+
+
 @register_generator("english_text")
 class EnglishTextGenerator(DataGenerator[str]):
     """英文文本生成器 - 支持lorem ipsum变体、专业术语"""
@@ -207,7 +207,10 @@ class EnglishTextGenerator(DataGenerator[str]):
             return secrets.choice(sentences)
         else:
             # 生成随机英文文本
-            length = secrets.randbelow(self.max_length - self.min_length + 1) + self.min_length
+            length = (
+                secrets.randbelow(self.max_length - self.min_length + 1)
+                + self.min_length
+            )
             words = [
                 "test",
                 "data",
@@ -230,9 +233,9 @@ class EnglishTextGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["theme", "text_type", "min_length", "max_length"]
 
-
-
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
+
+
 # 已通过装饰器完成注册

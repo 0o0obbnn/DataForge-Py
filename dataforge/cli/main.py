@@ -4,7 +4,6 @@ DataForge CLI主入口
 
 import argparse
 import json
-import logging
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -14,7 +13,7 @@ import yaml
 from ..config.parser import ConfigParser
 from ..core.factory import default_factory, default_registry
 from ..core.generator import GenerationContext, GeneratorConfig
-from ..core.logging_config import setup_logging, get_logger
+from ..core.logging_config import get_logger
 from ..output.formatter import OutputFormatter
 
 
@@ -39,7 +38,7 @@ class DataForgeCLI:
   dataforge generate idcard --count 10
 
   # 生成银行卡号并输出为JSON
-  dataforge generate bankcard --count 5 --output.format json
+  dataforge generate bankcard --count 5 --output-format json
 
   # 根据配置文件生成数据
   dataforge generate --config user_data.yaml
@@ -76,7 +75,7 @@ class DataForgeCLI:
 
         return parser
 
-    def _add_generate_args(self, parser: argparse.ArgumentParser):
+    def _add_generate_args(self, parser: argparse.ArgumentParser) -> None:
         """添加generate命令的参数"""
         # 基本参数
         parser.add_argument("generators", nargs="?", help="生成器类型（逗号分隔）")
@@ -180,6 +179,39 @@ class DataForgeCLI:
             type=bool,
             default=True,
             help="是否生成有效手机号",
+        )
+
+        # 车牌参数
+        license_group = parser.add_argument_group("车牌选项")
+        license_group.add_argument(
+            "--license-plate-type",
+            dest="license_plate_type",
+            choices=["FUEL", "NEW_ENERGY", "BOTH"],
+            help="车牌类型",
+        )
+        license_group.add_argument(
+            "--license-plate-province",
+            dest="license_plate_province",
+            help="省份简称（如 京/沪/粤）",
+        )
+        license_group.add_argument(
+            "--license-plate-city",
+            dest="license_plate_city",
+            help="城市字母代码（如 A/B）",
+        )
+        license_group.add_argument(
+            "--license-plate-include-io",
+            dest="license_plate_include_io",
+            type=bool,
+            default=False,
+            help="是否包含 I 和 O 字母",
+        )
+        license_group.add_argument(
+            "--license-plate-valid",
+            dest="license_plate_valid",
+            type=bool,
+            default=True,
+            help="是否生成有效车牌",
         )
 
         # 年龄参数

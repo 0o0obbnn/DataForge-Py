@@ -10,7 +10,8 @@ import secrets
 from datetime import date, datetime
 from typing import Any, Optional
 
-from dataforge.core.generator import DataGenerator, GeneratorConfig, GenerationContext
+from dataforge.core.factory import register_generator
+from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
 
 from ...core.types import GeneratorType
 
@@ -52,7 +53,9 @@ class JSONGenerator(DataGenerator):
         selected_type = random.choice(available_types)
         return type_map[selected_type]()
 
-    def _generate_string(self, min_len: Optional[int] = None, max_len: Optional[int] = None) -> str:
+    def _generate_string(
+        self, min_len: Optional[int] = None, max_len: Optional[int] = None
+    ) -> str:
         """生成随机字符串"""
         if min_len is None:
             min_len = self.key_length[0] if isinstance(self.key_length, tuple) else 3
@@ -61,7 +64,7 @@ class JSONGenerator(DataGenerator):
 
         length = secrets.randbelow(max_len - min_len + 1) + min_len
         chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return ''.join(random.choice(chars) for _ in range(length))
+        return "".join(random.choice(chars) for _ in range(length))
 
     def _generate_object(self, depth: int = 0) -> dict[str, Any]:
         """生成JSON对象"""
@@ -83,7 +86,11 @@ class JSONGenerator(DataGenerator):
         if depth >= self.depth:
             return []
 
-        min_size, max_size = self.array_size if isinstance(self.array_size, tuple) else (1, self.array_size)
+        min_size, max_size = (
+            self.array_size
+            if isinstance(self.array_size, tuple)
+            else (1, self.array_size)
+        )
         size = secrets.randbelow(max_size - min_size + 1) + min_size
 
         return [self._generate_value(depth + 1) for _ in range(size)]
@@ -125,7 +132,10 @@ class JSONGenerator(DataGenerator):
             obj = {}
 
             for prop_name, prop_schema in properties.items():
-                if prop_name in required or (secrets.randbelow(1000000) / 1000000) > 0.3:  # 70%概率生成可选字段
+                if (
+                    prop_name in required
+                    or (secrets.randbelow(1000000) / 1000000) > 0.3
+                ):  # 70%概率生成可选字段
                     obj[prop_name] = self._generate_from_schema(prop_schema)
 
             return obj
@@ -183,11 +193,11 @@ class JSONGenerator(DataGenerator):
         except (json.JSONDecodeError, TypeError):
             return False
 
-    def generate_batch(self, count: int, context: Optional[GenerationContext] = None) -> list[str]:
+    def generate_batch(
+        self, count: int, context: Optional[GenerationContext] = None
+    ) -> list[str]:
         """批量生成JSON数据"""
         return [self.generate_single() for _ in range(count)]
-
-
 
     @property
     def generator_type(self) -> GeneratorType:
@@ -198,6 +208,8 @@ class JSONGenerator(DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class GenericJSONGenerator(JSONGenerator):
     """通用JSON数据生成器"""
 
@@ -244,8 +256,8 @@ class GenericJSONGenerator(JSONGenerator):
             "type": "object",
             "properties": {
                 "id": secrets.randbelow(1000) + 1,
-                "value": self._generate_simple_text()
-            }
+                "value": self._generate_simple_text(),
+            },
         }
         return json.dumps(default_structure, indent=2, ensure_ascii=False)
 
@@ -276,9 +288,9 @@ class GenericJSONGenerator(JSONGenerator):
                     "name": {"type": "string", "const": "test_user"},
                     "email": {"type": "string", "const": "test@example.com"},
                     "age": {"type": "integer", "const": 25},
-                    "active": {"type": "boolean", "const": True}
+                    "active": {"type": "boolean", "const": True},
                 },
-                "required": ["name", "email", "age", "active"]
+                "required": ["name", "email", "age", "active"],
             },
             "config": {
                 "type": "object",
@@ -289,11 +301,11 @@ class GenericJSONGenerator(JSONGenerator):
                         "type": "object",
                         "properties": {
                             "debug": {"type": "boolean", "const": True},
-                            "timeout": {"type": "integer", "const": 30}
-                        }
-                    }
+                            "timeout": {"type": "integer", "const": 30},
+                        },
+                    },
                 },
-                "required": ["name", "version", "settings"]
+                "required": ["name", "version", "settings"],
             },
             "api": {
                 "type": "object",
@@ -304,12 +316,12 @@ class GenericJSONGenerator(JSONGenerator):
                         "type": "object",
                         "properties": {
                             "id": {"type": "integer", "const": 1},
-                            "value": {"type": "string", "const": "test"}
-                        }
-                    }
+                            "value": {"type": "string", "const": "test"},
+                        },
+                    },
                 },
-                "required": ["name", "status", "data"]
-            }
+                "required": ["name", "status", "data"],
+            },
         }
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
@@ -326,6 +338,10 @@ class GenericJSONGenerator(JSONGenerator):
         format_type = self.config.parameters.get("format", "pretty")
         if format_type == "compact":
             data = json.loads(result)
-            result = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+            result = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
 
         return result
+
+
+# 注册生成器
+register_generator("json_generator", ["json"])(JSONGenerator)

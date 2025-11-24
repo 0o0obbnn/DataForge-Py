@@ -2,17 +2,15 @@
 车牌号生成器
 """
 
-import random
 import secrets
-from ...core.types import GeneratorType
 from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 class LicensePlateGenerator(DataGenerator[str]):
@@ -72,15 +70,21 @@ class LicensePlateGenerator(DataGenerator[str]):
 
     def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
         """生成原始车牌号"""
+        # 先生成一个有效车牌
         if self.plate_type == "NEW_ENERGY":
-            return self._generate_new_energy_plate()
+            plate = self._generate_new_energy_plate()
         elif self.plate_type == "FUEL":
-            return self._generate_fuel_plate()
+            plate = self._generate_fuel_plate()
         else:  # BOTH
             if (secrets.randbelow(1000000) / 1000000) < 0.2:  # 20%概率生成新能源车牌
-                return self._generate_new_energy_plate()
+                plate = self._generate_new_energy_plate()
             else:
-                return self._generate_fuel_plate()
+                plate = self._generate_fuel_plate()
+        # 根据 valid 参数决定是否返回无效车牌
+        if self.valid:
+            return plate
+        else:
+            return self._corrupt_plate(plate)
 
     def _generate_fuel_plate(self) -> str:
         """生成燃油车牌号（7位）"""
@@ -97,7 +101,7 @@ class LicensePlateGenerator(DataGenerator[str]):
             city_code = secrets.choice(self.city_codes)
 
         # 生成5位字母数字组合
-        plate_suffix = "".join(random.choices(self.plate_chars, k=5))
+        plate_suffix = "".join(secrets.choice(self.plate_chars) for _ in range(5))
 
         return f"{province_code}{city_code}{plate_suffix}"
 
@@ -119,9 +123,33 @@ class LicensePlateGenerator(DataGenerator[str]):
         new_energy_prefix = secrets.choice(["D", "F"])
 
         # 生成5位字母数字组合
-        plate_suffix = "".join(random.choices(self.plate_chars, k=5))
+        plate_suffix = "".join(secrets.choice(self.plate_chars) for _ in range(5))
 
         return f"{province_code}{city_code}{new_energy_prefix}{plate_suffix}"
+
+    def _corrupt_plate(self, plate: str) -> str:
+        """基于有效车牌构造无效车牌（用于 valid=False 场景）"""
+        try:
+            if len(plate) == 7:
+                # 燃油车牌：长度错误或非法字符
+                if (secrets.randbelow(1000000) / 1000000) < 0.5:
+                    # 长度错误：多加一个非法字符
+                    return plate + "*"
+                else:
+                    # 非法字符：将某一位替换成禁止字符
+                    idx = secrets.randbelow(5) + 2  # 替换后缀范围字符
+                    bad_char = "*" if not self.include_io else "!"
+                    return plate[:idx] + bad_char + plate[idx + 1 :]
+            elif len(plate) == 8:
+                # 新能源车牌：第3位不是 D/F 或长度错误
+                if (secrets.randbelow(1000000) / 1000000) < 0.5:
+                    return plate[:2] + "A" + plate[3:]
+                else:
+                    return plate[:-1]
+        except Exception:
+            pass
+        # 兜底：插入非法字符
+        return plate + "*"
 
     def validate(self, data: str) -> bool:
         """校验车牌号"""
@@ -193,11 +221,10 @@ class LicensePlateGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-
 @register_generator("license_plate", ["plate", "车牌号", "车牌"])
 class ChineseLicensePlateGenerator(LicensePlateGenerator):
     """中国车牌号生成器注册版本"""
-    
+
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
@@ -214,11 +241,7 @@ class ChineseLicensePlateGenerator(LicensePlateGenerator):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return []
+        return super().supported_parameters
 
 
-@register_generator("license_plate", ["车牌号", "license-plate"])
-class GenericLicensePlateGenerator(LicensePlateGenerator):
-    """通用license_plate生成器注册版本"""
-
-    pass
+# 重复注册已移除，避免与 'license_plate' 主注册冲突

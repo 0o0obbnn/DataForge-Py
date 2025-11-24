@@ -3,30 +3,30 @@
 """
 
 try:
-    from .device_id import GenericDeviceIDGenerator
-    from .geo_coordinates import GenericGeoCoordinatesGenerator
-    from .http_header import GenericHTTPHeaderGenerator
-    from .mac_address import GenericMACAddressGenerator
+    from .device_id import DeviceIDGenerator
+    from .geo_coordinates import GeoCoordinatesGenerator
+    from .http_header import HTTPHeaderGenerator
+    from .mac_address import MACAddressGenerator
     from .network import (
-        GenericDomainGenerator,
-        GenericIPAddressGenerator,
-        GenericPortNumberGenerator,
+        DomainGenerator,
+        IPAddressGenerator,
+        PortNumberGenerator,
     )
-    from .session_token import GenericSessionTokenGenerator
-    from .timezone import GenericTimezoneGenerator
-    from .url_generator import GenericURLGenerator
+    from .session_token import SessionTokenGenerator
+    from .timezone import TimezoneGenerator
+    from .url_generator import URLGenerator
 except ImportError as e:
     print(f"警告: 部分网络生成器导入失败: {e}")
 
 __all__ = [
-    "GenericIPAddressGenerator",
-    "GenericMACAddressGenerator",
-    "GenericDomainGenerator",
-    "GenericPortNumberGenerator",
-    "GenericHTTPHeaderGenerator",
-    "GenericSessionTokenGenerator",
-    "GenericDeviceIDGenerator",
-    "GenericGeoCoordinatesGenerator",
-    "GenericTimezoneGenerator",
-    "GenericURLGenerator",
+    "IPAddressGenerator",
+    "MACAddressGenerator",
+    "DomainGenerator",
+    "PortNumberGenerator",
+    "HTTPHeaderGenerator",
+    "SessionTokenGenerator",
+    "DeviceIDGenerator",
+    "GeoCoordinatesGenerator",
+    "TimezoneGenerator",
+    "URLGenerator",
 ]

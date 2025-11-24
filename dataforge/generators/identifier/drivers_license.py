@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 驾驶证号生成器
 
@@ -7,9 +5,8 @@ from ...core.types import GeneratorType
 支持不同省份的驾驶证号生成规则
 """
 
-import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 from dataclasses import dataclass
 from typing import Optional, Union
 
@@ -20,6 +17,7 @@ from ...core.generator import (
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -28,10 +26,10 @@ from ...core.protocols import Validator
 #   For statistical distributions, consider if CSPRNG is necessary
 
 
-
 @dataclass
 class DriverLicenseInfo:
     """驾驶证信息数据模型"""
+
     license_number: str
     province_code: str
     issue_date: str
@@ -58,7 +56,7 @@ class DriverLicenseValidator(Validator):
             return False
 
         # 验证驾驶证号码格式：18位数字
-        if not re.match(r'^\d{18}$', license_number):
+        if not re.match(r"^\d{18}$", license_number):
             return False
 
         # 验证省份代码
@@ -92,35 +90,103 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
 
         # 省份代码映射
         self.province_codes = {
-            "北京": "110000", "天津": "120000", "河北": "130000", "山西": "140000", "内蒙古": "150000",
-            "辽宁": "210000", "吉林": "220000", "黑龙江": "230000", "上海": "310000", "江苏": "320000",
-            "浙江": "330000", "安徽": "340000", "福建": "350000", "江西": "360000", "山东": "370000",
-            "河南": "410000", "湖北": "420000", "湖南": "430000", "广东": "440000", "广西": "450000",
-            "海南": "460000", "重庆": "500000", "四川": "510000", "贵州": "520000", "云南": "530000",
-            "西藏": "540000", "陕西": "610000", "甘肃": "620000", "青海": "630000", "宁夏": "640000",
+            "北京": "110000",
+            "天津": "120000",
+            "河北": "130000",
+            "山西": "140000",
+            "内蒙古": "150000",
+            "辽宁": "210000",
+            "吉林": "220000",
+            "黑龙江": "230000",
+            "上海": "310000",
+            "江苏": "320000",
+            "浙江": "330000",
+            "安徽": "340000",
+            "福建": "350000",
+            "江西": "360000",
+            "山东": "370000",
+            "河南": "410000",
+            "湖北": "420000",
+            "湖南": "430000",
+            "广东": "440000",
+            "广西": "450000",
+            "海南": "460000",
+            "重庆": "500000",
+            "四川": "510000",
+            "贵州": "520000",
+            "云南": "530000",
+            "西藏": "540000",
+            "陕西": "610000",
+            "甘肃": "620000",
+            "青海": "630000",
+            "宁夏": "640000",
             "新疆": "650000",
         }
         self.validator = DriverLicenseValidator(self.province_codes)
 
         # 驾驶证类型
         self.license_classes = {
-            "A1": "大型客车", "A2": "牵引车", "A3": "城市公交车",
-            "B1": "中型客车", "B2": "大型货车",
-            "C1": "小型汽车", "C2": "小型自动挡汽车", "C3": "低速载货汽车",
-            "C4": "三轮汽车", "C5": "残疾人专用小型自动挡载客汽车",
-            "D": "普通三轮摩托车", "E": "普通二轮摩托车", "F": "轻便摩托车",
+            "A1": "大型客车",
+            "A2": "牵引车",
+            "A3": "城市公交车",
+            "B1": "中型客车",
+            "B2": "大型货车",
+            "C1": "小型汽车",
+            "C2": "小型自动挡汽车",
+            "C3": "低速载货汽车",
+            "C4": "三轮汽车",
+            "C5": "残疾人专用小型自动挡载客汽车",
+            "D": "普通三轮摩托车",
+            "E": "普通二轮摩托车",
+            "F": "轻便摩托车",
         }
 
         # 中国常见姓氏
         self.chinese_surnames = [
-            "张", "王", "李", "赵", "刘", "陈", "杨", "黄", "周", "吴",
-            "徐", "孙", "胡", "朱", "高", "林", "何", "郭", "马", "罗",
+            "张",
+            "王",
+            "李",
+            "赵",
+            "刘",
+            "陈",
+            "杨",
+            "黄",
+            "周",
+            "吴",
+            "徐",
+            "孙",
+            "胡",
+            "朱",
+            "高",
+            "林",
+            "何",
+            "郭",
+            "马",
+            "罗",
         ]
 
         # 常见名字
         self.chinese_names = [
-            "伟", "芳", "娜", "秀英", "敏", "静", "丽", "强", "磊", "军",
-            "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "秀兰", "霞",
+            "伟",
+            "芳",
+            "娜",
+            "秀英",
+            "敏",
+            "静",
+            "丽",
+            "强",
+            "磊",
+            "军",
+            "洋",
+            "勇",
+            "艳",
+            "杰",
+            "娟",
+            "涛",
+            "明",
+            "超",
+            "秀兰",
+            "霞",
         ]
 
     def _setup(self) -> None:
@@ -150,11 +216,11 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
 
         # 8位数字（可以包含年份信息）
         year_digits = str(secrets.randbelow(15) + 2010)
-        random_digits = ''.join(str(secrets.randbelow(10)) for _ in range(4))
+        random_digits = "".join(str(secrets.randbelow(10)) for _ in range(4))
         middle_part = year_digits + random_digits
 
         # 8位顺序码
-        sequence = ''.join(str(secrets.randbelow(10)) for _ in range(8))
+        sequence = "".join(str(secrets.randbelow(10)) for _ in range(8))
 
         license_number = f"{province_prefix}{middle_part}{sequence}"
 
@@ -162,7 +228,7 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
         if len(license_number) > 18:
             license_number = license_number[:18]
         elif len(license_number) < 18:
-            license_number = license_number.ljust(18, '0')
+            license_number = license_number.ljust(18, "0")
 
         return license_number
 
@@ -186,10 +252,7 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
 
         expiry_date = issue_date + datetime.timedelta(days=365 * validity_years)
 
-        return (
-            issue_date.strftime("%Y-%m-%d"),
-            expiry_date.strftime("%Y-%m-%d")
-        )
+        return (issue_date.strftime("%Y-%m-%d"), expiry_date.strftime("%Y-%m-%d"))
 
     def _generate_chinese_name(self) -> str:
         """生成中文姓名"""
@@ -199,13 +262,15 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
         if (secrets.randbelow(1000000) / 1000000) < 0.5:
             given_name = secrets.choice(self.chinese_names)
         else:
-            given_name = ''.join(secrets.choice(self.chinese_names) for _ in range(2))
+            given_name = "".join(secrets.choice(self.chinese_names) for _ in range(2))
 
         return f"{surname}{given_name}"
 
-    def generate(self, context: Optional[GenerationContext] = None) -> Union[str, dict[str, Union[str, int]]]:
+    def generate(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[str, dict[str, Union[str, int]]]:
         """生成驾驶证数据
-        
+
         Returns:
             如果string_only=True，返回驾驶证号码字符串
             否则返回包含完整信息的字典
@@ -217,7 +282,7 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
         license_number = self._generate_license_number(province_code)
 
         # 如果只需要字符串，直接返回
-        if self.parameters.get('string_only', False):
+        if self.parameters.get("string_only", False):
             return license_number
 
         # 生成签发和有效期
@@ -231,31 +296,37 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
             "province": self.province,
             "province_code": province_code,
             "license_class": self.license_class,
-            "license_class_name": self.license_classes.get(self.license_class, "未知类型"),
+            "license_class_name": self.license_classes.get(
+                self.license_class, "未知类型"
+            ),
         }
 
         if self.include_dates:
             validity_years = 6 if self.license_class.startswith("C") else 10
-            result.update({
-                "issue_date": issue_date,
-                "expiry_date": expiry_date,
-                "validity_years": validity_years,
-            })
+            result.update(
+                {
+                    "issue_date": issue_date,
+                    "expiry_date": expiry_date,
+                    "validity_years": validity_years,
+                }
+            )
 
         if self.include_name:
             result["holder_name"] = holder_name
 
         return result
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[str, dict[str, Union[str, int]]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[str, dict[str, Union[str, int]]]:
         """生成单个数据项
-        
+
         默认返回驾驶证号码字符串，除非明确设置string_only=False
         """
         # 如果没有明确设置string_only，默认为True（返回字符串）
-        if 'string_only' not in self.parameters:
-            self.parameters['string_only'] = True
-        
+        if "string_only" not in self.parameters:
+            self.parameters["string_only"] = True
+
         return self.generate(context)
 
     @property
@@ -270,29 +341,30 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
 
     def validate(self, data: Union[str, dict[str, Union[str, int]]]) -> bool:
         """验证生成的数据
-        
+
         Args:
             data: 驾驶证号码字符串或包含完整信息的字典
         """
         # 类型检查
         if not isinstance(data, (str, dict)):
             return False
-            
+
         # 如果是字符串，转换为dict格式进行验证
         if isinstance(data, str):
             data = {"license_number": data}
-        
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 @register_generator("generic_driver_license", aliases=["驾驶证", "driver_license"])
 class GenericDriverLicenseGenerator(DriverLicenseGenerator):
     """通用驾驶证生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict[str, Union[str, int]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> dict[str, Union[str, int]]:
         """生成单个数据项"""
         return self.generate(context)
 

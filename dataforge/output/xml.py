@@ -7,7 +7,9 @@ from typing import Union
 class XMLFormatter:
     """Formatter for XML output."""
 
-    def __init__(self, root_name: str = 'data', item_name: str = 'item', root_tag: str = None):
+    def __init__(
+        self, root_name: str = "data", item_name: str = "item", root_tag: str = None
+    ):
         """Initialize XML formatter.
 
         Args:
@@ -47,7 +49,7 @@ class XMLFormatter:
             **kwargs: Additional formatting options
         """
         xml_content = self.format(data, **kwargs)
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(xml_content)
 
     def _dict_to_element(self, d: dict, name: str) -> ET.Element:
@@ -86,12 +88,12 @@ class XMLFormatter:
         xml_str = '<?xml version="1.0" encoding="UTF-8"?>\n'
 
         # Convert element to string
-        rough_string = ET.tostring(element, encoding='unicode')
+        rough_string = ET.tostring(element, encoding="unicode")
 
         # Parse and pretty print
         root = ET.fromstring(rough_string)
         self._indent(root)
-        xml_str += ET.tostring(root, encoding='unicode')
+        xml_str += ET.tostring(root, encoding="unicode")
 
         return xml_str
 

@@ -22,11 +22,11 @@ def validate_data(data: Any, data_type: str, **kwargs: Any) -> bool:
         return False
 
     validators: dict[str, Callable[..., bool]] = {
-        'phone': _validate_phone,
-        'email': _validate_email,
-        'idcard': _validate_idcard,
-        'bankcard': _validate_bankcard,
-        'uscc': _validate_uscc,
+        "phone": _validate_phone,
+        "email": _validate_email,
+        "idcard": _validate_idcard,
+        "bankcard": _validate_bankcard,
+        "uscc": _validate_uscc,
     }
 
     validator = validators.get(data_type)
@@ -45,18 +45,18 @@ def validate_config(config: dict[str, Any]) -> bool:
     Returns:
         True if config is valid, False otherwise
     """
-    required_fields = ['generators', 'output']
+    required_fields = ["generators", "output"]
 
     for field in required_fields:
         if field not in config:
             return False
 
     # Validate generators config
-    if not isinstance(config['generators'], dict):
+    if not isinstance(config["generators"], dict):
         return False
 
     # Validate output config
-    if not isinstance(config['output'], dict):
+    if not isinstance(config["output"], dict):
         return False
 
     return True
@@ -68,9 +68,9 @@ def _validate_phone(phone: str, **kwargs: Any) -> bool:
         return False
 
     # Chinese mobile phone pattern
-    mobile_pattern = r'^1[3-9]\d{9}$'
+    mobile_pattern = r"^1[3-9]\d{9}$"
     # Chinese landline pattern
-    landline_pattern = r'^0\d{2,3}-?\d{7,8}$'
+    landline_pattern = r"^0\d{2,3}-?\d{7,8}$"
 
     return bool(re.match(mobile_pattern, phone) or re.match(landline_pattern, phone))
 
@@ -80,7 +80,7 @@ def _validate_email(email: str, **kwargs: Any) -> bool:
     if not isinstance(email, str):
         return False
 
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return bool(re.match(pattern, email))
 
 
@@ -90,7 +90,7 @@ def _validate_idcard(idcard: str, **kwargs: Any) -> bool:
         return False
 
     # Check format
-    pattern = r'^\d{17}[\dXx]$'
+    pattern = r"^\d{17}[\dXx]$"
     if not re.match(pattern, idcard):
         return False
 
@@ -104,7 +104,7 @@ def _validate_bankcard(card: str, **kwargs: Any) -> bool:
         return False
 
     # Remove spaces and non-digits
-    card = re.sub(r'\D', '', card)
+    card = re.sub(r"\D", "", card)
 
     if len(card) < 13 or len(card) > 19:
         return False
@@ -113,12 +113,13 @@ def _validate_bankcard(card: str, **kwargs: Any) -> bool:
     def luhn_checksum(card_num):
         def digits_of(n):
             return [int(d) for d in str(n)]
+
         digits = digits_of(card_num)
         odd_digits = digits[-1::-2]
         even_digits = digits[-2::-2]
         checksum = sum(odd_digits)
         for d in even_digits:
-            checksum += sum(digits_of(d*2))
+            checksum += sum(digits_of(d * 2))
         return checksum % 10
 
     return luhn_checksum(card) == 0
@@ -130,5 +131,5 @@ def _validate_uscc(uscc: str, **kwargs: Any) -> bool:
         return False
 
     # USCC pattern
-    pattern = r'^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{9}[0-9A-HJ-NPQRTUWXY]$'
+    pattern = r"^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{9}[0-9A-HJ-NPQRTUWXY]$"
     return bool(re.match(pattern, uscc))

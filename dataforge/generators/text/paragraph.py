@@ -15,10 +15,39 @@ class ParagraphGenerator(DataGenerator):
     """段落生成器"""
 
     WORDS = [
-        "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog",
-        "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
-        "of", "with", "by", "from", "up", "about", "into", "through",
-        "after", "before", "under", "over", "between", "among", "during"
+        "the",
+        "quick",
+        "brown",
+        "fox",
+        "jumps",
+        "over",
+        "lazy",
+        "dog",
+        "a",
+        "an",
+        "and",
+        "or",
+        "but",
+        "in",
+        "on",
+        "at",
+        "to",
+        "for",
+        "of",
+        "with",
+        "by",
+        "from",
+        "up",
+        "about",
+        "into",
+        "through",
+        "after",
+        "before",
+        "under",
+        "over",
+        "between",
+        "among",
+        "during",
     ]
 
     def _setup(self) -> None:
@@ -29,13 +58,13 @@ class ParagraphGenerator(DataGenerator):
         """生成段落"""
         sentence_count = self.parameters.get("sentence_count", random.randint(3, 7))
         sentences = []
-        
+
         for _ in range(sentence_count):
             word_count = random.randint(5, 15)
             words = [random.choice(self.WORDS) for _ in range(word_count)]
             sentence = " ".join(words)
             sentences.append(sentence.capitalize() + ".")
-        
+
         return " ".join(sentences)
 
     def validate(self, data: str) -> bool:

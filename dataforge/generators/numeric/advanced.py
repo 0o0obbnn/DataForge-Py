@@ -76,6 +76,7 @@ class IntegerGenerator(DataGenerator[int]):
             return False
         return self.min_value <= data <= self.max_value
 
+
 class DecimalGenerator(DataGenerator[Decimal]):
     """小数生成器 - 支持精度控制"""
 
@@ -113,7 +114,9 @@ class DecimalGenerator(DataGenerator[Decimal]):
 
         # 生成随机小数
         value = Decimal(random.uniform(float(min_val), float(max_val)))
-        return value.quantize(Decimal('0.' + '0' * self.scale), rounding=self.rounding_mode)
+        return value.quantize(
+            Decimal("0." + "0" * self.scale), rounding=self.rounding_mode
+        )
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> Decimal:
         """生成单个数据项"""
@@ -124,6 +127,7 @@ class DecimalGenerator(DataGenerator[Decimal]):
         if not isinstance(data, Decimal):
             return False
         return self.min_value <= data <= self.max_value
+
 
 class PercentageGenerator(DataGenerator[Union[float, str]]):
     """百分比生成器"""
@@ -163,7 +167,9 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         value = random.uniform(min_val, max_val)
         return round(value, self.precision)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> Union[float, str]:
+    def generate(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[float, str]:
         """生成百分比"""
         value = self._generate_raw(context)
         if self.include_symbol:
@@ -171,14 +177,16 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         else:
             return value
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[float, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[float, str]:
         """生成单个数据项"""
         return self.generate(context)
 
     def validate(self, data: Union[float, str]) -> bool:
         """验证生成的数据"""
         # 如果是字符串且包含%符号，提取数值部分验证
-        if isinstance(data, str) and data.endswith('%'):
+        if isinstance(data, str) and data.endswith("%"):
             try:
                 value = float(data[:-1])
                 return 0.0 <= value <= 100.0
@@ -187,6 +195,7 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         elif isinstance(data, (int, float)):
             return 0.0 <= data <= 100.0
         return False
+
 
 class CurrencyGenerator(DataGenerator[str]):
     """币种金额生成器 - 支持多币种、格式化"""
@@ -235,6 +244,7 @@ class CurrencyGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["currency", "min_value", "max_value", "precision"]
 
+
 class ScientificNumberGenerator(DataGenerator[str]):
     """科学计数法生成器"""
 
@@ -264,6 +274,7 @@ class ScientificNumberGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         return ["min_value", "max_value", "precision"]
+
 
 # 注册生成器
 register_generator("integer", ["整数"])(IntegerGenerator)

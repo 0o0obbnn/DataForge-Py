@@ -28,10 +28,7 @@ class JSONFormatter:
             JSON formatted string
         """
         return json.dumps(
-            data,
-            indent=self.indent,
-            ensure_ascii=self.ensure_ascii,
-            **kwargs
+            data, indent=self.indent, ensure_ascii=self.ensure_ascii, **kwargs
         )
 
     def format_to_file(self, data: Union[dict, list], filepath: str, **kwargs) -> None:
@@ -43,5 +40,5 @@ class JSONFormatter:
             **kwargs: Additional formatting options
         """
         json_content = self.format(data, **kwargs)
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(json_content)

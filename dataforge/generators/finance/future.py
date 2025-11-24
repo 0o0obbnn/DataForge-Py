@@ -3,28 +3,17 @@
 支持生成商品期货、金融期货等各类期货合约代码
 """
 
-import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 from datetime import datetime, timedelta
-from ...core.types import (
-GeneratorType
-)
 from typing import Optional
 
 from ...core.factory import register_generator
-from ...core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 class FutureCodeGenerator(DataGenerator[str]):
@@ -300,7 +289,6 @@ class FutureCodeGenerator(DataGenerator[str]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("future_code", ["期货合约", "future", "期货"])

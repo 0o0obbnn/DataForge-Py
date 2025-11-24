@@ -3,9 +3,8 @@
 使用缓存系统和惰性加载优化性能
 """
 
-import secrets
 import random
-from ...core.types import GeneratorType
+import secrets
 from typing import Any, Optional
 
 from ...core.cache import LazyDataLoader, get_data_file_path
@@ -14,6 +13,7 @@ from ...core.generator import (
     DataGenerator,
     GenerationContext,
 )
+from ...core.types import GeneratorType
 
 
 class OptimizedNameGenerator(DataGenerator[str]):
@@ -184,7 +184,9 @@ class OptimizedNameGenerator(DataGenerator[str]):
     def _select_surname(self) -> dict[str, Any]:
         """选择姓氏"""
         # 是否选择复姓
-        if (secrets.randbelow(1000000) / 1000000) < self.compound_surname_ratio and self.rare_surnames:
+        if (
+            secrets.randbelow(1000000) / 1000000
+        ) < self.compound_surname_ratio and self.rare_surnames:
             return secrets.choice(self.rare_surnames)
 
         # 根据频率加权选择常见姓氏
@@ -274,7 +276,6 @@ class OptimizedNameGenerator(DataGenerator[str]):
         return f"{first_name} {last_name}"
 
     @property
-
     def generator_type(self) -> GeneratorType:
 
         return GeneratorType.BASIC
@@ -299,25 +300,20 @@ class OptimizedNameGenerator(DataGenerator[str]):
         return isinstance(data, str) and len(data) > 0
 
 
-
 # 注册优化的生成器
 
-@register_generator("name_optimized", ["姓名优化", "name_fast", "cached_name"])
 
+@register_generator("name_optimized", ["姓名优化", "name_fast", "cached_name"])
 class OptimizedNameGeneratorRegistered(OptimizedNameGenerator):
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
-
         """生成单个数据项"""
 
         # 直接调用父类方法
 
         return self._generate_raw(context)
 
-
-
     def validate(self, data: str) -> bool:
-
         """验证生成的数据"""
 
         # 简单验证：检查是否为非空字符串
@@ -327,7 +323,7 @@ class OptimizedNameGeneratorRegistered(OptimizedNameGenerator):
 @register_generator("optimized_name", ["optimized-name"])
 class GenericOptimizedNameGenerator(OptimizedNameGenerator):
     """通用optimized_name生成器注册版本"""
-    
+
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)

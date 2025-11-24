@@ -3,15 +3,14 @@
 """
 
 import secrets
-from ...core.types import GeneratorType
 from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 class CompanyNameGenerator(DataGenerator[str]):
@@ -280,19 +279,18 @@ class CompanyNameGenerator(DataGenerator[str]):
         parts.append(company_suffix)
 
         result = "".join(parts)
-        
+
         # 智能长度保证：确保最小长度为4个字符
         min_length = 4
         if len(result) < min_length:
             # 计算需要补充的字符数
             needed = min_length - len(result)
-            
+
             # 从通用关键词中选择合适的补充内容
             supplement_candidates = [
-                word for word in self.general_keywords 
-                if len(word) <= needed
+                word for word in self.general_keywords if len(word) <= needed
             ]
-            
+
             if supplement_candidates:
                 supplement = secrets.choice(supplement_candidates)
                 # 在核心名称后插入补充内容
@@ -304,7 +302,7 @@ class CompanyNameGenerator(DataGenerator[str]):
             else:
                 # 如果没有合适的补充词，使用通用字符
                 result = result + "科技"[:needed]
-        
+
         return result
 
     def _generate_core_name(self) -> str:
@@ -377,15 +375,33 @@ class CompanyNameGenerator(DataGenerator[str]):
             all_suffixes.extend(suffixes)
 
         has_chinese_suffix = any(data.endswith(suffix) for suffix in all_suffixes)
-        
+
         # 检查英文公司后缀
-        english_suffixes = ["Inc", "Corp", "LLC", "Ltd", "Co", "Group", "International", "Inc.", "Corp.", "Ltd."]
+        english_suffixes = [
+            "Inc",
+            "Corp",
+            "LLC",
+            "Ltd",
+            "Co",
+            "Group",
+            "International",
+            "Inc.",
+            "Corp.",
+            "Ltd.",
+        ]
         has_english_suffix = any(suffix in data for suffix in english_suffixes)
-        
+
         # 检查是否包含公司相关词汇
-        company_keywords = ["Solutions", "Systems", "Technologies", "Enterprises", "Services", "Partners"]
+        company_keywords = [
+            "Solutions",
+            "Systems",
+            "Technologies",
+            "Enterprises",
+            "Services",
+            "Partners",
+        ]
         has_company_keyword = any(keyword in data for keyword in company_keywords)
-        
+
         return has_chinese_suffix or has_english_suffix or has_company_keyword
 
     def get_company_info(self, company_name: str) -> dict:
@@ -438,51 +454,81 @@ class CompanyNameGenerator(DataGenerator[str]):
         """生成单个数据项"""
         # 支持language参数
         language = self.parameters.get("language", "").lower()
-        
+
         if language == "english":
             return self._generate_english_name()
-        
+
         return self._generate_raw(context)
-    
+
     def _generate_english_name(self) -> str:
         """生成英文公司名"""
         # 英文公司名前缀
         prefixes = [
-            "Global", "International", "United", "Advanced", "Premier",
-            "Elite", "Prime", "Superior", "Innovative", "Dynamic",
-            "Strategic", "Quantum", "Digital", "Smart", "Tech",
-            "Cyber", "Cloud", "Data", "Net", "Web"
+            "Global",
+            "International",
+            "United",
+            "Advanced",
+            "Premier",
+            "Elite",
+            "Prime",
+            "Superior",
+            "Innovative",
+            "Dynamic",
+            "Strategic",
+            "Quantum",
+            "Digital",
+            "Smart",
+            "Tech",
+            "Cyber",
+            "Cloud",
+            "Data",
+            "Net",
+            "Web",
         ]
-        
+
         # 英文公司名核心词
         core_words = [
-            "Solutions", "Systems", "Technologies", "Innovations",
-            "Enterprises", "Industries", "Services", "Group",
-            "Partners", "Associates", "Ventures", "Capital",
-            "Holdings", "Networks", "Dynamics", "Labs",
-            "Studios", "Works", "Media", "Digital"
+            "Solutions",
+            "Systems",
+            "Technologies",
+            "Innovations",
+            "Enterprises",
+            "Industries",
+            "Services",
+            "Group",
+            "Partners",
+            "Associates",
+            "Ventures",
+            "Capital",
+            "Holdings",
+            "Networks",
+            "Dynamics",
+            "Labs",
+            "Studios",
+            "Works",
+            "Media",
+            "Digital",
         ]
-        
+
         # 英文公司后缀
         suffixes = ["Inc", "Corp", "LLC", "Ltd", "Co", "Group", "International"]
-        
+
         # 生成公司名
         parts = []
-        
+
         # 40%概率添加前缀
         if secrets.randbelow(100) < 40:
             parts.append(secrets.choice(prefixes))
-        
+
         # 核心词
         parts.append(secrets.choice(core_words))
-        
+
         # 60%概率添加后缀
         if secrets.randbelow(100) < 60:
             suffix = secrets.choice(suffixes)
             return f"{' '.join(parts)} {suffix}."
-        
-        return " ".join(parts)
 
+        return " ".join(parts)
 
 
 @register_generator("company_name", ["company", "企业名称", "公司名称"])
@@ -490,7 +536,6 @@ class ChineseCompanyNameGenerator(CompanyNameGenerator):
     """中国企业名称生成器注册版本"""
 
     pass
-
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""

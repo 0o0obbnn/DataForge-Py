@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 Session ID/Token 生成器模块
 支持生成各种类型的会话标识符和令牌
@@ -11,12 +9,14 @@ import time
 import uuid
 from typing import Optional
 
+from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 
 class SessionTokenValidator(Validator):
@@ -59,20 +59,28 @@ class SessionTokenValidator(Validator):
         return "Invalid session token format"
 
 
+@register_generator("session_token", aliases=["session", "token", "session_id"])
 class SessionTokenGenerator(DataGenerator[str]):
     """Session ID/Token 生成器"""
 
+    # 类级别属性声明，帮助类型检查器
+    token_type: str
+    length: int
+    include_timestamp: bool
+    characters: str
+    prefix: str
+    suffix: str
+    validator: Optional[SessionTokenValidator]
+
     def __init__(self, config: GeneratorConfig):
-        super().__init__(config)
-        self.token_type = self.parameters.get("type", "SESSION_ID")
-        self.length = self.parameters.get("length", 32)
-        self.include_timestamp = self.parameters.get("include_timestamp", False)
-        self.characters = self.parameters.get("characters", "ALPHANUMERIC")
-        self.prefix = self.parameters.get("prefix", "")
-        self.suffix = self.parameters.get("suffix", "")
-        self.validator = SessionTokenValidator(
-            self.token_type, self.prefix, self.suffix
-        )
+        # 先初始化实例属性，避免类型检查器警告
+        self.token_type = "SESSION_ID"
+        self.length = 32
+        self.include_timestamp = False
+        self.characters = "ALPHANUMERIC"
+        self.prefix = ""
+        self.suffix = ""
+        self.validator = None
 
         # 字符集配置
         self.char_sets = {
@@ -87,6 +95,9 @@ class SessionTokenGenerator(DataGenerator[str]):
             "URL_SAFE": string.ascii_letters + string.digits + "-_",
         }
 
+        # 调用父类初始化（会调用 _setup()）
+        super().__init__(config)
+
     def _setup(self) -> None:
         """配置生成器参数"""
         self.token_type = self.parameters.get("type", "SESSION_ID")
@@ -95,6 +106,9 @@ class SessionTokenGenerator(DataGenerator[str]):
         self.characters = self.parameters.get("characters", "ALPHANUMERIC")
         self.prefix = self.parameters.get("prefix", "")
         self.suffix = self.parameters.get("suffix", "")
+        self.validator = SessionTokenValidator(
+            self.token_type, self.prefix, self.suffix
+        )
 
     def generate(self, context: Optional[GenerationContext] = None) -> str:
         """生成原始Session ID/Token"""
@@ -127,7 +141,9 @@ class SessionTokenGenerator(DataGenerator[str]):
 
         # Payload (包含时间戳)
         payload_chars = string.ascii_letters + string.digits + "-_"
-        payload = "".join(secrets.choice(payload_chars) for _ in range(self.length // 2))
+        payload = "".join(
+            secrets.choice(payload_chars) for _ in range(self.length // 2)
+        )
 
         # Signature
         sig_chars = string.ascii_letters + string.digits + "-_"
@@ -173,16 +189,21 @@ class SessionTokenGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if self.validator is not None and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class GenericSessionTokenGenerator(SessionTokenGenerator):
     """通用Session ID/Token生成器"""
 
-    pass
+    def __init__(self, config: GeneratorConfig):
+        # 父类的 __init__ 已经调用了 _setup()，所以属性已经初始化
+        super().__init__(config)
+        # 重新创建 validator 以确保使用最新的属性值
+        self.validator = SessionTokenValidator(
+            self.token_type, self.prefix, self.suffix
+        )
 
     @property
     def generator_type(self) -> GeneratorType:
@@ -196,6 +217,6 @@ class GenericSessionTokenGenerator(SessionTokenGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if self.validator is not None and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

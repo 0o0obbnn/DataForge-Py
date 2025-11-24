@@ -3,27 +3,16 @@
 支持生成国债、企业债、可转债等各类债券代码
 """
 
-import random  # TODO: Convert to secrets
-import secrets
 import re
-from ...core.types import (
-GeneratorType
-)
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
-from ...core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 class BondCodeGenerator(DataGenerator[str]):
@@ -119,7 +108,8 @@ class BondCodeGenerator(DataGenerator[str]):
 
         prefix = secrets.choice(type_info["prefix"])
         suffix = str(
-            secrets.randbelow(type_info["range"][1] - type_info["range"][0] + 1) + type_info["range"][0]
+            secrets.randbelow(type_info["range"][1] - type_info["range"][0] + 1)
+            + type_info["range"][0]
         ).zfill(3)
 
         code = prefix + suffix
@@ -151,7 +141,8 @@ class BondCodeGenerator(DataGenerator[str]):
         category_info = self.hk_bonds[selected_category]
         prefix = secrets.choice(category_info["prefix"])
         suffix = str(
-            secrets.randbelow(category_info["range"][1] - category_info["range"][0] + 1) + category_info["range"][0]
+            secrets.randbelow(category_info["range"][1] - category_info["range"][0] + 1)
+            + category_info["range"][0]
         ).zfill(4)
 
         code = prefix + suffix
@@ -258,7 +249,6 @@ class BondCodeGenerator(DataGenerator[str]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("bond_code", ["债券代码", "bond", "债券"])

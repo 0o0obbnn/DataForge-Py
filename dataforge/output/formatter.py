@@ -109,26 +109,42 @@ class OutputFormatter:
 
         return output.getvalue()
 
-    def _format_xml(self, data: dict[str, list[Any]], pretty: bool = False) -> str:
-        """格式化为XML"""
+    def _format_xml(
+        self, data: dict[str, list[Any]] | list[Any], pretty: bool = False
+    ) -> str:
+        """格式化为XML（兼容 List[Dict] 与 Dict[str, List]）"""
         root = ET.Element("dataforge_output")
 
-        for generator_type, values in data.items():
-            generator_elem = ET.SubElement(root, "generator")
-            generator_elem.set("type", generator_type)
-            generator_elem.set("count", str(len(values)))
-
-            for i, value in enumerate(values):
-                item_elem = ET.SubElement(generator_elem, "item")
+        if isinstance(data, list):
+            # 新格式：记录列表 List[Dict]
+            for i, record in enumerate(data):
+                item_elem = ET.SubElement(root, "item")
                 item_elem.set("index", str(i))
-
-                if isinstance(value, dict):
-                    for key, val in value.items():
+                if isinstance(record, dict):
+                    for key, val in record.items():
                         field_elem = ET.SubElement(item_elem, "field")
-                        field_elem.set("name", key)
+                        field_elem.set("name", str(key))
                         field_elem.text = str(val)
                 else:
-                    item_elem.text = str(value)
+                    item_elem.text = str(record)
+        else:
+            # 旧格式：按生成器类型聚合的 Dict[str, List]
+            for generator_type, values in data.items():
+                generator_elem = ET.SubElement(root, "generator")
+                generator_elem.set("type", generator_type)
+                generator_elem.set("count", str(len(values)))
+
+                for i, value in enumerate(values):
+                    item_elem = ET.SubElement(generator_elem, "item")
+                    item_elem.set("index", str(i))
+
+                    if isinstance(value, dict):
+                        for key, val in value.items():
+                            field_elem = ET.SubElement(item_elem, "field")
+                            field_elem.set("name", key)
+                            field_elem.text = str(val)
+                    else:
+                        item_elem.text = str(value)
 
         if pretty:
             rough_string = ET.tostring(root, encoding="unicode")
@@ -168,7 +184,7 @@ class OutputFormatter:
                     sql = f"INSERT INTO `{table_name}` ({columns_str}) VALUES ({values_str});"
                     sql_statements.append(sql)
 
-        return "\\n".join(sql_statements)
+        return "\n".join(sql_statements)
 
     def save_to_file(
         self,

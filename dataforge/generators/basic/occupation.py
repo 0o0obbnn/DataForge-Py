@@ -6,7 +6,7 @@
 """
 
 import random
-from typing import Any, Optional
+from typing import Optional
 
 from dataforge.core.context import GenerationContext
 from dataforge.core.factory import register_generator
@@ -473,12 +473,12 @@ class OccupationGenerator(DataGenerator):
         result = translation_map.get(chinese_position)
         if result:
             return result
-        
+
         # 尝试部分匹配（如果包含某些关键词）
         for cn, en in translation_map.items():
             if cn in chinese_position:
                 return en
-        
+
         # 如果都找不到，生成一个通用的英文职位
         # 根据职位中的关键词进行简单翻译
         if "医师" in chinese_position or "医生" in chinese_position:
@@ -499,7 +499,7 @@ class OccupationGenerator(DataGenerator):
             return "Assistant"
         elif "实习生" in chinese_position:
             return "Intern"
-        
+
         # 最后返回通用职位
         return "Professional"
 
@@ -507,7 +507,7 @@ class OccupationGenerator(DataGenerator):
         """生成单个职业信息"""
         # 支持language参数（兼容性）
         language = self.parameters.get("language", "").lower()
-        
+
         # 如果没有指定行业，随机选择一个
         industry = self.parameters.get("industry", "").upper()
         if not industry or industry not in self.industries:
@@ -520,11 +520,11 @@ class OccupationGenerator(DataGenerator):
             level = random.choice(list(positions.keys()))
 
         position = random.choice(positions[level])
-        
+
         # 根据language参数转换为英文
         if language == "english":
             return self._to_english(position)
-        
+
         return position
 
     def validate(self, data: str) -> bool:
@@ -544,33 +544,75 @@ class OccupationGenerator(DataGenerator):
 
         # 检查是否是英文职位（通过翻译映射）
         english_positions = [
-            "Technical Director", "Architect", "CTO", "VP of Technology",
-            "R&D Director", "Product Director", "Design Director", "QA Director",
-            "Operations Director", "Senior Engineer", "Technical Manager",
-            "Product Manager", "Project Manager", "QA Manager", "Operations Manager",
-            "Data Analyst", "UI Designer", "Software Engineer", "Frontend Engineer",
-            "Backend Engineer", "QA Engineer", "DevOps Engineer", "Product Assistant",
-            "Doctor", "Nurse", "Engineer", "Manager", "Director", "Supervisor",
-            "Specialist", "Assistant", "Intern", "Professional", "Teacher",
-            "Principal", "Academic Director"
+            "Technical Director",
+            "Architect",
+            "CTO",
+            "VP of Technology",
+            "R&D Director",
+            "Product Director",
+            "Design Director",
+            "QA Director",
+            "Operations Director",
+            "Senior Engineer",
+            "Technical Manager",
+            "Product Manager",
+            "Project Manager",
+            "QA Manager",
+            "Operations Manager",
+            "Data Analyst",
+            "UI Designer",
+            "Software Engineer",
+            "Frontend Engineer",
+            "Backend Engineer",
+            "QA Engineer",
+            "DevOps Engineer",
+            "Product Assistant",
+            "Doctor",
+            "Nurse",
+            "Engineer",
+            "Manager",
+            "Director",
+            "Supervisor",
+            "Specialist",
+            "Assistant",
+            "Intern",
+            "Professional",
+            "Teacher",
+            "Principal",
+            "Academic Director",
         ]
-        
+
         if value in english_positions:
             return True
 
         # 检查是否包含常见职业关键词（更宽松的验证）
         common_keywords = [
-            "工程师", "经理", "总监", "主管", "专员", "助理", "实习生",
-            "医生", "医师", "护士", "教师", "老师", "校长", "主任",
-            "分析师", "设计师", "顾问", "师", "长", "员"
+            "工程师",
+            "经理",
+            "总监",
+            "主管",
+            "专员",
+            "助理",
+            "实习生",
+            "医生",
+            "医师",
+            "护士",
+            "教师",
+            "老师",
+            "校长",
+            "主任",
+            "分析师",
+            "设计师",
+            "顾问",
+            "师",
+            "长",
+            "员",
         ]
-        
+
         if any(keyword in value for keyword in common_keywords):
             return True
 
         return False
-
-
 
     @property
     def generator_type(self) -> GeneratorType:
@@ -581,6 +623,8 @@ class OccupationGenerator(DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 @register_generator("generic_occupation")
 class GenericOccupationGenerator(DataGenerator):
     """通用职业生成器
@@ -629,11 +673,8 @@ class GenericOccupationGenerator(DataGenerator):
     def validate(self, data: str) -> bool:
         """验证通用职业信息是否有效"""
         return bool(
-            isinstance(data, str)
-            and data.strip()
-            and data.strip() in self.occupations
+            isinstance(data, str) and data.strip() and data.strip() in self.occupations
         )
-
 
     @property
     def generator_type(self) -> GeneratorType:

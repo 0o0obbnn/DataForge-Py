@@ -6,7 +6,7 @@ from typing import Union
 class SQLFormatter:
     """Formatter for SQL output."""
 
-    def __init__(self, table_name: str = 'test_data', batch_size: int = None):
+    def __init__(self, table_name: str = "test_data", batch_size: int = None):
         """Initialize SQL formatter.
 
         Args:
@@ -48,9 +48,9 @@ class SQLFormatter:
         for item in data:
             values = []
             for col in columns:
-                value = item.get(col, 'NULL')
+                value = item.get(col, "NULL")
                 if value is None:
-                    values.append('NULL')
+                    values.append("NULL")
                 elif isinstance(value, str):
                     # Escape single quotes
                     escaped_value = value.replace("'", "''")
@@ -61,9 +61,11 @@ class SQLFormatter:
             sql = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({', '.join(values)});"
             sql_lines.append(sql)
 
-        return '\n'.join(sql_lines)
+        return "\n".join(sql_lines)
 
-    def format_to_file(self, data: Union[dict, list], filepath: str, table_name: str = None, **kwargs) -> None:
+    def format_to_file(
+        self, data: Union[dict, list], filepath: str, table_name: str = None, **kwargs
+    ) -> None:
         """Format data to SQL file.
 
         Args:
@@ -73,5 +75,5 @@ class SQLFormatter:
             **kwargs: Additional formatting options
         """
         sql_content = self.format(data, table_name=table_name, **kwargs)
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(sql_content)

@@ -1,20 +1,20 @@
-from ...core.types import GeneratorType
-
 """网络/设备类生成器"""
 
 import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 import socket
 import struct
 from typing import Any, Optional
 
+from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -42,7 +42,6 @@ from ...core.protocols import Validator
 #   random.randint(a, b) → secrets.randbelow(b - a + 1) + a
 #   random.randrange(n) → secrets.randbelow(n)
 #   For statistical distributions, consider if CSPRNG is necessary
-
 
 
 class IPAddressValidator(Validator):
@@ -70,6 +69,7 @@ class IPAddressValidator(Validator):
         return "Invalid IP address format"
 
 
+@register_generator("ipaddress", aliases=["ip", "ipv4", "ipv6"])
 class IPAddressGenerator(DataGenerator[str]):
     """IP地址生成器"""
 
@@ -302,10 +302,9 @@ class IPAddressGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class MACAddressValidator(Validator):
@@ -334,6 +333,7 @@ class MACAddressValidator(Validator):
         return "Invalid MAC address format"
 
 
+@register_generator("mac_address", aliases=["mac", "mac-address"])
 class MACAddressGenerator(DataGenerator[str]):
     """MAC地址生成器"""
 
@@ -445,10 +445,9 @@ class MACAddressGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class DomainValidator(Validator):
@@ -468,6 +467,7 @@ class DomainValidator(Validator):
         return "Invalid domain name format"
 
 
+@register_generator("domain", aliases=["domain_name", "host"])
 class DomainGenerator(DataGenerator[str]):
     """域名生成器"""
 
@@ -541,7 +541,10 @@ class DomainGenerator(DataGenerator[str]):
 
     def _generate_subdomains(self) -> list[str]:
         """生成子域名列表"""
-        levels = secrets.randbelow(self.subdomain_levels[1] - self.subdomain_levels[0] + 1) + self.subdomain_levels[0]
+        levels = (
+            secrets.randbelow(self.subdomain_levels[1] - self.subdomain_levels[0] + 1)
+            + self.subdomain_levels[0]
+        )
         subdomains = []
 
         for _ in range(levels):
@@ -569,14 +572,19 @@ class DomainGenerator(DataGenerator[str]):
                 return word1 + word2
         else:
             # 生成随机字符串
-            length = secrets.randbelow(self.domain_length[1] - self.domain_length[0] + 1) + self.domain_length[0]
+            length = (
+                secrets.randbelow(self.domain_length[1] - self.domain_length[0] + 1)
+                + self.domain_length[0]
+            )
             return self._generate_word((length, length))
 
     def _generate_word(self, length_range) -> str:
         """生成单词"""
         import string
 
-        length = secrets.randbelow(length_range[1] - length_range[0] + 1) + length_range[0]
+        length = (
+            secrets.randbelow(length_range[1] - length_range[0] + 1) + length_range[0]
+        )
         return "".join(random.choices(string.ascii_lowercase, k=length))
 
     def _select_tld(self) -> str:
@@ -604,14 +612,19 @@ class DomainGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["custom_tlds", "domain_length", "subdomain_levels", "tld_type", "use_real_words"]
+        return [
+            "custom_tlds",
+            "domain_length",
+            "subdomain_levels",
+            "tld_type",
+            "use_real_words",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class PortNumberValidator(Validator):
@@ -629,6 +642,7 @@ class PortNumberValidator(Validator):
         return "Port number must be an integer between 1 and 65535"
 
 
+@register_generator("port", aliases=["port_number", "portnum"])
 class PortNumberGenerator(DataGenerator[int]):
     """端口号生成器"""
 
@@ -763,10 +777,9 @@ class PortNumberGenerator(DataGenerator[int]):
 
     def validate(self, data: int) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class GenericIPAddressGenerator(IPAddressGenerator):

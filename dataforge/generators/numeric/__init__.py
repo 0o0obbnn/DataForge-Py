@@ -4,13 +4,13 @@
 
 from .advanced import (
     CurrencyGenerator,
-    DecimalGenerator as AdvancedDecimalGenerator,
     IntegerGenerator,
     PercentageGenerator,
     ScientificNumberGenerator,
 )
-from .number import NumberGenerator
+from .advanced import DecimalGenerator as AdvancedDecimalGenerator
 from .decimal import DecimalGenerator
+from .number import NumberGenerator
 
 # 自动注册所有生成器类
 __all__ = [

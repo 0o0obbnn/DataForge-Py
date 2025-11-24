@@ -5,7 +5,7 @@
 """
 
 import secrets
-from typing import Optional
+from typing import Any, Optional, Union
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -299,35 +299,54 @@ class CryptoAddressGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-
 @register_generator("crypto_address", ["加密货币地址", "crypto", "钱包地址"])
 class GenericCryptoAddressGenerator(CryptoAddressGenerator):
     """通用加密货币地址生成器注册版本"""
+
     pass
 
 
-
-# 导入通用加密货币生成器
-from typing import Union, Dict, Any
-
-
-@register_generator("crypto", aliases=["cryptocurrency"])
-class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
+# 通用加密货币生成器已在文件开头定义
+# 这里的重复定义应该被移除或合并
+class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
     """通用加密货币数据生成器"""
 
     def _setup(self) -> None:
         """初始化加密货币生成器参数"""
-        self.data_type = self.parameters.get("type", "full")  # full, symbol, price, address, etc.
+        self.data_type = self.parameters.get(
+            "type", "full"
+        )  # full, symbol, price, address, etc.
         self.crypto_type = self.parameters.get("crypto_type", "bitcoin")
         self.network = self.parameters.get("network", "mainnet")
-        
+
         # 加密货币符号列表
         self.crypto_symbols = [
-            "BTC", "ETH", "USDT", "BNB", "XRP", "ADA", "DOGE", "SOL", 
-            "DOT", "MATIC", "LTC", "SHIB", "TRX", "AVAX", "UNI", "LINK",
-            "ATOM", "XMR", "ETC", "XLM", "BCH", "ALGO", "VET", "FIL"
+            "BTC",
+            "ETH",
+            "USDT",
+            "BNB",
+            "XRP",
+            "ADA",
+            "DOGE",
+            "SOL",
+            "DOT",
+            "MATIC",
+            "LTC",
+            "SHIB",
+            "TRX",
+            "AVAX",
+            "UNI",
+            "LINK",
+            "ATOM",
+            "XMR",
+            "ETC",
+            "XLM",
+            "BCH",
+            "ALGO",
+            "VET",
+            "FIL",
         ]
-        
+
         # 加密货币名称
         self.crypto_names = {
             "BTC": "Bitcoin",
@@ -353,13 +372,15 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
             "BCH": "Bitcoin Cash",
             "ALGO": "Algorand",
             "VET": "VeChain",
-            "FIL": "Filecoin"
+            "FIL": "Filecoin",
         }
-        
+
         # 加密货币类型
         self.crypto_types = ["coin", "token", "stablecoin"]
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> Union[str, Dict[str, Any]]:
+    def _generate_raw(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[str, dict[str, Any]]:
         """生成加密货币数据"""
         if self.data_type == "symbol":
             return self._generate_symbol()
@@ -381,13 +402,18 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
     def _generate_price(self) -> float:
         """生成加密货币价格"""
         # 生成随机价格，范围从0.01到100000
-        price_range = secrets.choice([
-            (0.01, 1.0),      # 小币种
-            (1.0, 100.0),     # 中等币种
-            (100.0, 10000.0), # 大币种
-            (10000.0, 100000.0) # 比特币级别
-        ])
-        price = secrets.randbelow(int((price_range[1] - price_range[0]) * 100)) / 100 + price_range[0]
+        price_range = secrets.choice(
+            [
+                (0.01, 1.0),  # 小币种
+                (1.0, 100.0),  # 中等币种
+                (100.0, 10000.0),  # 大币种
+                (10000.0, 100000.0),  # 比特币级别
+            ]
+        )
+        price = (
+            secrets.randbelow(int((price_range[1] - price_range[0]) * 100)) / 100
+            + price_range[0]
+        )
         return round(price, 2)
 
     def _generate_bitcoin_address(self) -> str:
@@ -415,19 +441,19 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
         else:
             return self._generate_ethereum_address()
 
-    def _generate_full_data(self) -> Dict[str, Any]:
+    def _generate_full_data(self) -> dict[str, Any]:
         """生成完整的加密货币数据"""
         symbol = self._generate_symbol()
         name = self.crypto_names.get(symbol, symbol)
         price = self._generate_price()
-        
+
         # 生成市值和交易量
         market_cap = round(price * secrets.randbelow(1000000000) + 100000000, 2)
         volume_24h = round(market_cap * (secrets.randbelow(50) + 1) / 100, 2)
-        
+
         # 生成24小时变化
         change_24h = round((secrets.randbelow(2000) - 1000) / 100, 2)  # -10% to +10%
-        
+
         # 生成地址
         if symbol in ["BTC", "BCH", "LTC"]:
             address = self._generate_bitcoin_address()
@@ -435,7 +461,7 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
         else:
             address = self._generate_ethereum_address()
             network = "Ethereum"
-        
+
         # 确定类型
         if symbol in ["USDT", "USDC", "DAI"]:
             crypto_type = "stablecoin"
@@ -443,7 +469,7 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
             crypto_type = "coin"
         else:
             crypto_type = "token"
-        
+
         return {
             "symbol": symbol,
             "name": name,
@@ -453,10 +479,10 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
             "change_24h": change_24h,
             "address": address,
             "network": network,
-            "type": crypto_type
+            "type": crypto_type,
         }
 
-    def validate(self, data: Union[str, Dict[str, Any]]) -> bool:
+    def validate(self, data: Union[str, dict[str, Any]]) -> bool:
         """验证加密货币数据"""
         if self.data_type == "symbol":
             return isinstance(data, str) and len(data) >= 2 and data.isupper()
@@ -486,6 +512,8 @@ class CryptoGenerator(DataGenerator[Union[str, Dict[str, Any]]]):
     def supported_parameters(self) -> list[str]:
         return ["type", "crypto_type", "network"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[str, Dict[str, Any]]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[str, dict[str, Any]]:
         """生成单个数据项"""
         return self._generate_raw(context)

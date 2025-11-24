@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 上下文感知的基础数据生成器
 
@@ -15,12 +13,17 @@ from typing import Any, Optional
 from dataforge.core.context import ContextAwareGenerator, ExtendedGenerationContext
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
+from dataforge.core.types import GeneratorType
 
 
 class ContextAwareNameGenerator(ContextAwareGenerator, DataGenerator):
     """上下文感知的姓名生成器"""
 
-    def __init__(self, config: GeneratorConfig, context: Optional[ExtendedGenerationContext] = None):
+    def __init__(
+        self,
+        config: GeneratorConfig,
+        context: Optional[ExtendedGenerationContext] = None,
+    ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
@@ -150,9 +153,6 @@ class ContextAwareNameGenerator(ContextAwareGenerator, DataGenerator):
         chinese_chars = sum(1 for char in data if "\u4e00" <= char <= "\u9fff")
         return chinese_chars >= 2
 
-
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -162,10 +162,16 @@ class ContextAwareNameGenerator(ContextAwareGenerator, DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class ContextAwareAgeGenerator(ContextAwareGenerator, DataGenerator):
     """上下文感知的年龄生成器"""
 
-    def __init__(self, config: GeneratorConfig, context: Optional[ExtendedGenerationContext] = None):
+    def __init__(
+        self,
+        config: GeneratorConfig,
+        context: Optional[ExtendedGenerationContext] = None,
+    ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
@@ -196,7 +202,11 @@ class ContextAwareAgeGenerator(ContextAwareGenerator, DataGenerator):
                 age_bias = 0
 
             age = max(
-                min_age, min(max_age, secrets.randbelow(max_age - min_age + 1) + min_age + age_bias)
+                min_age,
+                min(
+                    max_age,
+                    secrets.randbelow(max_age - min_age + 1) + min_age + age_bias,
+                ),
             )
         else:
             age = secrets.randbelow(max_age - min_age + 1) + min_age
@@ -229,9 +239,6 @@ class ContextAwareAgeGenerator(ContextAwareGenerator, DataGenerator):
         """验证年龄"""
         return isinstance(data, int) and 0 <= data <= 120
 
-
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -241,10 +248,16 @@ class ContextAwareAgeGenerator(ContextAwareGenerator, DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class ContextAwareIDCardGenerator(ContextAwareGenerator, DataGenerator):
     """上下文感知的身份证生成器"""
 
-    def __init__(self, config: GeneratorConfig, context: Optional[ExtendedGenerationContext] = None):
+    def __init__(
+        self,
+        config: GeneratorConfig,
+        context: Optional[ExtendedGenerationContext] = None,
+    ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
@@ -382,9 +395,6 @@ class ContextAwareIDCardGenerator(ContextAwareGenerator, DataGenerator):
         # 校验位验证
         return data[-1].upper() == self._calculate_check_digit(data[:-1])
 
-
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -394,10 +404,16 @@ class ContextAwareIDCardGenerator(ContextAwareGenerator, DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class ContextAwareEmailGenerator(ContextAwareGenerator, DataGenerator):
     """上下文感知的邮箱生成器"""
 
-    def __init__(self, config: GeneratorConfig, context: Optional[ExtendedGenerationContext] = None):
+    def __init__(
+        self,
+        config: GeneratorConfig,
+        context: Optional[ExtendedGenerationContext] = None,
+    ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
@@ -477,9 +493,6 @@ class ContextAwareEmailGenerator(ContextAwareGenerator, DataGenerator):
         # 基本格式验证
         return username.replace(".", "").replace("_", "").replace("-", "").isalnum()
 
-
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -489,10 +502,16 @@ class ContextAwareEmailGenerator(ContextAwareGenerator, DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class ContextAwarePhoneGenerator(ContextAwareGenerator, DataGenerator):
     """上下文感知的手机号生成器"""
 
-    def __init__(self, config: GeneratorConfig, context: Optional[ExtendedGenerationContext] = None):
+    def __init__(
+        self,
+        config: GeneratorConfig,
+        context: Optional[ExtendedGenerationContext] = None,
+    ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
@@ -583,8 +602,6 @@ class ContextAwarePhoneGenerator(ContextAwareGenerator, DataGenerator):
             return False
 
         return data.isdigit() and data.startswith(tuple(self._prefixes))
-
-
 
     @property
     def generator_type(self) -> GeneratorType:

@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 增强版基础数据生成器
 
@@ -12,18 +10,20 @@ import string
 from datetime import datetime
 from typing import Any, Optional
 
-from dataforge.core.context import GenerationContext, ExtendedGenerationContext
+from dataforge.core.context import ExtendedGenerationContext, GenerationContext
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import GeneratorConfig
+from dataforge.core.types import GeneratorType
 from dataforge.generators.basic.age import AgeGenerator
-from dataforge.generators.contact.email import EmailGenerator
 from dataforge.generators.basic.idcard import IDCardGenerator, IDCardValidator
 from dataforge.generators.basic.name import NameGenerator, NameValidator
+from dataforge.generators.contact.email import EmailGenerator
 from dataforge.generators.contact.phone import PhoneNumberGenerator
 
 
 class EnhancedNameGenerator(NameGenerator):
     """增强版姓名生成器，支持上下文关联"""
+
     # 类型注解，使 Pylance 识别父类 __init__ 中赋值的属性
     validator: NameValidator
 
@@ -68,8 +68,6 @@ class EnhancedNameGenerator(NameGenerator):
 
         return name
 
-
-
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
         return super().validate(data)
@@ -83,6 +81,8 @@ class EnhancedNameGenerator(NameGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class EnhancedAgeGenerator(AgeGenerator):
     """增强版年龄生成器，支持上下文关联"""
 
@@ -139,8 +139,6 @@ class EnhancedAgeGenerator(AgeGenerator):
         else:
             return "senior"
 
-
-
     def validate(self, data: int) -> bool:
         """验证生成的数据"""
         return super().validate(data)
@@ -154,8 +152,11 @@ class EnhancedAgeGenerator(AgeGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class EnhancedIDCardGenerator(IDCardGenerator):
     """增强版身份证生成器，支持上下文关联"""
+
     # 类型注解，引用父类 __init__ 中设置的属性
     all_district_codes: list[str]
     validator: IDCardValidator
@@ -271,8 +272,6 @@ class EnhancedIDCardGenerator(IDCardGenerator):
         total = sum(int(id_17[i]) * weights[i] for i in range(17))
         return check_codes[total % 11]
 
-
-
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
         return super().validate(data)
@@ -286,6 +285,8 @@ class EnhancedIDCardGenerator(IDCardGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class EnhancedPhoneGenerator(PhoneNumberGenerator):
     """增强版手机号生成器，支持上下文关联"""
 
@@ -322,8 +323,6 @@ class EnhancedPhoneGenerator(PhoneNumberGenerator):
 
         return phone
 
-
-
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
         return super().validate(data)
@@ -337,6 +336,8 @@ class EnhancedPhoneGenerator(PhoneNumberGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class EnhancedEmailGenerator(EmailGenerator):
     """增强版邮箱生成器，支持上下文关联"""
 
@@ -409,8 +410,6 @@ class EnhancedEmailGenerator(EmailGenerator):
 
         return email
 
-
-
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
         return super().validate(data)
@@ -424,6 +423,8 @@ class EnhancedEmailGenerator(EmailGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 class PersonDataGenerator:
     """个人数据综合生成器"""
 
@@ -435,7 +436,9 @@ class PersonDataGenerator:
             external_context: 可选的外部上下文，用于继承已有数据
         """
         # 使用外部上下文或创建新的
-        self.context = external_context if external_context else ExtendedGenerationContext()
+        self.context = (
+            external_context if external_context else ExtendedGenerationContext()
+        )
 
         # 创建基础配置
         base_config = GeneratorConfig(generator_type="enhanced", parameters={})

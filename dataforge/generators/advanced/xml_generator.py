@@ -10,7 +10,8 @@ import secrets
 from datetime import datetime
 from typing import Any, Optional
 
-from dataforge.core.generator import DataGenerator, GeneratorConfig, GenerationContext
+from dataforge.core.factory import register_generator
+from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
 
 from ...core.types import GeneratorType
 
@@ -27,11 +28,41 @@ class XMLGenerator(DataGenerator):
     def _generate_tag_name(self) -> str:
         """生成有效的XML标签名"""
         words = [
-            "user", "data", "config", "settings", "value", "item", "property",
-            "name", "title", "description", "status", "type", "category", "level",
-            "amount", "count", "size", "length", "width", "height", "weight",
-            "color", "style", "format", "mode", "option", "flag", "tag",
-            "label", "code", "id", "key", "index", "position", "order"
+            "user",
+            "data",
+            "config",
+            "settings",
+            "value",
+            "item",
+            "property",
+            "name",
+            "title",
+            "description",
+            "status",
+            "type",
+            "category",
+            "level",
+            "amount",
+            "count",
+            "size",
+            "length",
+            "width",
+            "height",
+            "weight",
+            "color",
+            "style",
+            "format",
+            "mode",
+            "option",
+            "flag",
+            "tag",
+            "label",
+            "code",
+            "id",
+            "key",
+            "index",
+            "position",
+            "order",
         ]
         return random.choice(words)
 
@@ -42,33 +73,113 @@ class XMLGenerator(DataGenerator):
     def _generate_attribute_value(self) -> str:
         """生成属性值"""
         words = [
-            "active", "inactive", "pending", "completed", "success", "failed",
-            "enabled", "disabled", "true", "false", "yes", "no", "on", "off",
-            "red", "blue", "green", "yellow", "black", "white", "large", "small",
-            "high", "low", "fast", "slow", "new", "old", "first", "last"
+            "active",
+            "inactive",
+            "pending",
+            "completed",
+            "success",
+            "failed",
+            "enabled",
+            "disabled",
+            "true",
+            "false",
+            "yes",
+            "no",
+            "on",
+            "off",
+            "red",
+            "blue",
+            "green",
+            "yellow",
+            "black",
+            "white",
+            "large",
+            "small",
+            "high",
+            "low",
+            "fast",
+            "slow",
+            "new",
+            "old",
+            "first",
+            "last",
         ]
         return random.choice(words)
 
     def _generate_text_content(self) -> str:
         """生成文本内容"""
         words = [
-            "lorem", "ipsum", "dolor", "sit", "amet", "consectetur", "adipiscing", "elit",
-            "sed", "do", "eiusmod", "tempor", "incididunt", "ut", "labore", "et", "dolore",
-            "magna", "aliqua", "enim", "ad", "minim", "veniam", "quis", "nostrud",
-            "exercitation", "ullamco", "laboris", "nisi", "aliquip", "ex", "ea", "commodo",
-            "consequat", "duis", "aute", "irure", "in", "reprehenderit", "voluptate",
-            "velit", "esse", "cillum", "fugiat", "nulla", "pariatur", "excepteur", "sint",
-            "occaecat", "cupidatat", "non", "proident", "sunt", "culpa", "qui", "officia",
-            "deserunt", "mollit", "anim", "id", "est", "laborum"
+            "lorem",
+            "ipsum",
+            "dolor",
+            "sit",
+            "amet",
+            "consectetur",
+            "adipiscing",
+            "elit",
+            "sed",
+            "do",
+            "eiusmod",
+            "tempor",
+            "incididunt",
+            "ut",
+            "labore",
+            "et",
+            "dolore",
+            "magna",
+            "aliqua",
+            "enim",
+            "ad",
+            "minim",
+            "veniam",
+            "quis",
+            "nostrud",
+            "exercitation",
+            "ullamco",
+            "laboris",
+            "nisi",
+            "aliquip",
+            "ex",
+            "ea",
+            "commodo",
+            "consequat",
+            "duis",
+            "aute",
+            "irure",
+            "in",
+            "reprehenderit",
+            "voluptate",
+            "velit",
+            "esse",
+            "cillum",
+            "fugiat",
+            "nulla",
+            "pariatur",
+            "excepteur",
+            "sint",
+            "occaecat",
+            "cupidatat",
+            "non",
+            "proident",
+            "sunt",
+            "culpa",
+            "qui",
+            "officia",
+            "deserunt",
+            "mollit",
+            "anim",
+            "id",
+            "est",
+            "laborum",
         ]
-        return ' '.join(random.choices(words, k=secrets.randbelow(7) + 2))
+        return " ".join(random.choices(words, k=secrets.randbelow(7) + 2))
 
     def _build_xml_string(self, root_name: str) -> str:
         """构建XML字符串"""
         lines = ['<?xml version="1.0" encoding="UTF-8"?>']
 
         # 构建根元素开始标签
-        root_start = f'<{root_name}'
+        root_start = f"<{root_name}"
 
         # 添加xmlns作为普通属性（避免命名空间处理）
         use_namespace = self.config.parameters.get("use_namespace", False)
@@ -81,26 +192,28 @@ class XMLGenerator(DataGenerator):
         if self.use_attributes:
             root_start += f' id="{secrets.randbelow(100) + 1}" type="generated"'
 
-        root_start += '>'
+        root_start += ">"
         lines.append(root_start)
 
         # 添加子元素
-        lines.append('  <name>test_data</name>')
-        lines.append(f'  <timestamp>{datetime.now().isoformat()}</timestamp>')
+        lines.append("  <name>test_data</name>")
+        lines.append(f"  <timestamp>{datetime.now().isoformat()}</timestamp>")
 
         # 关闭根元素
-        lines.append(f'</{root_name}>')
+        lines.append(f"</{root_name}>")
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def _build_template_xml_string(self, template_name: str, template_config: dict[str, Any]) -> str:
+    def _build_template_xml_string(
+        self, template_name: str, template_config: dict[str, Any]
+    ) -> str:
         """构建模板XML字符串"""
         structure = template_config.get("structure", {})
 
         lines = ['<?xml version="1.0" encoding="UTF-8"?>']
 
         # 构建根元素开始标签
-        root_start = f'<{template_name}'
+        root_start = f"<{template_name}"
 
         # 添加xmlns作为普通属性（避免命名空间处理）
         use_namespace = self.config.parameters.get("use_namespace", False)
@@ -113,17 +226,17 @@ class XMLGenerator(DataGenerator):
         if self.use_attributes:
             root_start += f' id="{secrets.randbelow(100) + 1}" type="generated"'
 
-        root_start += '>'
+        root_start += ">"
         lines.append(root_start)
 
         # 添加子元素
         for key, value in structure.items():
-            lines.append(f'  <{key}>{value}</{key}>')
+            lines.append(f"  <{key}>{value}</{key}>")
 
         # 关闭根元素
-        lines.append(f'</{template_name}>')
+        lines.append(f"</{template_name}>")
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个XML数据"""
@@ -144,26 +257,26 @@ class XMLGenerator(DataGenerator):
                 return False
 
             # 移除XML声明（如果存在）
-            if data.startswith('<?xml'):
-                end_decl = data.find('?>')
+            if data.startswith("<?xml"):
+                end_decl = data.find("?>")
                 if end_decl != -1:
-                    data = data[end_decl + 2:].strip()
+                    data = data[end_decl + 2 :].strip()
 
             # 检查是否有开始和结束标签
-            start_match = re.search(r'<(\w+)(\s[^>]*)?>', data)
+            start_match = re.search(r"<(\w+)(\s[^>]*)?>", data)
             if not start_match:
                 return False
 
             root_name = start_match.group(1)
 
             # 检查是否有对应的结束标签
-            close_pattern = f'</{root_name}>'
+            close_pattern = f"</{root_name}>"
             if close_pattern not in data:
                 return False
 
             # 检查标签是否平衡
-            open_tags = re.findall(r'<(\w+)(\s[^>]*)?>', data)
-            close_tags = re.findall(r'</(\w+)>', data)
+            open_tags = re.findall(r"<(\w+)(\s[^>]*)?>", data)
+            close_tags = re.findall(r"</(\w+)>", data)
 
             return len(open_tags) == len(close_tags)
         except Exception:
@@ -176,24 +289,12 @@ class XMLGenerator(DataGenerator):
                 "structure": {
                     "name": "test_user",
                     "email": "test@example.com",
-                    "active": "true"
+                    "active": "true",
                 }
             },
-            "product": {
-                "structure": {
-                    "name": "sample_product",
-                    "price": "99.99"
-                }
-            },
-            "config": {
-                "structure": {
-                    "setting": "value",
-                    "version": "1.0"
-                }
-            }
+            "product": {"structure": {"name": "sample_product", "price": "99.99"}},
+            "config": {"structure": {"setting": "value", "version": "1.0"}},
         }
-
-
 
     @property
     def generator_type(self) -> GeneratorType:
@@ -203,7 +304,17 @@ class XMLGenerator(DataGenerator):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return []
+        return [
+            "depth",
+            "use_attributes",
+            "use_comments",
+            "use_namespace",
+            "namespace",
+            "template",
+            "root_name",
+        ]
+
+
 class GenericXMLGenerator(XMLGenerator):
     """通用XML数据生成器"""
 
@@ -236,26 +347,26 @@ class GenericXMLGenerator(XMLGenerator):
                 return False
 
             # 移除XML声明（如果存在）
-            if data.startswith('<?xml'):
-                end_decl = data.find('?>')
+            if data.startswith("<?xml"):
+                end_decl = data.find("?>")
                 if end_decl != -1:
-                    data = data[end_decl + 2:].strip()
+                    data = data[end_decl + 2 :].strip()
 
             # 检查是否有开始和结束标签
-            start_match = re.search(r'<(\w+)(\s[^>]*)?>', data)
+            start_match = re.search(r"<(\w+)(\s[^>]*)?>", data)
             if not start_match:
                 return False
 
             root_name = start_match.group(1)
 
             # 检查是否有对应的结束标签
-            close_pattern = f'</{root_name}>'
+            close_pattern = f"</{root_name}>"
             if close_pattern not in data:
                 return False
 
             # 检查标签是否平衡
-            open_tags = re.findall(r'<(\w+)(\s[^>]*)?>', data)
-            close_tags = re.findall(r'</(\w+)>', data)
+            open_tags = re.findall(r"<(\w+)(\s[^>]*)?>", data)
+            close_tags = re.findall(r"</(\w+)>", data)
 
             return len(open_tags) == len(close_tags)
         except Exception:
@@ -275,9 +386,13 @@ class GenericXMLGenerator(XMLGenerator):
             "namespace",
             "use_attributes",
             "template",
-            "root_name"
+            "root_name",
         ]
 
     def _get_xml_templates(self) -> dict[str, dict[str, Any]]:
         """获取XML模板配置"""
         return super()._get_xml_templates()
+
+
+# 注册生成器
+register_generator("xml_generator", ["xml"])(XMLGenerator)

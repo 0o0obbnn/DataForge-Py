@@ -254,8 +254,6 @@ class PasswordGenerator(DataGenerator):
 
         return True
 
-
-
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)

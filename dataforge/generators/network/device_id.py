@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 设备ID/IMEI/IMSI生成器模块
 支持生成各种设备标识符
@@ -9,9 +7,11 @@ import secrets
 import string
 from typing import Optional
 
-from dataforge.core.context import GenerationContext
-from dataforge.core.generator import DataGenerator, GeneratorConfig
-from dataforge.core.protocols import Validator
+from ...core.context import GenerationContext
+from ...core.factory import register_generator
+from ...core.generator import DataGenerator, GeneratorConfig
+from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 
 class DeviceIDValidator(Validator):
@@ -75,16 +75,17 @@ class DeviceIDValidator(Validator):
         return "Invalid device ID format"
 
 
+@register_generator("device_id", aliases=["deviceid", "imei", "imsi"])
 class DeviceIDGenerator(DataGenerator[str]):
     """设备ID/IMEI/IMSI生成器"""
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.device_type = self.parameters.get("type", "IMEI")
-        self.format = self.parameters.get("format", "standard")
-        self.country_code = self.parameters.get("country_code", "460")
-        self.network_code = self.parameters.get("network_code", "00")
-        self.validator = DeviceIDValidator(self.device_type)
+        self.device_type = "IMEI"
+        self.format = "standard"
+        self.country_code = "460"
+        self.network_code = "00"
+        self.validator = None
 
     def _setup(self) -> None:
         """配置生成器参数"""
@@ -92,9 +93,14 @@ class DeviceIDGenerator(DataGenerator[str]):
         self.format = self.parameters.get("format", "standard")
         self.country_code = self.parameters.get("country_code", "460")
         self.network_code = self.parameters.get("network_code", "00")
+        self.validator = DeviceIDValidator(self.device_type)
 
     def generate(self, context: Optional[GenerationContext] = None) -> str:
         """生成原始设备ID"""
+        if self.validator is None:
+            # Re-initialize validator if it's None
+            self.validator = DeviceIDValidator(self.device_type)
+
         if self.device_type == "IMEI":
             return self._generate_imei()
         elif self.device_type == "IMSI":
@@ -224,15 +230,12 @@ class DeviceIDGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class GenericDeviceIDGenerator(DeviceIDGenerator):
     """通用设备ID生成器"""
 
     pass
-
-

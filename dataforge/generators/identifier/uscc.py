@@ -185,7 +185,9 @@ class USCCGenerator(DataGenerator[str]):
         else:
             # 生成错误的校验码
             correct_check = self.validator._calculate_check_code(code_without_check)
-            possible_wrong_codes = [c for c in self.check_code_chars if c != correct_check]
+            possible_wrong_codes = [
+                c for c in self.check_code_chars if c != correct_check
+            ]
             check_code = secrets.choice(possible_wrong_codes)
 
         return code_without_check + check_code
@@ -204,7 +206,9 @@ class USCCGenerator(DataGenerator[str]):
             "valid": True,
             "uscc": uscc,
             "registration_dept_code": uscc[0],
-            "registration_dept_name": self.registration_departments.get(uscc[0], "未知"),
+            "registration_dept_name": self.registration_departments.get(
+                uscc[0], "未知"
+            ),
             "organization_type_code": uscc[1],
             "organization_type_name": self.organization_types.get(uscc[1], "未知"),
             "region_code": uscc[2:8],
@@ -236,10 +240,9 @@ class USCCGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 @register_generator("chinese_uscc", aliases=["统一社会信用代码", "uscc"])

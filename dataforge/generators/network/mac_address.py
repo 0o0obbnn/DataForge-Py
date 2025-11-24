@@ -5,7 +5,6 @@ MAC地址生成器
 """
 
 import secrets
-import random
 from typing import Optional
 
 from ...core.factory import register_generator
@@ -143,7 +142,7 @@ class MACAddressGenerator(DataGenerator[str]):
         """校验MAC地址格式"""
         if not isinstance(data, str):
             return False
-            
+
         # 移除分隔符
         clean_mac = data.replace(":", "").replace("-", "")
 
@@ -213,6 +212,7 @@ if __name__ == "__main__":
     ]
 
     import logging
+
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 

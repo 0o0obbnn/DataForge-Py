@@ -1,16 +1,13 @@
-from typing import Optional
-import secrets
-
-from ...core.generator import GenerationContext
-
 """
 长文本生成器
 支持生成各种长度的文本内容，包括文章、段落等
 """
 
+import secrets
+from typing import Optional
 
 from dataforge.core.factory import register_generator
-from dataforge.core.generator import DataGenerator, GeneratorType
+from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorType
 
 
 class LongTextGenerator(DataGenerator[str]):
@@ -134,7 +131,10 @@ class LongTextGenerator(DataGenerator[str]):
             sentence = secrets.choice(templates)
 
             # 随机添加连接词
-            if self.include_connectors and (secrets.randbelow(1000000) / 1000000) < self.connector_density:
+            if (
+                self.include_connectors
+                and (secrets.randbelow(1000000) / 1000000) < self.connector_density
+            ):
                 connector = secrets.choice(self.CONNECTORS)
                 sentence = connector + sentence
 
@@ -221,24 +221,23 @@ class LongTextGenerator(DataGenerator[str]):
             "word_count": len(words),
             "char_count": len(data.replace(" ", "").replace("\\n", "")),
             "avg_sentence_length": len(words) / len(sentences) if sentences else 0,
-            "avg_paragraph_length": len(sentences) / len(paragraphs)
-            if paragraphs
-            else 0,
+            "avg_paragraph_length": (
+                len(sentences) / len(paragraphs) if paragraphs else 0
+            ),
             "text_type": self.text_type,
             "language": self.language,
         }
 
         return stats
 
-
-
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
+
+
 # 注册通用生成器
 @register_generator("long_text")
 class GenericLongTextGenerator(LongTextGenerator):
     """通用长文本生成器"""
 
     pass
-

@@ -1,7 +1,7 @@
 """通用参数验证工具"""
 
-from typing import Any, Optional, Tuple
-from datetime import datetime, date
+from datetime import date, datetime
+from typing import Any, Optional
 
 from .exceptions import GeneratorConfigError
 
@@ -10,11 +10,7 @@ class ParameterValidator:
     """参数验证器基类"""
 
     @staticmethod
-    def validate_positive_int(
-        value: Any,
-        param_name: str,
-        min_value: int = 1
-    ) -> int:
+    def validate_positive_int(value: Any, param_name: str, min_value: int = 1) -> int:
         """验证正整数参数
 
         Args:
@@ -35,17 +31,15 @@ class ParameterValidator:
                     f"{param_name} must be >= {min_value}, got {int_value}"
                 )
             return int_value
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as e:
             raise GeneratorConfigError(
                 f"{param_name} must be an integer, got {type(value).__name__}"
-            )
+            ) from e
 
     @staticmethod
     def validate_date_range(
-        start_date: str,
-        end_date: str,
-        param_name: str = "date_range"
-    ) -> Tuple[date, date]:
+        start_date: str, end_date: str, param_name: str = "date_range"
+    ) -> tuple[date, date]:
         """验证日期范围
 
         Args:
@@ -73,14 +67,11 @@ class ParameterValidator:
         except ValueError as e:
             raise GeneratorConfigError(
                 f"{param_name}: Invalid date format. Use YYYY-MM-DD. Error: {e}"
-            )
+            ) from e
 
     @staticmethod
     def validate_choice(
-        value: str,
-        choices: list[str],
-        param_name: str,
-        case_sensitive: bool = False
+        value: str, choices: list[str], param_name: str, case_sensitive: bool = False
     ) -> str:
         """验证选项参数
 
@@ -112,7 +103,7 @@ class ParameterValidator:
         value: float,
         min_value: Optional[float] = None,
         max_value: Optional[float] = None,
-        param_name: str = "value"
+        param_name: str = "value",
     ) -> float:
         """验证数值范围
 

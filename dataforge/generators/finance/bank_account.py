@@ -3,26 +3,15 @@
 支持生成符合各银行规则的银行账号
 """
 
-import random  # TODO: Convert to secrets
 import secrets
-from ...core.types import (
-GeneratorType
-)
 from typing import Optional
 
 from ...core.factory import register_generator
-from ...core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 @register_generator("bank_account", aliases=["account", "bank_account_number"])
@@ -308,7 +297,6 @@ class BankAccountGenerator(DataGenerator[str]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("bank_account", ["银行账号", "bank", "银行卡"])

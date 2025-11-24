@@ -1,5 +1,5 @@
-import secrets
 import re
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
@@ -24,14 +24,16 @@ class PhoneNumberGenerator(DataGenerator[str]):
         )  # STANDARD, COMPACT, INTERNATIONAL
         self.include_extension = self.parameters.get("include_extension", False)
         self.region = self.parameters.get("region", None)  # 区号或省份
-        self.operator = self.parameters.get("operator", None)  # 运营商代码 (CMCC, CUCC, CTCC)
+        self.operator = self.parameters.get(
+            "operator", None
+        )  # 运营商代码 (CMCC, CUCC, CTCC)
         self.valid = self.parameters.get("valid", True)  # 是否生成有效号码
 
         # 加载手机号段数据from配置文件
         try:
             phone_data = load_json("phone_prefixes.json")
             self._load_mobile_prefixes_from_config(phone_data)
-        except:
+        except Exception:
             # 如果配置文件不存在，使用硬编码的前缀
             self._use_hardcoded_mobile_prefixes()
 
@@ -105,14 +107,61 @@ class PhoneNumberGenerator(DataGenerator[str]):
             self.mobile_operator_prefixes["VIRTUAL"] = virtual_prefixes
 
         # 保存无效前缀
-        self.invalid_prefixes = phone_data.get("invalid_prefixes", self.invalid_prefixes)
+        self.invalid_prefixes = phone_data.get(
+            "invalid_prefixes", self.invalid_prefixes
+        )
 
     def _use_hardcoded_mobile_prefixes(self) -> None:
         """使用硬编码的手机号前缀 (配置文件不可用时的fallback)"""
         self.mobile_operator_prefixes = {
-            "CMCC": ["134", "135", "136", "137", "138", "139", "147", "150", "151", "152", "157", "158", "159", "182", "183", "184", "187", "188", "178", "198"],
-            "CUCC": ["130", "131", "132", "145", "155", "156", "166", "171", "175", "176", "185", "186"],
-            "CTCC": ["133", "149", "153", "173", "177", "180", "181", "189", "191", "199"],
+            "CMCC": [
+                "134",
+                "135",
+                "136",
+                "137",
+                "138",
+                "139",
+                "147",
+                "150",
+                "151",
+                "152",
+                "157",
+                "158",
+                "159",
+                "182",
+                "183",
+                "184",
+                "187",
+                "188",
+                "178",
+                "198",
+            ],
+            "CUCC": [
+                "130",
+                "131",
+                "132",
+                "145",
+                "155",
+                "156",
+                "166",
+                "171",
+                "175",
+                "176",
+                "185",
+                "186",
+            ],
+            "CTCC": [
+                "133",
+                "149",
+                "153",
+                "173",
+                "177",
+                "180",
+                "181",
+                "189",
+                "191",
+                "199",
+            ],
             "VIRTUAL": ["170", "171"],
         }
         self.operator_info = {
@@ -159,7 +208,11 @@ class PhoneNumberGenerator(DataGenerator[str]):
             prefix = secrets.choice(self.mobile_operator_prefixes[self.operator])
         else:
             # 随机选择所有前缀
-            all_prefixes = [p for prefixes in self.mobile_operator_prefixes.values() for p in prefixes]
+            all_prefixes = [
+                p
+                for prefixes in self.mobile_operator_prefixes.values()
+                for p in prefixes
+            ]
             prefix = secrets.choice(all_prefixes)
 
         # 生成后8位
@@ -187,10 +240,14 @@ class PhoneNumberGenerator(DataGenerator[str]):
             if len(area_digits) == 2:  # 如010 -> 10
                 local_number = f"{secrets.randbelow(8) + 2}{secrets.randbelow(9000) + 1000}{secrets.randbelow(900) + 100}"
             else:  # 如0755 -> 755
-                local_number = f"{secrets.randbelow(8) + 2}{secrets.randbelow(90000) + 10000}"
+                local_number = (
+                    f"{secrets.randbelow(8) + 2}{secrets.randbelow(90000) + 10000}"
+                )
         else:
             area_digits = area_code
-            local_number = f"{secrets.randbelow(8) + 2}{secrets.randbelow(90000) + 10000}"
+            local_number = (
+                f"{secrets.randbelow(8) + 2}{secrets.randbelow(90000) + 10000}"
+            )
 
         # 组装号码
         if self.format_style == "INTERNATIONAL":
@@ -273,16 +330,15 @@ class PhoneNumberGenerator(DataGenerator[str]):
             return False
 
         prefix = number[:3]
-        all_prefixes = [p for prefixes in self.mobile_operator_prefixes.values() for p in prefixes]
+        all_prefixes = [
+            p for prefixes in self.mobile_operator_prefixes.values() for p in prefixes
+        ]
         return prefix in all_prefixes
 
     def _validate_landline(self, number: str) -> bool:
         """校验固定电话号码"""
         # 固定电话：以0开头，长度为9-11位
-        return (
-            re.match(r"^0\d{2,3}\d{6,8}$", number) is not None
-            and len(number) <= 11
-        )
+        return re.match(r"^0\d{2,3}\d{6,8}$", number) is not None and len(number) <= 11
 
     def _validate_toll_free(self, number: str) -> bool:
         """校验400号码"""

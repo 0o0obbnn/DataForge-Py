@@ -96,6 +96,7 @@ class MaritalStatusGenerator(DataGenerator[str]):
                 age = context.related_data["age"]
             elif "birth_year" in context.related_data:
                 from datetime import datetime
+
                 current_year = datetime.now().year
                 age = current_year - context.related_data["birth_year"]
 
@@ -110,11 +111,14 @@ class MaritalStatusGenerator(DataGenerator[str]):
         """获取基于年龄的权重（公共方法）"""
         return self._age_based_weights(age)
 
-    def generate(self, context: Optional[Union[GenerationContext, dict[str, Any]]] = None) -> str:
+    def generate(
+        self, context: Optional[Union[GenerationContext, dict[str, Any]]] = None
+    ) -> str:
         """生成单个数据项（重载以支持字典类型的context）"""
         if isinstance(context, dict):
             # 为了兼容测试，将字典包装成GenerationContext
             from dataforge.core.generator import GenerationContext
+
             wrapped_context = GenerationContext(related_data=context)
             return self.generate_single(wrapped_context)
         return self.generate_single(context)
@@ -123,4 +127,8 @@ class MaritalStatusGenerator(DataGenerator[str]):
     def validate(self, data: str) -> bool:
         """验证婚姻状况格式"""
         valid_options = self._get_marital_status_options()
-        return isinstance(data, str) and bool(data.strip()) and data.strip() in valid_options
+        return (
+            isinstance(data, str)
+            and bool(data.strip())
+            and data.strip() in valid_options
+        )

@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Union
 
 
-def format_output(data: Union[dict, list], format_type: str = 'json') -> str:
+def format_output(data: Union[dict, list], format_type: str = "json") -> str:
     """Format data for output.
 
     Args:
@@ -19,13 +19,13 @@ def format_output(data: Union[dict, list], format_type: str = 'json') -> str:
     Returns:
         Formatted string
     """
-    if format_type == 'json':
+    if format_type == "json":
         return json.dumps(data, ensure_ascii=False, indent=2)
-    elif format_type == 'csv':
+    elif format_type == "csv":
         return _format_csv(data)
-    elif format_type == 'xml':
+    elif format_type == "xml":
         return _format_xml(data)
-    elif format_type == 'sql':
+    elif format_type == "sql":
         return _format_sql(data)
     else:
         return str(data)
@@ -57,27 +57,27 @@ def _format_csv(data: Union[dict, list]) -> str:
     headers = list(data[0].keys()) if data else []
 
     # Build CSV
-    lines = [','.join(headers)]
+    lines = [",".join(headers)]
     for item in data:
         row = []
         for header in headers:
-            value = item.get(header, '')
+            value = item.get(header, "")
             # Escape commas and quotes
-            if ',' in str(value) or '"' in str(value):
+            if "," in str(value) or '"' in str(value):
                 escaped_value = str(value).replace('"', '""')
                 value = f'"{escaped_value}"'
             row.append(str(value))
-        lines.append(','.join(row))
+        lines.append(",".join(row))
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def _format_xml(data: Union[dict, list]) -> str:
     """Format data as XML."""
     if isinstance(data, dict):
-        return _dict_to_xml(data, 'root')
+        return _dict_to_xml(data, "root")
     elif isinstance(data, list):
-        return _list_to_xml(data, 'root')
+        return _list_to_xml(data, "root")
     else:
         return f"<root>{data}</root>"
 
@@ -107,7 +107,7 @@ def _list_to_xml(lst: list, item_name: str) -> str:
     return xml
 
 
-def _format_sql(data: Union[dict, list], table_name: str = 'test_data') -> str:
+def _format_sql(data: Union[dict, list], table_name: str = "test_data") -> str:
     """Format data as SQL INSERT statements."""
     if not data:
         return ""
@@ -128,7 +128,7 @@ def _format_sql(data: Union[dict, list], table_name: str = 'test_data') -> str:
     for item in data:
         values = []
         for col in columns:
-            value = item.get(col, 'NULL')
+            value = item.get(col, "NULL")
             if isinstance(value, str):
                 escaped_value = value.replace("'", "''")
                 value = f"'{escaped_value}'"
@@ -137,4 +137,4 @@ def _format_sql(data: Union[dict, list], table_name: str = 'test_data') -> str:
         sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({', '.join(values)});"
         sql_lines.append(sql)
 
-    return '\n'.join(sql_lines)
+    return "\n".join(sql_lines)

@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 时间/日历类生成器
 """
@@ -15,6 +13,7 @@ from ...core.generator import (
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -42,7 +41,6 @@ from ...core.protocols import Validator
 #   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
 #   random.randrange(n) → secrets.randbelow(n)
 #   For statistical distributions, consider if CSPRNG is necessary
-
 
 
 class DateValidator(Validator):
@@ -69,6 +67,7 @@ class DateValidator(Validator):
                 # 尝试解析中文格式
                 if "年" in data and "月" in data and "日" in data:
                     import re
+
                     pattern = r"(\d{4})年(\d{1,2})月(\d{1,2})日"
                     match = re.match(pattern, data)
                     if match:
@@ -95,10 +94,7 @@ class DateGenerator(DataGenerator[str]):
 
         # 兼容旧版配置格式
         if isinstance(config, dict):
-            generator_config = GeneratorConfig(
-                generator_type="date",
-                parameters=config
-            )
+            generator_config = GeneratorConfig(generator_type="date", parameters=config)
         else:
             generator_config = config
 
@@ -170,7 +166,9 @@ class DateGenerator(DataGenerator[str]):
 
         # 检查是否需要中文格式
         if self.locale.upper() == "CN" or "年" in self.format_pattern:
-            return f"{random_date.year}年{random_date.month:02d}月{random_date.day:02d}日"
+            return (
+                f"{random_date.year}年{random_date.month:02d}月{random_date.day:02d}日"
+            )
 
         # 使用指定的格式返回日期字符串
         return random_date.strftime(self.format_pattern)
@@ -202,14 +200,20 @@ class DateGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["business_days_only", "end_date", "exclude_holidays", "format", "locale", "start_date"]
+        return [
+            "business_days_only",
+            "end_date",
+            "exclude_holidays",
+            "format",
+            "locale",
+            "start_date",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class TimeValidator(Validator):
@@ -253,10 +257,7 @@ class TimeGenerator(DataGenerator[str]):
 
         # 兼容旧版配置格式
         if isinstance(config, dict):
-            generator_config = GeneratorConfig(
-                generator_type="time",
-                parameters=config
-            )
+            generator_config = GeneratorConfig(generator_type="time", parameters=config)
         else:
             generator_config = config
 
@@ -312,10 +313,20 @@ class TimeGenerator(DataGenerator[str]):
             return self._generate_time_in_range()
         elif self.start_time and self.end_time:
             # 在指定时间范围内生成
-            start_seconds = self.start_time.hour * 3600 + self.start_time.minute * 60 + self.start_time.second
-            end_seconds = self.end_time.hour * 3600 + self.end_time.minute * 60 + self.end_time.second
+            start_seconds = (
+                self.start_time.hour * 3600
+                + self.start_time.minute * 60
+                + self.start_time.second
+            )
+            end_seconds = (
+                self.end_time.hour * 3600
+                + self.end_time.minute * 60
+                + self.end_time.second
+            )
 
-            random_seconds = secrets.randbelow(end_seconds - start_seconds + 1) + start_seconds
+            random_seconds = (
+                secrets.randbelow(end_seconds - start_seconds + 1) + start_seconds
+            )
             hours = random_seconds // 3600
             minutes = (random_seconds % 3600) // 60
             seconds = random_seconds % 60
@@ -337,7 +348,9 @@ class TimeGenerator(DataGenerator[str]):
             hours = secrets.randbelow(23 + 1)
             minutes = secrets.randbelow(59 + 1)
             seconds = secrets.randbelow(59 + 1)
-            milliseconds = secrets.randbelow(999 + 1) if self.include_milliseconds else 0
+            milliseconds = (
+                secrets.randbelow(999 + 1) if self.include_milliseconds else 0
+            )
             return self._format_time(hours, minutes, seconds, milliseconds)
 
         start_time, end_time = self.time_range
@@ -352,11 +365,15 @@ class TimeGenerator(DataGenerator[str]):
         # 生成范围内的随机分钟数
         if end_minutes < start_minutes:  # 跨天情况
             if (secrets.randbelow(1000000) / 1000000) < 0.5:
-                random_minutes = secrets.randbelow(24 * 60 - 1 - start_minutes + 1) + start_minutes
+                random_minutes = (
+                    secrets.randbelow(24 * 60 - 1 - start_minutes + 1) + start_minutes
+                )
             else:
                 random_minutes = secrets.randbelow(end_minutes + 1)
         else:
-            random_minutes = secrets.randbelow(end_minutes - start_minutes + 1) + start_minutes
+            random_minutes = (
+                secrets.randbelow(end_minutes - start_minutes + 1) + start_minutes
+            )
 
         hour = random_minutes // 60
         minute = random_minutes % 60
@@ -370,10 +387,10 @@ class TimeGenerator(DataGenerator[str]):
     ) -> str:
         """格式化时间"""
         # 如果format_pattern是strftime格式（包含%），使用strftime
-        if self.format_pattern and '%' in self.format_pattern:
+        if self.format_pattern and "%" in self.format_pattern:
             time_obj = datetime(2000, 1, 1, hour, minute, second, millisecond * 1000)
             return time_obj.strftime(self.format_pattern)
-        
+
         # 否则使用format_style
         if self.format_style.upper() == "12H":
             # 12小时制
@@ -416,14 +433,22 @@ class TimeGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["end_time", "format", "include_milliseconds", "include_seconds", "start_time", "time_range", "timezone", "timezone_aware"]
+        return [
+            "end_time",
+            "format",
+            "include_milliseconds",
+            "include_seconds",
+            "start_time",
+            "time_range",
+            "timezone",
+            "timezone_aware",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class TimestampValidator(Validator):
@@ -468,34 +493,62 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
         # 兼容旧版配置格式
         if isinstance(config, dict):
             generator_config = GeneratorConfig(
-                generator_type="timestamp",
-                parameters=config
+                generator_type="timestamp", parameters=config
             )
         else:
             generator_config = config
 
         super().__init__(generator_config)
-        self.start_timestamp = self.parameters.get("start_timestamp", 1577836800)  # 2020-01-01
-        self.end_timestamp = self.parameters.get("end_timestamp", 1893456000)  # 2030-01-01
-        self.precision = self.parameters.get("precision", "SECONDS")  # SECONDS, MILLISECONDS, MICROSECONDS
-        self.output_format = self.parameters.get("output_format", "INTEGER")  # STRING, ISO, INTEGER
+        self.start_timestamp = self.parameters.get(
+            "start_timestamp", 1577836800
+        )  # 2020-01-01
+        self.end_timestamp = self.parameters.get(
+            "end_timestamp", 1893456000
+        )  # 2030-01-01
+        self.precision = self.parameters.get(
+            "precision", "SECONDS"
+        )  # SECONDS, MILLISECONDS, MICROSECONDS
+        self.output_format = self.parameters.get(
+            "output_format", "INTEGER"
+        )  # STRING, ISO, INTEGER
         self.validator = TimestampValidator(self.output_format)
 
     def _setup(self) -> None:
-        self.start_timestamp = self.parameters.get("start_timestamp", 1577836800)  # 2020-01-01
-        self.end_timestamp = self.parameters.get("end_timestamp", 1893456000)  # 2030-01-01
-        self.precision = self.parameters.get("precision", "SECONDS")  # SECONDS, MILLISECONDS, MICROSECONDS
-        self.output_format = self.parameters.get("output_format", "INTEGER")  # STRING, ISO, INTEGER
+        self.start_timestamp = self.parameters.get(
+            "start_timestamp", 1577836800
+        )  # 2020-01-01
+        self.end_timestamp = self.parameters.get(
+            "end_timestamp", 1893456000
+        )  # 2030-01-01
+        self.precision = self.parameters.get(
+            "precision", "SECONDS"
+        )  # SECONDS, MILLISECONDS, MICROSECONDS
+        self.output_format = self.parameters.get(
+            "output_format", "INTEGER"
+        )  # STRING, ISO, INTEGER
 
     def generate(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
         """生成原始时间戳"""
         # 生成随机时间戳
         if self.precision.upper() == "MILLISECONDS":
-            timestamp = secrets.randbelow(self.end_timestamp * 1000 - self.start_timestamp * 1000 + 1) + self.start_timestamp * 1000
+            timestamp = (
+                secrets.randbelow(
+                    self.end_timestamp * 1000 - self.start_timestamp * 1000 + 1
+                )
+                + self.start_timestamp * 1000
+            )
         elif self.precision.upper() == "MICROSECONDS":
-            timestamp = secrets.randbelow(self.end_timestamp * 1000000 - self.start_timestamp * 1000000 + 1) + self.start_timestamp * 1000000
+            timestamp = (
+                secrets.randbelow(
+                    self.end_timestamp * 1000000 - self.start_timestamp * 1000000 + 1
+                )
+                + self.start_timestamp * 1000000
+            )
         else:  # SECONDS
-            timestamp = secrets.randbelow(self.end_timestamp - self.start_timestamp + 1) + self.start_timestamp
+            timestamp = (
+                secrets.randbelow(self.end_timestamp - self.start_timestamp + 1)
+                + self.start_timestamp
+            )
 
         # 根据输出格式返回相应类型
         if self.output_format.upper() == "STRING":
@@ -512,7 +565,9 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
         else:  # INTEGER - 返回整数
             return timestamp
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, str]:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -528,10 +583,9 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
 
     def validate(self, data: Union[int, str]) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class CronExpressionValidator(Validator):
@@ -551,29 +605,52 @@ class CronExpressionValidator(Validator):
         if self.format_type.upper() == "EXTENDED":
             if len(parts) != 6:
                 return False
-            field_ranges = [(0, 59), (0, 23), (1, 31), (1, 12), (0, 6), (0, 59)]  # 秒 分 时 日 月 星期
+            field_ranges = [
+                (0, 59),
+                (0, 23),
+                (1, 31),
+                (1, 12),
+                (0, 6),
+                (0, 59),
+            ]  # 秒 分 时 日 月 星期
         else:
             if len(parts) != 5:
                 return False
-            field_ranges = [(0, 59), (0, 23), (1, 31), (1, 12), (0, 6)]  # 分 时 日 月 星期
+            field_ranges = [
+                (0, 59),
+                (0, 23),
+                (1, 31),
+                (1, 12),
+                (0, 6),
+            ]  # 分 时 日 月 星期
 
         # 星期文字映射
         weekday_map = {
-            'SUN': 0, 'MON': 1, 'TUE': 2, 'WED': 3, 'THU': 4, 'FRI': 5, 'SAT': 6
+            "SUN": 0,
+            "MON": 1,
+            "TUE": 2,
+            "WED": 3,
+            "THU": 4,
+            "FRI": 5,
+            "SAT": 6,
         }
 
-        def validate_field(field: str, min_val: int, max_val: int, is_weekday: bool = False) -> bool:
+        def validate_field(
+            field: str, min_val: int, max_val: int, is_weekday: bool = False
+        ) -> bool:
             """验证单个字段"""
             field = field.upper()
 
             # 通配符
-            if field == '*':
+            if field == "*":
                 return True
 
             # 步进格式
-            if '/' in field:
-                base, step = field.split('/', 1)
-                if base != '*' and not validate_field(base, min_val, max_val, is_weekday):
+            if "/" in field:
+                base, step = field.split("/", 1)
+                if base != "*" and not validate_field(
+                    base, min_val, max_val, is_weekday
+                ):
                     return False
                 try:
                     step_val = int(step)
@@ -582,13 +659,16 @@ class CronExpressionValidator(Validator):
                     return False
 
             # 列表格式
-            if ',' in field:
-                values = field.split(',')
-                return all(validate_field(v.strip(), min_val, max_val, is_weekday) for v in values)
+            if "," in field:
+                values = field.split(",")
+                return all(
+                    validate_field(v.strip(), min_val, max_val, is_weekday)
+                    for v in values
+                )
 
             # 范围格式
-            if '-' in field:
-                start, end = field.split('-', 1)
+            if "-" in field:
+                start, end = field.split("-", 1)
 
                 # 处理星期文字
                 if is_weekday:
@@ -600,7 +680,11 @@ class CronExpressionValidator(Validator):
                 try:
                     start_val = int(start_num)
                     end_val = int(end_num)
-                    return min_val <= start_val <= max_val and min_val <= end_val <= max_val and start_val <= end_val
+                    return (
+                        min_val <= start_val <= max_val
+                        and min_val <= end_val <= max_val
+                        and start_val <= end_val
+                    )
                 except ValueError:
                     return False
 
@@ -616,7 +700,9 @@ class CronExpressionValidator(Validator):
 
         # 验证每个字段
         for i, (part, (min_val, max_val)) in enumerate(zip(parts, field_ranges)):
-            is_weekday = (i == 4 and self.format_type.upper() != "EXTENDED") or (i == 5 and self.format_type.upper() == "EXTENDED")
+            is_weekday = (i == 4 and self.format_type.upper() != "EXTENDED") or (
+                i == 5 and self.format_type.upper() == "EXTENDED"
+            )
             if not validate_field(part, min_val, max_val, is_weekday):
                 return False
 
@@ -638,15 +724,18 @@ class CronExpressionGenerator(DataGenerator[str]):
         # 兼容旧版配置格式
         if isinstance(config, dict):
             generator_config = GeneratorConfig(
-                generator_type="cron_expression",
-                parameters=config
+                generator_type="cron_expression", parameters=config
             )
         else:
             generator_config = config
 
         super().__init__(generator_config)
-        self.format_type = self.parameters.get("format", "STANDARD")  # STANDARD, EXTENDED
-        self.preset_type = self.parameters.get("preset", None)  # HOURLY, DAILY, WEEKLY, MONTHLY
+        self.format_type = self.parameters.get(
+            "format", "STANDARD"
+        )  # STANDARD, EXTENDED
+        self.preset_type = self.parameters.get(
+            "preset", None
+        )  # HOURLY, DAILY, WEEKLY, MONTHLY
         self.allow_special_chars = self.parameters.get("allow_special_chars", True)
         self.minute_range = self.parameters.get("minute_range", (0, 59))
         self.hour_range = self.parameters.get("hour_range", (0, 23))
@@ -665,8 +754,12 @@ class CronExpressionGenerator(DataGenerator[str]):
         }
 
     def _setup(self) -> None:
-        self.format_type = self.parameters.get("format", "STANDARD")  # STANDARD, EXTENDED
-        self.preset_type = self.parameters.get("preset", None)  # HOURLY, DAILY, WEEKLY, MONTHLY
+        self.format_type = self.parameters.get(
+            "format", "STANDARD"
+        )  # STANDARD, EXTENDED
+        self.preset_type = self.parameters.get(
+            "preset", None
+        )  # HOURLY, DAILY, WEEKLY, MONTHLY
         self.allow_special_chars = self.parameters.get("allow_special_chars", True)
         self.minute_range = self.parameters.get("minute_range", (0, 59))
         self.hour_range = self.parameters.get("hour_range", (0, 23))
@@ -750,14 +843,22 @@ class CronExpressionGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["allow_special_chars", "day_range", "format", "hour_range", "minute_range", "month_range", "preset", "weekday_range"]
+        return [
+            "allow_special_chars",
+            "day_range",
+            "format",
+            "hour_range",
+            "minute_range",
+            "month_range",
+            "preset",
+            "weekday_range",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class GenericDateGenerator(DateGenerator):
@@ -781,14 +882,16 @@ class GenericDateGenerator(DateGenerator):
             "format",
             "locale",
             "business_days_only",
-            "exclude_holidays"
+            "exclude_holidays",
         ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())
+
+
 class GenericTimeGenerator(TimeGenerator):
     """通用时间生成器注册版本"""
 
@@ -812,18 +915,22 @@ class GenericTimeGenerator(TimeGenerator):
             "timezone",
             "time_range",
             "start_time",
-            "end_time"
+            "end_time",
         ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())
+
+
 class GenericTimestampGenerator(TimestampGenerator):
     """通用时间戳生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
+    def generate_single(
+        self, context: Optional[GenerationContext] = None
+    ) -> Union[int, str]:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -835,18 +942,15 @@ class GenericTimestampGenerator(TimestampGenerator):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return [
-            "start_timestamp",
-            "end_timestamp",
-            "precision",
-            "output_format"
-        ]
+        return ["start_timestamp", "end_timestamp", "precision", "output_format"]
 
     def validate(self, data: Union[int, str]) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, (int, str)) and bool(str(data).strip())
+
+
 class GenericCronExpressionGenerator(CronExpressionGenerator):
     """通用Cron表达式生成器注册版本"""
 
@@ -870,11 +974,11 @@ class GenericCronExpressionGenerator(CronExpressionGenerator):
             "hour_range",
             "day_range",
             "month_range",
-            "weekday_range"
+            "weekday_range",
         ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

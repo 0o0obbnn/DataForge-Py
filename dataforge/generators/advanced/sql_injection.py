@@ -1,5 +1,3 @@
-from ...core.generator import GenerationContext, GeneratorType
-
 """
 SQL注入Payload生成器
 
@@ -52,7 +50,12 @@ import secrets
 from typing import Optional
 
 from dataforge.core.factory import register_generator
-from dataforge.core.generator import DataGenerator, GeneratorConfig
+from dataforge.core.generator import (
+    DataGenerator,
+    GenerationContext,
+    GeneratorConfig,
+    GeneratorType,
+)
 
 
 class SQLInjectionGenerator(DataGenerator):
@@ -60,18 +63,21 @@ class SQLInjectionGenerator(DataGenerator):
 
     def __init__(self, config: Optional[GeneratorConfig] = None):
         # 提供默认配置
-        default_config = GeneratorConfig(
-            generator_type="security",
-            parameters={}
-        )
+        default_config = GeneratorConfig(generator_type="security", parameters={})
         super().__init__(config or default_config)
         self._setup()
 
     def _setup(self) -> None:
         """初始化设置"""
-        self.supported_databases = ['mysql', 'postgresql', 'sqlserver', 'oracle', 'sqlite']
-        self.database = self.parameters.get('database', 'mysql')
-        self.payload_type = self.parameters.get('payload_type', 'basic')
+        self.supported_databases = [
+            "mysql",
+            "postgresql",
+            "sqlserver",
+            "oracle",
+            "sqlite",
+        ]
+        self.database = self.parameters.get("database", "mysql")
+        self.payload_type = self.parameters.get("payload_type", "basic")
 
     @property
     def generator_type(self) -> GeneratorType:
@@ -87,44 +93,44 @@ class SQLInjectionGenerator(DataGenerator):
         """生成单个SQL注入payload"""
         # 基础注入payload模板
         payloads = {
-            'mysql': [
+            "mysql": [
                 "' OR '1'='1",
                 "' OR 1=1--",
                 "' UNION SELECT 1,2,3--",
                 "'; DROP TABLE users;--",
                 "admin'--",
-                "1' OR '1'='1"
+                "1' OR '1'='1",
             ],
-            'postgresql': [
+            "postgresql": [
                 "' OR '1'='1",
                 "' OR 1=1--",
                 "' UNION SELECT 1,2,3--",
                 "'; DROP TABLE users;--",
-                "admin'--"
+                "admin'--",
             ],
-            'sqlserver': [
+            "sqlserver": [
                 "' OR '1'='1",
                 "' OR 1=1--",
                 "' UNION SELECT 1,2,3--",
                 "'; DROP TABLE users;--",
-                "admin'--"
+                "admin'--",
             ],
-            'oracle': [
+            "oracle": [
                 "' OR '1'='1",
                 "' OR 1=1--",
                 "' UNION SELECT 1,2,3 FROM dual--",
-                "admin'--"
+                "admin'--",
             ],
-            'sqlite': [
+            "sqlite": [
                 "' OR '1'='1",
                 "' OR 1=1--",
                 "' UNION SELECT 1,2,3--",
-                "admin'--"
-            ]
+                "admin'--",
+            ],
         }
 
         if self.database not in payloads:
-            self.database = 'mysql'
+            self.database = "mysql"
 
         available_payloads = payloads[self.database]
         return secrets.choice(available_payloads)
@@ -134,7 +140,7 @@ class SQLInjectionGenerator(DataGenerator):
         if not isinstance(data, str):
             return False
 
-        sql_keywords = ['OR', 'AND', 'UNION', 'SELECT', 'DROP', 'SLEEP']
+        sql_keywords = ["OR", "AND", "UNION", "SELECT", "DROP", "SLEEP"]
         return any(keyword in data.upper() for keyword in sql_keywords)
 
     # 额外的高级方法
@@ -159,14 +165,12 @@ class SQLInjectionGenerator(DataGenerator):
         """获取支持的数据库类型列表"""
         return self.supported_databases
 
-
-
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         # 尝试调用现有方法
-        if hasattr(self, 'generate') and callable(self.generate):
+        if hasattr(self, "generate") and callable(self.generate):
             return self.generate(context)
-        elif hasattr(self, '_generate_raw') and callable(self._generate_raw):
+        elif hasattr(self, "_generate_raw") and callable(self._generate_raw):
             return self._generate_raw(context)
         else:
             # 基本实现
@@ -176,7 +180,7 @@ class SQLInjectionGenerator(DataGenerator):
 @register_generator("sql_injection", ["sql", "sqli", "sql_payload"])
 class GenericSQLInjectionGenerator(SQLInjectionGenerator):
     """通用SQL注入Payload生成器"""
-    
+
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
         return self._generate_raw()

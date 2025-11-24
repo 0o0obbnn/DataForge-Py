@@ -209,22 +209,31 @@ class ConfigParser:
         try:
             with open(path, encoding="utf-8") as f:
                 if path.suffix.lower() in [".yaml", ".yml"]:
-                    return yaml.safe_load(f)
+                    result = yaml.safe_load(f)
                 elif path.suffix.lower() == ".json":
-                    return json.load(f)
+                    result = json.load(f)
                 else:
                     # 尝试根据内容判断格式
                     content = f.read()
                     f.seek(0)
 
                     try:
-                        return yaml.safe_load(content)
+                        result = yaml.safe_load(content)
                     except yaml.YAMLError:
                         try:
-                            return json.loads(content)
+                            result = json.loads(content)
                         except json.JSONDecodeError:
                             raise ValueError(
                                 f"无法解析配置文件格式: {file_path}"
                             ) from None
+            
+            # 确保返回类型一致
+            if isinstance(result, dict):
+                return result
+            else:
+                # 如果解析结果不是字典，返回空字典
+                logger.warning(f"配置文件 {file_path} 解析结果不是字典格式")
+                return {}
+                
         except Exception as e:
             raise ValueError(f"读取配置文件失败: {e}") from e

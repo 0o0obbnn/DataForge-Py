@@ -5,42 +5,16 @@
 
 import datetime
 import random  # TODO: Convert to secrets
-import secrets
 import re
-from ...core.types import (
-GeneratorType
-)
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
-from ...core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-    GenerationContext,
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-    GenerationContext,
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 @register_generator("derivatives", aliases=["derivative", "option", "swap"])
@@ -228,7 +202,6 @@ class DerivativesGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-
 @register_generator("market_data", aliases=["market", "price_data"])
 class MarketDataGenerator(DataGenerator[dict]):
     """实时市场数据生成器"""
@@ -323,7 +296,6 @@ class MarketDataGenerator(DataGenerator[dict]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("financial_report", aliases=["report", "financial_statement"])
@@ -453,7 +425,6 @@ class FinancialReportGenerator(DataGenerator[dict]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 # 注册高级金融生成器

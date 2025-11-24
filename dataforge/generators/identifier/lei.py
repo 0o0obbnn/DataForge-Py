@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 """
 LEI码生成器 (Legal Entity Identifier)
 """
@@ -15,6 +13,7 @@ from ...core.generator import (
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 
 class LEIValidator(Validator):
@@ -215,10 +214,9 @@ class LEIGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 @register_generator("lei_code", aliases=["lei", "LEI"])
@@ -241,6 +239,6 @@ class LEICodeGenerator(LEIGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

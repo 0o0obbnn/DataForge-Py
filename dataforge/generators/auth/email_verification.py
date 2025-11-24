@@ -22,7 +22,7 @@ class EmailVerificationGenerator(DataGenerator[str]):
     - 支持自定义长度和有效期
     - 包含时间戳和过期验证
     - 支持防暴力破解的复杂度设置
-    
+
     返回类型：
     - 默认返回字符串（仅验证码）
     - 设置 string_only=False 返回完整字典
@@ -117,7 +117,7 @@ class EmailVerificationGenerator(DataGenerator[str]):
         # 如果是字符串，直接验证长度
         if isinstance(data, str):
             return len(data) >= 4  # 最小长度4位
-        
+
         # 如果是字典，验证完整数据
         if not isinstance(data, dict):
             return False
@@ -201,8 +201,6 @@ class EmailVerificationGenerator(DataGenerator[str]):
         else:
             verification_data["attempts"] = attempts + 1
             return {"valid": False, "reason": "invalid_code", "message": "验证码错误"}
-
-
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""

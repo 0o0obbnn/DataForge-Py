@@ -8,7 +8,7 @@ from typing import Union
 class CSVFormatter:
     """Formatter for CSV output."""
 
-    def __init__(self, delimiter: str = ',', quotechar: str = '"'):
+    def __init__(self, delimiter: str = ",", quotechar: str = '"'):
         """Initialize CSV formatter.
 
         Args:
@@ -46,7 +46,7 @@ class CSVFormatter:
             output,
             delimiter=self.delimiter,
             quotechar=self.quotechar,
-            quoting=csv.QUOTE_MINIMAL
+            quoting=csv.QUOTE_MINIMAL,
         )
 
         # Write headers
@@ -56,7 +56,7 @@ class CSVFormatter:
         for item in data:
             row = []
             for header in headers:
-                value = item.get(header, '')
+                value = item.get(header, "")
                 row.append(str(value))
             writer.writerow(row)
 
@@ -71,5 +71,5 @@ class CSVFormatter:
             **kwargs: Additional formatting options
         """
         csv_content = self.format(data, **kwargs)
-        with open(filepath, 'w', encoding='utf-8', newline='') as f:
+        with open(filepath, "w", encoding="utf-8", newline="") as f:
             f.write(csv_content)

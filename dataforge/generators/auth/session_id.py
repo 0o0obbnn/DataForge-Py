@@ -22,7 +22,7 @@ class SessionIDGenerator(DataGenerator[str]):
     - 支持多种编码格式
     - 包含用户代理和设备信息
     - 支持会话超时机制
-    
+
     返回类型：
     - 默认返回字符串（仅session_id）
     - 设置 string_only=False 返回完整字典
@@ -79,7 +79,7 @@ class SessionIDGenerator(DataGenerator[str]):
         length = config["length"]
         encoding = config["encoding"]
         prefix = config.get("prefix", "")
-        include_timestamp = config.get("include_timestamp", True)
+        config.get("include_timestamp", True)
         include_user_id = config.get("include_user_id", False)
         include_ip = config.get("include_ip", False)
         include_user_agent = config.get("include_user_agent", False)
@@ -218,7 +218,7 @@ class SessionIDGenerator(DataGenerator[str]):
         # 如果是字符串，直接验证长度
         if isinstance(data, str):
             return len(data) >= 16
-        
+
         # 如果是字典，验证完整数据
         if not isinstance(data, dict):
             return False
@@ -269,8 +269,6 @@ class SessionIDGenerator(DataGenerator[str]):
         new_session["created_at"] = session_data["created_at"]  # 保持创建时间
 
         return new_session
-
-
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""

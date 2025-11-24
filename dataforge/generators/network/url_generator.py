@@ -1,21 +1,21 @@
-from ...core.types import GeneratorType
-
 """
 URL生成器 - 完整URL地址生成
 """
 
 import random  # TODO: Convert to secrets
-import secrets
 import re
+import secrets
 from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlencode
 
+from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
     GenerationContext,
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -48,10 +48,11 @@ class URLValidator(Validator):
         return "Invalid URL format"
 
 
+@register_generator("url", aliases=["uri", "link"])
 class URLGenerator(DataGenerator[str]):
     """完整URL生成器"""
 
-    def __init__(self, config: Optional['GeneratorConfig'] = None, **kwargs):
+    def __init__(self, config: Optional["GeneratorConfig"] = None, **kwargs):
         """初始化URL生成器
 
         Args:
@@ -60,10 +61,8 @@ class URLGenerator(DataGenerator[str]):
         """
         if config is None:
             from ...core.generator import GeneratorConfig
-            config = GeneratorConfig(
-                generator_type="url",
-                parameters=kwargs
-            )
+
+            config = GeneratorConfig(generator_type="url", parameters=kwargs)
         super().__init__(config)
         self.validator = URLValidator()
 
@@ -261,7 +260,10 @@ class URLGenerator(DataGenerator[str]):
         if not self.include_path:
             return ""
 
-        segments_count = secrets.randbelow(self.path_length[1] - self.path_length[0] + 1) + self.path_length[0]
+        segments_count = (
+            secrets.randbelow(self.path_length[1] - self.path_length[0] + 1)
+            + self.path_length[0]
+        )
         if segments_count == 0:
             return ""
 
@@ -312,7 +314,12 @@ class URLGenerator(DataGenerator[str]):
         if not self.include_query:
             return ""
 
-        params_count = secrets.randbelow(self.query_params_count[1] - self.query_params_count[0] + 1) + self.query_params_count[0]
+        params_count = (
+            secrets.randbelow(
+                self.query_params_count[1] - self.query_params_count[0] + 1
+            )
+            + self.query_params_count[0]
+        )
         if params_count == 0:
             return ""
 
@@ -337,14 +344,17 @@ class URLGenerator(DataGenerator[str]):
                 # 生成唯一的随机key
                 while True:
                     key = "".join(
-                        random.choices(string.ascii_lowercase, k=secrets.randbelow(6) + 3)
+                        random.choices(
+                            string.ascii_lowercase, k=secrets.randbelow(6) + 3
+                        )
                     )
                     if key not in used_keys:
                         break
 
                 value = "".join(
                     random.choices(
-                        string.ascii_lowercase + string.digits, k=secrets.randbelow(10) + 1
+                        string.ascii_lowercase + string.digits,
+                        k=secrets.randbelow(10) + 1,
                     )
                 )
             else:  # MIXED
@@ -364,7 +374,9 @@ class URLGenerator(DataGenerator[str]):
                     # 生成唯一的随机key
                     while True:
                         key = "".join(
-                            random.choices(string.ascii_lowercase, k=secrets.randbelow(4) + 3)
+                            random.choices(
+                                string.ascii_lowercase, k=secrets.randbelow(4) + 3
+                            )
                         )
                         if key not in used_keys:
                             break
@@ -439,23 +451,33 @@ class URLGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["custom_base_url", "domain_type", "encode_special_chars", "include_fragment", "include_path", "include_query", "path_length", "path_style", "protocol", "query_params_count", "query_style"]
+        return [
+            "custom_base_url",
+            "domain_type",
+            "encode_special_chars",
+            "include_fragment",
+            "include_path",
+            "include_query",
+            "path_length",
+            "path_style",
+            "protocol",
+            "query_params_count",
+            "query_style",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class GenericURLGenerator(URLGenerator):
     """通用URL生成器注册版本"""
 
-    def __init__(self, config: Optional['GeneratorConfig'] = None, **kwargs):
+    def __init__(self, config: Optional["GeneratorConfig"] = None, **kwargs):
         """初始化通用URL生成器"""
         super().__init__(config, **kwargs)
-
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""
@@ -473,6 +495,6 @@ class GenericURLGenerator(URLGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

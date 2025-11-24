@@ -39,7 +39,6 @@ from ...core.types import GeneratorType
 #   For statistical distributions, consider if CSPRNG is necessary
 
 
-
 class UUIDValidator(Validator):
     """Validator for UUIDs."""
 
@@ -101,12 +100,12 @@ class UUIDGenerator(DataGenerator[str]):
         elif self.version == 3:
             # 基于MD5散列的UUID
             namespace = self._get_namespace()
-            name = self.name or str((secrets.randbelow(1000000) / 1000000))
+            name = self.name or str(secrets.randbelow(1000000) / 1000000)
             generated_uuid = uuid.uuid3(namespace, name)
         elif self.version == 5:
             # 基于SHA-1散列的UUID
             namespace = self._get_namespace()
-            name = self.name or str((secrets.randbelow(1000000) / 1000000))
+            name = self.name or str(secrets.randbelow(1000000) / 1000000)
             generated_uuid = uuid.uuid5(namespace, name)
         else:  # version 4 (默认)
             # 随机UUID
@@ -148,10 +147,9 @@ class UUIDGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class ULIDValidator(Validator):
@@ -258,16 +256,22 @@ class ULIDGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 class BusinessNumberValidator(Validator):
     """Validator for business numbers."""
 
-    def __init__(self, length: int, prefix: str, business_type: str, type_prefixes: dict, checksum: bool):
+    def __init__(
+        self,
+        length: int,
+        prefix: str,
+        business_type: str,
+        type_prefixes: dict,
+        checksum: bool,
+    ):
         self.length = length
         self.prefix = prefix
         self.business_type = business_type
@@ -350,7 +354,11 @@ class BusinessNumberGenerator(DataGenerator[str]):
             "VOUCHER": "VCH",  # 凭证号
         }
         self.validator = BusinessNumberValidator(
-            self.length, self.prefix, self.business_type, self.type_prefixes, self.checksum
+            self.length,
+            self.prefix,
+            self.business_type,
+            self.type_prefixes,
+            self.checksum,
         )
 
     def _setup(self) -> None:
@@ -443,7 +451,9 @@ class BusinessNumberGenerator(DataGenerator[str]):
 
         # 生成序列号
         max_value = 10**length - 1
-        sequence = secrets.randbelow(max_value - self.sequence_start + 1) + self.sequence_start
+        sequence = (
+            secrets.randbelow(max_value - self.sequence_start + 1) + self.sequence_start
+        )
 
         return str(sequence).zfill(length)
 
@@ -523,14 +533,22 @@ class BusinessNumberGenerator(DataGenerator[str]):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["checksum", "date_format", "length", "number_length", "prefix", "separator", "sequence_start", "type"]
+        return [
+            "checksum",
+            "date_format",
+            "length",
+            "number_length",
+            "prefix",
+            "separator",
+            "sequence_start",
+            "type",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 @register_generator("generic_uuid", aliases=["uuid", "UUID"])
@@ -543,7 +561,7 @@ class GenericUUIDGenerator(UUIDGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())
 
@@ -568,7 +586,7 @@ class GenericULIDGenerator(ULIDGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())
 
@@ -583,7 +601,9 @@ class GenericULIDGenerator(ULIDGenerator):
         return []
 
 
-@register_generator("generic_business_number", aliases=["business_number", "business_id"])
+@register_generator(
+    "generic_business_number", aliases=["business_number", "business_id"]
+)
 class GenericBusinessNumberGenerator(BusinessNumberGenerator):
     """通用业务单据号生成器注册版本"""
 
@@ -593,7 +613,7 @@ class GenericBusinessNumberGenerator(BusinessNumberGenerator):
 # 通用ID生成器 - 支持多种ID类型
 class IDGenerator(DataGenerator[str]):
     """通用ID生成器
-    
+
     支持多种ID类型：
     - numeric: 纯数字ID
     - uuid: UUID格式
@@ -622,7 +642,7 @@ class IDGenerator(DataGenerator[str]):
 
     def _generate_numeric_id(self) -> str:
         """生成纯数字ID"""
-        digits = ''.join(str(secrets.randbelow(10)) for _ in range(self.length))
+        digits = "".join(str(secrets.randbelow(10)) for _ in range(self.length))
         return f"{self.prefix}{digits}{self.suffix}"
 
     def _generate_uuid_id(self) -> str:
@@ -640,13 +660,13 @@ class IDGenerator(DataGenerator[str]):
             return False
         if not data:
             return False
-        
+
         # 检查前缀和后缀
         if self.prefix and not data.startswith(self.prefix):
             return False
         if self.suffix and not data.endswith(self.suffix):
             return False
-            
+
         return True
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:

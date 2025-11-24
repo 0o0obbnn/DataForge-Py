@@ -61,7 +61,9 @@ class NameGenerator(DataGenerator[str]):
         self.name_length = self.parameters.get("length", 2)  # 2 or 3
         self.name_type = self.parameters.get("type", "CN")  # 'CN', 'EN', 'BOTH'
         self.include_pinyin = self.parameters.get("include_pinyin", False)
-        self.compound_surname_ratio = self.parameters.get("compound_surname_ratio", 0.05)
+        self.compound_surname_ratio = self.parameters.get(
+            "compound_surname_ratio", 0.05
+        )
         self.validator = NameValidator()
 
         # 设置数据加载器
@@ -167,8 +169,13 @@ class NameGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return [
-            "gender", "length", "type", "include_pinyin",
-            "compound_surname_ratio", "surname_file", "givenname_file"
+            "gender",
+            "length",
+            "type",
+            "include_pinyin",
+            "compound_surname_ratio",
+            "surname_file",
+            "givenname_file",
         ]
 
     def _generate_chinese_name(

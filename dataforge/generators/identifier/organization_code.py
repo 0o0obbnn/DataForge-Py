@@ -1,10 +1,7 @@
-from ...core.types import GeneratorType
-
 """
 组织机构代码生成器 (历史数据支持)
 """
 
-import random  # Keep for random.choices
 import secrets
 from typing import Optional
 
@@ -15,12 +12,15 @@ from ...core.generator import (
     GeneratorConfig,
 )
 from ...core.protocols import Validator
+from ...core.types import GeneratorType
 
 
 class OrganizationCodeValidator(Validator):
     """Validator for Chinese organization codes."""
 
-    def __init__(self, code_chars: str, weight_factors: list[int], check_codes: dict[int, str]):
+    def __init__(
+        self, code_chars: str, weight_factors: list[int], check_codes: dict[int, str]
+    ):
         self.code_chars = code_chars
         self.weight_factors = weight_factors
         self.check_codes = check_codes
@@ -206,10 +206,9 @@ class OrganizationCodeGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, 'validator') and hasattr(self.validator, 'validate'):
+        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
-
 
 
 @register_generator("chinese_organization_code", aliases=["组织机构代码", "org_code"])

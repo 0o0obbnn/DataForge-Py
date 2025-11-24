@@ -4,26 +4,16 @@
 """
 
 import random  # TODO: Convert to secrets
-import secrets
 import re
-from ...core.types import (
-GeneratorType
-)
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
-from ...core.generator import (
-
-# WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
-# Conversion patterns:
-#   secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a
-#   random.randrange(n) → secrets.randbelow(n)
-#   For statistical distributions, consider if CSPRNG is necessary
-
+from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
     DataGenerator,
     GenerationContext,
-    GeneratorType,
 )
+from ...core.types import GeneratorType
 
 
 class FundCodeGenerator(DataGenerator[str]):
@@ -39,7 +29,7 @@ class FundCodeGenerator(DataGenerator[str]):
         else:
             self.fund_type = raw_fund_type  # PUBLIC, PRIVATE
             self.fund_category = self.parameters.get("fund_category", None)
-        
+
         self.market = self.parameters.get("market", "CHINA")  # CHINA, HONG_KONG, US
         self.include_suffix = self.parameters.get("include_suffix", True)
         self.format = self.parameters.get("format", "CODE")  # CODE, FULL
@@ -190,7 +180,7 @@ class FundCodeGenerator(DataGenerator[str]):
         # 中国公募基金代码为6位数字
         if not code.isdigit() or len(code) != 6:
             return False
-        
+
         # 任何6位数字都是有效的基金代码
         return True
 
@@ -233,7 +223,6 @@ class FundCodeGenerator(DataGenerator[str]):
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
-
 
 
 @register_generator("fund_code", ["基金代码", "fund", "基金"])

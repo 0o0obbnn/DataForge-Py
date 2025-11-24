@@ -23,7 +23,7 @@ class DecimalGenerator(DataGenerator):
         min_val = self.parameters.get("min", 0.0)
         max_val = self.parameters.get("max", 1.0)
         decimal_places = self.parameters.get("decimal_places", 2)
-        
+
         value = random.uniform(float(min_val), float(max_val))
         return round(value, decimal_places)
 
@@ -31,10 +31,10 @@ class DecimalGenerator(DataGenerator):
         """验证小数"""
         if not isinstance(data, (int, float)):
             return False
-            
-        min_val = self.parameters.get("min", float('-inf'))
-        max_val = self.parameters.get("max", float('inf'))
-        
+
+        min_val = self.parameters.get("min", float("-inf"))
+        max_val = self.parameters.get("max", float("inf"))
+
         return min_val <= data <= max_val
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> float:

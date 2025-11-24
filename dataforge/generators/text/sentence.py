@@ -15,10 +15,39 @@ class SentenceGenerator(DataGenerator):
     """句子生成器"""
 
     WORDS = [
-        "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog",
-        "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
-        "of", "with", "by", "from", "up", "about", "into", "through",
-        "after", "before", "under", "over", "between", "among", "during"
+        "the",
+        "quick",
+        "brown",
+        "fox",
+        "jumps",
+        "over",
+        "lazy",
+        "dog",
+        "a",
+        "an",
+        "and",
+        "or",
+        "but",
+        "in",
+        "on",
+        "at",
+        "to",
+        "for",
+        "of",
+        "with",
+        "by",
+        "from",
+        "up",
+        "about",
+        "into",
+        "through",
+        "after",
+        "before",
+        "under",
+        "over",
+        "between",
+        "among",
+        "during",
     ]
 
     def _setup(self) -> None:

@@ -2,8 +2,8 @@
 年龄生成器
 """
 
-import secrets
 import random
+import secrets
 from typing import Optional
 
 from ...core.factory import register_generator
@@ -150,7 +150,7 @@ class AgeGenerator(DataGenerator[int]):
 
     def validate(self, data: int) -> bool:
         """验证生成的数据
-        
+
         验证年龄是否在合理范围内（0-149岁），而不是生成器配置的范围
         """
         if not isinstance(data, int):
@@ -158,12 +158,10 @@ class AgeGenerator(DataGenerator[int]):
         return 0 <= data < 150
 
 
-
 class ChineseAgeGenerator(AgeGenerator):
     """中文年龄生成器注册版本"""
 
     pass
-
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> int:
         """生成单个数据项"""
@@ -183,7 +181,7 @@ class ChineseAgeGenerator(AgeGenerator):
 
     def validate(self, data: int) -> bool:
         """验证生成的数据
-        
+
         验证年龄是否在合理范围内（0-149岁），而不是生成器配置的范围
         """
         if not isinstance(data, int):

@@ -1,5 +1,3 @@
-from ...core.types import GeneratorType
-
 #!/usr/bin/env python3
 """
 扩展个人信息生成器
@@ -8,10 +6,11 @@ from ...core.types import GeneratorType
 """
 
 import random
-from typing import Any, Optional
+from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
+from dataforge.core.types import GeneratorType
 
 
 @register_generator("zodiac")
@@ -74,8 +73,6 @@ class ZodiacGenerator(DataGenerator):
         s = data.strip()
         return bool(s) and (s in all_zodiacs)
 
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -85,6 +82,8 @@ class ZodiacGenerator(DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 @register_generator("ethnicity")
 class EthnicityGenerator(DataGenerator):
     """民族生成器
@@ -198,8 +197,6 @@ class EthnicityGenerator(DataGenerator):
         s = data.strip()
         return bool(s) and (s in self.all_ethnicities)
 
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -209,6 +206,8 @@ class EthnicityGenerator(DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 @register_generator("blood_type")
 class BloodTypeGenerator(DataGenerator):
     """血型生成器
@@ -268,8 +267,6 @@ class BloodTypeGenerator(DataGenerator):
 
         return False
 
-
-
     @property
     def generator_type(self) -> GeneratorType:
         """返回生成器类型"""
@@ -279,6 +276,8 @@ class BloodTypeGenerator(DataGenerator):
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
         return []
+
+
 # 注意：这个类已被 dataforge/generators/basic/marital_status.py 中的实现替代
 # @register_generator("marital_status")  # 移除重复注册
 class MaritalStatusGeneratorLegacy(DataGenerator):
@@ -363,7 +362,6 @@ class MaritalStatusGeneratorLegacy(DataGenerator):
             return False
         s = data.strip()
         return bool(s) and (s in valid_status)
-
 
     @property
     def generator_type(self) -> GeneratorType:

@@ -1,34 +1,48 @@
 import asyncio
-import logging
-import uuid
 import json
+import logging
 import os
+import uuid
 from datetime import datetime
 from typing import Any, Optional, cast
 
+import redis.asyncio as aioredis
 import uvicorn
-from fastapi import BackgroundTasks, Body, FastAPI, HTTPException, Path, Query, Request, Depends
+from fastapi import (
+    BackgroundTasks,
+    Body,
+    Depends,
+    FastAPI,
+    HTTPException,
+    Path,
+    Query,
+    Request,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-import redis.asyncio as aioredis
-
-from ..core.exceptions import DataForgeException, GeneratorNotFoundError, DataGenerationError
-from ..core.factory import GeneratorFactory, GeneratorRegistry, default_registry, default_factory
-from ..core.generator import GenerationContext, GeneratorConfig
-from ..output.formatter import OutputFormatter
-from ..config.settings import get_settings
-from ..core.relations import DataRelationManager, default_relation_manager
-from ..core.startup_checks import perform_startup_checks
-from ..core.redis_client import get_async_redis_client
 
 # 导入生成器模块以触发注册
-import dataforge.generators
+from ..config.settings import get_settings
+from ..core.exceptions import (
+    DataForgeException,
+    DataGenerationError,
+    GeneratorNotFoundError,
+)
+from ..core.factory import (
+    GeneratorFactory,
+    GeneratorRegistry,
+    default_registry,
+)
+from ..core.generator import GenerationContext, GeneratorConfig
+from ..core.redis_client import get_async_redis_client
+from ..core.relations import DataRelationManager, default_relation_manager
+from ..core.startup_checks import perform_startup_checks
+from ..output.formatter import OutputFormatter
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -47,25 +61,32 @@ app = FastAPI(
     title=settings.api_title,
     description=settings.api_description,
     version=settings.api_version,
-    docs_url=settings.docs_url if settings.development_mode else None,  # 生产环境禁用docs
+    docs_url=(
+        settings.docs_url if settings.development_mode else None
+    ),  # 生产环境禁用docs
     redoc_url=settings.redoc_url if settings.development_mode else None,
 )
 
 # 记录配置信息
-logger.info(f"Environment: {'Development' if settings.development_mode else 'Production'}")
+logger.info(
+    f"Environment: {'Development' if settings.development_mode else 'Production'}"
+)
 logger.info(f"CORS Origins: {settings.allowed_origins}")
 logger.info(f"API Docs: {'Enabled' if settings.development_mode else 'Disabled'}")
 logger.info(f"Available generators: {len(default_registry.list_generators())}")
 
 # --- Dependency Injection Providers ---
 
+
 def get_registry() -> GeneratorRegistry:
     # The registry is populated at import time by decorators, so we still use the global instance.
     # A more advanced pattern would involve an app startup event to build the registry.
     return default_registry
 
+
 def get_relation_manager() -> DataRelationManager:
     return default_relation_manager
+
 
 def get_generator_factory(
     registry: GeneratorRegistry = Depends(get_registry),
@@ -77,38 +98,48 @@ def get_generator_factory(
 # --- API Models ---
 class GeneratorRequest(BaseModel):
     """数据生成请求模型"""
+
     generator_type: str = Field(..., description="生成器类型")
     count: int = Field(1, ge=1, le=10000, description="生成数量")
     parameters: dict[str, Any] = Field(default_factory=dict, description="生成器参数")
     should_validate: bool = Field(True, description="是否启用数据校验")
     output_format: str = Field("json", description="输出格式")
 
+
 class BatchGeneratorRequest(BaseModel):
     """批量生成请求模型"""
+
     generators: list[dict[str, Any]] = Field(..., description="生成器配置列表")
     count: int = Field(1, ge=1, le=1000, description="生成批次数")
     output_format: str = Field("json", description="输出格式")
 
+
 class TaskResponse(BaseModel):
     """异步任务响应模型"""
+
     task_id: str = Field(..., description="任务ID")
     status: str = Field(..., description="任务状态")
     created_at: datetime = Field(..., description="创建时间")
     message: str = Field("", description="状态信息")
 
+
 class GeneratorInfo(BaseModel):
     """生成器信息模型"""
+
     name: str = Field(..., description="生成器名称")
     type: str = Field(..., description="生成器类型")
     parameters: list[str] = Field(..., description="支持的参数")
     description: str = Field("", description="生成器描述")
 
+
 class HealthResponse(BaseModel):
     """健康检查响应模型"""
+
     status: str = Field(..., description="服务状态")
     timestamp: datetime = Field(..., description="检查时间")
     version: str = Field(..., description="版本信息")
     generators_count: int = Field(..., description="可用生成器数量")
+
 
 # --- Exception Handlers ---
 @app.exception_handler(DataForgeException)
@@ -127,6 +158,7 @@ async def dataforge_exception_handler(request: Request, exc: DataForgeException)
         },
     )
 
+
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled exception for request {request.url}: {exc}", exc_info=True)
@@ -139,6 +171,7 @@ async def generic_exception_handler(request: Request, exc: Exception):
             }
         },
     )
+
 
 # --- Middleware ---
 app.add_middleware(
@@ -154,6 +187,7 @@ TASK_KEY_PREFIX = "dataforge:task:"
 ALL_TASKS_SORTED_SET = "dataforge:tasks"
 TASK_EXPIRATION_SECONDS = 86400  # 24 hours
 
+
 # --- API Endpoints ---
 @app.get("/", response_class=JSONResponse)
 async def root():
@@ -165,6 +199,7 @@ async def root():
         "health": "/health",
     }
 
+
 @app.get("/health", response_model=HealthResponse)
 async def health_check(registry: GeneratorRegistry = Depends(get_registry)):
     return HealthResponse(
@@ -173,6 +208,7 @@ async def health_check(registry: GeneratorRegistry = Depends(get_registry)):
         version=settings.api_version,
         generators_count=len(registry.list_generators()),
     )
+
 
 @app.get("/generators", response_model=list[GeneratorInfo])
 async def list_generators(factory: GeneratorFactory = Depends(get_generator_factory)):
@@ -201,6 +237,7 @@ async def list_generators(factory: GeneratorFactory = Depends(get_generator_fact
             )
     return sorted(generator_info, key=lambda x: x.name)
 
+
 @app.get("/generators/{generator_name}")
 async def get_generator_info(
     generator_name: str = Path(..., description="生成器名称"),
@@ -217,6 +254,7 @@ async def get_generator_info(
         "description": f"{generator_name}生成器",
         "example_parameters": _get_example_parameters(generator_name),
     }
+
 
 @app.post("/generate/{generator_name}")
 async def generate_data(
@@ -259,7 +297,10 @@ async def generate_data(
     except DataForgeException:
         raise
     except Exception as e:
-        raise DataGenerationError(f"An unexpected error occurred during data generation: {e}") from e
+        raise DataGenerationError(
+            f"An unexpected error occurred during data generation: {e}"
+        ) from e
+
 
 @app.post("/generate")
 async def generate_data_legacy(
@@ -278,6 +319,7 @@ async def generate_data_legacy(
     )
     return await generate_data(generator_type, model, factory)
 
+
 @app.post("/batch/generate")
 async def generate_batch_data(
     request: BatchGeneratorRequest,
@@ -287,7 +329,9 @@ async def generate_batch_data(
         configs = []
         for gen_config in request.generators:
             if "generator_type" not in gen_config:
-                raise HTTPException(status_code=400, detail="每个生成器配置必须包含 'generator_type'")
+                raise HTTPException(
+                    status_code=400, detail="每个生成器配置必须包含 'generator_type'"
+                )
             generator_type = gen_config["generator_type"]
             if not factory.registry.is_registered(generator_type):
                 raise GeneratorNotFoundError(generator_type)
@@ -312,7 +356,10 @@ async def generate_batch_data(
     except DataForgeException:
         raise
     except Exception as e:
-        raise DataGenerationError(f"An unexpected error occurred during batch generation: {e}") from e
+        raise DataGenerationError(
+            f"An unexpected error occurred during batch generation: {e}"
+        ) from e
+
 
 @app.post("/generate/async/{generator_name}")
 async def generate_data_async(
@@ -348,6 +395,7 @@ async def generate_data_async(
         message="任务已创建，正在处理中",
     )
 
+
 @app.get("/tasks/{task_id}")
 async def get_task_status(task_id: str = Path(..., description="任务ID")):
     redis = get_async_redis_client()
@@ -361,6 +409,7 @@ async def get_task_status(task_id: str = Path(..., description="任务ID")):
 
     return task_info
 
+
 @app.get("/tasks")
 async def list_tasks(
     status: Optional[str] = Query(None, description="按状态过滤"),
@@ -369,7 +418,11 @@ async def list_tasks(
     redis = get_async_redis_client()
     task_ids = await redis.zrevrange(ALL_TASKS_SORTED_SET, 0, limit * 5 - 1)
     if not task_ids:
-        return {"total": await redis.zcard(ALL_TASKS_SORTED_SET), "filtered": 0, "tasks": []}
+        return {
+            "total": await redis.zcard(ALL_TASKS_SORTED_SET),
+            "filtered": 0,
+            "tasks": [],
+        }
     task_keys = [f"{TASK_KEY_PREFIX}{task_id}" for task_id in task_ids]
     tasks_data = await redis.mget(task_keys)
     tasks = []
@@ -379,7 +432,12 @@ async def list_tasks(
     if status:
         tasks = [t for t in tasks if t.get("status") == status]
     tasks = tasks[:limit]
-    return {"total": await redis.zcard(ALL_TASKS_SORTED_SET), "filtered": len(tasks), "tasks": tasks}
+    return {
+        "total": await redis.zcard(ALL_TASKS_SORTED_SET),
+        "filtered": len(tasks),
+        "tasks": tasks,
+    }
+
 
 async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> None:
     redis: aioredis.Redis = get_async_redis_client()
@@ -395,7 +453,7 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
         if current_data:
             # Ensure data is a string before parsing
             if isinstance(current_data, bytes):
-                data_str = current_data.decode('utf-8')
+                data_str = current_data.decode("utf-8")
             else:
                 data_str = str(current_data)
 
@@ -413,11 +471,11 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
             validate=request.should_validate,
         )
         generator = factory.create_generator(config)
-        
+
         # 优化批量生成效率
         batch_size = int(os.getenv("BATCH_SIZE", 100))  # 可配置的批处理大小
         all_data = []
-        
+
         if request.count <= batch_size:
             # 如果数量小于等于批处理大小，直接处理
             batch_data = generator.generate_batch(request.count)
@@ -430,11 +488,11 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
                 all_data.extend(batch_data)
                 progress = (i + current_batch_size) / request.count * 100
                 _update_task_field("progress", round(progress, 2))
-                
+
                 # 在批次之间添加小延迟，避免对系统造成过大压力
                 if i + current_batch_size < request.count:
                     await asyncio.sleep(0.01)  # 10毫秒延迟
-        
+
         records = [{request.generator_type: item} for item in all_data]
         result = {
             "generator_type": request.generator_type,
@@ -442,7 +500,7 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
             "data": records,
             "timestamp": datetime.now().isoformat(),
         }
-        
+
         final_task_data = {
             "status": "completed",
             "progress": 100,
@@ -464,6 +522,7 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
         await cast(Any, redis.hset(task_key, mapping=final_task_data))
         await cast(Any, redis.expire(task_key, TASK_EXPIRATION_SECONDS))
 
+
 def parse_json_params(json_str: str) -> dict[str, Any]:
     """通用JSON参数解析函数"""
     try:
@@ -471,12 +530,15 @@ def parse_json_params(json_str: str) -> dict[str, Any]:
         if not isinstance(params, dict):
             raise ValueError("参数必须是JSON对象")
         return params
-    except json.JSONDecodeError:
-        raise ValueError("无效的JSON格式")
+    except json.JSONDecodeError as e:
+        raise ValueError("无效的JSON格式") from e
     except Exception as e:
-        raise ValueError(f"参数解析错误: {str(e)}")
+        raise ValueError(f"参数解析错误: {str(e)}") from e
 
-def validate_params_type(params: dict[str, Any], expected_types: dict[str, type]) -> dict[str, Any]:
+
+def validate_params_type(
+    params: dict[str, Any], expected_types: dict[str, type]
+) -> dict[str, Any]:
     """验证参数类型"""
     validated_params = {}
     for key, expected_type in expected_types.items():
@@ -486,18 +548,20 @@ def validate_params_type(params: dict[str, Any], expected_types: dict[str, type]
             validated_params[key] = params[key]
     return validated_params
 
+
 def safe_json_loads(data) -> dict:
     """安全的JSON解析函数，处理字节和字符串数据"""
     if data is None:
         return {}
     if isinstance(data, bytes):
-        data_str = data.decode('utf-8')
+        data_str = data.decode("utf-8")
     else:
         data_str = str(data) if data else "{}"
     try:
         return json.loads(data_str)
     except json.JSONDecodeError:
         return {}
+
 
 def _get_example_parameters(generator_name: str) -> dict[str, Any]:
     examples = {
@@ -514,13 +578,16 @@ def _get_example_parameters(generator_name: str) -> dict[str, Any]:
     }
     return examples.get(generator_name, {})
 
+
 def create_app() -> FastAPI:
     return app
+
 
 def run_server(host: str = "0.0.0.0", port: int = 8000, reload: bool = False) -> None:
     uvicorn.run(
         "dataforge.api.main:app", host=host, port=port, reload=reload, access_log=True
     )
+
 
 if __name__ == "__main__":
     run_server(reload=True)

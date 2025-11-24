@@ -19,7 +19,9 @@ class BaseValidator(ABC):
         return isinstance(param_value, expected_type)
 
     @staticmethod
-    def validate_param_range(param_value: int, min_val: Optional[int] = None, max_val: Optional[int] = None) -> bool:
+    def validate_param_range(
+        param_value: int, min_val: Optional[int] = None, max_val: Optional[int] = None
+    ) -> bool:
         """验证参数范围"""
         if min_val is not None and param_value < min_val:
             return False

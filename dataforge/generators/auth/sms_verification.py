@@ -22,7 +22,7 @@ class SMSVerificationGenerator(DataGenerator[str]):
     - 支持运营商特定格式
     - 包含防刷机制
     - 支持语音验证码格式
-    
+
     返回类型：
     - 默认返回字符串（仅验证码）
     - 设置 string_only=False 返回完整字典
@@ -122,7 +122,7 @@ class SMSVerificationGenerator(DataGenerator[str]):
         # 如果是字符串，直接验证格式
         if isinstance(data, str):
             return data.isdigit() and len(data) >= 4
-        
+
         # 如果是字典，验证完整数据
         if not isinstance(data, dict):
             return False
@@ -221,8 +221,6 @@ class SMSVerificationGenerator(DataGenerator[str]):
         }
 
         return templates.get(template, templates["SMS_123456789"])
-
-
 
     def generate_single(self, context: Optional[GenerationContext] = None) -> str:
         """生成单个数据项"""

@@ -243,7 +243,10 @@ class IDCardGenerator(DataGenerator[str]):
 
         if invalid_type == "wrong_length":
             return "".join(
-                [str(secrets.randbelow(10)) for _ in range(secrets.choice([15, 17, 19]))]
+                [
+                    str(secrets.randbelow(10))
+                    for _ in range(secrets.choice([15, 17, 19]))
+                ]
             )
 
         if invalid_type == "wrong_check":
