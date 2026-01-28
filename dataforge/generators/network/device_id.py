@@ -11,6 +11,8 @@ from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GeneratorConfig
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
+from ...core.luhn import calculate_luhn_check_digit
+from ...core.crypto_utils import generate_random_string, generate_random_alphanumeric
 
 
 class DeviceIDValidator(Validator):
@@ -18,20 +20,6 @@ class DeviceIDValidator(Validator):
 
     def __init__(self, device_type: str = "IMEI"):
         self.device_type = device_type
-
-    def _calculate_luhn_check_digit(self, number: str) -> str:
-        """计算Luhn校验位"""
-        total = 0
-        for i, digit in enumerate(reversed(number)):
-            n = int(digit)
-            if i % 2 == 0:
-                n *= 2
-                if n > 9:
-                    n -= 9
-            total += n
-
-        check_digit = (10 - (total % 10)) % 10
-        return str(check_digit)
 
     def validate(self, data: str) -> bool:
         """验证设备ID格式"""
@@ -47,7 +35,7 @@ class DeviceIDValidator(Validator):
             # 验证Luhn算法
             base = clean_value[:14]
             check_digit = clean_value[14]
-            return self._calculate_luhn_check_digit(base) == check_digit
+            return calculate_luhn_check_digit(base) == int(check_digit)
 
         elif self.device_type == "IMSI":
             return (
@@ -116,18 +104,16 @@ class DeviceIDGenerator(DataGenerator[str]):
     def _generate_imei(self) -> str:
         """生成IMEI号码"""
         # 生成14位TAC+SNR
-        tac = "".join(
-            secrets.choice(string.digits) for _ in range(8)
-        )  # Type Allocation Code
-        snr = "".join(secrets.choice(string.digits) for _ in range(6))  # Serial Number
+        tac = generate_random_string(8)  # Type Allocation Code
+        snr = generate_random_string(6)  # Serial Number
 
         # 计算Luhn校验位
         base = tac + snr
         if self.validator is None:
             self.validator = DeviceIDValidator(self.device_type)
-        check_digit = self.validator._calculate_luhn_check_digit(base)
+        check_digit = calculate_luhn_check_digit(base)
 
-        imei = base + check_digit
+        imei = base + str(check_digit)
 
         # 格式化
         if self.format == "hyphenated":
@@ -146,7 +132,7 @@ class DeviceIDGenerator(DataGenerator[str]):
             if len(self.network_code) <= 2
             else self.network_code[:3]
         )
-        msin = "".join(secrets.choice(string.digits) for _ in range(9 - len(mnc)))
+        msin = generate_random_string(9 - len(mnc))
 
         imsi = mcc + mnc + msin
 
@@ -159,8 +145,7 @@ class DeviceIDGenerator(DataGenerator[str]):
 
     def _generate_device_id(self) -> str:
         """生成通用设备ID"""
-        chars = string.ascii_uppercase + string.digits
-        device_id = "".join(secrets.choice(chars) for _ in range(16))
+        device_id = generate_random_alphanumeric(16, uppercase=True)
 
         if self.format == "hyphenated":
             return "-".join([device_id[i : i + 4] for i in range(0, len(device_id), 4)])
@@ -169,8 +154,7 @@ class DeviceIDGenerator(DataGenerator[str]):
 
     def _generate_android_id(self) -> str:
         """生成Android ID"""
-        chars = "abcdef0123456789"
-        android_id = "".join(secrets.choice(chars) for _ in range(16))
+        android_id = generate_random_alphanumeric(16, uppercase=False)
 
         if self.format == "hyphenated":
             return "-".join(
@@ -181,8 +165,7 @@ class DeviceIDGenerator(DataGenerator[str]):
 
     def _generate_ios_udid(self) -> str:
         """生成iOS UDID"""
-        chars = string.ascii_uppercase + string.digits
-        udid = "".join(secrets.choice(chars) for _ in range(40))
+        udid = generate_random_alphanumeric(40, uppercase=True)
 
         if self.format == "hyphenated":
             return "-".join([udid[i : i + 8] for i in range(0, len(udid), 8)])

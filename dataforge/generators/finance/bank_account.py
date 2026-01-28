@@ -6,22 +6,30 @@
 import secrets
 
 from ...core.factory import register_generator
-from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
+from ...core.generator import (
     DataGenerator,
     GenerationContext,
 )
 from ...core.types import GeneratorType
+from ...core.luhn import calculate_luhn_check_digit, validate_luhn
 
 
 @register_generator("bank_account", aliases=["account", "bank_account_number"])
 class BankAccountGenerator(DataGenerator[str]):
     """银行账号生成器"""
 
-    def _setup(self) -> None:
-        """初始化银行账号生成器参数"""
+    def __init__(self, config):
+        super().__init__(config)
+        self.bank_name = "工商银行"
+        self.account_type = "SAVINGS"  # SAVINGS, CHECKING, CREDIT
+        self.include_bank_name = False
+        self.format = "ACCOUNT"  # ACCOUNT, FULL
+
         # 初始化银行映射表
         self._init_bank_mappings()
 
+    def _setup(self) -> None:
+        """初始化银行账号生成器参数"""
         # 银行名称映射，支持中英文别名
         self.bank_name = self._normalize_bank_name(
             self.parameters.get("bank", "工商银行")
@@ -123,16 +131,6 @@ class BankAccountGenerator(DataGenerator[str]):
             "Morgan Stanley": "Morgan Stanley",
         }
 
-        # 设置银行名称
-        self.bank_name = self._normalize_bank_name(
-            self.parameters.get("bank", "工商银行")
-        )
-        self.account_type = self.parameters.get(
-            "account_type", "SAVINGS"
-        )  # SAVINGS, CHECKING, CREDIT
-        self.include_bank_name = self.parameters.get("include_bank_name", False)
-        self.format = self.parameters.get("format", "ACCOUNT")  # ACCOUNT, FULL
-
     def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成银行账号"""
         if self.bank_name in self.china_banks:
@@ -158,7 +156,7 @@ class BankAccountGenerator(DataGenerator[str]):
             card_number = prefix + middle_digits
 
             # 计算Luhn校验位
-            check_digit = self._calculate_luhn_check_digit(card_number)
+            check_digit = calculate_luhn_check_digit(card_number)
             card_number += str(check_digit)
 
             if self.format == "FULL":
@@ -174,7 +172,7 @@ class BankAccountGenerator(DataGenerator[str]):
             )
             card_number = credit_prefix + middle_digits
 
-            check_digit = self._calculate_luhn_check_digit(card_number)
+            check_digit = calculate_luhn_check_digit(card_number)
             card_number += str(check_digit)
 
             return card_number
@@ -219,25 +217,49 @@ class BankAccountGenerator(DataGenerator[str]):
         # 默认返回工商银行
         return "工商银行"
 
-    def _calculate_luhn_check_digit(self, card_number: str) -> int:
-        """计算Luhn校验位"""
+    def _validate_china_bank_account(self, account: str) -> bool:
+        """验证中国银行账号格式"""
+        if not account.isdigit():
+            return False
 
-        def digits_of(n):
-            return [int(d) for d in str(n)]
+        # 检查长度
+        bank_info = self.china_banks[self.bank_name]
+        expected_length = bank_info["account_length"]
 
-        digits = digits_of(card_number)
-        odd_digits = digits[-1::-2]
-        even_digits = digits[-2::-2]
-        checksum = sum(odd_digits)
-        for d in even_digits:
-            checksum += sum(digits_of(d * 2))
-        return (10 - (checksum % 10)) % 10
+        if len(account) != expected_length:
+            return False
 
-    def _validate_luhn(self, card_number: str) -> bool:
-        """验证Luhn算法"""
-        return self._calculate_luhn_check_digit(card_number[:-1]) == int(
-            card_number[-1]
-        )
+        # 验证Luhn校验位
+        return validate_luhn(account)
+
+    def _validate_us_bank_account(self, account: str) -> bool:
+        """验证美国银行账号格式"""
+        if not account.isdigit():
+            return False
+
+        bank_info = self.us_banks[self.bank_name]
+        valid_lengths = bank_info["account_length"]
+
+        return len(account) in valid_lengths
+
+    def generate_single(self, context: GenerationContext | None = None) -> str:
+        """生成单个数据项"""
+        return self._generate_raw(context)
+
+    @property
+    def generator_type(self) -> GeneratorType:
+        """返回生成器类型"""
+        return GeneratorType.FINANCE
+
+    @property
+    def supported_parameters(self) -> list[str]:
+        """返回支持的参数列表"""
+        return [
+            "bank",
+            "account_type",
+            "include_bank_name",
+            "format",
+        ]
 
     def validate(self, data: str) -> bool:
         """验证银行账号格式"""
@@ -254,48 +276,6 @@ class BankAccountGenerator(DataGenerator[str]):
             return self._validate_us_bank_account(data)
         else:
             return self._validate_china_bank_account(data)
-
-    def _validate_china_bank_account(self, account: str) -> bool:
-        """验证中国银行账号格式"""
-        if not account.isdigit():
-            return False
-
-        # 检查长度
-        bank_info = self.china_banks[self.bank_name]
-        expected_length = bank_info["account_length"]
-
-        if len(account) != expected_length:
-            return False
-
-        # 验证Luhn校验位
-        return self._validate_luhn(account)
-
-    def _validate_us_bank_account(self, account: str) -> bool:
-        """验证美国银行账号格式"""
-        if not account.isdigit():
-            return False
-
-        bank_info = self.us_banks[self.bank_name]
-        valid_lengths = bank_info["account_length"]
-
-        return len(account) in valid_lengths
-
-    @property
-    def generator_type(self) -> GeneratorType:
-        return GeneratorType.FINANCE
-
-    @property
-    def supported_parameters(self) -> list[str]:
-        return [
-            "bank",
-            "account_type",
-            "include_bank_name",
-            "format",
-        ]
-
-    def generate_single(self, context: GenerationContext | None = None) -> str:
-        """生成单个数据项 - TODO: Implement generation logic"""
-        return self._generate_raw(context)
 
 
 @register_generator("bank_account", ["银行账号", "bank", "银行卡"])

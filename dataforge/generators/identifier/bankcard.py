@@ -13,6 +13,7 @@ from ...core.generator import (
 )
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
+from ...core.luhn import calculate_luhn_check_digit, validate_luhn
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -78,23 +79,7 @@ class BankCardValidator(Validator):
 
     def _validate_luhn(self, card_number: str) -> bool:
         """验证Luhn算法"""
-        return self._calculate_luhn_checksum(card_number) == 0
-
-    def _calculate_luhn_checksum(self, number: str) -> int:
-        """计算Luhn校验和"""
-
-        def digits_of(n):
-            return [int(d) for d in str(n)]
-
-        digits = digits_of(number)
-        odd_digits = digits[-1::-2]  # 从右数第1,3,5...位
-        even_digits = digits[-2::-2]  # 从右数第2,4,6...位
-
-        checksum = sum(odd_digits)
-        for d in even_digits:
-            checksum += sum(digits_of(d * 2))
-
-        return checksum % 10
+        return validate_luhn(card_number)
 
     @property
     def error_message(self) -> str:
@@ -216,9 +201,7 @@ class BankCardGenerator(DataGenerator[str]):
 
     def _calculate_luhn_check_digit(self, number: str) -> int:
         """计算Luhn校验位"""
-        # 先计算不带校验位的校验和
-        checksum = self._calculate_luhn_checksum(number + "0")
-        return (10 - checksum % 10) % 10
+        return calculate_luhn_check_digit(number)
 
     def _format_card_number(self, card_number: str) -> str:
         """格式化卡号"""
