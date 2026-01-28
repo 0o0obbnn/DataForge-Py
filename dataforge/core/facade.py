@@ -22,6 +22,9 @@ from .exceptions import GeneratorNotFoundError
 from .factory import GeneratorFactory, default_registry
 from .generator import GeneratorConfig
 
+# 常量定义
+MAX_SUGGESTIONS = 3  # 最大建议数量
+
 
 class DataForge:
     """
@@ -79,7 +82,7 @@ class DataForge:
 
             error_msg = f"生成器 '{name}' 不存在"
             if similar:
-                suggestions = ", ".join(f"'{g}'" for g in similar[:3])
+                suggestions = ", ".join(f"'{g}'" for g in similar[:MAX_SUGGESTIONS])
                 error_msg += f"\n\n💡 你是不是想用这些？{suggestions}"
             else:
                 error_msg += f"\n\n📝 可用的生成器有 {len(available_generators)} 个"

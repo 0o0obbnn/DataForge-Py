@@ -61,6 +61,4 @@ class GenerationMode(Enum):
 
 # 基础类型别名
 Parameters = dict[str, Any]
-ValidationResult = dict[str, bool | str | list[str]]
-GeneratorConfig = dict[str, Any]
 DataSchema = dict[str, Any]
