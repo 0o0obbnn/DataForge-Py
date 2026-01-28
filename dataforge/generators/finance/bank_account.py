@@ -4,7 +4,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
@@ -134,7 +133,7 @@ class BankAccountGenerator(DataGenerator[str]):
         self.include_bank_name = self.parameters.get("include_bank_name", False)
         self.format = self.parameters.get("format", "ACCOUNT")  # ACCOUNT, FULL
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成银行账号"""
         if self.bank_name in self.china_banks:
             return self._generate_china_bank_account()
@@ -294,7 +293,7 @@ class BankAccountGenerator(DataGenerator[str]):
             "format",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 

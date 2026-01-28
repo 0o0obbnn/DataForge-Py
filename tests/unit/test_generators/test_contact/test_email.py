@@ -10,6 +10,7 @@ from dataforge.core.generator import GenerationContext, GeneratorConfig
 
 # 导入电子邮件生成器
 
+
 def test_email_generation():
     """测试电子邮件生成"""
     print("=== 测试电子邮件生成 ===")
@@ -48,6 +49,7 @@ def test_email_generation():
         print(f"校验结果: {generator.validate(email)}")
         print()
 
+
 def test_email_relations():
     """测试电子邮件关联"""
     print("=== 测试电子邮件与其他数据的关联 ===")
@@ -85,6 +87,7 @@ def test_email_relations():
     print(f"生成结果: {result}")
     print()
 
+
 def main():
     """主测试函数"""
     print("DataForge 电子邮件生成器测试")
@@ -95,6 +98,7 @@ def main():
 
     print("所有测试完成！")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

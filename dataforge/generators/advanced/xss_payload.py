@@ -46,7 +46,7 @@ By using this tool, you acknowledge that:
 
 import secrets
 from collections.abc import Mapping
-from typing import Any, Optional, Union
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -61,7 +61,7 @@ class XSSPayloadGenerator(DataGenerator):
     """XSS攻击测试payload生成器"""
 
     def __init__(
-        self, config: Optional[Union[GeneratorConfig, Mapping[str, Any]]] = None
+        self, config: GeneratorConfig | Mapping[str, Any] | None = None
     ):
         """
         接受严格的 GeneratorConfig 或者 Mapping 并在内部规范化为 GeneratorConfig。
@@ -172,7 +172,7 @@ class XSSPayloadGenerator(DataGenerator):
 
     # 额外的高级方法
     def generate_payload(
-        self, xss_type: Optional[str] = None, complexity: Optional[str] = None
+        self, xss_type: str | None = None, complexity: str | None = None
     ) -> str:
         """生成指定类型的payload"""
 
@@ -211,7 +211,7 @@ class XSSPayloadGenerator(DataGenerator):
             "onreset",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
 
         # 尝试调用现有方法

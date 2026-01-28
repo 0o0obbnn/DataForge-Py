@@ -1,7 +1,6 @@
 """句子生成器"""
 
 import random
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -54,7 +53,7 @@ class SentenceGenerator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成句子"""
         word_count = self.parameters.get("word_count", random.randint(5, 15))
         words = [random.choice(self.WORDS) for _ in range(word_count)]
@@ -65,7 +64,7 @@ class SentenceGenerator(DataGenerator):
         """验证句子"""
         return isinstance(data, str) and len(data) > 0
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

@@ -4,7 +4,7 @@ import logging
 import os
 import uuid
 from datetime import datetime
-from typing import Any, Optional, cast
+from typing import Any
 
 import redis.asyncio as aioredis
 import uvicorn
@@ -68,19 +68,19 @@ app = FastAPI(
 )
 
 # 记录配置信息
-logger.info(
-    f"Environment: {'Development' if settings.development_mode else 'Production'}"
-)
+env = "Development" if settings.development_mode else "Production"
+logger.info(f"Environment: {env}")
 logger.info(f"CORS Origins: {settings.allowed_origins}")
-logger.info(f"API Docs: {'Enabled' if settings.development_mode else 'Disabled'}")
+docs_status = "Enabled" if settings.development_mode else "Disabled"
+logger.info(f"API Docs: {docs_status}")
 logger.info(f"Available generators: {len(default_registry.list_generators())}")
 
 # --- Dependency Injection Providers ---
 
 
 def get_registry() -> GeneratorRegistry:
-    # The registry is populated at import time by decorators, so we still use the global instance.
-    # A more advanced pattern would involve an app startup event to build the registry.
+    # The registry is populated at import time by decorators, so we still use global instance.
+    # A more advanced pattern would involve an app startup event to build registry.
     return default_registry
 
 
@@ -186,7 +186,6 @@ app.add_middleware(
 TASK_KEY_PREFIX = "dataforge:task:"
 ALL_TASKS_SORTED_SET = "dataforge:tasks"
 TASK_EXPIRATION_SECONDS = 86400  # 24 hours
-
 
 # --- API Endpoints ---
 @app.get("/", response_class=JSONResponse)
@@ -349,7 +348,7 @@ async def generate_batch_data(
         return {
             "success": True,
             "generators": [config.generator_type for config in configs],
-            "count": len(results),
+            "count": len(len(results)),
             "data": results,
             "timestamp": datetime.now().isoformat(),
         }
@@ -412,7 +411,7 @@ async def get_task_status(task_id: str = Path(..., description="任务ID")):
 
 @app.get("/tasks")
 async def list_tasks(
-    status: Optional[str] = Query(None, description="按状态过滤"),
+    status: str | None = Query(None, description="按状态过滤"),
     limit: int = Query(10, ge=1, le=100, description="返回数量限制"),
 ) -> dict[str, Any]:
     redis = get_async_redis_client()
@@ -447,8 +446,8 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
     relation_manager = get_relation_manager()
     factory = GeneratorFactory(registry, relation_manager)
 
-    def _update_task_field(field: str, value: Any):
-        current_data = redis.get(task_key)
+    async def _update_task_field(field: str, value: Any):
+        current_data = await redis.get(task_key)
 
         if current_data:
             # Ensure data is a string before parsing
@@ -461,7 +460,7 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
 
             task_info[field] = value
 
-            redis.set(task_key, json.dumps(task_info), ex=TASK_EXPIRATION_SECONDS)
+            await redis.set(task_key, json.dumps(task_info), ex=TASK_EXPIRATION_SECONDS)
 
     try:
         config = GeneratorConfig(
@@ -487,7 +486,7 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
                 batch_data = generator.generate_batch(current_batch_size)
                 all_data.extend(batch_data)
                 progress = (i + current_batch_size) / request.count * 100
-                _update_task_field("progress", round(progress, 2))
+                await _update_task_field("progress", round(progress, 2))
 
                 # 在批次之间添加小延迟，避免对系统造成过大压力
                 if i + current_batch_size < request.count:
@@ -508,8 +507,9 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
             "error": None,
         }
 
-        await cast(Any, redis.hset(task_key, mapping=final_task_data))
-        await cast(Any, redis.expire(task_key, TASK_EXPIRATION_SECONDS))
+        await redis.set(
+            task_key, json.dumps(final_task_data), ex=TASK_EXPIRATION_SECONDS
+        )
 
     except Exception as e:
         final_task_data = {
@@ -519,8 +519,9 @@ async def _execute_async_generation(task_id: str, request: GeneratorRequest) -> 
             "error": str(e),
         }
 
-        await cast(Any, redis.hset(task_key, mapping=final_task_data))
-        await cast(Any, redis.expire(task_key, TASK_EXPIRATION_SECONDS))
+        await redis.set(
+            task_key, json.dumps(final_task_data), ex=TASK_EXPIRATION_SECONDS
+        )
 
 
 def parse_json_params(json_str: str) -> dict[str, Any]:

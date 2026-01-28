@@ -3,13 +3,12 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
 
 
 def setup_logging(
     level: str = "INFO",
-    log_file: Optional[str] = None,
-    format_string: Optional[str] = None,
+    log_file: str | None = None,
+    format_string: str | None = None,
 ) -> None:
     """配置应用日志系统
 
@@ -39,7 +38,7 @@ def setup_logging(
 
         file_handler = logging.FileHandler(log_file, encoding="utf-8")
         file_handler.setFormatter(logging.Formatter(format_string))
-        handlers.append(file_handler)
+        handlers.append(file_handler)  # type: ignore
 
     # 配置根logger
     logging.basicConfig(

@@ -7,7 +7,6 @@ import secrets
 import string
 import time
 import uuid
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -70,7 +69,7 @@ class SessionTokenGenerator(DataGenerator[str]):
     characters: str
     prefix: str
     suffix: str
-    validator: Optional[SessionTokenValidator]
+    validator: SessionTokenValidator | None
 
     def __init__(self, config: GeneratorConfig):
         # 先初始化实例属性，避免类型检查器警告
@@ -110,7 +109,7 @@ class SessionTokenGenerator(DataGenerator[str]):
             self.token_type, self.prefix, self.suffix
         )
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始Session ID/Token"""
         if self.token_type == "UUID":
             return str(uuid.uuid4())
@@ -173,7 +172,7 @@ class SessionTokenGenerator(DataGenerator[str]):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -196,6 +195,15 @@ class SessionTokenGenerator(DataGenerator[str]):
 
 class GenericSessionTokenGenerator(SessionTokenGenerator):
     """通用Session ID/Token生成器"""
+
+    # 类级别属性声明，帮助类型检查器
+    token_type: str
+    length: int
+    include_timestamp: bool
+    characters: str
+    prefix: str
+    suffix: str
+    validator: SessionTokenValidator | None
 
     def __init__(self, config: GeneratorConfig):
         # 父类的 __init__ 已经调用了 _setup()，所以属性已经初始化

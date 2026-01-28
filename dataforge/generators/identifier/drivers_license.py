@@ -8,7 +8,6 @@
 import re
 import secrets
 from dataclasses import dataclass
-from typing import Optional, Union
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -44,7 +43,7 @@ class DriverLicenseValidator(Validator):
     def __init__(self, province_codes: dict):
         self.province_codes = province_codes
 
-    def validate(self, data: dict[str, Union[str, int]]) -> bool:
+    def validate(self, data: dict[str, str | int]) -> bool:
         """验证生成的驾驶证数据"""
         if "license_number" not in data:
             return False
@@ -72,7 +71,7 @@ class DriverLicenseValidator(Validator):
         return "Invalid driver's license format"
 
 
-class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
+class DriverLicenseGenerator(DataGenerator[dict[str, str | int]]):
     """中国驾驶证号码生成器
 
     功能特性：
@@ -267,8 +266,8 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
         return f"{surname}{given_name}"
 
     def generate(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, Union[str, int]]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, str | int]:
         """生成驾驶证数据
 
         Returns:
@@ -317,8 +316,8 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
         return result
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, Union[str, int]]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, str | int]:
         """生成单个数据项
 
         默认返回驾驶证号码字符串，除非明确设置string_only=False
@@ -339,7 +338,7 @@ class DriverLicenseGenerator(DataGenerator[dict[str, Union[str, int]]]):
         """返回支持的参数列表"""
         return ["include_dates", "include_name", "license_class", "province"]
 
-    def validate(self, data: Union[str, dict[str, Union[str, int]]]) -> bool:
+    def validate(self, data: str | dict[str, str | int]) -> bool:
         """验证生成的数据
 
         Args:
@@ -363,10 +362,19 @@ class GenericDriverLicenseGenerator(DriverLicenseGenerator):
     """通用驾驶证生成器注册版本"""
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int]:
         """生成单个数据项"""
-        return self.generate(context)
+        # Ensure we always get a dictionary, not a string
+        result = self.generate(context)
+        if isinstance(result, str):
+            # If we got a string, create a minimal dictionary with it
+            return {
+                "license_number": result,
+                "province": self.province,
+                "license_class": self.license_class,
+            }
+        return result
 
 
 # 添加别名以支持测试导入

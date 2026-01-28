@@ -8,7 +8,7 @@ import builtins
 import logging
 import threading
 from collections import defaultdict
-from typing import Any, Optional
+from typing import Any
 
 from .generator import GenerationContext
 
@@ -32,7 +32,7 @@ class ExtendedGenerationContext(GenerationContext):
         self._generation_order: list[str] = []
 
     def set(
-        self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None
+        self, key: str, value: Any, metadata: dict[str, Any] | None = None
     ) -> None:
         """设置上下文数据"""
         with self._lock:
@@ -118,7 +118,7 @@ class ExtendedGenerationContext(GenerationContext):
         with self._lock:
             return self._generation_order.copy()
 
-    def get_metadata(self, key: str) -> Optional[dict[str, Any]]:
+    def get_metadata(self, key: str) -> dict[str, Any] | None:
         """获取数据的元数据"""
         with self._lock:
             return self._metadata.get(key)
@@ -218,7 +218,7 @@ class ContextAwareGenerator:
     为需要依赖上下文的生成器提供基础支持
     """
 
-    def __init__(self, context: Optional[ExtendedGenerationContext] = None):
+    def __init__(self, context: ExtendedGenerationContext | None = None):
         self.context = context or ExtendedGenerationContext()
         self._dependencies: set[str] = set()
 
@@ -253,7 +253,7 @@ class ContextAwareGenerator:
         return self.context.get(key, default)
 
     def set_context_value(
-        self, key: str, value: Any, metadata: Optional[dict[str, Any]] = None
+        self, key: str, value: Any, metadata: dict[str, Any] | None = None
     ) -> None:
         """向上下文中设置值"""
         self.context.set(key, value, metadata)

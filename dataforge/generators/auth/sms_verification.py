@@ -6,14 +6,14 @@ SMS verification code generator for mobile authentication.
 import random
 import string
 from datetime import datetime, timedelta
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorType
 
 
 @register_generator("sms_verification", ["sms_code"])
-class SMSVerificationGenerator(DataGenerator[str]):
+class SMSVerificationGenerator(DataGenerator[Any]):
     """
     短信验证码生成器
 
@@ -63,7 +63,9 @@ class SMSVerificationGenerator(DataGenerator[str]):
         config.update(self.parameters)
         return config
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成原始短信验证码数据"""
         config = self._get_effective_config()
 
@@ -222,7 +224,7 @@ class SMSVerificationGenerator(DataGenerator[str]):
 
         return templates.get(template, templates["SMS_123456789"])
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         # 使用_generate_raw方法生成验证码数据
         verification_data = self._generate_raw(context)

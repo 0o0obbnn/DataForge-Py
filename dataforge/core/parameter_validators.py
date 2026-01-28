@@ -1,7 +1,7 @@
 """通用参数验证工具"""
 
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any
 
 from .exceptions import GeneratorConfigError
 
@@ -101,8 +101,8 @@ class ParameterValidator:
     @staticmethod
     def validate_range(
         value: float,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
+        min_value: float | None = None,
+        max_value: float | None = None,
         param_name: str = "value",
     ) -> float:
         """验证数值范围

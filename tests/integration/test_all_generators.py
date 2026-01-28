@@ -17,29 +17,40 @@ from dataforge.core.generator import GeneratorConfig
 def get_expected_generators() -> list[str]:
     """动态获取预期的生成器列表"""
     from dataforge.core.factory import default_registry
-    
+
     # 获取已注册的生成器
     registered_generators = default_registry.list_generators()
-    
+
     # 定义核心生成器（必须存在）
     core_generators = [
-        "idcard", "bankcard", "phone", "name", "age", "gender", 
-        "address", "license_plate", "company_name", "email",
-        "advanced_timestamp", "datetime_range", "logistics"
+        "idcard",
+        "bankcard",
+        "phone",
+        "name",
+        "age",
+        "gender",
+        "address",
+        "license_plate",
+        "company_name",
+        "email",
+        "advanced_timestamp",
+        "datetime_range",
+        "logistics",
     ]
-    
+
     # 确保核心生成器都在注册列表中
     expected = []
     for gen in core_generators:
         if gen in registered_generators:
             expected.append(gen)
-    
+
     # 添加其他已注册的生成器
     for gen in registered_generators:
         if gen not in expected:
             expected.append(gen)
-    
+
     return expected
+
 
 EXPECTED_GENERATORS = get_expected_generators()
 
@@ -115,7 +126,9 @@ def test_generator_instantiation():
         error_msg = "\n".join(
             [f"  - {name}: {error}" for name, error in failed_generators]
         )
-        pytest.fail(f"Failed to instantiate {len(failed_generators)} generators:\n{error_msg}")
+        pytest.fail(
+            f"Failed to instantiate {len(failed_generators)} generators:\n{error_msg}"
+        )
 
 
 def test_generator_basic_functionality():
@@ -153,7 +166,9 @@ def test_generator_basic_functionality():
             # Validate data
             is_valid = generator.validate(data)
             if not is_valid:
-                failed_generators.append((gen_name, f"Validation failed for data: {data}"))
+                failed_generators.append(
+                    (gen_name, f"Validation failed for data: {data}")
+                )
 
         except NotImplementedError:
             # Skip generators with NotImplementedError placeholders
@@ -165,7 +180,9 @@ def test_generator_basic_functionality():
         error_msg = "\n".join(
             [f"  - {name}: {error}" for name, error in failed_generators]
         )
-        pytest.fail(f"Basic functionality failed for {len(failed_generators)} generators:\n{error_msg}")
+        pytest.fail(
+            f"Basic functionality failed for {len(failed_generators)} generators:\n{error_msg}"
+        )
 
 
 def test_generator_batch_generation():
@@ -209,7 +226,9 @@ def test_generator_batch_generation():
         error_msg = "\n".join(
             [f"  - {name}: {error}" for name, error in failed_generators]
         )
-        pytest.fail(f"Batch generation failed for {len(failed_generators)} generators:\n{error_msg}")
+        pytest.fail(
+            f"Batch generation failed for {len(failed_generators)} generators:\n{error_msg}"
+        )
 
 
 def test_registry_coverage():
@@ -282,7 +301,9 @@ def test_generator_validation_logic():
         )
         if len(failed_generators) > 10:
             error_msg += f"\n  ... and {len(failed_generators) - 10} more"
-        pytest.fail(f"Validation logic issues in {len(failed_generators)} generators:\n{error_msg}")
+        pytest.fail(
+            f"Validation logic issues in {len(failed_generators)} generators:\n{error_msg}"
+        )
 
 
 def test_generator_supported_parameters():
@@ -324,7 +345,9 @@ def test_generator_supported_parameters():
         error_msg = "\n".join(
             [f"  - {name}: {error}" for name, error in failed_generators]
         )
-        pytest.fail(f"supported_parameters issues in {len(failed_generators)} generators:\n{error_msg}")
+        pytest.fail(
+            f"supported_parameters issues in {len(failed_generators)} generators:\n{error_msg}"
+        )
 
 
 @pytest.mark.slow
@@ -369,7 +392,9 @@ def test_generator_stress_test():
         error_msg = "\n".join(
             [f"  - {name}: {error}" for name, error in failed_generators]
         )
-        pytest.fail(f"Stress test failed for {len(failed_generators)} generators:\n{error_msg}")
+        pytest.fail(
+            f"Stress test failed for {len(failed_generators)} generators:\n{error_msg}"
+        )
 
 
 def test_summary():

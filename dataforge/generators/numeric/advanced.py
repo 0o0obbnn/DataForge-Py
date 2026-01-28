@@ -5,7 +5,7 @@
 import random
 import secrets
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Optional, Union
+from typing import Union
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -13,6 +13,8 @@ from dataforge.core.generator import (
     GenerationContext,
     GeneratorType,
 )
+
+from ...resources.finance_data_loader import load_finance_data_config
 
 
 class IntegerGenerator(DataGenerator[int]):
@@ -42,7 +44,7 @@ class IntegerGenerator(DataGenerator[int]):
         self.include_zero = self.parameters.get("include_zero", True)
         self.format_string = self.parameters.get("format_string", None)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> int:
+    def _generate_raw(self, context: GenerationContext | None = None) -> int:
         """生成整数"""
         # 确保step为正数
         step = max(1, abs(self.step))
@@ -66,7 +68,7 @@ class IntegerGenerator(DataGenerator[int]):
 
         return value
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> int:
+    def generate_single(self, context: GenerationContext | None = None) -> int:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -106,7 +108,7 @@ class DecimalGenerator(DataGenerator[Decimal]):
         self.include_zero = self.parameters.get("include_zero", True)
         self.rounding_mode = self.parameters.get("rounding_mode", ROUND_HALF_UP)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> Decimal:
+    def _generate_raw(self, context: GenerationContext | None = None) -> Decimal:
         """生成小数"""
         # 确保范围正确
         min_val = min(self.min_value, self.max_value)
@@ -118,7 +120,7 @@ class DecimalGenerator(DataGenerator[Decimal]):
             Decimal("0." + "0" * self.scale), rounding=self.rounding_mode
         )
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Decimal:
+    def generate_single(self, context: GenerationContext | None = None) -> Decimal:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -154,7 +156,7 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         self.include_symbol = self.parameters.get("include_symbol", False)
         self.format_string = self.parameters.get("format_string", None)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> float:
+    def _generate_raw(self, context: GenerationContext | None = None) -> float:
         """生成百分比"""
         # 确保范围在0-100之间
         min_val = max(0.0, min(100.0, float(self.min_value)))
@@ -168,8 +170,8 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         return round(value, self.precision)
 
     def generate(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[float, str]:
+        self, context: GenerationContext | None = None
+    ) -> float | str:
         """生成百分比"""
         value = self._generate_raw(context)
         if self.include_symbol:
@@ -178,12 +180,12 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
             return value
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[float, str]:
+        self, context: GenerationContext | None = None
+    ) -> float | str:
         """生成单个数据项"""
         return self.generate(context)
 
-    def validate(self, data: Union[float, str]) -> bool:
+    def validate(self, data: float | str) -> bool:
         """验证生成的数据"""
         # 如果是字符串且包含%符号，提取数值部分验证
         if isinstance(data, str) and data.endswith("%"):
@@ -205,30 +207,19 @@ class CurrencyGenerator(DataGenerator[str]):
         self.min_value = self.parameters.get("min_value", 0.01)
         self.max_value = self.parameters.get("max_value", 10000.0)
         self.precision = self.parameters.get("precision", 2)
+        # 加载金融配置（仅用于货币符号映射）
+        locale = self.parameters.get("locale", "zh_CN")
+        self._finance_config = load_finance_data_config(locale=locale)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
-        import random
-
-        # 货币符号映射
-        currency_symbols = {
-            "CNY": "¥",
-            "USD": "$",
-            "EUR": "€",
-            "JPY": "¥",
-            "GBP": "£",
-            "AUD": "A$",
-            "CAD": "C$",
-            "HKD": "HK$",
-            "SGD": "S$",
-        }
-
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         # 生成随机金额
         amount = round(random.uniform(self.min_value, self.max_value), self.precision)
 
+        currency_symbols = self._finance_config.get("currency_symbols", {})
         symbol = currency_symbols.get(self.currency, self.currency)
         return f"{symbol}{amount:,.{self.precision}f}"
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -242,7 +233,7 @@ class CurrencyGenerator(DataGenerator[str]):
 
     @property
     def supported_parameters(self) -> list[str]:
-        return ["currency", "min_value", "max_value", "precision"]
+        return ["currency", "min_value", "max_value", "precision", "locale"]
 
 
 class ScientificNumberGenerator(DataGenerator[str]):
@@ -253,13 +244,13 @@ class ScientificNumberGenerator(DataGenerator[str]):
         self.max_value = self.parameters.get("max_value", 1e6)
         self.precision = self.parameters.get("precision", 2)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         import random
 
         value = random.uniform(self.min_value, self.max_value)
         return f"{value:.{self.precision}e}"
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

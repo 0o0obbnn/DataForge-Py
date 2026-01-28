@@ -7,7 +7,7 @@ YAML数据生成器
 import random
 import secrets
 from datetime import datetime
-from typing import Any, Optional, Union
+from typing import Any
 
 import yaml
 
@@ -81,7 +81,7 @@ class YAMLGenerator(DataGenerator):
         ]
         return random.choice(words)
 
-    def _generate_string_value(self, length: Optional[int] = None) -> str:
+    def _generate_string_value(self, length: int | None = None) -> str:
         """生成字符串值"""
         if length is None:
             length = secrets.randbelow(26) + 5
@@ -162,7 +162,7 @@ class YAMLGenerator(DataGenerator):
         else:
             return " ".join(random.choices(words, k=min(length // 4, 8)))
 
-    def _generate_numeric_value(self) -> Union[int, float]:
+    def _generate_numeric_value(self) -> int | float:
         """生成数值"""
         if (secrets.randbelow(1000000) / 1000000) > 0.3:
             return secrets.randbelow(1000 + 1)
@@ -222,7 +222,7 @@ class YAMLGenerator(DataGenerator):
 
         return data
 
-    def _generate_primitive_value(self) -> Union[str, int, float, bool, None]:
+    def _generate_primitive_value(self) -> str | int | float | bool | None:
         """生成原始值"""
         value_types = ["string", "number", "boolean", "null"]
 
@@ -256,7 +256,7 @@ class YAMLGenerator(DataGenerator):
 
         return data
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个YAML数据"""
         template = self.config.parameters.get("template")
         if template:
@@ -315,7 +315,7 @@ class YAMLGenerator(DataGenerator):
             return False
 
     def generate_batch(
-        self, count: int, context: Optional[GenerationContext] = None
+        self, count: int, context: GenerationContext | None = None
     ) -> list[str]:
         """批量生成YAML数据"""
         return [self._generate_yaml() for _ in range(count)]
@@ -365,7 +365,7 @@ class GenericYAMLGenerator(YAMLGenerator):
         self.use_anchors = bool(self.config.parameters.get("use_anchors", False))
         self.use_aliases = bool(self.config.parameters.get("use_aliases", False))
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成原始YAML字符串"""
         if self.template and self.template in self._get_yaml_templates():
             template_config = self._get_yaml_templates()[self.template]

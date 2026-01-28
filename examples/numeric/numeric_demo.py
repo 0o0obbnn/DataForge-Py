@@ -3,10 +3,9 @@ DataForge 数值生成器示例
 演示各种数值相关生成器的使用方法
 """
 
+import json
 import os
 import sys
-import json
-import math
 from datetime import datetime
 
 # 添加项目根目录到路径
@@ -19,7 +18,7 @@ def basic_usage():
     """基础用法示例"""
     print("1. 基础用法示例")
     print("=" * 60)
-    
+
     # 整数生成器
     print("\n整数生成器 (integer):")
     config = GeneratorConfig("integer", parameters={})
@@ -27,7 +26,7 @@ def basic_usage():
     for i in range(3):
         num = generator.generate()
         print(f"  示例 {i+1}: {num}")
-    
+
     # 数字生成器（可用作浮点数）
     print("\n数字生成器 (number):")
     config = GeneratorConfig("number", parameters={"type": "float"})
@@ -35,7 +34,7 @@ def basic_usage():
     for i in range(3):
         num = generator.generate()
         print(f"  示例 {i+1}: {num}")
-    
+
     # 小数生成器
     print("\n小数生成器 (decimal):")
     config = GeneratorConfig("decimal", parameters={})
@@ -43,7 +42,7 @@ def basic_usage():
     for i in range(3):
         num = generator.generate()
         print(f"  示例 {i+1}: {num}")
-    
+
     # 百分比生成器
     print("\n百分比生成器 (percentage):")
     config = GeneratorConfig("percentage", parameters={})
@@ -51,7 +50,7 @@ def basic_usage():
     for i in range(3):
         percent = generator.generate()
         print(f"  示例 {i+1}: {percent}")
-    
+
     # 科学计数法生成器
     print("\n科学计数法生成器 (scientific):")
     config = GeneratorConfig("scientific", parameters={})
@@ -65,7 +64,7 @@ def parameter_configuration():
     """参数配置示例"""
     print("\n\n2. 参数配置示例")
     print("=" * 60)
-    
+
     # 整数 - 不同范围
     print("\n整数生成器 - 范围配置:")
     int_configs = [
@@ -80,7 +79,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 数字生成器（浮点数） - 不同精度
     print("\n数字生成器（浮点数） - 精度配置:")
     float_configs = [
@@ -96,7 +95,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 小数 - 不同小数位数
     print("\n小数生成器 - 小数位数配置:")
     decimal_configs = [
@@ -112,7 +111,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 百分比 - 不同范围
     print("\n百分比生成器 - 范围配置:")
     percent_configs = [
@@ -128,7 +127,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 科学计数法 - 不同指数范围
     print("\n科学计数法生成器 - 指数范围配置:")
     scientific_configs = [
@@ -150,29 +149,29 @@ def batch_generation():
     """批量生成示例"""
     print("\n\n3. 批量生成示例")
     print("=" * 60)
-    
+
     print("\n批量生成数值数据:")
-    
+
     # 生成整数
     int_config = GeneratorConfig("integer", parameters={"min": 1, "max": 100})
     int_gen = default_factory.create_generator(int_config)
-    
+
     # 生成浮点数
     float_config = GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 1.0, "decimal_places": 3})
     float_gen = default_factory.create_generator(float_config)
-    
+
     # 生成小数
     decimal_config = GeneratorConfig("decimal", parameters={"min": 0, "max": 1000, "decimal_places": 2})
     decimal_gen = default_factory.create_generator(decimal_config)
-    
+
     # 生成百分比
     percent_config = GeneratorConfig("percentage", parameters={"min": 0, "max": 100, "precision": 1})
     percent_gen = default_factory.create_generator(percent_config)
-    
+
     # 生成科学计数法
     scientific_config = GeneratorConfig("scientific", parameters={"precision": 4})
     scientific_gen = default_factory.create_generator(scientific_config)
-    
+
     # 生成5条数值数据
     numeric_data = []
     for i in range(5):
@@ -186,7 +185,7 @@ def batch_generation():
             "created_at": datetime.now().isoformat()
         }
         numeric_data.append(data)
-    
+
     # 打印数值数据
     print("-" * 100)
     print(f"{'ID':<4} | {'整数':<8} | {'浮点数':<10} | {'小数':<12} | {'百分比':<10} | {'科学计数法'}")
@@ -200,12 +199,12 @@ def validation_examples():
     """数据验证示例"""
     print("\n\n4. 数据验证示例")
     print("=" * 60)
-    
+
     # 整数验证
     print("\n整数格式验证:")
     config = GeneratorConfig("integer", parameters={"min": 1, "max": 100})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         num = generator.generate()
         is_valid = generator.validate(num)
@@ -213,12 +212,12 @@ def validation_examples():
         print(f"  {i+1}. {num}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
-    
+
     # 浮点数验证
     print("\n浮点数格式验证:")
     config = GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 1.0})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         num = generator.generate()
         is_valid = generator.validate(num)
@@ -226,12 +225,12 @@ def validation_examples():
         print(f"  {i+1}. {num}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
-    
+
     # 小数验证
     print("\n小数格式验证:")
     config = GeneratorConfig("decimal", parameters={"min": 0, "max": 100, "decimal_places": 2})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         num = generator.generate()
         is_valid = generator.validate(num)
@@ -242,12 +241,12 @@ def validation_examples():
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
         print(f"     小数位数: {decimal_places} (≤2: {'✅' if correct_places else '❌'})")
-    
+
     # 百分比验证
     print("\n百分比格式验证:")
     config = GeneratorConfig("percentage", parameters={"min": 0, "max": 100})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         percent = generator.generate()
         is_valid = generator.validate(percent)
@@ -259,12 +258,12 @@ def validation_examples():
         print(f"  {i+1}. {percent}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
-    
+
     # 科学计数法验证
     print("\n科学计数法格式验证:")
     config = GeneratorConfig("scientific", parameters={"precision": 4})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         scientific = generator.generate()
         is_valid = generator.validate(scientific)
@@ -278,7 +277,7 @@ def error_handling():
     """错误处理示例"""
     print("\n\n5. 错误处理示例")
     print("=" * 60)
-    
+
     # 处理无效的整数范围
     print("\n处理无效的整数范围:")
     try:
@@ -288,7 +287,7 @@ def error_handling():
         print(f"  生成的整数: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效整数范围错误: {type(e).__name__}")
-    
+
     # 处理无效的浮点数精度
     print("\n处理无效的浮点数精度:")
     try:
@@ -298,7 +297,7 @@ def error_handling():
         print(f"  生成的浮点数: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效浮点数精度错误: {type(e).__name__}")
-    
+
     # 处理无效的小数位数
     print("\n处理无效的小数位数:")
     try:
@@ -308,7 +307,7 @@ def error_handling():
         print(f"  生成的小数: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效小数位数错误: {type(e).__name__}")
-    
+
     # 处理无效的百分比范围
     print("\n处理无效的百分比范围:")
     try:
@@ -318,7 +317,7 @@ def error_handling():
         print(f"  生成的百分比: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效百分比范围错误: {type(e).__name__}")
-    
+
     # 处理无效的科学计数法精度
     print("\n处理无效的科学计数法精度:")
     try:
@@ -334,7 +333,7 @@ def best_practices():
     """最佳实践示例"""
     print("\n\n6. 最佳实践示例")
     print("=" * 60)
-    
+
     # 实践1: 生成完整的数值配置
     print("\n实践1: 生成完整的数值配置")
     numeric_config = {
@@ -367,7 +366,7 @@ def best_practices():
             "allow_custom_exponent": True
         }
     }
-    
+
     print("  数值配置:")
     for key, value in numeric_config.items():
         print(f"    {key}:")
@@ -376,11 +375,11 @@ def best_practices():
                 print(f"      {sub_key}: {sub_value}")
             else:
                 print(f"      {sub_key}: {sub_value}")
-    
+
     # 实践2: 批量导出数值数据
     print("\n实践2: 批量导出数值数据 (JSON格式)")
     numeric_data = []
-    
+
     for i in range(3):
         numeric_record = {
             "record_id": f"numeric_{i+1:03d}",
@@ -445,7 +444,7 @@ def best_practices():
             }
         }
         numeric_data.append(numeric_record)
-    
+
     print("  JSON格式输出:")
     print(json.dumps(numeric_data, ensure_ascii=False, indent=2))
 
@@ -454,9 +453,9 @@ def numeric_demo():
     """数值演示"""
     print("\n\n7. 数值演示")
     print("=" * 60)
-    
+
     print("\n生成统计数据演示:")
-    
+
     # 生成统计报告
     print("\n统计报告:")
     stats_report = {
@@ -510,7 +509,7 @@ def numeric_demo():
             ).generate()
         }
     }
-    
+
     print(f"  报告ID: {stats_report['report_id']}")
     print(f"  样本大小: {stats_report['sample_size']}")
     print("  指标:")
@@ -519,10 +518,10 @@ def numeric_demo():
     print("  百分位数:")
     for key, value in stats_report['percentiles'].items():
         print(f"    {key}: {value}")
-    
+
     # 生成财务数据
     print("\n财务数据演示:")
-    
+
     stocks = []
     for i in range(3):
         stock = {
@@ -552,7 +551,7 @@ def numeric_demo():
             ).generate()
         }
         stocks.append(stock)
-    
+
     print("  股票列表:")
     for stock in stocks:
         print(f"    代码: {stock['symbol']}")
@@ -563,10 +562,10 @@ def numeric_demo():
         print(f"    市盈率: {stock['pe_ratio']}")
         print(f"    股息率: {stock['dividend_yield']}")
         print()
-    
+
     # 生成科学数据
     print("\n科学数据演示:")
-    
+
     experiments = []
     for i in range(3):
         experiment = {
@@ -607,7 +606,7 @@ def numeric_demo():
             "timestamp": datetime.now().isoformat()
         }
         experiments.append(experiment)
-    
+
     print("  实验数据:")
     for exp in experiments:
         print(f"    实验ID: {exp['experiment_id']}")
@@ -619,10 +618,10 @@ def numeric_demo():
             print(f"      {key}: ±{value}")
         print(f"    时间戳: {exp['timestamp'][:19]}")
         print()
-    
+
     # 生成性能指标
     print("\n性能指标演示:")
-    
+
     performance_metrics = {
         "response_time": {
             "min": default_factory.create_generator(
@@ -678,22 +677,22 @@ def numeric_demo():
             ).generate()
         }
     }
-    
+
     print("  响应时间 (ms):")
     for key, value in performance_metrics['response_time'].items():
         print(f"    {key}: {value}")
-    
+
     print("  吞吐量:")
     for key, value in performance_metrics['throughput'].items():
         if key == "bytes_per_second":
             print(f"    {key}: {value} bytes/s")
         else:
             print(f"    {key}: {value}")
-    
+
     print("  错误率:")
     for key, value in performance_metrics['error_rates'].items():
         print(f"    {key}: {value}")
-    
+
     print("  资源使用率:")
     for key, value in performance_metrics['resource_usage'].items():
         unit = "%" if "usage" in key else "Mbps"
@@ -704,7 +703,7 @@ def main():
     """主函数"""
     print("🔢 DataForge 数值生成器示例")
     print("本示例展示了数值相关生成器的各种使用方法\n")
-    
+
     try:
         basic_usage()
         parameter_configuration()
@@ -713,16 +712,16 @@ def main():
         error_handling()
         best_practices()
         numeric_demo()
-        
+
         print("\n" + "=" * 60)
         print("✅ 示例演示完成")
         print("=" * 60)
         print("🎉 所有数值相关生成器示例已成功运行！")
-        
+
         print("\n📚 相关文档:")
         print("  • 查看 examples/identifier/identifier_demo.py 了解标识符相关生成器")
         print("  • 查看 examples/comprehensive_demo.py 了解所有生成器概览")
-        
+
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback

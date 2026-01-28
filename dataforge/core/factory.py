@@ -2,7 +2,7 @@
 生成器工厂和注册表
 """
 
-from typing import Any, Optional
+from typing import Any
 
 from .exceptions import GeneratorConfigError, GeneratorNotFoundError
 from .generator import DataGenerator, GenerationContext, GeneratorConfig
@@ -20,7 +20,7 @@ class GeneratorRegistry:
         self,
         name: str,
         generator_class: type[DataGenerator[Any]],
-        aliases: Optional[list[str]] = None,
+        aliases: list[str] | None = None,
     ) -> None:
         """注册生成器
 
@@ -48,7 +48,7 @@ class GeneratorRegistry:
                     raise GeneratorConfigError(f"Alias must be a string: {alias}")
                 self._aliases[alias] = name
 
-    def get_generator_class(self, name: str) -> Optional[type[DataGenerator[Any]]]:
+    def get_generator_class(self, name: str) -> type[DataGenerator[Any]] | None:
         """获取生成器类
 
         Args:
@@ -94,7 +94,7 @@ class GeneratorFactory:
     def __init__(
         self,
         registry: GeneratorRegistry,
-        relation_manager: Optional[DataRelationManager] = None,
+        relation_manager: DataRelationManager | None = None,
     ) -> None:
         self.registry = registry
         self.relation_manager = relation_manager or default_relation_manager
@@ -148,7 +148,7 @@ class GeneratorFactory:
     def generate_batch_with_relations(
         self,
         configs: list[GeneratorConfig],
-        context: Optional[GenerationContext] = None,
+        context: GenerationContext | None = None,
     ) -> dict[str, Any]:
         """批量生成数据并应用关联规则
 
@@ -214,7 +214,7 @@ default_registry = GeneratorRegistry()
 default_factory = GeneratorFactory(default_registry)
 
 
-def register_generator(name: str, aliases: Optional[list[str]] = None):
+def register_generator(name: str, aliases: list[str] | None = None) -> Any:
     """生成器注册装饰器
 
     Args:

@@ -5,7 +5,6 @@
 
 import secrets
 import string
-from typing import Optional
 
 from ...core.context import GenerationContext
 from ...core.factory import register_generator
@@ -95,7 +94,7 @@ class DeviceIDGenerator(DataGenerator[str]):
         self.network_code = self.parameters.get("network_code", "00")
         self.validator = DeviceIDValidator(self.device_type)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始设备ID"""
         if self.validator is None:
             # Re-initialize validator if it's None
@@ -124,6 +123,8 @@ class DeviceIDGenerator(DataGenerator[str]):
 
         # 计算Luhn校验位
         base = tac + snr
+        if self.validator is None:
+            self.validator = DeviceIDValidator(self.device_type)
         check_digit = self.validator._calculate_luhn_check_digit(base)
 
         imei = base + check_digit
@@ -214,7 +215,7 @@ class DeviceIDGenerator(DataGenerator[str]):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -230,7 +231,7 @@ class DeviceIDGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
+        if self.validator is not None and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
 

@@ -1,76 +1,2205 @@
 {
   "common_surnames": [
-    {"surname": "王", "pinyin": "wang", "frequency": 0.0693},
-    {"surname": "李", "pinyin": "li", "frequency": 0.0636},
-    {"surname": "张", "pinyin": "zhang", "frequency": 0.0626},
-    {"surname": "刘", "pinyin": "liu", "frequency": 0.0520},
-    {"surname": "陈", "pinyin": "chen", "frequency": 0.0451},
-    {"surname": "杨", "pinyin": "yang", "frequency": 0.0384},
-    {"surname": "赵", "pinyin": "zhao", "frequency": 0.0302},
-    {"surname": "黄", "pinyin": "huang", "frequency": 0.0279},
-    {"surname": "周", "pinyin": "zhou", "frequency": 0.0250},
-    {"surname": "吴", "pinyin": "wu", "frequency": 0.0245},
-    {"surname": "徐", "pinyin": "xu", "frequency": 0.0218},
-    {"surname": "孙", "pinyin": "sun", "frequency": 0.0218},
-    {"surname": "胡", "pinyin": "hu", "frequency": 0.0212},
-    {"surname": "朱", "pinyin": "zhu", "frequency": 0.0205},
-    {"surname": "高", "pinyin": "gao", "frequency": 0.0198},
-    {"surname": "林", "pinyin": "lin", "frequency": 0.0197},
-    {"surname": "何", "pinyin": "he", "frequency": 0.0179},
-    {"surname": "郭", "pinyin": "guo", "frequency": 0.0176},
-    {"surname": "马", "pinyin": "ma", "frequency": 0.0167},
-    {"surname": "罗", "pinyin": "luo", "frequency": 0.0148},
-    {"surname": "梁", "pinyin": "liang", "frequency": 0.0134},
-    {"surname": "宋", "pinyin": "song", "frequency": 0.0126},
-    {"surname": "郑", "pinyin": "zheng", "frequency": 0.0122},
-    {"surname": "谢", "pinyin": "xie", "frequency": 0.0120},
-    {"surname": "韩", "pinyin": "han", "frequency": 0.0107},
-    {"surname": "唐", "pinyin": "tang", "frequency": 0.0106},
-    {"surname": "冯", "pinyin": "feng", "frequency": 0.0106},
-    {"surname": "于", "pinyin": "yu", "frequency": 0.0099},
-    {"surname": "董", "pinyin": "dong", "frequency": 0.0097},
-    {"surname": "萧", "pinyin": "xiao", "frequency": 0.0094},
-    {"surname": "程", "pinyin": "cheng", "frequency": 0.0093},
-    {"surname": "曹", "pinyin": "cao", "frequency": 0.0088},
-    {"surname": "袁", "pinyin": "yuan", "frequency": 0.0086},
-    {"surname": "邓", "pinyin": "deng", "frequency": 0.0086},
-    {"surname": "许", "pinyin": "xu", "frequency": 0.0085},
-    {"surname": "傅", "pinyin": "fu", "frequency": 0.0084},
-    {"surname": "沈", "pinyin": "shen", "frequency": 0.0083},
-    {"surname": "曾", "pinyin": "zeng", "frequency": 0.0081},
-    {"surname": "彭", "pinyin": "peng", "frequency": 0.0079},
-    {"surname": "吕", "pinyin": "lv", "frequency": 0.0076},
-    {"surname": "苏", "pinyin": "su", "frequency": 0.0075},
-    {"surname": "卢", "pinyin": "lu", "frequency": 0.0074},
-    {"surname": "蒋", "pinyin": "jiang", "frequency": 0.0072},
-    {"surname": "蔡", "pinyin": "cai", "frequency": 0.0070},
-    {"surname": "贾", "pinyin": "jia", "frequency": 0.0069},
-    {"surname": "丁", "pinyin": "ding", "frequency": 0.0068},
-    {"surname": "魏", "pinyin": "wei", "frequency": 0.0067},
-    {"surname": "薛", "pinyin": "xue", "frequency": 0.0066},
-    {"surname": "叶", "pinyin": "ye", "frequency": 0.0065},
-    {"surname": "阎", "pinyin": "yan", "frequency": 0.0064}
+    {
+      "surname": "王",
+      "pinyin": "",
+      "frequency": 0.01
+    },
+    {
+      "surname": "李",
+      "pinyin": "",
+      "frequency": 0.009975669099756692
+    },
+    {
+      "surname": "张",
+      "pinyin": "",
+      "frequency": 0.009951338199513382
+    },
+    {
+      "surname": "刘",
+      "pinyin": "",
+      "frequency": 0.009927007299270074
+    },
+    {
+      "surname": "陈",
+      "pinyin": "",
+      "frequency": 0.009902676399026764
+    },
+    {
+      "surname": "杨",
+      "pinyin": "",
+      "frequency": 0.009878345498783456
+    },
+    {
+      "surname": "黄",
+      "pinyin": "",
+      "frequency": 0.009854014598540146
+    },
+    {
+      "surname": "赵",
+      "pinyin": "",
+      "frequency": 0.009829683698296838
+    },
+    {
+      "surname": "周",
+      "pinyin": "",
+      "frequency": 0.009805352798053528
+    },
+    {
+      "surname": "吴",
+      "pinyin": "",
+      "frequency": 0.00978102189781022
+    },
+    {
+      "surname": "徐",
+      "pinyin": "",
+      "frequency": 0.009756690997566911
+    },
+    {
+      "surname": "孙",
+      "pinyin": "",
+      "frequency": 0.009732360097323601
+    },
+    {
+      "surname": "朱",
+      "pinyin": "",
+      "frequency": 0.009708029197080293
+    },
+    {
+      "surname": "马",
+      "pinyin": "",
+      "frequency": 0.009683698296836983
+    },
+    {
+      "surname": "胡",
+      "pinyin": "",
+      "frequency": 0.009659367396593675
+    },
+    {
+      "surname": "郭",
+      "pinyin": "",
+      "frequency": 0.009635036496350365
+    },
+    {
+      "surname": "林",
+      "pinyin": "",
+      "frequency": 0.009610705596107057
+    },
+    {
+      "surname": "何",
+      "pinyin": "",
+      "frequency": 0.009586374695863749
+    },
+    {
+      "surname": "高",
+      "pinyin": "",
+      "frequency": 0.009562043795620439
+    },
+    {
+      "surname": "梁",
+      "pinyin": "",
+      "frequency": 0.009537712895377129
+    },
+    {
+      "surname": "郑",
+      "pinyin": "",
+      "frequency": 0.00951338199513382
+    },
+    {
+      "surname": "罗",
+      "pinyin": "",
+      "frequency": 0.00948905109489051
+    },
+    {
+      "surname": "宋",
+      "pinyin": "",
+      "frequency": 0.009464720194647202
+    },
+    {
+      "surname": "谢",
+      "pinyin": "",
+      "frequency": 0.009440389294403892
+    },
+    {
+      "surname": "唐",
+      "pinyin": "",
+      "frequency": 0.009416058394160584
+    },
+    {
+      "surname": "韩",
+      "pinyin": "",
+      "frequency": 0.009391727493917274
+    },
+    {
+      "surname": "曹",
+      "pinyin": "",
+      "frequency": 0.009367396593673966
+    },
+    {
+      "surname": "许",
+      "pinyin": "",
+      "frequency": 0.009343065693430656
+    },
+    {
+      "surname": "邓",
+      "pinyin": "",
+      "frequency": 0.009318734793187348
+    },
+    {
+      "surname": "萧",
+      "pinyin": "",
+      "frequency": 0.00929440389294404
+    },
+    {
+      "surname": "冯",
+      "pinyin": "",
+      "frequency": 0.00927007299270073
+    },
+    {
+      "surname": "曾",
+      "pinyin": "",
+      "frequency": 0.009245742092457421
+    },
+    {
+      "surname": "程",
+      "pinyin": "",
+      "frequency": 0.009221411192214111
+    },
+    {
+      "surname": "蔡",
+      "pinyin": "",
+      "frequency": 0.009197080291970803
+    },
+    {
+      "surname": "彭",
+      "pinyin": "",
+      "frequency": 0.009172749391727493
+    },
+    {
+      "surname": "潘",
+      "pinyin": "",
+      "frequency": 0.009148418491484185
+    },
+    {
+      "surname": "袁",
+      "pinyin": "",
+      "frequency": 0.009124087591240877
+    },
+    {
+      "surname": "于",
+      "pinyin": "",
+      "frequency": 0.009099756690997567
+    },
+    {
+      "surname": "董",
+      "pinyin": "",
+      "frequency": 0.009075425790754259
+    },
+    {
+      "surname": "余",
+      "pinyin": "",
+      "frequency": 0.009051094890510949
+    },
+    {
+      "surname": "苏",
+      "pinyin": "",
+      "frequency": 0.00902676399026764
+    },
+    {
+      "surname": "叶",
+      "pinyin": "",
+      "frequency": 0.00900243309002433
+    },
+    {
+      "surname": "吕",
+      "pinyin": "",
+      "frequency": 0.008978102189781022
+    },
+    {
+      "surname": "魏",
+      "pinyin": "",
+      "frequency": 0.008953771289537713
+    },
+    {
+      "surname": "蒋",
+      "pinyin": "",
+      "frequency": 0.008929440389294404
+    },
+    {
+      "surname": "田",
+      "pinyin": "",
+      "frequency": 0.008905109489051096
+    },
+    {
+      "surname": "杜",
+      "pinyin": "",
+      "frequency": 0.008880778588807786
+    },
+    {
+      "surname": "丁",
+      "pinyin": "",
+      "frequency": 0.008856447688564478
+    },
+    {
+      "surname": "沈",
+      "pinyin": "",
+      "frequency": 0.008832116788321168
+    },
+    {
+      "surname": "姜",
+      "pinyin": "",
+      "frequency": 0.00880778588807786
+    },
+    {
+      "surname": "范",
+      "pinyin": "",
+      "frequency": 0.00878345498783455
+    },
+    {
+      "surname": "江",
+      "pinyin": "",
+      "frequency": 0.008759124087591242
+    },
+    {
+      "surname": "傅",
+      "pinyin": "",
+      "frequency": 0.008734793187347932
+    },
+    {
+      "surname": "钟",
+      "pinyin": "",
+      "frequency": 0.008710462287104623
+    },
+    {
+      "surname": "卢",
+      "pinyin": "",
+      "frequency": 0.008686131386861314
+    },
+    {
+      "surname": "汪",
+      "pinyin": "",
+      "frequency": 0.008661800486618005
+    },
+    {
+      "surname": "戴",
+      "pinyin": "",
+      "frequency": 0.008637469586374695
+    },
+    {
+      "surname": "崔",
+      "pinyin": "",
+      "frequency": 0.008613138686131387
+    },
+    {
+      "surname": "任",
+      "pinyin": "",
+      "frequency": 0.008588807785888077
+    },
+    {
+      "surname": "陆",
+      "pinyin": "",
+      "frequency": 0.008564476885644769
+    },
+    {
+      "surname": "廖",
+      "pinyin": "",
+      "frequency": 0.008540145985401459
+    },
+    {
+      "surname": "姚",
+      "pinyin": "",
+      "frequency": 0.00851581508515815
+    },
+    {
+      "surname": "方",
+      "pinyin": "",
+      "frequency": 0.008491484184914841
+    },
+    {
+      "surname": "金",
+      "pinyin": "",
+      "frequency": 0.008467153284671533
+    },
+    {
+      "surname": "邱",
+      "pinyin": "",
+      "frequency": 0.008442822384428224
+    },
+    {
+      "surname": "夏",
+      "pinyin": "",
+      "frequency": 0.008418491484184915
+    },
+    {
+      "surname": "谭",
+      "pinyin": "",
+      "frequency": 0.008394160583941606
+    },
+    {
+      "surname": "韦",
+      "pinyin": "",
+      "frequency": 0.008369829683698296
+    },
+    {
+      "surname": "贾",
+      "pinyin": "",
+      "frequency": 0.008345498783454988
+    },
+    {
+      "surname": "邹",
+      "pinyin": "",
+      "frequency": 0.008321167883211678
+    },
+    {
+      "surname": "石",
+      "pinyin": "",
+      "frequency": 0.00829683698296837
+    },
+    {
+      "surname": "熊",
+      "pinyin": "",
+      "frequency": 0.00827250608272506
+    },
+    {
+      "surname": "孟",
+      "pinyin": "",
+      "frequency": 0.008248175182481752
+    },
+    {
+      "surname": "秦",
+      "pinyin": "",
+      "frequency": 0.008223844282238444
+    },
+    {
+      "surname": "阎",
+      "pinyin": "",
+      "frequency": 0.008199513381995134
+    },
+    {
+      "surname": "薛",
+      "pinyin": "",
+      "frequency": 0.008175182481751826
+    },
+    {
+      "surname": "侯",
+      "pinyin": "",
+      "frequency": 0.008150851581508516
+    },
+    {
+      "surname": "雷",
+      "pinyin": "",
+      "frequency": 0.008126520681265207
+    },
+    {
+      "surname": "白",
+      "pinyin": "",
+      "frequency": 0.008102189781021897
+    },
+    {
+      "surname": "龙",
+      "pinyin": "",
+      "frequency": 0.00807785888077859
+    },
+    {
+      "surname": "段",
+      "pinyin": "",
+      "frequency": 0.00805352798053528
+    },
+    {
+      "surname": "郝",
+      "pinyin": "",
+      "frequency": 0.008029197080291971
+    },
+    {
+      "surname": "孔",
+      "pinyin": "",
+      "frequency": 0.008004866180048663
+    },
+    {
+      "surname": "邵",
+      "pinyin": "",
+      "frequency": 0.007980535279805353
+    },
+    {
+      "surname": "史",
+      "pinyin": "",
+      "frequency": 0.007956204379562045
+    },
+    {
+      "surname": "毛",
+      "pinyin": "",
+      "frequency": 0.007931873479318735
+    },
+    {
+      "surname": "常",
+      "pinyin": "",
+      "frequency": 0.007907542579075427
+    },
+    {
+      "surname": "万",
+      "pinyin": "",
+      "frequency": 0.007883211678832117
+    },
+    {
+      "surname": "顾",
+      "pinyin": "",
+      "frequency": 0.007858880778588808
+    },
+    {
+      "surname": "赖",
+      "pinyin": "",
+      "frequency": 0.007834549878345498
+    },
+    {
+      "surname": "武",
+      "pinyin": "",
+      "frequency": 0.00781021897810219
+    },
+    {
+      "surname": "康",
+      "pinyin": "",
+      "frequency": 0.00778588807785888
+    },
+    {
+      "surname": "贺",
+      "pinyin": "",
+      "frequency": 0.007761557177615572
+    },
+    {
+      "surname": "严",
+      "pinyin": "",
+      "frequency": 0.007737226277372262
+    },
+    {
+      "surname": "尹",
+      "pinyin": "",
+      "frequency": 0.007712895377128955
+    },
+    {
+      "surname": "钱",
+      "pinyin": "",
+      "frequency": 0.007688564476885645
+    },
+    {
+      "surname": "施",
+      "pinyin": "",
+      "frequency": 0.007664233576642337
+    },
+    {
+      "surname": "牛",
+      "pinyin": "",
+      "frequency": 0.007639902676399027
+    },
+    {
+      "surname": "洪",
+      "pinyin": "",
+      "frequency": 0.0076155717761557185
+    },
+    {
+      "surname": "龚",
+      "pinyin": "",
+      "frequency": 0.0075912408759124085
+    },
+    {
+      "surname": "汤",
+      "pinyin": "",
+      "frequency": 0.0075669099756690995
+    },
+    {
+      "surname": "陶",
+      "pinyin": "",
+      "frequency": 0.00754257907542579
+    },
+    {
+      "surname": "黎",
+      "pinyin": "",
+      "frequency": 0.007518248175182481
+    },
+    {
+      "surname": "温",
+      "pinyin": "",
+      "frequency": 0.007493917274939172
+    },
+    {
+      "surname": "莫",
+      "pinyin": "",
+      "frequency": 0.007469586374695864
+    },
+    {
+      "surname": "易",
+      "pinyin": "",
+      "frequency": 0.007445255474452555
+    },
+    {
+      "surname": "樊",
+      "pinyin": "",
+      "frequency": 0.007420924574209246
+    },
+    {
+      "surname": "乔",
+      "pinyin": "",
+      "frequency": 0.007396593673965937
+    },
+    {
+      "surname": "文",
+      "pinyin": "",
+      "frequency": 0.007372262773722628
+    },
+    {
+      "surname": "安",
+      "pinyin": "",
+      "frequency": 0.007347931873479319
+    },
+    {
+      "surname": "殷",
+      "pinyin": "",
+      "frequency": 0.0073236009732360096
+    },
+    {
+      "surname": "颜",
+      "pinyin": "",
+      "frequency": 0.0072992700729927005
+    },
+    {
+      "surname": "庄",
+      "pinyin": "",
+      "frequency": 0.007274939172749392
+    },
+    {
+      "surname": "章",
+      "pinyin": "",
+      "frequency": 0.007250608272506083
+    },
+    {
+      "surname": "鲁",
+      "pinyin": "",
+      "frequency": 0.007226277372262774
+    },
+    {
+      "surname": "倪",
+      "pinyin": "",
+      "frequency": 0.007201946472019465
+    },
+    {
+      "surname": "庞",
+      "pinyin": "",
+      "frequency": 0.007177615571776156
+    },
+    {
+      "surname": "邢",
+      "pinyin": "",
+      "frequency": 0.007153284671532847
+    },
+    {
+      "surname": "俞",
+      "pinyin": "",
+      "frequency": 0.007128953771289538
+    },
+    {
+      "surname": "翟",
+      "pinyin": "",
+      "frequency": 0.007104622871046229
+    },
+    {
+      "surname": "蓝",
+      "pinyin": "",
+      "frequency": 0.00708029197080292
+    },
+    {
+      "surname": "聂",
+      "pinyin": "",
+      "frequency": 0.0070559610705596115
+    },
+    {
+      "surname": "齐",
+      "pinyin": "",
+      "frequency": 0.007031630170316301
+    },
+    {
+      "surname": "向",
+      "pinyin": "",
+      "frequency": 0.007007299270072993
+    },
+    {
+      "surname": "申",
+      "pinyin": "",
+      "frequency": 0.006982968369829683
+    },
+    {
+      "surname": "葛",
+      "pinyin": "",
+      "frequency": 0.006958637469586375
+    },
+    {
+      "surname": "岳",
+      "pinyin": "",
+      "frequency": 0.006934306569343065
+    },
+    {
+      "surname": "伍",
+      "pinyin": "",
+      "frequency": 0.006909975669099757
+    },
+    {
+      "surname": "覃",
+      "pinyin": "",
+      "frequency": 0.006885644768856447
+    },
+    {
+      "surname": "骆",
+      "pinyin": "",
+      "frequency": 0.00686131386861314
+    },
+    {
+      "surname": "关",
+      "pinyin": "",
+      "frequency": 0.006836982968369829
+    },
+    {
+      "surname": "焦",
+      "pinyin": "",
+      "frequency": 0.0068126520681265216
+    },
+    {
+      "surname": "柳",
+      "pinyin": "",
+      "frequency": 0.006788321167883212
+    },
+    {
+      "surname": "欧",
+      "pinyin": "",
+      "frequency": 0.006763990267639903
+    },
+    {
+      "surname": "卓",
+      "pinyin": "",
+      "frequency": 0.0067396593673965935
+    },
+    {
+      "surname": "毕",
+      "pinyin": "",
+      "frequency": 0.006715328467153285
+    },
+    {
+      "surname": "路",
+      "pinyin": "",
+      "frequency": 0.006690997566909975
+    },
+    {
+      "surname": "时",
+      "pinyin": "",
+      "frequency": 0.006666666666666668
+    },
+    {
+      "surname": "代",
+      "pinyin": "",
+      "frequency": 0.006642335766423357
+    },
+    {
+      "surname": "梅",
+      "pinyin": "",
+      "frequency": 0.00661800486618005
+    },
+    {
+      "surname": "凌",
+      "pinyin": "",
+      "frequency": 0.00659367396593674
+    },
+    {
+      "surname": "吉",
+      "pinyin": "",
+      "frequency": 0.006569343065693431
+    },
+    {
+      "surname": "韦",
+      "pinyin": "",
+      "frequency": 0.006545012165450122
+    },
+    {
+      "surname": "仇",
+      "pinyin": "",
+      "frequency": 0.006520681265206813
+    },
+    {
+      "surname": "鲍",
+      "pinyin": "",
+      "frequency": 0.0064963503649635036
+    },
+    {
+      "surname": "霍",
+      "pinyin": "",
+      "frequency": 0.0064720194647201945
+    },
+    {
+      "surname": "费",
+      "pinyin": "",
+      "frequency": 0.006447688564476885
+    },
+    {
+      "surname": "岑",
+      "pinyin": "",
+      "frequency": 0.006423357664233576
+    },
+    {
+      "surname": "桑",
+      "pinyin": "",
+      "frequency": 0.006399026763990268
+    },
+    {
+      "surname": "甘",
+      "pinyin": "",
+      "frequency": 0.006374695863746959
+    },
+    {
+      "surname": "季",
+      "pinyin": "",
+      "frequency": 0.00635036496350365
+    },
+    {
+      "surname": "曲",
+      "pinyin": "",
+      "frequency": 0.006326034063260341
+    },
+    {
+      "surname": "柴",
+      "pinyin": "",
+      "frequency": 0.006301703163017032
+    },
+    {
+      "surname": "喻",
+      "pinyin": "",
+      "frequency": 0.006277372262773723
+    },
+    {
+      "surname": "柏",
+      "pinyin": "",
+      "frequency": 0.006253041362530414
+    },
+    {
+      "surname": "涂",
+      "pinyin": "",
+      "frequency": 0.006228710462287105
+    },
+    {
+      "surname": "单",
+      "pinyin": "",
+      "frequency": 0.006204379562043796
+    },
+    {
+      "surname": "管",
+      "pinyin": "",
+      "frequency": 0.006180048661800487
+    },
+    {
+      "surname": "牟",
+      "pinyin": "",
+      "frequency": 0.006155717761557178
+    },
+    {
+      "surname": "解",
+      "pinyin": "",
+      "frequency": 0.006131386861313868
+    },
+    {
+      "surname": "植",
+      "pinyin": "",
+      "frequency": 0.00610705596107056
+    },
+    {
+      "surname": "辛",
+      "pinyin": "",
+      "frequency": 0.00608272506082725
+    },
+    {
+      "surname": "詹",
+      "pinyin": "",
+      "frequency": 0.006058394160583942
+    },
+    {
+      "surname": "车",
+      "pinyin": "",
+      "frequency": 0.006034063260340632
+    },
+    {
+      "surname": "宁",
+      "pinyin": "",
+      "frequency": 0.006009732360097324
+    },
+    {
+      "surname": "闵",
+      "pinyin": "",
+      "frequency": 0.005985401459854014
+    },
+    {
+      "surname": "项",
+      "pinyin": "",
+      "frequency": 0.0059610705596107065
+    },
+    {
+      "surname": "卫",
+      "pinyin": "",
+      "frequency": 0.0059367396593673965
+    },
+    {
+      "surname": "简",
+      "pinyin": "",
+      "frequency": 0.005912408759124088
+    },
+    {
+      "surname": "左",
+      "pinyin": "",
+      "frequency": 0.005888077858880778
+    },
+    {
+      "surname": "冉",
+      "pinyin": "",
+      "frequency": 0.00586374695863747
+    },
+    {
+      "surname": "房",
+      "pinyin": "",
+      "frequency": 0.00583941605839416
+    },
+    {
+      "surname": "边",
+      "pinyin": "",
+      "frequency": 0.005815085158150852
+    },
+    {
+      "surname": "晏",
+      "pinyin": "",
+      "frequency": 0.005790754257907542
+    },
+    {
+      "surname": "滑",
+      "pinyin": "",
+      "frequency": 0.005766423357664235
+    },
+    {
+      "surname": "裴",
+      "pinyin": "",
+      "frequency": 0.005742092457420924
+    },
+    {
+      "surname": "窦",
+      "pinyin": "",
+      "frequency": 0.005717761557177617
+    },
+    {
+      "surname": "瞿",
+      "pinyin": "",
+      "frequency": 0.005693430656934307
+    },
+    {
+      "surname": "敖",
+      "pinyin": "",
+      "frequency": 0.0056690997566909975
+    },
+    {
+      "surname": "连",
+      "pinyin": "",
+      "frequency": 0.0056447688564476885
+    },
+    {
+      "surname": "茅",
+      "pinyin": "",
+      "frequency": 0.005620437956204379
+    },
+    {
+      "surname": "习",
+      "pinyin": "",
+      "frequency": 0.00559610705596107
+    },
+    {
+      "surname": "符",
+      "pinyin": "",
+      "frequency": 0.005571776155717761
+    },
+    {
+      "surname": "蔺",
+      "pinyin": "",
+      "frequency": 0.005547445255474452
+    },
+    {
+      "surname": "景",
+      "pinyin": "",
+      "frequency": 0.005523114355231144
+    },
+    {
+      "surname": "屠",
+      "pinyin": "",
+      "frequency": 0.005498783454987835
+    },
+    {
+      "surname": "蒙",
+      "pinyin": "",
+      "frequency": 0.005474452554744526
+    },
+    {
+      "surname": "池",
+      "pinyin": "",
+      "frequency": 0.005450121654501217
+    },
+    {
+      "surname": "乔",
+      "pinyin": "",
+      "frequency": 0.005425790754257908
+    },
+    {
+      "surname": "阴",
+      "pinyin": "",
+      "frequency": 0.005401459854014599
+    },
+    {
+      "surname": "郁",
+      "pinyin": "",
+      "frequency": 0.0053771289537712895
+    },
+    {
+      "surname": "胥",
+      "pinyin": "",
+      "frequency": 0.00535279805352798
+    },
+    {
+      "surname": "苍",
+      "pinyin": "",
+      "frequency": 0.005328467153284672
+    },
+    {
+      "surname": "双",
+      "pinyin": "",
+      "frequency": 0.005304136253041363
+    },
+    {
+      "surname": "闻",
+      "pinyin": "",
+      "frequency": 0.005279805352798054
+    },
+    {
+      "surname": "莘",
+      "pinyin": "",
+      "frequency": 0.005255474452554745
+    },
+    {
+      "surname": "翟",
+      "pinyin": "",
+      "frequency": 0.005231143552311436
+    },
+    {
+      "surname": "谭",
+      "pinyin": "",
+      "frequency": 0.005206812652068127
+    },
+    {
+      "surname": "贡",
+      "pinyin": "",
+      "frequency": 0.005182481751824817
+    },
+    {
+      "surname": "劳",
+      "pinyin": "",
+      "frequency": 0.005158150851581509
+    },
+    {
+      "surname": "逄",
+      "pinyin": "",
+      "frequency": 0.005133819951338199
+    },
+    {
+      "surname": "姬",
+      "pinyin": "",
+      "frequency": 0.005109489051094891
+    },
+    {
+      "surname": "申",
+      "pinyin": "",
+      "frequency": 0.005085158150851581
+    },
+    {
+      "surname": "扶",
+      "pinyin": "",
+      "frequency": 0.005060827250608273
+    },
+    {
+      "surname": "堵",
+      "pinyin": "",
+      "frequency": 0.005036496350364963
+    },
+    {
+      "surname": "冉",
+      "pinyin": "",
+      "frequency": 0.005012165450121655
+    },
+    {
+      "surname": "宰",
+      "pinyin": "",
+      "frequency": 0.004987834549878345
+    },
+    {
+      "surname": "郦",
+      "pinyin": "",
+      "frequency": 0.004963503649635036
+    },
+    {
+      "surname": "雍",
+      "pinyin": "",
+      "frequency": 0.004939172749391727
+    },
+    {
+      "surname": "舄",
+      "pinyin": "",
+      "frequency": 0.004914841849148418
+    },
+    {
+      "surname": "璩",
+      "pinyin": "",
+      "frequency": 0.004890510948905109
+    },
+    {
+      "surname": "桑",
+      "pinyin": "",
+      "frequency": 0.004866180048661801
+    },
+    {
+      "surname": "桂",
+      "pinyin": "",
+      "frequency": 0.0048418491484184915
+    },
+    {
+      "surname": "濮",
+      "pinyin": "",
+      "frequency": 0.0048175182481751825
+    },
+    {
+      "surname": "牛",
+      "pinyin": "",
+      "frequency": 0.004793187347931873
+    },
+    {
+      "surname": "寿",
+      "pinyin": "",
+      "frequency": 0.004768856447688564
+    },
+    {
+      "surname": "通",
+      "pinyin": "",
+      "frequency": 0.004744525547445255
+    },
+    {
+      "surname": "边",
+      "pinyin": "",
+      "frequency": 0.004720194647201946
+    },
+    {
+      "surname": "扈",
+      "pinyin": "",
+      "frequency": 0.004695863746958637
+    },
+    {
+      "surname": "燕",
+      "pinyin": "",
+      "frequency": 0.004671532846715328
+    },
+    {
+      "surname": "冀",
+      "pinyin": "",
+      "frequency": 0.00464720194647202
+    },
+    {
+      "surname": "郏",
+      "pinyin": "",
+      "frequency": 0.004622871046228711
+    },
+    {
+      "surname": "浦",
+      "pinyin": "",
+      "frequency": 0.004598540145985402
+    },
+    {
+      "surname": "尚",
+      "pinyin": "",
+      "frequency": 0.0045742092457420926
+    },
+    {
+      "surname": "农",
+      "pinyin": "",
+      "frequency": 0.0045498783454987835
+    },
+    {
+      "surname": "温",
+      "pinyin": "",
+      "frequency": 0.004525547445255474
+    },
+    {
+      "surname": "别",
+      "pinyin": "",
+      "frequency": 0.004501216545012165
+    },
+    {
+      "surname": "庄",
+      "pinyin": "",
+      "frequency": 0.004476885644768856
+    },
+    {
+      "surname": "晏",
+      "pinyin": "",
+      "frequency": 0.004452554744525548
+    },
+    {
+      "surname": "柴",
+      "pinyin": "",
+      "frequency": 0.004428223844282239
+    },
+    {
+      "surname": "瞿",
+      "pinyin": "",
+      "frequency": 0.00440389294403893
+    },
+    {
+      "surname": "阎",
+      "pinyin": "",
+      "frequency": 0.004379562043795621
+    },
+    {
+      "surname": "充",
+      "pinyin": "",
+      "frequency": 0.004355231143552312
+    },
+    {
+      "surname": "慕",
+      "pinyin": "",
+      "frequency": 0.004330900243309003
+    },
+    {
+      "surname": "连",
+      "pinyin": "",
+      "frequency": 0.004306569343065694
+    },
+    {
+      "surname": "茹",
+      "pinyin": "",
+      "frequency": 0.0042822384428223845
+    },
+    {
+      "surname": "习",
+      "pinyin": "",
+      "frequency": 0.004257907542579076
+    },
+    {
+      "surname": "宦",
+      "pinyin": "",
+      "frequency": 0.004233576642335767
+    },
+    {
+      "surname": "艾",
+      "pinyin": "",
+      "frequency": 0.004209245742092458
+    },
+    {
+      "surname": "鱼",
+      "pinyin": "",
+      "frequency": 0.004184914841849149
+    },
+    {
+      "surname": "容",
+      "pinyin": "",
+      "frequency": 0.00416058394160584
+    },
+    {
+      "surname": "向",
+      "pinyin": "",
+      "frequency": 0.004136253041362531
+    },
+    {
+      "surname": "古",
+      "pinyin": "",
+      "frequency": 0.004111922141119222
+    },
+    {
+      "surname": "易",
+      "pinyin": "",
+      "frequency": 0.004087591240875912
+    },
+    {
+      "surname": "慎",
+      "pinyin": "",
+      "frequency": 0.004063260340632603
+    },
+    {
+      "surname": "戈",
+      "pinyin": "",
+      "frequency": 0.004038929440389294
+    },
+    {
+      "surname": "廖",
+      "pinyin": "",
+      "frequency": 0.004014598540145985
+    },
+    {
+      "surname": "庾",
+      "pinyin": "",
+      "frequency": 0.0039902676399026765
+    },
+    {
+      "surname": "终",
+      "pinyin": "",
+      "frequency": 0.003965936739659367
+    },
+    {
+      "surname": "暨",
+      "pinyin": "",
+      "frequency": 0.003941605839416058
+    },
+    {
+      "surname": "居",
+      "pinyin": "",
+      "frequency": 0.003917274939172749
+    },
+    {
+      "surname": "衡",
+      "pinyin": "",
+      "frequency": 0.00389294403892944
+    },
+    {
+      "surname": "步",
+      "pinyin": "",
+      "frequency": 0.003868613138686131
+    },
+    {
+      "surname": "都",
+      "pinyin": "",
+      "frequency": 0.0038442822384428224
+    },
+    {
+      "surname": "耿",
+      "pinyin": "",
+      "frequency": 0.0038199513381995133
+    },
+    {
+      "surname": "满",
+      "pinyin": "",
+      "frequency": 0.0037956204379562043
+    },
+    {
+      "surname": "弘",
+      "pinyin": "",
+      "frequency": 0.003771289537712895
+    },
+    {
+      "surname": "匡",
+      "pinyin": "",
+      "frequency": 0.003746958637469586
+    },
+    {
+      "surname": "国",
+      "pinyin": "",
+      "frequency": 0.0037226277372262775
+    },
+    {
+      "surname": "文",
+      "pinyin": "",
+      "frequency": 0.0036982968369829684
+    },
+    {
+      "surname": "寇",
+      "pinyin": "",
+      "frequency": 0.0036739659367396593
+    },
+    {
+      "surname": "广",
+      "pinyin": "",
+      "frequency": 0.0036496350364963502
+    },
+    {
+      "surname": "禄",
+      "pinyin": "",
+      "frequency": 0.0036253041362530416
+    },
+    {
+      "surname": "阙",
+      "pinyin": "",
+      "frequency": 0.0036009732360097325
+    },
+    {
+      "surname": "东",
+      "pinyin": "",
+      "frequency": 0.0035766423357664234
+    },
+    {
+      "surname": "欧",
+      "pinyin": "",
+      "frequency": 0.0035523114355231144
+    },
+    {
+      "surname": "利",
+      "pinyin": "",
+      "frequency": 0.0035279805352798057
+    },
+    {
+      "surname": "师",
+      "pinyin": "",
+      "frequency": 0.0035036496350364967
+    },
+    {
+      "surname": "巩",
+      "pinyin": "",
+      "frequency": 0.0034793187347931876
+    },
+    {
+      "surname": "聂",
+      "pinyin": "",
+      "frequency": 0.0034549878345498785
+    },
+    {
+      "surname": "晁",
+      "pinyin": "",
+      "frequency": 0.00343065693430657
+    },
+    {
+      "surname": "勾",
+      "pinyin": "",
+      "frequency": 0.0034063260340632608
+    },
+    {
+      "surname": "敖",
+      "pinyin": "",
+      "frequency": 0.0033819951338199517
+    },
+    {
+      "surname": "融",
+      "pinyin": "",
+      "frequency": 0.0033576642335766426
+    },
+    {
+      "surname": "冷",
+      "pinyin": "",
+      "frequency": 0.003333333333333334
+    },
+    {
+      "surname": "訾",
+      "pinyin": "",
+      "frequency": 0.003309002433090025
+    },
+    {
+      "surname": "辛",
+      "pinyin": "",
+      "frequency": 0.003284671532846716
+    },
+    {
+      "surname": "阚",
+      "pinyin": "",
+      "frequency": 0.0032603406326034068
+    },
+    {
+      "surname": "那",
+      "pinyin": "",
+      "frequency": 0.0032360097323600977
+    },
+    {
+      "surname": "简",
+      "pinyin": "",
+      "frequency": 0.003211678832116789
+    },
+    {
+      "surname": "饶",
+      "pinyin": "",
+      "frequency": 0.00318734793187348
+    },
+    {
+      "surname": "空",
+      "pinyin": "",
+      "frequency": 0.00316301703163017
+    },
+    {
+      "surname": "曾",
+      "pinyin": "",
+      "frequency": 0.003138686131386861
+    },
+    {
+      "surname": "毋",
+      "pinyin": "",
+      "frequency": 0.003114355231143552
+    },
+    {
+      "surname": "沙",
+      "pinyin": "",
+      "frequency": 0.0030900243309002428
+    },
+    {
+      "surname": "乜",
+      "pinyin": "",
+      "frequency": 0.003065693430656934
+    },
+    {
+      "surname": "养",
+      "pinyin": "",
+      "frequency": 0.003041362530413625
+    },
+    {
+      "surname": "鞠",
+      "pinyin": "",
+      "frequency": 0.003017031630170316
+    },
+    {
+      "surname": "须",
+      "pinyin": "",
+      "frequency": 0.002992700729927007
+    },
+    {
+      "surname": "丰",
+      "pinyin": "",
+      "frequency": 0.0029683698296836983
+    },
+    {
+      "surname": "巢",
+      "pinyin": "",
+      "frequency": 0.002944038929440389
+    },
+    {
+      "surname": "关",
+      "pinyin": "",
+      "frequency": 0.00291970802919708
+    },
+    {
+      "surname": "蒯",
+      "pinyin": "",
+      "frequency": 0.002895377128953771
+    },
+    {
+      "surname": "相",
+      "pinyin": "",
+      "frequency": 0.002871046228710462
+    },
+    {
+      "surname": "查",
+      "pinyin": "",
+      "frequency": 0.0028467153284671533
+    },
+    {
+      "surname": "后",
+      "pinyin": "",
+      "frequency": 0.0028223844282238442
+    },
+    {
+      "surname": "荆",
+      "pinyin": "",
+      "frequency": 0.002798053527980535
+    },
+    {
+      "surname": "红",
+      "pinyin": "",
+      "frequency": 0.002773722627737226
+    },
+    {
+      "surname": "游",
+      "pinyin": "",
+      "frequency": 0.0027493917274939174
+    },
+    {
+      "surname": "竺",
+      "pinyin": "",
+      "frequency": 0.0027250608272506084
+    },
+    {
+      "surname": "权",
+      "pinyin": "",
+      "frequency": 0.0027007299270072993
+    },
+    {
+      "surname": "逯",
+      "pinyin": "",
+      "frequency": 0.00267639902676399
+    },
+    {
+      "surname": "盖",
+      "pinyin": "",
+      "frequency": 0.0026520681265206816
+    },
+    {
+      "surname": "益",
+      "pinyin": "",
+      "frequency": 0.0026277372262773725
+    },
+    {
+      "surname": "桓",
+      "pinyin": "",
+      "frequency": 0.0026034063260340634
+    },
+    {
+      "surname": "公",
+      "pinyin": "",
+      "frequency": 0.0025790754257907543
+    },
+    {
+      "surname": "万俟",
+      "pinyin": "",
+      "frequency": 0.0025547445255474457
+    },
+    {
+      "surname": "司马",
+      "pinyin": "",
+      "frequency": 0.0025304136253041366
+    },
+    {
+      "surname": "上官",
+      "pinyin": "",
+      "frequency": 0.0025060827250608275
+    },
+    {
+      "surname": "欧阳",
+      "pinyin": "",
+      "frequency": 0.0024817518248175185
+    },
+    {
+      "surname": "夏侯",
+      "pinyin": "",
+      "frequency": 0.00245742092457421
+    },
+    {
+      "surname": "诸葛",
+      "pinyin": "",
+      "frequency": 0.0024330900243309007
+    },
+    {
+      "surname": "闻人",
+      "pinyin": "",
+      "frequency": 0.0024087591240875917
+    },
+    {
+      "surname": "东方",
+      "pinyin": "",
+      "frequency": 0.0023844282238442826
+    },
+    {
+      "surname": "赫连",
+      "pinyin": "",
+      "frequency": 0.002360097323600974
+    },
+    {
+      "surname": "皇甫",
+      "pinyin": "",
+      "frequency": 0.002335766423357665
+    },
+    {
+      "surname": "尉迟",
+      "pinyin": "",
+      "frequency": 0.002311435523114356
+    },
+    {
+      "surname": "公羊",
+      "pinyin": "",
+      "frequency": 0.0022871046228710467
+    },
+    {
+      "surname": "澹台",
+      "pinyin": "",
+      "frequency": 0.0022627737226277368
+    },
+    {
+      "surname": "公冶",
+      "pinyin": "",
+      "frequency": 0.0022384428223844277
+    },
+    {
+      "surname": "宗政",
+      "pinyin": "",
+      "frequency": 0.0022141119221411186
+    },
+    {
+      "surname": "濮阳",
+      "pinyin": "",
+      "frequency": 0.00218978102189781
+    },
+    {
+      "surname": "淳于",
+      "pinyin": "",
+      "frequency": 0.002165450121654501
+    },
+    {
+      "surname": "单于",
+      "pinyin": "",
+      "frequency": 0.002141119221411192
+    },
+    {
+      "surname": "太叔",
+      "pinyin": "",
+      "frequency": 0.0021167883211678827
+    },
+    {
+      "surname": "申屠",
+      "pinyin": "",
+      "frequency": 0.002092457420924574
+    },
+    {
+      "surname": "公孙",
+      "pinyin": "",
+      "frequency": 0.002068126520681265
+    },
+    {
+      "surname": "仲孙",
+      "pinyin": "",
+      "frequency": 0.002043795620437956
+    },
+    {
+      "surname": "轩辕",
+      "pinyin": "",
+      "frequency": 0.002019464720194647
+    },
+    {
+      "surname": "令狐",
+      "pinyin": "",
+      "frequency": 0.0019951338199513382
+    },
+    {
+      "surname": "钟离",
+      "pinyin": "",
+      "frequency": 0.001970802919708029
+    },
+    {
+      "surname": "宇文",
+      "pinyin": "",
+      "frequency": 0.00194647201946472
+    },
+    {
+      "surname": "长孙",
+      "pinyin": "",
+      "frequency": 0.0019221411192214112
+    },
+    {
+      "surname": "慕容",
+      "pinyin": "",
+      "frequency": 0.0018978102189781021
+    },
+    {
+      "surname": "鲜于",
+      "pinyin": "",
+      "frequency": 0.001873479318734793
+    },
+    {
+      "surname": "闾丘",
+      "pinyin": "",
+      "frequency": 0.0018491484184914842
+    },
+    {
+      "surname": "司徒",
+      "pinyin": "",
+      "frequency": 0.0018248175182481751
+    },
+    {
+      "surname": "司空",
+      "pinyin": "",
+      "frequency": 0.0018004866180048663
+    },
+    {
+      "surname": "亓官",
+      "pinyin": "",
+      "frequency": 0.0017761557177615572
+    },
+    {
+      "surname": "司寇",
+      "pinyin": "",
+      "frequency": 0.0017518248175182483
+    },
+    {
+      "surname": "仉",
+      "pinyin": "",
+      "frequency": 0.0017274939172749392
+    },
+    {
+      "surname": "督",
+      "pinyin": "",
+      "frequency": 0.0017031630170316304
+    },
+    {
+      "surname": "子车",
+      "pinyin": "",
+      "frequency": 0.0016788321167883213
+    },
+    {
+      "surname": "颛孙",
+      "pinyin": "",
+      "frequency": 0.0016545012165450125
+    },
+    {
+      "surname": "端木",
+      "pinyin": "",
+      "frequency": 0.0016301703163017034
+    },
+    {
+      "surname": "巫马",
+      "pinyin": "",
+      "frequency": 0.0016058394160583945
+    },
+    {
+      "surname": "公西",
+      "pinyin": "",
+      "frequency": 0.0015815085158150854
+    },
+    {
+      "surname": "漆雕",
+      "pinyin": "",
+      "frequency": 0.0015571776155717766
+    },
+    {
+      "surname": "乐正",
+      "pinyin": "",
+      "frequency": 0.0015328467153284675
+    },
+    {
+      "surname": "壤驷",
+      "pinyin": "",
+      "frequency": 0.0015085158150851586
+    },
+    {
+      "surname": "公良",
+      "pinyin": "",
+      "frequency": 0.0014841849148418496
+    },
+    {
+      "surname": "拓跋",
+      "pinyin": "",
+      "frequency": 0.0014598540145985407
+    },
+    {
+      "surname": "夹谷",
+      "pinyin": "",
+      "frequency": 0.0014355231143552316
+    },
+    {
+      "surname": "宰父",
+      "pinyin": "",
+      "frequency": 0.0014111922141119228
+    },
+    {
+      "surname": "谷梁",
+      "pinyin": "",
+      "frequency": 0.0013868613138686137
+    },
+    {
+      "surname": "晋",
+      "pinyin": "",
+      "frequency": 0.0013625304136253035
+    },
+    {
+      "surname": "楚",
+      "pinyin": "",
+      "frequency": 0.0013381995133819947
+    },
+    {
+      "surname": "闫",
+      "pinyin": "",
+      "frequency": 0.0013138686131386856
+    },
+    {
+      "surname": "法",
+      "pinyin": "",
+      "frequency": 0.0012895377128953767
+    },
+    {
+      "surname": "汝",
+      "pinyin": "",
+      "frequency": 0.0012652068126520677
+    },
+    {
+      "surname": "鄢",
+      "pinyin": "",
+      "frequency": 0.0012408759124087588
+    },
+    {
+      "surname": "涂",
+      "pinyin": "",
+      "frequency": 0.0012165450121654497
+    },
+    {
+      "surname": "钦",
+      "pinyin": "",
+      "frequency": 0.0011922141119221409
+    },
+    {
+      "surname": "段",
+      "pinyin": "",
+      "frequency": 0.0011678832116788318
+    },
+    {
+      "surname": "干",
+      "pinyin": "",
+      "frequency": 0.001143552311435523
+    },
+    {
+      "surname": "百",
+      "pinyin": "",
+      "frequency": 0.0011192214111922138
+    },
+    {
+      "surname": "里",
+      "pinyin": "",
+      "frequency": 0.001094890510948905
+    },
+    {
+      "surname": "东",
+      "pinyin": "",
+      "frequency": 0.001070559610705596
+    },
+    {
+      "surname": "郭",
+      "pinyin": "",
+      "frequency": 0.001046228710462287
+    },
+    {
+      "surname": "南",
+      "pinyin": "",
+      "frequency": 0.001021897810218978
+    },
+    {
+      "surname": "门",
+      "pinyin": "",
+      "frequency": 0.0009975669099756691
+    },
+    {
+      "surname": "呼",
+      "pinyin": "",
+      "frequency": 0.00097323600973236
+    },
+    {
+      "surname": "延",
+      "pinyin": "",
+      "frequency": 0.0009489051094890511
+    },
+    {
+      "surname": "归",
+      "pinyin": "",
+      "frequency": 0.0009245742092457421
+    },
+    {
+      "surname": "海",
+      "pinyin": "",
+      "frequency": 0.0009002433090024331
+    },
+    {
+      "surname": "羊",
+      "pinyin": "",
+      "frequency": 0.0008759124087591242
+    },
+    {
+      "surname": "舌",
+      "pinyin": "",
+      "frequency": 0.0008515815085158152
+    },
+    {
+      "surname": "微",
+      "pinyin": "",
+      "frequency": 0.0008272506082725062
+    },
+    {
+      "surname": "生",
+      "pinyin": "",
+      "frequency": 0.0008029197080291973
+    },
+    {
+      "surname": "岳",
+      "pinyin": "",
+      "frequency": 0.0007785888077858883
+    },
+    {
+      "surname": "帅",
+      "pinyin": "",
+      "frequency": 0.0007542579075425793
+    },
+    {
+      "surname": "缑",
+      "pinyin": "",
+      "frequency": 0.0007299270072992704
+    },
+    {
+      "surname": "亢",
+      "pinyin": "",
+      "frequency": 0.0007055961070559614
+    },
+    {
+      "surname": "况",
+      "pinyin": "",
+      "frequency": 0.0006812652068126523
+    },
+    {
+      "surname": "后",
+      "pinyin": "",
+      "frequency": 0.0006569343065693433
+    },
+    {
+      "surname": "有",
+      "pinyin": "",
+      "frequency": 0.0006326034063260344
+    },
+    {
+      "surname": "琴",
+      "pinyin": "",
+      "frequency": 0.0006082725060827254
+    },
+    {
+      "surname": "梁",
+      "pinyin": "",
+      "frequency": 0.0005839416058394164
+    },
+    {
+      "surname": "丘",
+      "pinyin": "",
+      "frequency": 0.0005596107055961075
+    },
+    {
+      "surname": "左",
+      "pinyin": "",
+      "frequency": 0.0005352798053527985
+    },
+    {
+      "surname": "丘",
+      "pinyin": "",
+      "frequency": 0.0005109489051094895
+    },
+    {
+      "surname": "东",
+      "pinyin": "",
+      "frequency": 0.00048661800486618056
+    },
+    {
+      "surname": "门",
+      "pinyin": "",
+      "frequency": 0.0004622871046228716
+    },
+    {
+      "surname": "西",
+      "pinyin": "",
+      "frequency": 0.00043795620437956154
+    },
+    {
+      "surname": "门",
+      "pinyin": "",
+      "frequency": 0.00041362530413625257
+    },
+    {
+      "surname": "商",
+      "pinyin": "",
+      "frequency": 0.00038929440389294355
+    },
+    {
+      "surname": "牟",
+      "pinyin": "",
+      "frequency": 0.0003649635036496346
+    },
+    {
+      "surname": "佘",
+      "pinyin": "",
+      "frequency": 0.0003406326034063256
+    },
+    {
+      "surname": "佴",
+      "pinyin": "",
+      "frequency": 0.00031630170316301664
+    },
+    {
+      "surname": "伯",
+      "pinyin": "",
+      "frequency": 0.0002919708029197077
+    },
+    {
+      "surname": "赏",
+      "pinyin": "",
+      "frequency": 0.0002676399026763987
+    },
+    {
+      "surname": "南",
+      "pinyin": "",
+      "frequency": 0.00024330900243308974
+    },
+    {
+      "surname": "宫",
+      "pinyin": "",
+      "frequency": 0.00021897810218978077
+    },
+    {
+      "surname": "墨",
+      "pinyin": "",
+      "frequency": 0.00019464720194647177
+    },
+    {
+      "surname": "哈",
+      "pinyin": "",
+      "frequency": 0.0001703163017031628
+    },
+    {
+      "surname": "谯",
+      "pinyin": "",
+      "frequency": 0.00014598540145985384
+    },
+    {
+      "surname": "笪",
+      "pinyin": "",
+      "frequency": 0.00012165450121654487
+    },
+    {
+      "surname": "年",
+      "pinyin": "",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "爱",
+      "pinyin": "",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "阳",
+      "pinyin": "",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "佟",
+      "pinyin": "",
+      "frequency": 0.0001
+    }
   ],
   "rare_surnames": [
-    {"surname": "欧阳", "pinyin": "ouyang", "type": "compound"},
-    {"surname": "太史", "pinyin": "taishi", "type": "compound"},
-    {"surname": "端木", "pinyin": "duanmu", "type": "compound"},
-    {"surname": "上官", "pinyin": "shangguan", "type": "compound"},
-    {"surname": "司马", "pinyin": "sima", "type": "compound"},
-    {"surname": "东方", "pinyin": "dongfang", "type": "compound"},
-    {"surname": "独孤", "pinyin": "dugu", "type": "compound"},
-    {"surname": "南宫", "pinyin": "nangong", "type": "compound"},
-    {"surname": "万俟", "pinyin": "moqi", "type": "compound"},
-    {"surname": "闻人", "pinyin": "wenren", "type": "compound"},
-    {"surname": "夏侯", "pinyin": "xiahou", "type": "compound"},
-    {"surname": "诸葛", "pinyin": "zhuge", "type": "compound"},
-    {"surname": "尉迟", "pinyin": "yuchi", "type": "compound"},
-    {"surname": "公羊", "pinyin": "gongyang", "type": "compound"},
-    {"surname": "赫连", "pinyin": "helian", "type": "compound"},
-    {"surname": "澹台", "pinyin": "tantai", "type": "compound"},
-    {"surname": "皇甫", "pinyin": "huangfu", "type": "compound"},
-    {"surname": "宗政", "pinyin": "zongzheng", "type": "compound"},
-    {"surname": "濮阳", "pinyin": "puyang", "type": "compound"},
-    {"surname": "公西", "pinyin": "gongxi", "type": "compound"}
+    {
+      "surname": "欧阳",
+      "pinyin": "ouyang",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "司马",
+      "pinyin": "sima",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "上官",
+      "pinyin": "shangguan",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "诸葛",
+      "pinyin": "zhuge",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "东方",
+      "pinyin": "dongfang",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "独孤",
+      "pinyin": "dugu",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "南宫",
+      "pinyin": "nangong",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "万俟",
+      "pinyin": "moqi",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "闻人",
+      "pinyin": "wenren",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "夏侯",
+      "pinyin": "xiahou",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "公孙",
+      "pinyin": "gongsun",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "尉迟",
+      "pinyin": "yuchi",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "司徒",
+      "pinyin": "situ",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "司空",
+      "pinyin": "sikong",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "慕容",
+      "pinyin": "murong",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "皇甫",
+      "pinyin": "huangfu",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "宇文",
+      "pinyin": "yuwen",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "长孙",
+      "pinyin": "zhangsun",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "鲜于",
+      "pinyin": "xianyu",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "端木",
+      "pinyin": "duanmu",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "呼延",
+      "pinyin": "huyan",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "轩辕",
+      "pinyin": "xuanyuan",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "令狐",
+      "pinyin": "linghu",
+      "type": "compound",
+      "frequency": 0.0001
+    },
+    {
+      "surname": "钟离",
+      "pinyin": "zhongli",
+      "type": "compound",
+      "frequency": 0.0001
+    }
   ]
 }

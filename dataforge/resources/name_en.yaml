@@ -1,0 +1,56 @@
+# 英文姓名配置
+name_en:
+  first_names_male:
+    - James
+    - John
+    - Robert
+    - Michael
+    - William
+    - David
+    - Richard
+    - Charles
+    - Joseph
+    - Thomas
+    - Christopher
+    - Daniel
+    - Paul
+    - Mark
+    - Donald
+    - Steven
+
+  first_names_female:
+    - Mary
+    - Patricia
+    - Jennifer
+    - Linda
+    - Elizabeth
+    - Barbara
+    - Susan
+    - Jessica
+    - Sarah
+    - Karen
+    - Nancy
+    - Lisa
+    - Betty
+    - Helen
+    - Sandra
+    - Donna
+
+  last_names:
+    - Smith
+    - Johnson
+    - Williams
+    - Brown
+    - Jones
+    - Garcia
+    - Miller
+    - Davis
+    - Rodriguez
+    - Martinez
+    - Hernandez
+    - Lopez
+    - Gonzalez
+    - Wilson
+    - Anderson
+    - Thomas
+

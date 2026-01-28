@@ -6,7 +6,7 @@ import random  # TODO: Convert to secrets
 import re
 import secrets
 import string
-from typing import Any, Optional
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -115,7 +115,7 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
         self.max_headers = self.parameters.get("max_headers", 10)
         self.validator = HTTPHeaderValidator()
 
-    def generate(self, context: Optional[GenerationContext] = None) -> dict[str, str]:
+    def generate(self, context: GenerationContext | None = None) -> dict[str, str]:
         """生成原始HTTP头"""
         headers = {}
 
@@ -297,7 +297,7 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
         return info
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> dict[str, str]:
         """生成单个数据项"""
         return self.generate(context)
@@ -323,7 +323,11 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
 
     def validate(self, data: dict[str, str]) -> bool:
         """验证生成的数据"""
-        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
+        if (
+            hasattr(self, "validator")
+            and self.validator is not None
+            and hasattr(self.validator, "validate")
+        ):
             return self.validator.validate(data)
         return True
 
@@ -331,8 +335,11 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
 class GenericHTTPHeaderGenerator(HTTPHeaderGenerator):
     """通用HTTP头生成器注册版本"""
 
+    # 添加类型提示以避免 Pylance 错误
+    validator: HTTPHeaderValidator | None
+
     def generate_single(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> dict[str, str]:
         """生成单个数据项"""
         return self.generate(context)
@@ -358,4 +365,6 @@ class GenericHTTPHeaderGenerator(HTTPHeaderGenerator):
 
     def validate(self, data: dict[str, str]) -> bool:
         """校验HTTP头"""
-        return self.validator.validate(data)
+        if self.validator is not None:
+            return self.validator.validate(data)
+        return True

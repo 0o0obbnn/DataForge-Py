@@ -3,7 +3,6 @@
 验证用户名、密码、邮箱验证码、短信验证码生成器的功能。
 """
 
-
 from dataforge.core.generator import GeneratorConfig
 from dataforge.generators.auth.email_verification import EmailVerificationGenerator
 from dataforge.generators.basic.password import PasswordGenerator
@@ -39,6 +38,7 @@ def test_username_generator():
 
     print()
 
+
 def test_password_generator():
     """测试密码生成器。"""
     print("=== 测试密码生成器 ===")
@@ -67,6 +67,7 @@ def test_password_generator():
 
     print()
 
+
 def test_email_verification_generator():
     """测试邮箱验证码生成器。"""
     print("=== 测试邮箱验证码生成器 ===")
@@ -89,6 +90,7 @@ def test_email_verification_generator():
         print(f"过期信息: {expiry_info}")
 
     print()
+
 
 def test_sms_verification_generator():
     """测试短信验证码生成器。"""
@@ -116,6 +118,7 @@ def test_sms_verification_generator():
 
     print()
 
+
 def test_batch_generation():
     """测试批量生成功能。"""
     print("=== 测试批量生成 ===")
@@ -138,6 +141,7 @@ def test_batch_generation():
 
     print()
 
+
 def main():
     """主测试函数。"""
     try:
@@ -154,6 +158,7 @@ def main():
         import traceback
 
         traceback.print_exc()
+
 
 if __name__ == "__main__":
     main()

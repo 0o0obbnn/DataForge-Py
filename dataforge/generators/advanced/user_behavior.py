@@ -10,7 +10,7 @@ import secrets
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, ClassVar, Optional, Union
+from typing import Any, ClassVar
 
 from ...core.factory import register_generator
 
@@ -36,12 +36,12 @@ class UserBehavior:
     timestamp: str
     page_url: str
     device_info: dict[str, str]
-    location_info: dict[str, Union[str, float]]
-    action_details: dict[str, Union[str, int, float]]
+    location_info: dict[str, str | float]
+    action_details: dict[str, str | int | float]
 
 
 class UserBehaviorGenerator(
-    DataGenerator[dict[str, Union[str, int, float, list[Any]]]]
+    DataGenerator[dict[str, str | int | float | list[Any]]]
 ):
     """用户行为数据生成器
 
@@ -251,7 +251,7 @@ class UserBehaviorGenerator(
         timestamp = now - delta
         return timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-    def _generate_user_profile(self) -> dict[str, Union[str, int, list]]:
+    def _generate_user_profile(self) -> dict[str, str | int | list]:
         """生成用户画像"""
         age_range = secrets.choice(self.age_ranges)
         age = secrets.randbelow(age_range[1] - age_range[0] + 1) + age_range[0]
@@ -311,7 +311,7 @@ class UserBehaviorGenerator(
             browser, user_agents["desktop"]["Chrome"]
         )
 
-    def _generate_location_info(self) -> dict[str, Union[str, float]]:
+    def _generate_location_info(self) -> dict[str, str | float]:
         """生成地理位置信息"""
         # 中国主要城市坐标
         cities = {
@@ -345,7 +345,7 @@ class UserBehaviorGenerator(
 
     def _generate_action_details(
         self, behavior_type: str
-    ) -> dict[str, Union[str, int, float]]:
+    ) -> dict[str, str | int | float]:
         """生成行为详情"""
         config = self.behavior_types[behavior_type]
 
@@ -419,8 +419,8 @@ class UserBehaviorGenerator(
             return secrets.choice(self.page_urls)
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int, float, list[Any]]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int | float | list[Any]]:
         """生成用户行为数据"""
         # 验证行为类型
         if self.behavior_type not in self.behavior_types:
@@ -457,7 +457,7 @@ class UserBehaviorGenerator(
 
         return result
 
-    def validate(self, data: dict[str, Union[str, int, float, list[Any]]]) -> bool:
+    def validate(self, data: dict[str, str | int | float | list[Any]]) -> bool:
         """验证生成的用户行为数据"""
         required_fields = [
             "user_id",
@@ -483,8 +483,8 @@ class UserBehaviorGenerator(
         return True
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int, float, list[Any]]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int | float | list[Any]]:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -515,8 +515,8 @@ class GenericUserBehaviorGenerator(UserBehaviorGenerator):
     pass
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int, float, list[Any]]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int | float | list[Any]]:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -530,7 +530,7 @@ class GenericUserBehaviorGenerator(UserBehaviorGenerator):
         """返回支持的参数列表"""
         return []
 
-    def validate(self, data: dict[str, Union[str, int, float, list[Any]]]) -> bool:
+    def validate(self, data: dict[str, str | int | float | list[Any]]) -> bool:
         """验证生成的数据"""
         return super().validate(data)
 
@@ -542,8 +542,8 @@ class GenericAnalyticsGenerator(UserBehaviorGenerator):
     pass
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int, float, list[Any]]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int | float | list[Any]]:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -557,6 +557,6 @@ class GenericAnalyticsGenerator(UserBehaviorGenerator):
         """返回支持的参数列表"""
         return []
 
-    def validate(self, data: dict[str, Union[str, int, float, list[Any]]]) -> bool:
+    def validate(self, data: dict[str, str | int | float | list[Any]]) -> bool:
         """验证生成的数据"""
         return super().validate(data)

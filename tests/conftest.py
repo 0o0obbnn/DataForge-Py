@@ -9,8 +9,8 @@ import sys
 from pathlib import Path
 
 # Set a dummy JWT secret key for API tests before any other imports
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key-for-pytest'
-os.environ['ALLOWED_ORIGINS'] = 'http://localhost:3000,http://127.0.0.1:3000'
+os.environ["JWT_SECRET_KEY"] = "test-secret-key-for-pytest"
+os.environ["ALLOWED_ORIGINS"] = "http://localhost:3000,http://127.0.0.1:3000"
 
 # 获取项目根目录
 PROJECT_ROOT = Path(__file__).parent.parent.absolute()
@@ -41,44 +41,42 @@ def setup_test_environment():
     # 验证dataforge包可以导入
     try:
         import dataforge
-        print(f"✅ dataforge包导入成功: {dataforge.__file__ if hasattr(dataforge, '__file__') else 'built-in'}")
+
+        print(
+            f"✅ dataforge包导入成功: {dataforge.__file__ if hasattr(dataforge, '__file__') else 'built-in'}"
+        )
     except ImportError as e:
         print(f"❌ dataforge包导入失败: {e}")
         pytest.fail(f"无法导入dataforge包: {e}")
+
 
 @pytest.fixture
 def project_root():
     """提供项目根目录路径"""
     return PROJECT_ROOT
 
+
 @pytest.fixture
 def test_data_dir():
     """提供测试数据目录路径"""
     return PROJECT_ROOT / "tests" / "data"
+
 
 @pytest.fixture
 def test_fixtures_dir():
     """提供测试固定数据目录路径"""
     return PROJECT_ROOT / "tests" / "fixtures"
 
+
 # 测试标记配置
 def pytest_configure(config):
     """配置pytest标记"""
-    config.addinivalue_line(
-        "markers", "unit: 单元测试标记"
-    )
-    config.addinivalue_line(
-        "markers", "integration: 集成测试标记"
-    )
-    config.addinivalue_line(
-        "markers", "api: API测试标记"
-    )
-    config.addinivalue_line(
-        "markers", "performance: 性能测试标记"
-    )
-    config.addinivalue_line(
-        "markers", "security: 安全测试标记"
-    )
+    config.addinivalue_line("markers", "unit: 单元测试标记")
+    config.addinivalue_line("markers", "integration: 集成测试标记")
+    config.addinivalue_line("markers", "api: API测试标记")
+    config.addinivalue_line("markers", "performance: 性能测试标记")
+    config.addinivalue_line("markers", "security: 安全测试标记")
+
 
 def pytest_collection_modifyitems(config, items):
     """自动为测试添加标记"""
@@ -97,30 +95,30 @@ def pytest_collection_modifyitems(config, items):
         elif "/security/" in test_path:
             item.add_marker(pytest.mark.security)
 
+
 # --- Core Application Fixtures ---
 
-from dataforge.core.factory import GeneratorRegistry, GeneratorFactory
+from dataforge.core.factory import GeneratorFactory, GeneratorRegistry
 from dataforge.core.relations import DataRelationManager
-# Import a few generators to populate the registry for tests
-from dataforge.generators.basic.name import NameGenerator
-from dataforge.generators.basic.age import AgeGenerator
-from dataforge.generators.contact.email import EmailGenerator
-from dataforge.generators.basic.idcard import IDCardGenerator
-from dataforge.generators.identifier.bankcard import BankCardGenerator
-from dataforge.generators.contact.phone import PhoneNumberGenerator
-from dataforge.generators.basic.uuid import UUIDGenerator
 from dataforge.generators.basic.address import AddressGenerator
-from dataforge.generators.basic.license_plate import LicensePlateGenerator
+from dataforge.generators.basic.age import AgeGenerator
 from dataforge.generators.basic.company_name import CompanyNameGenerator
-from dataforge.generators.identifier.uscc import USCCGenerator
-from dataforge.generators.identifier.organization_code import OrganizationCodeGenerator
-from dataforge.generators.identifier.lei import LEIGenerator
+from dataforge.generators.basic.idcard import IDCardGenerator
+from dataforge.generators.basic.license_plate import LicensePlateGenerator
+from dataforge.generators.basic.name import NameGenerator
+from dataforge.generators.basic.uuid import UUIDGenerator
+from dataforge.generators.contact.email import EmailGenerator
+from dataforge.generators.contact.phone import PhoneNumberGenerator
 from dataforge.generators.finance.streaming import (
-    StreamPriceGenerator,
-    StreamOrderbookGenerator,
-    StreamTradeGenerator,
     StreamNewsGenerator,
+    StreamOrderbookGenerator,
+    StreamPriceGenerator,
+    StreamTradeGenerator,
 )
+from dataforge.generators.identifier.bankcard import BankCardGenerator
+from dataforge.generators.identifier.lei import LEIGenerator
+from dataforge.generators.identifier.organization_code import OrganizationCodeGenerator
+from dataforge.generators.identifier.uscc import USCCGenerator
 
 
 @pytest.fixture(scope="module")
@@ -139,7 +137,9 @@ def populated_registry(empty_registry: GeneratorRegistry) -> GeneratorRegistry:
     registry.register("email", EmailGenerator)
     registry.register("idcard", IDCardGenerator)
     registry.register("bankcard", BankCardGenerator)
-    registry.register("phone", PhoneNumberGenerator)  # Note: PhoneNumberGenerator, not PhoneGenerator
+    registry.register(
+        "phone", PhoneNumberGenerator
+    )  # Note: PhoneNumberGenerator, not PhoneGenerator
     registry.register("uuid", UUIDGenerator)
     registry.register("address", AddressGenerator)
     registry.register("license_plate", LicensePlateGenerator)
@@ -158,5 +158,7 @@ def populated_registry(empty_registry: GeneratorRegistry) -> GeneratorRegistry:
 @pytest.fixture
 def generator_factory(populated_registry: GeneratorRegistry) -> GeneratorFactory:
     """Provides a GeneratorFactory with a populated registry."""
-    relation_manager = DataRelationManager() # Use a fresh relation manager
-    return GeneratorFactory(registry=populated_registry, relation_manager=relation_manager)
+    relation_manager = DataRelationManager()  # Use a fresh relation manager
+    return GeneratorFactory(
+        registry=populated_registry, relation_manager=relation_manager
+    )

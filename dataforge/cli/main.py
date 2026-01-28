@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 
@@ -223,7 +223,7 @@ class DataForgeCLI:
             "--age-max", dest="age_max", type=int, default=60, help="最大年龄"
         )
 
-    def run(self, args: Optional[list[str]] = None) -> int:
+    def run(self, args: list[str] | None = None) -> int:
         """运行CLI"""
         parsed_args = None
         try:

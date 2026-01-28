@@ -5,7 +5,7 @@
 
 import random
 import secrets
-from typing import Any, Optional
+from typing import Any
 
 from ...core.cache import LazyDataLoader, get_data_file_path
 from ...core.factory import register_generator
@@ -142,7 +142,7 @@ class OptimizedNameGenerator(DataGenerator[str]):
             ],
         }
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始姓名"""
         if self.name_type == "EN":
             return self._generate_english_name()
@@ -156,7 +156,7 @@ class OptimizedNameGenerator(DataGenerator[str]):
             )
 
     def _generate_chinese_name(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> str:
         """生成中文姓名"""
         # 1. 选择姓氏
@@ -197,7 +197,7 @@ class OptimizedNameGenerator(DataGenerator[str]):
         weights = [s.get("frequency", 1.0) for s in surnames]
         return random.choices(surnames, weights=weights)[0]
 
-    def _determine_gender(self, context: Optional[GenerationContext] = None) -> str:
+    def _determine_gender(self, context: GenerationContext | None = None) -> str:
         """确定性别"""
         # 如果有关联数据中的性别信息
         if context and context.related_data and "gender" in context.related_data:
@@ -291,8 +291,8 @@ class OptimizedNameGenerator(DataGenerator[str]):
             "compound_surname_ratio",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
-        """生成单个数据项 - TODO: Implement generation logic"""
+    def generate_single(self, context: GenerationContext | None = None) -> str:
+        """生成单个数据项 - Implemented generation logic"""
         return self._generate_raw(context)
 
     def validate(self, data: str) -> bool:
@@ -306,7 +306,7 @@ class OptimizedNameGenerator(DataGenerator[str]):
 @register_generator("name_optimized", ["姓名优化", "name_fast", "cached_name"])
 class OptimizedNameGeneratorRegistered(OptimizedNameGenerator):
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
 
         # 直接调用父类方法
@@ -324,6 +324,6 @@ class OptimizedNameGeneratorRegistered(OptimizedNameGenerator):
 class GenericOptimizedNameGenerator(OptimizedNameGenerator):
     """通用optimized_name生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)

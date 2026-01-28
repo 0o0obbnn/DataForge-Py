@@ -1,0 +1,55 @@
+# 中文拼音映射配置
+pinyin_map:
+  surname:
+    张: zhang
+    王: wang
+    李: li
+    赵: zhao
+    刘: liu
+    陈: chen
+    杨: yang
+    黄: huang
+    周: zhou
+    吴: wu
+    徐: xu
+    孙: sun
+    胡: hu
+    朱: zhu
+    高: gao
+    林: lin
+    何: he
+    郭: guo
+    马: ma
+    罗: luo
+
+  given_char:
+    伟: wei
+    强: qiang
+    磊: lei
+    军: jun
+    洋: yang
+    丽: li
+    美: mei
+    红: hong
+    燕: yan
+    芳: fang
+    嘉: jia
+    欣: xin
+    悦: yue
+    乐: le
+    安: an
+    志: zhi
+    建: jian
+    国: guo
+    华: hua
+    淑: shu
+    英: ying
+    娟: juan
+    敏: min
+    思: si
+    琪: qi
+    涵: han
+    萱: xuan
+    雅: ya
+    洁: jie
+

@@ -48,6 +48,7 @@ async def test_stream_price_generator(generator_factory: GeneratorFactory):
 
     print("✅ 实时价格流生成器测试通过")
 
+
 @pytest.mark.asyncio
 async def test_stream_orderbook_generator(generator_factory: GeneratorFactory):
     """测试实时订单簿流生成器"""
@@ -77,6 +78,7 @@ async def test_stream_orderbook_generator(generator_factory: GeneratorFactory):
             break
 
     print("✅ 实时订单簿流生成器测试通过")
+
 
 @pytest.mark.asyncio
 async def test_stream_trade_generator(generator_factory: GeneratorFactory):
@@ -112,6 +114,7 @@ async def test_stream_trade_generator(generator_factory: GeneratorFactory):
 
     print("✅ 实时交易流生成器测试通过")
 
+
 @pytest.mark.asyncio
 async def test_stream_news_generator(generator_factory: GeneratorFactory):
     """测试实时新闻流生成器"""
@@ -141,6 +144,7 @@ async def test_stream_news_generator(generator_factory: GeneratorFactory):
             break
 
     print("✅ 实时新闻流生成器测试通过")
+
 
 def test_sync_generators(generator_factory: GeneratorFactory):
     """测试同步生成器功能"""
@@ -183,6 +187,7 @@ def test_sync_generators(generator_factory: GeneratorFactory):
     print(f"📰 同步新闻: {news_data}")
 
     print("✅ 同步生成器测试通过")
+
 
 def test_registration(generator_factory: GeneratorFactory):
     """测试生成器注册"""

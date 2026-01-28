@@ -6,7 +6,6 @@
 """
 
 import random
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
@@ -56,7 +55,7 @@ class ZodiacGenerator(DataGenerator):
             "Pisces",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个星座"""
         format_type = self.config.parameters.get("format", "CHINESE").upper()
 
@@ -177,7 +176,7 @@ class EthnicityGenerator(DataGenerator):
             "珞巴族",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个民族"""
         use_common = self.config.parameters.get("common", True)
 
@@ -227,7 +226,7 @@ class BloodTypeGenerator(DataGenerator):
         # 中国人群血型分布比例（近似）
         self.china_distribution = {"A": 0.28, "B": 0.24, "AB": 0.07, "O": 0.41}
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个血型"""
         include_rh = self.config.parameters.get("rh", False)
         format_type = self.config.parameters.get("format", "SIMPLE").upper()
@@ -327,7 +326,7 @@ class MaritalStatusGeneratorLegacy(DataGenerator):
             "丧偶": "Widowed",
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个婚姻状况"""
         age_group = self.config.parameters.get("age_group", "MIDDLE").upper()
         format_type = self.config.parameters.get("format", "CHINESE").upper()

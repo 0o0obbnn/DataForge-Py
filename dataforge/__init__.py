@@ -12,23 +12,35 @@ DataForge是一个功能丰富的Python库，用于高效生成、转换和处�
 
 使用示例：
 ```python
-# 基本使用方法
-from dataforge import DataGenerator
+# 💡 简化 API（推荐新手使用）
+from dataforge import gen
 
-# 创建生成器实例
-generator = DataGenerator()
+# 生成单个数据
+name = gen.name()
+phone = gen.phone(operator='MOBILE')
 
-# 使用默认工厂生成数据
-from dataforge import default_factory
-user_data = default_factory.create("user", count=5)
+# 批量生成数据
+names = gen.name(count=10)
+idcards = gen.idcard(region='北京', gender='MALE', count=5)
 
-# 注册自定义生成器
+# 🔧 高级 API（适用于复杂场景）
+from dataforge import default_factory, GeneratorConfig
+
+# 使用配置创建生成器
+config = GeneratorConfig(
+    generator_type='idcard',
+    parameters={'region': '北京', 'gender': 'MALE'}
+)
+generator = default_factory.create_generator(config)
+data = generator.generate_batch(10)
+
+# 自定义生成器注册
 from dataforge import register_generator
 
-def custom_generator(config):
-    return {"custom_field": "generated_value"}
-
-register_generator("custom", custom_generator)
+@register_generator("custom")
+class CustomGenerator:
+    def generate_single(self):
+        return {"custom_field": "generated_value"}
 ```
 
 版本: 1.0.0
@@ -43,6 +55,7 @@ __email__ = "contact@dataforge.org"
 __license__ = "MIT"
 
 from .cli.main import main as cli_main
+from .core.facade import DataForge, create_gen, gen
 from .core.factory import default_factory, default_registry, register_generator
 from .core.generator import DataGenerator, GenerationContext, GeneratorConfig
 
@@ -81,11 +94,17 @@ _register_builtin_generators()
 _initialize_performance_optimizations()
 
 __all__ = [
+    # 简化 API（推荐）
+    "gen",
+    "DataForge",
+    "create_gen",
+    # 高级 API
     "DataGenerator",
     "GeneratorConfig",
     "GenerationContext",
     "default_factory",
     "default_registry",
     "register_generator",
+    # CLI
     "cli_main",
 ]

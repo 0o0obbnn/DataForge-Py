@@ -63,26 +63,28 @@ class OutputFormatter:
                 writer.writerows(data)
             else:
                 # 简单值列表
-                writer = csv.writer(output)
-                writer.writerow(["value"])
+                csv_writer = csv.writer(output)
+                csv_writer.writerow(["value"])
                 for value in data:
-                    writer.writerow([value])
+                    csv_writer.writerow([value])
         else:
             # 旧格式：Dict[str, List[Any]] - 按字段分组
             if len(data) == 1:
                 generator_type, values = next(iter(data.items()))
                 if values and isinstance(values[0], dict):
                     # 对象类型数据
-                    fieldnames = values[0].keys()
-                    writer = csv.DictWriter(output, fieldnames=fieldnames)
-                    writer.writeheader()
-                    writer.writerows(values)
+                    fieldnames = list(values[0].keys())
+                    csv_dict_writer: csv.DictWriter[str] = csv.DictWriter(
+                        output, fieldnames=fieldnames
+                    )
+                    csv_dict_writer.writeheader()
+                    csv_dict_writer.writerows(values)
                 else:
                     # 简单类型数据
-                    writer = csv.writer(output)
-                    writer.writerow([generator_type])
+                    csv_writer = csv.writer(output)
+                    csv_writer.writerow([generator_type])
                     for value in values:
-                        writer.writerow([value])
+                        csv_writer.writerow([value])
             else:
                 # 多种数据类型，创建列式输出
                 # 检查是否有数据
@@ -90,11 +92,11 @@ class OutputFormatter:
                     return ""
 
                 max_length = max(len(values) for values in data.values())
-                writer = csv.writer(output)
+                csv_writer = csv.writer(output)
 
                 # 写入标题行
                 headers = list(data.keys())
-                writer.writerow(headers)
+                csv_writer.writerow(headers)
 
                 # 写入数据行
                 for i in range(max_length):
@@ -105,7 +107,7 @@ class OutputFormatter:
                             row.append(values[i])
                         else:
                             row.append("")
-                    writer.writerow(row)
+                    csv_writer.writerow(row)
 
         return output.getvalue()
 
@@ -155,9 +157,10 @@ class OutputFormatter:
 
     def _format_yaml(self, data: dict[str, list[Any]]) -> str:
         """格式化为YAML"""
-        return yaml.dump(
+        result = yaml.dump(
             data, default_flow_style=False, allow_unicode=True, sort_keys=False
         )
+        return result if isinstance(result, str) else str(result)
 
     def _format_sql(self, data, table_name: str = "data_table") -> str:
         """格式化为SQL INSERT语句"""
@@ -192,7 +195,7 @@ class OutputFormatter:
         file_path: str,
         format_type: str = "json",
         pretty: bool = False,
-    ):
+    ) -> None:
         """保存数据到文件"""
         formatted_data = self.format(data, format_type, pretty)
 

@@ -3,11 +3,11 @@ DataForge 认证令牌生成器示例
 演示各种认证令牌、验证码等生成器的使用方法
 """
 
-import os
-import sys
-import json
 import base64
 import hashlib
+import json
+import os
+import sys
 from datetime import datetime, timedelta
 
 # 添加项目根目录到路径
@@ -20,7 +20,7 @@ def basic_usage():
     """基础用法示例"""
     print("1. 基础用法示例")
     print("=" * 60)
-    
+
     # 认证令牌生成器
     print("\n认证令牌生成器 (auth_token):")
     config = GeneratorConfig("auth_token", parameters={})
@@ -28,7 +28,7 @@ def basic_usage():
     for i in range(3):
         token = generator.generate()
         print(f"  示例 {i+1}: {token}")
-    
+
     # 邮箱验证码生成器
     print("\n邮箱验证码生成器 (email_verification):")
     config = GeneratorConfig("email_verification", parameters={})
@@ -36,7 +36,7 @@ def basic_usage():
     for i in range(3):
         code = generator.generate()
         print(f"  示例 {i+1}: {code}")
-    
+
     # 短信验证码生成器
     print("\n短信验证码生成器 (sms_verification):")
     config = GeneratorConfig("sms_verification", parameters={})
@@ -44,7 +44,7 @@ def basic_usage():
     for i in range(3):
         code = generator.generate()
         print(f"  示例 {i+1}: {code}")
-    
+
     # 密码生成器
     print("\n密码生成器 (password):")
     config = GeneratorConfig("password", parameters={})
@@ -52,7 +52,7 @@ def basic_usage():
     for i in range(3):
         password = generator.generate()
         print(f"  示例 {i+1}: {password}")
-    
+
     # 用户名生成器
     print("\n用户名生成器 (username):")
     config = GeneratorConfig("username", parameters={})
@@ -66,7 +66,7 @@ def parameter_configuration():
     """参数配置示例"""
     print("\n\n2. 参数配置示例")
     print("=" * 60)
-    
+
     # 认证令牌 - 不同类型
     print("\n认证令牌生成器 - 类型配置:")
     token_types = [
@@ -83,7 +83,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 验证码 - 不同长度和类型
     print("\n验证码生成器 - 长度配置:")
     code_configs = [
@@ -99,7 +99,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 密码 - 不同强度
     print("\n密码生成器 - 强度配置:")
     password_configs = [
@@ -115,7 +115,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 用户名 - 不同风格
     print("\n用户名生成器 - 风格配置:")
     username_styles = [
@@ -138,23 +138,23 @@ def batch_generation():
     """批量生成示例"""
     print("\n\n3. 批量生成示例")
     print("=" * 60)
-    
+
     print("\n批量生成用户认证信息:")
-    
+
     # 生成认证令牌
     token_config = GeneratorConfig("auth_token", parameters={
         "type": "jwt",
         "length": 32
     })
     token_gen = default_factory.create_generator(token_config)
-    
+
     # 生成邮箱验证码
     email_config = GeneratorConfig("email_verification", parameters={
         "length": 6,
         "type": "numeric"
     })
     email_gen = default_factory.create_generator(email_config)
-    
+
     # 生成密码
     password_config = GeneratorConfig("password", parameters={
         "length": 12,
@@ -162,14 +162,14 @@ def batch_generation():
         "include_symbols": True
     })
     password_gen = default_factory.create_generator(password_config)
-    
+
     # 生成用户名
     username_config = GeneratorConfig("username", parameters={
         "style": "professional",
         "include_numbers": True
     })
     username_gen = default_factory.create_generator(username_config)
-    
+
     # 生成5个用户认证信息
     auth_users = []
     for i in range(5):
@@ -182,7 +182,7 @@ def batch_generation():
             "expires_at": (datetime.now() + timedelta(hours=24)).isoformat()
         }
         auth_users.append(user)
-    
+
     # 打印用户信息
     print("-" * 100)
     print(f"{'用户名':<20} | {'密码':<15} | {'令牌':<30} | {'验证码'}")
@@ -200,31 +200,31 @@ def validation_examples():
     """数据验证示例"""
     print("\n\n4. 数据验证示例")
     print("=" * 60)
-    
+
     # 认证令牌验证
     print("\n认证令牌格式验证:")
     config = GeneratorConfig("auth_token", parameters={"type": "jwt"})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         token = generator.generate()
         is_valid = generator.validate(token)
         print(f"  {i+1}. {token}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     令牌长度: {len(token)}")
-    
+
     # 验证码验证
     print("\n验证码格式验证:")
     config = GeneratorConfig("email_verification", parameters={"length": 6})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         code = generator.generate()
         is_valid = generator.validate(code)
         print(f"  {i+1}. {code}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     长度检查: {'✅ 符合' if len(code) == 6 else '❌ 不符合'}")
-    
+
     # 密码强度验证
     print("\n密码强度验证:")
     config = GeneratorConfig("password", parameters={
@@ -233,17 +233,17 @@ def validation_examples():
         "include_symbols": True
     })
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         password = generator.generate()
         is_valid = generator.validate(password)
-        
+
         # 检查密码强度
         has_upper = any(c.isupper() for c in password)
         has_lower = any(c.islower() for c in password)
         has_digit = any(c.isdigit() for c in password)
         has_symbol = any(not c.isalnum() for c in password)
-        
+
         print(f"  {i+1}. {password}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     包含大写: {'✅' if has_upper else '❌'}")
@@ -256,7 +256,7 @@ def error_handling():
     """错误处理示例"""
     print("\n\n5. 错误处理示例")
     print("=" * 60)
-    
+
     # 处理无效的令牌类型
     print("\n处理无效的令牌类型:")
     try:
@@ -266,7 +266,7 @@ def error_handling():
         print(f"  生成的令牌: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效令牌类型错误: {type(e).__name__}")
-    
+
     # 处理无效的验证码长度
     print("\n处理无效的验证码长度:")
     try:
@@ -276,7 +276,7 @@ def error_handling():
         print(f"  生成的验证码: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效验证码长度错误: {type(e).__name__}")
-    
+
     # 处理无效的密码强度
     print("\n处理无效的密码强度:")
     try:
@@ -292,7 +292,7 @@ def best_practices():
     """最佳实践示例"""
     print("\n\n6. 最佳实践示例")
     print("=" * 60)
-    
+
     # 实践1: 生成完整的认证系统配置
     print("\n实践1: 生成完整的认证系统配置")
     auth_config = {
@@ -320,7 +320,7 @@ def best_practices():
             "max_attempts": 3
         }
     }
-    
+
     print("  认证系统配置:")
     for key, value in auth_config.items():
         if isinstance(value, dict):
@@ -330,11 +330,11 @@ def best_practices():
         else:
             display_value = str(value)[:60] + "..." if len(str(value)) > 60 else str(value)
             print(f"    {key}: {display_value}")
-    
+
     # 实践2: 批量导出认证数据
     print("\n实践2: 批量导出认证数据 (JSON格式)")
     auth_data = []
-    
+
     for i in range(3):
         user_auth = {
             "user_id": f"user_{i+1:03d}",
@@ -372,7 +372,7 @@ def best_practices():
             }
         }
         auth_data.append(user_auth)
-    
+
     print("  JSON格式输出:")
     print(json.dumps(auth_data, ensure_ascii=False, indent=2))
 
@@ -381,9 +381,9 @@ def security_demo():
     """安全演示"""
     print("\n\n7. 安全演示")
     print("=" * 60)
-    
+
     print("\n密码哈希演示:")
-    
+
     # 生成密码
     password_config = GeneratorConfig("password", parameters={
         "length": 12,
@@ -391,23 +391,23 @@ def security_demo():
         "include_symbols": True
     })
     password_gen = default_factory.create_generator(password_config)
-    
+
     # 生成多个密码并展示哈希
     passwords = []
     for i in range(3):
         password = password_gen.generate()
         passwords.append(password)
-        
+
         # 计算不同哈希
         md5_hash = hashlib.md5(password.encode()).hexdigest()
         sha256_hash = hashlib.sha256(password.encode()).hexdigest()
-        
+
         print(f"\n  密码 {i+1}: {password}")
         print(f"    MD5: {md5_hash}")
         print(f"    SHA256: {sha256_hash[:32]}...")
-    
+
     print("\n令牌安全演示:")
-    
+
     # 生成不同类型的令牌
     token_types = ["jwt", "bearer", "api_key", "oauth"]
     for token_type in token_types:
@@ -417,38 +417,38 @@ def security_demo():
         })
         generator = default_factory.create_generator(config)
         token = generator.generate()
-        
+
         # 模拟Base64编码（实际应用中会更复杂）
         encoded = base64.b64encode(token.encode()).decode()
-        
+
         print(f"\n  {token_type.upper()} 令牌:")
         print(f"    原始: {token[:32]}...")
         print(f"    编码: {encoded[:32]}...")
-    
+
     print("\n验证码安全演示:")
-    
+
     # 生成验证码并展示过期时间
     verification_config = GeneratorConfig("email_verification", parameters={
         "length": 6,
         "type": "numeric"
     })
     verification_gen = default_factory.create_generator(verification_config)
-    
+
     for i in range(3):
         code = verification_gen.generate()
         expiry = datetime.now() + timedelta(minutes=10)
-        
+
         print(f"\n  验证码 {i+1}: {code}")
         print(f"    过期时间: {expiry.strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"    剩余时间: 10分钟")
-        print(f"    安全提示: 请勿在不安全的渠道传输验证码")
+        print("    剩余时间: 10分钟")
+        print("    安全提示: 请勿在不安全的渠道传输验证码")
 
 
 def main():
     """主函数"""
     print("🎯 DataForge 认证令牌生成器示例")
     print("本示例展示了认证相关生成器的各种使用方法\n")
-    
+
     try:
         basic_usage()
         parameter_configuration()
@@ -457,16 +457,16 @@ def main():
         error_handling()
         best_practices()
         security_demo()
-        
+
         print("\n" + "=" * 60)
         print("✅ 示例演示完成")
         print("=" * 60)
         print("🎉 所有认证相关生成器示例已成功运行！")
-        
+
         print("\n📚 相关文档:")
         print("  • 查看 examples/auth/verification_demo.py 了解验证码相关生成器")
         print("  • 查看 examples/comprehensive_demo.py 了解所有生成器概览")
-        
+
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback

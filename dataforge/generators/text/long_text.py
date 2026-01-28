@@ -4,7 +4,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorType
@@ -101,7 +100,7 @@ class LongTextGenerator(DataGenerator[str]):
         self.connector_density = self.parameters.get("connector_density", 0.3)
         self.language = self.parameters.get("language", "english")
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成长文本"""
         paragraphs = []
 
@@ -230,7 +229,7 @@ class LongTextGenerator(DataGenerator[str]):
 
         return stats
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

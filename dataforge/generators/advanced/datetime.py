@@ -5,7 +5,7 @@
 import random  # TODO: Convert to secrets
 import secrets
 from datetime import date, datetime, timedelta, timezone
-from typing import Optional, Union
+from typing import Union
 
 from ...core.generator import (
     DataGenerator,
@@ -87,7 +87,7 @@ class DateValidator(Validator):
 class DateGenerator(DataGenerator[str]):
     """日期生成器"""
 
-    def __init__(self, config: Optional[Union[GeneratorConfig, dict]] = None):
+    def __init__(self, config: GeneratorConfig | dict | None = None):
         """初始化日期生成器"""
         if config is None:
             config = {}
@@ -134,7 +134,7 @@ class DateGenerator(DataGenerator[str]):
         self.business_days_only = self.parameters.get("business_days_only", False)
         self.exclude_holidays = self.parameters.get("exclude_holidays", False)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始日期字符串"""
         start_date = datetime.strptime(self.start_date, "%Y-%m-%d")
         end_date = datetime.strptime(self.end_date, "%Y-%m-%d")
@@ -188,7 +188,7 @@ class DateGenerator(DataGenerator[str]):
         date_str = f"{date_obj.month:02d}-{date_obj.day:02d}"
         return date_str in self.chinese_holidays
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -250,7 +250,7 @@ class TimeValidator(Validator):
 class TimeGenerator(DataGenerator[str]):
     """时间生成器"""
 
-    def __init__(self, config: Optional[Union[GeneratorConfig, dict]] = None):
+    def __init__(self, config: GeneratorConfig | dict | None = None):
         """初始化时间生成器"""
         if config is None:
             config = {}
@@ -306,7 +306,7 @@ class TimeGenerator(DataGenerator[str]):
         self.timezone = self.parameters.get("timezone", "UTC")
         self.time_range = self.parameters.get("time_range", None)  # ('09:00', '17:00')
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始时间字符串"""
         if self.time_range:
             # 使用time_range参数生成时间
@@ -421,7 +421,7 @@ class TimeGenerator(DataGenerator[str]):
 
         return time_str
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -457,7 +457,7 @@ class TimestampValidator(Validator):
     def __init__(self, output_format: str = "INTEGER"):
         self.output_format = output_format
 
-    def validate(self, data: Union[int, str]) -> bool:
+    def validate(self, data: int | str) -> bool:
         """校验时间戳"""
         if isinstance(data, str):
             if self.output_format.upper() == "ISO":
@@ -485,7 +485,7 @@ class TimestampValidator(Validator):
 class TimestampGenerator(DataGenerator[Union[int, str]]):
     """时间戳生成器"""
 
-    def __init__(self, config: Optional[Union[GeneratorConfig, dict]] = None):
+    def __init__(self, config: GeneratorConfig | dict | None = None):
         """初始化时间戳生成器"""
         if config is None:
             config = {}
@@ -527,7 +527,7 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
             "output_format", "INTEGER"
         )  # STRING, ISO, INTEGER
 
-    def generate(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
+    def generate(self, context: GenerationContext | None = None) -> int | str:
         """生成原始时间戳"""
         # 生成随机时间戳
         if self.precision.upper() == "MILLISECONDS":
@@ -566,8 +566,8 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
             return timestamp
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, str]:
+        self, context: GenerationContext | None = None
+    ) -> int | str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -581,7 +581,7 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
         """返回支持的参数列表"""
         return ["end_timestamp", "output_format", "precision", "start_timestamp"]
 
-    def validate(self, data: Union[int, str]) -> bool:
+    def validate(self, data: int | str) -> bool:
         """验证生成的数据"""
         if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
@@ -699,7 +699,7 @@ class CronExpressionValidator(Validator):
                 return False
 
         # 验证每个字段
-        for i, (part, (min_val, max_val)) in enumerate(zip(parts, field_ranges)):
+        for i, (part, (min_val, max_val)) in enumerate(zip(parts, field_ranges, strict=False)):
             is_weekday = (i == 4 and self.format_type.upper() != "EXTENDED") or (
                 i == 5 and self.format_type.upper() == "EXTENDED"
             )
@@ -716,7 +716,7 @@ class CronExpressionValidator(Validator):
 class CronExpressionGenerator(DataGenerator[str]):
     """Cron表达式生成器"""
 
-    def __init__(self, config: Optional[Union[GeneratorConfig, dict]] = None):
+    def __init__(self, config: GeneratorConfig | dict | None = None):
         """初始化Cron表达式生成器"""
         if config is None:
             config = {}
@@ -767,7 +767,7 @@ class CronExpressionGenerator(DataGenerator[str]):
         self.month_range = self.parameters.get("month_range", (1, 12))
         self.weekday_range = self.parameters.get("weekday_range", (0, 6))
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始Cron表达式"""
         if self.preset_type and self.preset_type.upper() in self.presets:
             return self.presets[self.preset_type.upper()]
@@ -815,7 +815,7 @@ class CronExpressionGenerator(DataGenerator[str]):
                 start = secrets.randbelow(max_val // 2 - min_val + 1) + min_val
                 return f"{start}/{step}"
 
-    def get_next_run_time(self, cron_expr: str) -> Optional[datetime]:
+    def get_next_run_time(self, cron_expr: str) -> datetime | None:
         """获取下次执行时间（简化实现）"""
         # 这是一个简化的实现，实际应该使用专业的cron库
         try:
@@ -831,7 +831,7 @@ class CronExpressionGenerator(DataGenerator[str]):
         except (ValueError, TypeError):
             return None
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -864,7 +864,7 @@ class CronExpressionGenerator(DataGenerator[str]):
 class GenericDateGenerator(DateGenerator):
     """通用日期生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -895,7 +895,7 @@ class GenericDateGenerator(DateGenerator):
 class GenericTimeGenerator(TimeGenerator):
     """通用时间生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -929,8 +929,8 @@ class GenericTimestampGenerator(TimestampGenerator):
     """通用时间戳生成器注册版本"""
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, str]:
+        self, context: GenerationContext | None = None
+    ) -> int | str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -944,7 +944,7 @@ class GenericTimestampGenerator(TimestampGenerator):
         """返回支持的参数列表"""
         return ["start_timestamp", "end_timestamp", "precision", "output_format"]
 
-    def validate(self, data: Union[int, str]) -> bool:
+    def validate(self, data: int | str) -> bool:
         """验证生成的数据"""
         if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
@@ -954,7 +954,7 @@ class GenericTimestampGenerator(TimestampGenerator):
 class GenericCronExpressionGenerator(CronExpressionGenerator):
     """通用Cron表达式生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

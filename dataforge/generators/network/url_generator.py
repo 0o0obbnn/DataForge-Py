@@ -189,7 +189,7 @@ class URLGenerator(DataGenerator[str]):
             "false",
         ]
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成完整URL"""
         url_parts = []
 
@@ -439,7 +439,7 @@ class URLGenerator(DataGenerator[str]):
         except Exception:
             return {}
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -475,11 +475,19 @@ class URLGenerator(DataGenerator[str]):
 class GenericURLGenerator(URLGenerator):
     """通用URL生成器注册版本"""
 
-    def __init__(self, config: Optional["GeneratorConfig"] = None, **kwargs):
-        """初始化通用URL生成器"""
-        super().__init__(config, **kwargs)
+    # 添加类型提示以避免 Pylance 错误
+    validator: Optional["URLValidator"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def __init__(self, config: GeneratorConfig | None = None, **kwargs):
+        """初始化通用URL生成器"""
+        # 确保不会传递 None 给父类
+        if config is None:
+            from ...core.generator import GeneratorConfig
+
+            config = GeneratorConfig(generator_type="url", parameters=kwargs)
+        super().__init__(config)
+
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -495,6 +503,10 @@ class GenericURLGenerator(URLGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
+        if (
+            hasattr(self, "validator")
+            and self.validator is not None
+            and hasattr(self.validator, "validate")
+        ):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

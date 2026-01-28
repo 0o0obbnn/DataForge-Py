@@ -26,6 +26,7 @@ def test_single_generator():
     print(f"校验结果: {generator.validate(idcard)}")
     print()
 
+
 def test_relation_derivation():
     """测试关联推导"""
     print("=== 测试关联推导 ===")
@@ -57,6 +58,7 @@ def test_relation_derivation():
             print(f"年龄匹配: {age == expected_age}")
     print()
 
+
 def test_gender_name_relation():
     """测试性别-姓名关联"""
     print("=== 测试性别-姓名关联 ===")
@@ -81,6 +83,7 @@ def test_gender_name_relation():
             print(f"身份证性别: {gender}")
     print()
 
+
 def test_complex_relations():
     """测试复杂关联"""
     print("=== 测试复杂关联 ===")
@@ -100,6 +103,7 @@ def test_complex_relations():
         print(f"记录 {i + 1}: {json.dumps(result, ensure_ascii=False)}")
     print()
 
+
 def test_dependency_ordering():
     """测试依赖排序"""
     print("=== 测试依赖排序 ===")
@@ -111,6 +115,7 @@ def test_dependency_ordering():
     print(f"原始字段顺序: {field_names}")
     print(f"依赖排序后: {ordered_fields}")
     print()
+
 
 def test_manual_relations():
     """测试手动添加关联规则"""
@@ -148,6 +153,7 @@ def test_manual_relations():
     print(f"高年龄组结果: {json.dumps(result, ensure_ascii=False, indent=2)}")
     print()
 
+
 def main():
     """主测试函数"""
     print("DataForge 数据关联性管理系统测试")
@@ -171,6 +177,7 @@ def main():
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

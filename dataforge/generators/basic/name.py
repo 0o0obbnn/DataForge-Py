@@ -1,7 +1,11 @@
+import logging
 import random
-from typing import Any, Optional
+import secrets
+from typing import Any
 
 from ...core.cache import LazyDataLoader, get_data_file_path
+
+logger = logging.getLogger(__name__)
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
@@ -10,6 +14,7 @@ from ...core.generator import (
 )
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
+from ...resources.name_config_loader import load_name_en_config, load_pinyin_map
 
 
 class NameValidator(Validator):
@@ -53,8 +58,7 @@ class NameGenerator(DataGenerator[str]):
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.surnames = self._get_default_surnames_data()
-        self.given_names = self._get_default_givennames_data()
+        # 不在 __init__ 中加载数据，由 _setup() 方法处理
         self.gender = self.parameters.get(
             "gender", "random"
         )  # 'male', 'female', 'random'
@@ -66,9 +70,12 @@ class NameGenerator(DataGenerator[str]):
         )
         self.validator = NameValidator()
 
-        # 设置数据加载器
+        # 设置数据加载器（将在首次访问时加载）
         self._surnames_loader = None
         self._givennames_loader = None
+
+        # 调用 _setup 初始化加载器
+        self._setup()
 
     def _setup(self) -> None:
         self.name_type = self.parameters.get("type", "BOTH")  # CN, EN, BOTH
@@ -88,7 +95,10 @@ class NameGenerator(DataGenerator[str]):
         self._surnames_loader = LazyDataLoader(surnames_path)
 
         # 设置名字数据加载器
-        self._givennames_loader = None
+        givennames_path = self.givenname_file or get_data_file_path(
+            "chinese/givennames.json"
+        )
+        self._givennames_loader = LazyDataLoader(givennames_path)
 
     @property
     def surnames_data(self) -> dict[str, Any]:
@@ -143,8 +153,13 @@ class NameGenerator(DataGenerator[str]):
             },
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个姓名"""
+        valid_name_types = {"CN", "EN", "BOTH"}
+        if self.name_type not in valid_name_types:
+            logger.warning(f"Invalid name_type: {self.name_type}, using BOTH")
+            self.name_type = "BOTH"
+
         if self.name_type == "EN":
             return self._generate_english_name()
         elif self.name_type == "CN":
@@ -152,11 +167,11 @@ class NameGenerator(DataGenerator[str]):
         else:  # BOTH
             return (
                 self._generate_chinese_name(context)
-                if random.random() < 0.8
+                if secrets.randbelow(100) < 80  # 80%概率中文
                 else self._generate_english_name()
             )
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始姓名（向后兼容）"""
         return self.generate_single(context)
 
@@ -179,7 +194,7 @@ class NameGenerator(DataGenerator[str]):
         ]
 
     def _generate_chinese_name(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> str:
         """生成中文姓名"""
         # 1. 选择姓氏
@@ -219,7 +234,7 @@ class NameGenerator(DataGenerator[str]):
         weights = [s.get("frequency", 1.0) for s in surnames]
         return random.choices(surnames, weights=weights)[0]
 
-    def _determine_gender(self, context: Optional[GenerationContext] = None) -> str:
+    def _determine_gender(self, context: GenerationContext | None = None) -> str:
         """确定性别"""
         # 如果有关联数据中的性别信息
         if context and context.related_data and "gender" in context.related_data:
@@ -270,115 +285,32 @@ class NameGenerator(DataGenerator[str]):
                 return str(name_info)
 
     def _get_pinyin_approximation(self, name: str) -> str:
-        """获取名字的拼音近似（简化实现）"""
-        # 这里使用简化的拼音映射，实际应该使用专业的拼音库
-        pinyin_map = {
-            "伟": "wei",
-            "强": "qiang",
-            "磊": "lei",
-            "军": "jun",
-            "洋": "yang",
-            "丽": "li",
-            "美": "mei",
-            "红": "hong",
-            "燕": "yan",
-            "芳": "fang",
-            "嘉": "jia",
-            "欣": "xin",
-            "悦": "yue",
-            "乐": "le",
-            "安": "an",
-            "志": "zhi",
-            "建": "jian",
-            "国": "guo",
-            "华": "hua",
-            "淑": "shu",
-            "英": "ying",
-            "娟": "juan",
-            "敏": "min",
-            "思": "si",
-            "琪": "qi",
-            "涵": "han",
-            "萱": "xuan",
-            "雅": "ya",
-            "洁": "jie",
-        }
+        """获取名字的拼音近似（基于配置的简化实现）"""
+        pinyin_maps = load_pinyin_map()
+        given_map = pinyin_maps["given_char"]
 
-        pinyin_parts = []
+        pinyin_parts: list[str] = []
         for char in name:
-            pinyin_parts.append(pinyin_map.get(char, char.lower()))
+            pinyin_parts.append(given_map.get(char, char.lower()))
 
         return "".join(pinyin_parts)
 
     def _generate_english_name(self) -> str:
         """生成英文姓名"""
-        first_names_male = [
-            "James",
-            "John",
-            "Robert",
-            "Michael",
-            "William",
-            "David",
-            "Richard",
-            "Charles",
-            "Joseph",
-            "Thomas",
-            "Christopher",
-            "Daniel",
-            "Paul",
-            "Mark",
-            "Donald",
-            "Steven",
-        ]
+        config = load_name_en_config()
+        male = config.get("first_names_male", [])
+        female = config.get("first_names_female", [])
+        last = config.get("last_names", [])
 
-        first_names_female = [
-            "Mary",
-            "Patricia",
-            "Jennifer",
-            "Linda",
-            "Elizabeth",
-            "Barbara",
-            "Susan",
-            "Jessica",
-            "Sarah",
-            "Karen",
-            "Nancy",
-            "Lisa",
-            "Betty",
-            "Helen",
-            "Sandra",
-            "Donna",
-        ]
-
-        last_names = [
-            "Smith",
-            "Johnson",
-            "Williams",
-            "Brown",
-            "Jones",
-            "Garcia",
-            "Miller",
-            "Davis",
-            "Rodriguez",
-            "Martinez",
-            "Hernandez",
-            "Lopez",
-            "Gonzalez",
-            "Wilson",
-            "Anderson",
-            "Thomas",
-        ]
-
-        # 选择性别对应的名字
         if self.gender == "MALE":
-            first_name = random.choice(first_names_male)
+            pool = male or female or (male + female)
         elif self.gender == "FEMALE":
-            first_name = random.choice(first_names_female)
+            pool = female or male or (male + female)
         else:
-            all_first_names = first_names_male + first_names_female
-            first_name = random.choice(all_first_names)
+            pool = (male + female) or male or female
 
-        last_name = random.choice(last_names)
+        first_name = random.choice(pool or ["John"])
+        last_name = random.choice(last or ["Smith"])
 
         return f"{first_name} {last_name}"
 

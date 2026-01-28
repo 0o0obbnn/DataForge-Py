@@ -1,7 +1,6 @@
 """小数生成器模块"""
 
 import random
-from typing import Optional, Union
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -18,7 +17,7 @@ class DecimalGenerator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> float:
+    def _generate_raw(self, context: GenerationContext | None = None) -> float:
         """生成小数"""
         min_val = self.parameters.get("min", 0.0)
         max_val = self.parameters.get("max", 1.0)
@@ -27,7 +26,7 @@ class DecimalGenerator(DataGenerator):
         value = random.uniform(float(min_val), float(max_val))
         return round(value, decimal_places)
 
-    def validate(self, data: Union[int, float]) -> bool:
+    def validate(self, data: int | float) -> bool:
         """验证小数"""
         if not isinstance(data, (int, float)):
             return False
@@ -37,7 +36,7 @@ class DecimalGenerator(DataGenerator):
 
         return min_val <= data <= max_val
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> float:
+    def generate_single(self, context: GenerationContext | None = None) -> float:
         """生成单个数据项"""
         return self._generate_raw(context)
 

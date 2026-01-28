@@ -33,7 +33,10 @@ def discover_all_generator_classes() -> List[Type[DataGenerator[Any]]]:
     generators_path = Path(__file__).parent.parent / "dataforge" / "generators"
 
     if not generators_path.exists():
-        pytest.skip(f"Generators directory not found: {generators_path}", allow_module_level=True)
+        pytest.skip(
+            f"Generators directory not found: {generators_path}",
+            allow_module_level=True,
+        )
 
     # Import and scan modules
     for py_file in generators_path.rglob("*.py"):

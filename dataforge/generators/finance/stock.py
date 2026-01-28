@@ -4,10 +4,9 @@
 支持生成沪深A股、港股、美股等市场的股票代码
 """
 
-import random  # TODO: Convert to secrets
-import re
 import secrets
-from typing import Optional
+import string
+import re
 
 from ...core.factory import register_generator
 from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
@@ -56,7 +55,7 @@ class StockCodeGenerator(DataGenerator[str]):
             "AMEX": {"length": [1, 4], "pattern": r"^[A-Z]{1,4}$"},
         }
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成股票代码"""
         if self.market == "A_SHARE":
             return self._generate_a_share_code()
@@ -122,8 +121,8 @@ class StockCodeGenerator(DataGenerator[str]):
         length_range = self.us_codes[selected_exchange]["length"]
         length = secrets.choice(length_range)
 
-        # 生成大写字母代码
-        code = "".join(random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=length))
+        # 生成大写字母代码（使用密码学安全的随机数）
+        code = "".join(secrets.choice(string.ascii_uppercase) for _ in range(length))
 
         return code
 
@@ -187,7 +186,7 @@ class StockCodeGenerator(DataGenerator[str]):
             "format",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 

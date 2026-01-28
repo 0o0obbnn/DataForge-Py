@@ -5,7 +5,7 @@
 import secrets
 import time
 from datetime import datetime, timedelta, timezone
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -39,7 +39,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
     - 支持上下文关联生成
     """
 
-    def __init__(self, config: Optional[dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """初始化高级时间戳生成器"""
         if config is None:
             config = {}
@@ -78,8 +78,8 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         self.custom_format = self.parameters.get("custom_format", "%Y-%m-%d %H:%M:%S")
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, str]:
+        self, context: GenerationContext | None = None
+    ) -> int | str:
         """生成时间戳"""
         # 获取基础时间
         base_time = self._get_base_datetime()
@@ -180,7 +180,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
                 # 如果pytz不可用，使用UTC
                 return dt.replace(tzinfo=timezone.utc)
 
-    def _format_timestamp(self, dt: datetime) -> Union[int, str]:
+    def _format_timestamp(self, dt: datetime) -> int | str:
         """格式化时间戳"""
         if self.output_format == "UNIX":
             # Unix时间戳
@@ -212,7 +212,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
 
         return int(dt.timestamp())
 
-    def validate(self, data: Union[int, str]) -> bool:
+    def validate(self, data: int | str) -> bool:
         """验证时间戳"""
         try:
             if isinstance(data, str):
@@ -271,8 +271,8 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         ]
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, str]:
+        self, context: GenerationContext | None = None
+    ) -> int | str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -289,7 +289,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
     - 支持持续时间设置
     """
 
-    def __init__(self, config: Optional[dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None):
         """初始化日期时间范围生成器"""
         if config is None:
             config = {}
@@ -325,7 +325,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
             "DURATION": "%Y-%m-%d %H:%M:%S (持续 %d天 %d小时 %d分钟)",
         }
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成日期时间范围"""
         # 计算持续时间
         duration = timedelta(
@@ -462,6 +462,6 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
             "timezone",  # 时区设置
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)

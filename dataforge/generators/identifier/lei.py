@@ -4,7 +4,6 @@ LEI码生成器 (Legal Entity Identifier)
 
 import random  # Keep for random.choices
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -105,7 +104,7 @@ class LEIGenerator(DataGenerator[str]):
     def _setup(self) -> None:
         self.valid = self.parameters.get("valid", True)  # 是否保证生成有效LEI码
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始LEI码"""
         # 1. LOU ID (4位)
         lou_id = secrets.choice(self.lou_ids)
@@ -193,12 +192,12 @@ class LEIGenerator(DataGenerator[str]):
             return f"{lei[:4]}-{lei[4:6]}-{lei[6:18]}-{lei[18:20]}"
         return lei
 
-    def generate_with_info(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_with_info(self, context: GenerationContext | None = None) -> dict:
         """生成LEI码并返回详细信息"""
         lei = self.generate(context)
         return self.get_lei_info(lei)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -223,7 +222,7 @@ class LEIGenerator(DataGenerator[str]):
 class LEICodeGenerator(LEIGenerator):
     """LEI码生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

@@ -37,6 +37,7 @@ def register_all_basic_generators():
         if not default_registry.is_registered(name):
             default_registry.register(name, generator_class)
 
+
 def test_basic_generators():
     """测试所有基础生成器"""
     test_configs = {
@@ -92,6 +93,7 @@ def test_basic_generators():
     # 不返回结果，避免pytest警告
     # return results
 
+
 def test_cross_validation():
     """测试生成器间的数据关联验证"""
     print("\n🔗 测试数据关联验证...")
@@ -116,6 +118,7 @@ def test_cross_validation():
 
     except Exception as e:
         print(f"   关联测试错误: {e}")
+
 
 def test_cli_parameters():
     """测试CLI参数支持"""
@@ -147,6 +150,7 @@ def test_cli_parameters():
 
         except Exception as e:
             print(f"   {generator_name}: 参数获取失败 - {e}")
+
 
 def main():
     """主测试函数"""
@@ -187,6 +191,7 @@ def main():
     else:
         print("⚠️  部分生成器测试失败，请查看详细报告")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

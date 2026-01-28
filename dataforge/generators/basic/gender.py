@@ -3,7 +3,7 @@
 """
 
 import secrets
-from typing import Any, Optional
+from typing import Any
 
 from ...core.context import ExtendedGenerationContext
 from ...core.factory import register_generator
@@ -54,7 +54,7 @@ class GenderGenerator(DataGenerator[str]):
         self.use_realistic_weights = self.parameters.get("realistic_weights", True)
         self.allow_unknown = self.parameters.get("allow_unknown", False)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始性别数据"""
         # 获取性别选项
         options = self._get_gender_options()
@@ -182,10 +182,10 @@ class GenderGenerator(DataGenerator[str]):
         else:
             return "OTHER"
 
-    def _extract_gender_from_context(self, context: GenerationContext) -> Optional[str]:
+    def _extract_gender_from_context(self, context: GenerationContext) -> str | None:
         """从上下文中提取性别信息（兼容扩展上下文与related_data）"""
-        idcard: Optional[str] = None
-        name: Optional[str] = None
+        idcard: str | None = None
+        name: str | None = None
 
         # 优先从扩展上下文取值
         if isinstance(context, ExtendedGenerationContext):
@@ -226,7 +226,7 @@ class GenderGenerator(DataGenerator[str]):
 
         return options[0] if options else standard_gender
 
-    def _infer_gender_from_name(self, name: str) -> Optional[str]:
+    def _infer_gender_from_name(self, name: str) -> str | None:
         """从姓名推断性别（简单实现）"""
         # 移除拼音部分
         if "(" in name:
@@ -399,8 +399,8 @@ class GenderGenerator(DataGenerator[str]):
             "allow_unknown",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
-        """生成单个数据项 - TODO: Implement generation logic"""
+    def generate_single(self, context: GenerationContext | None = None) -> str:
+        """生成单个数据项 - Implemented generation logic"""
         return self._generate_raw(context)
 
 

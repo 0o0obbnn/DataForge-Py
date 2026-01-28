@@ -4,7 +4,6 @@
 
 import re
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -106,6 +105,8 @@ class BankCardValidator(Validator):
 class BankCardGenerator(DataGenerator[str]):
     """银行卡号生成器"""
 
+    validator: BankCardValidator | None = None
+
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
         self.card_type = self.parameters.get("card_type", None)
@@ -148,7 +149,7 @@ class BankCardGenerator(DataGenerator[str]):
         self.format_with_spaces = self.parameters.get("format_with_spaces", False)
         self.format_with_dashes = self.parameters.get("format_with_dashes", False)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始银行卡号"""
         # 获取BIN号
         bin_prefix = self._get_bin_prefix()
@@ -264,7 +265,7 @@ class BankCardGenerator(DataGenerator[str]):
 
         return bank_info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -299,7 +300,12 @@ class BankCardGenerator(DataGenerator[str]):
 class GenericBankCardGenerator(BankCardGenerator):
     """通用银行卡号生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    validator: BankCardValidator | None = None
+
+    def __init__(self, config: GeneratorConfig):
+        super().__init__(config)
+
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

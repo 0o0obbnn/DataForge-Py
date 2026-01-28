@@ -3,9 +3,9 @@ DataForge 格式化生成器示例
 演示各种格式化、特殊字符等生成器的使用方法
 """
 
+import json
 import os
 import sys
-import json
 from datetime import datetime
 
 # 添加项目根目录到路径
@@ -18,7 +18,7 @@ def basic_usage():
     """基础用法示例"""
     print("1. 基础用法示例")
     print("=" * 60)
-    
+
     # 特殊字符生成器
     print("\n特殊字符生成器 (special_chars):")
     config = GeneratorConfig("special_chars", parameters={})
@@ -26,7 +26,7 @@ def basic_usage():
     for i in range(3):
         chars = generator.generate()
         print(f"  示例 {i+1}: {chars}")
-    
+
     # Unicode符号生成器
     print("\nUnicode符号生成器 (unicode_symbols):")
     config = GeneratorConfig("unicode_symbols", parameters={})
@@ -34,7 +34,7 @@ def basic_usage():
     for i in range(3):
         symbols = generator.generate()
         print(f"  示例 {i+1}: {symbols}")
-    
+
     # 布尔值生成器
     print("\n布尔值生成器 (boolean):")
     config = GeneratorConfig("boolean", parameters={})
@@ -42,7 +42,7 @@ def basic_usage():
     for i in range(3):
         boolean = generator.generate()
         print(f"  示例 {i+1}: {boolean}")
-    
+
     # 百分比生成器
     print("\n百分比生成器 (percentage):")
     config = GeneratorConfig("percentage", parameters={})
@@ -50,7 +50,7 @@ def basic_usage():
     for i in range(3):
         percentage = generator.generate()
         print(f"  示例 {i+1}: {percentage}")
-    
+
     # 科学计数法生成器
     print("\n科学计数法生成器 (scientific):")
     config = GeneratorConfig("scientific", parameters={})
@@ -64,7 +64,7 @@ def parameter_configuration():
     """参数配置示例"""
     print("\n\n2. 参数配置示例")
     print("=" * 60)
-    
+
     # 特殊字符 - 不同类型
     print("\n特殊字符生成器 - 类型配置:")
     char_configs = [
@@ -81,7 +81,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # Unicode符号 - 不同类别
     print("\nUnicode符号生成器 - 类别配置:")
     symbol_configs = [
@@ -98,7 +98,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 布尔值 - 概率配置
     print("\n布尔值生成器 - 概率配置:")
     bool_configs = [
@@ -114,7 +114,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 百分比 - 范围配置
     print("\n百分比生成器 - 范围配置:")
     percent_configs = [
@@ -131,7 +131,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 科学计数法 - 精度配置
     print("\n科学计数法生成器 - 精度配置:")
     scientific_configs = [
@@ -154,29 +154,29 @@ def batch_generation():
     """批量生成示例"""
     print("\n\n3. 批量生成示例")
     print("=" * 60)
-    
+
     print("\n批量生成格式化数据:")
-    
+
     # 生成特殊字符
     char_config = GeneratorConfig("special_chars", parameters={
         "type": "mixed",
         "count": 10
     })
     char_gen = default_factory.create_generator(char_config)
-    
+
     # 生成Unicode符号
     symbol_config = GeneratorConfig("unicode_symbols", parameters={
         "category": "mixed",
         "count": 10
     })
     symbol_gen = default_factory.create_generator(symbol_config)
-    
+
     # 生成布尔值序列
     bool_config = GeneratorConfig("boolean", parameters={
         "true_probability": 0.6
     })
     bool_gen = default_factory.create_generator(bool_config)
-    
+
     # 生成百分比序列
     percent_config = GeneratorConfig("percentage", parameters={
         "min": 0,
@@ -184,7 +184,7 @@ def batch_generation():
         "precision": 1
     })
     percent_gen = default_factory.create_generator(percent_config)
-    
+
     # 生成5个格式化数据集
     format_data = []
     for i in range(5):
@@ -200,7 +200,7 @@ def batch_generation():
             "data_id": f"FD_{i+1:03d}"
         }
         format_data.append(data)
-    
+
     # 打印格式化数据
     print("-" * 100)
     print(f"{'ID':<6} | {'特殊字符':<15} | {'Unicode符号':<15} | {'布尔值':<8} | {'百分比':<10} | {'科学计数法'}")
@@ -220,36 +220,36 @@ def validation_examples():
     """数据验证示例"""
     print("\n\n4. 数据验证示例")
     print("=" * 60)
-    
+
     # 特殊字符验证
     print("\n特殊字符格式验证:")
     config = GeneratorConfig("special_chars", parameters={"type": "punctuation"})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         chars = generator.generate()
         is_valid = generator.validate(chars)
         print(f"  {i+1}. {chars}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '无效'}")
         print(f"     长度: {len(chars)}")
-    
+
     # Unicode符号验证
     print("\nUnicode符号格式验证:")
     config = GeneratorConfig("unicode_symbols", parameters={"category": "emoticons"})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         symbols = generator.generate()
         is_valid = generator.validate(symbols)
         print(f"  {i+1}. {symbols}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '无效'}")
         print(f"     长度: {len(symbols)}")
-    
+
     # 百分比验证
     print("\n百分比格式验证:")
     config = GeneratorConfig("percentage", parameters={"min": 0, "max": 100})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         percentage = generator.generate()
         is_valid = generator.validate(percentage)
@@ -260,13 +260,13 @@ def validation_examples():
             in_range = 0 <= value <= 100
             print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
         except:
-            print(f"     数值转换: ❌ 无法转换为数字")
-    
+            print("     数值转换: ❌ 无法转换为数字")
+
     # 科学计数法验证
     print("\n科学计数法格式验证:")
     config = GeneratorConfig("scientific", parameters={"precision": 4})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         scientific = generator.generate()
         is_valid = generator.validate(scientific)
@@ -282,7 +282,7 @@ def error_handling():
     """错误处理示例"""
     print("\n\n5. 错误处理示例")
     print("=" * 60)
-    
+
     # 处理无效的字符类型
     print("\n处理无效的字符类型:")
     try:
@@ -292,7 +292,7 @@ def error_handling():
         print(f"  生成的特殊字符: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效字符类型错误: {type(e).__name__}")
-    
+
     # 处理无效的Unicode类别
     print("\n处理无效的Unicode类别:")
     try:
@@ -302,7 +302,7 @@ def error_handling():
         print(f"  生成的Unicode符号: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效Unicode类别错误: {type(e).__name__}")
-    
+
     # 处理无效的百分比范围
     print("\n处理无效的百分比范围:")
     try:
@@ -312,7 +312,7 @@ def error_handling():
         print(f"  生成的百分比: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效百分比范围错误: {type(e).__name__}")
-    
+
     # 处理无效的科学计数法精度
     print("\n处理无效的科学计数法精度:")
     try:
@@ -328,7 +328,7 @@ def best_practices():
     """最佳实践示例"""
     print("\n\n6. 最佳实践示例")
     print("=" * 60)
-    
+
     # 实践1: 生成完整的格式化系统配置
     print("\n实践1: 生成完整的格式化系统配置")
     format_config = {
@@ -369,17 +369,17 @@ def best_practices():
             "custom_validation": True
         }
     }
-    
+
     print("  格式化系统配置:")
     for key, value in format_config.items():
         print(f"    {key}:")
         for sub_key, sub_value in value.items():
             print(f"      {sub_key}: {sub_value}")
-    
+
     # 实践2: 批量导出格式化数据
     print("\n实践2: 批量导出格式化数据 (JSON格式)")
     format_data = []
-    
+
     for i in range(3):
         format_record = {
             "record_id": f"format_{i+1:03d}",
@@ -430,7 +430,7 @@ def best_practices():
             }
         }
         format_data.append(format_record)
-    
+
     print("  JSON格式输出:")
     print(json.dumps(format_data, ensure_ascii=False, indent=2))
 
@@ -439,9 +439,9 @@ def formatting_demo():
     """格式化演示"""
     print("\n\n7. 格式化演示")
     print("=" * 60)
-    
+
     print("\n生成格式化演示数据:")
-    
+
     # 生成密码强度指示器
     print("\n密码强度指示器:")
     strength_levels = [
@@ -449,7 +449,7 @@ def formatting_demo():
         {"level": "medium", "chars": 12, "complexity": "medium"},
         {"level": "strong", "chars": 16, "complexity": "high"}
     ]
-    
+
     for level_info in strength_levels:
         # 生成对应强度的密码
         password_config = GeneratorConfig("password", parameters={
@@ -458,7 +458,7 @@ def formatting_demo():
         })
         password_gen = default_factory.create_generator(password_config)
         password = password_gen.generate()
-        
+
         # 生成对应的特殊字符来装饰
         char_config = GeneratorConfig("special_chars", parameters={
             "type": "symbols",
@@ -466,16 +466,16 @@ def formatting_demo():
         })
         char_gen = default_factory.create_generator(char_config)
         symbols = char_gen.generate()
-        
+
         print(f"    {level_info['level'].upper()} 密码:")
         print(f"      密码: {password}")
         print(f"      装饰: {symbols}")
         print(f"      复杂度: {level_info['complexity']}")
         print()
-    
+
     # 生成数据格式化示例
     print("\n数据格式化示例:")
-    
+
     # 生成示例数据
     sample_data = {
         "user_id": "user_001",
@@ -483,7 +483,7 @@ def formatting_demo():
         "ratio": 0.75,
         "completion": 0.92
     }
-    
+
     # 生成格式化字符串
     for key, value in sample_data.items():
         if isinstance(value, (int, float)):
@@ -502,9 +502,9 @@ def formatting_demo():
                 formatted = value
         else:
             formatted = str(value)
-        
+
         print(f"    {key}: {formatted}")
-    
+
     # 生成表格格式
     print("\n表格格式演示:")
     table_data = [
@@ -512,16 +512,16 @@ def formatting_demo():
         {"name": "产品B", "price": 199.99, "stock": 75, "rating": 4.2},
         {"name": "产品C", "price": 99.99, "stock": 200, "rating": 4.8}
     ]
-    
+
     print("    产品名称    | 价格     | 库存  | 评分")
     print("    ----------|----------|------|------")
     for item in table_data:
         print(f"    {item['name']:<10} | {item['price']:>8.2f} | {item['stock']:>6} | {item['rating']:>5.1f}")
-    
+
     # 生成进度条
     print("\n进度条演示:")
     progress_values = [0.1, 0.25, 0.5, 0.75, 0.9, 1.0]
-    
+
     for progress in progress_values:
         bar_length = 30
         filled_length = int(bar_length * progress)
@@ -529,7 +529,7 @@ def formatting_demo():
         bar = "█" * filled_length + "░" * empty_length
         percentage = f"{progress * 100:.0f}%"
         print(f"    [{bar}] {percentage}")
-    
+
     # 生成状态指示器
     print("\n状态指示器演示:")
     statuses = [
@@ -538,7 +538,7 @@ def formatting_demo():
         {"status": "error", "symbol": "❌", "color": "red"},
         {"status": "info", "symbol": "ℹ️", "color": "blue"}
     ]
-    
+
     for status_info in statuses:
         print(f"    {status_info['symbol']} {status_info['status']} ({status_info['color']})")
 
@@ -547,7 +547,7 @@ def main():
     """主函数"""
     print("🎯 DataForge 格式化生成器示例")
     print("本示例展示了格式化相关生成器的各种使用方法\n")
-    
+
     try:
         basic_usage()
         parameter_configuration()
@@ -556,16 +556,16 @@ def main():
         error_handling()
         best_practices()
         formatting_demo()
-        
+
         print("\n" + "=" * 60)
         print("✅ 示例演示完成")
         print("=" * 60)
         print("🎉 所有格式化相关生成器示例已成功运行！")
-        
+
         print("\n📚 相关文档:")
         print("  • 查看 examples/advanced/security_demo.py 了解安全相关生成器")
         print("  • 查看 examples/comprehensive_demo.py 了解所有生成器概览")
-        
+
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback

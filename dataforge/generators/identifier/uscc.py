@@ -4,7 +4,6 @@
 
 import random  # Keep for random.choices
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -160,7 +159,7 @@ class USCCGenerator(DataGenerator[str]):
         self.region = self.parameters.get("region", None)
         self.valid = self.parameters.get("valid", True)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始统一社会信用代码"""
         # 1. 登记管理部门码 (1位)
         dept_code = secrets.choice(list(self.registration_departments.keys()))
@@ -219,12 +218,12 @@ class USCCGenerator(DataGenerator[str]):
 
         return result
 
-    def generate_with_info(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_with_info(self, context: GenerationContext | None = None) -> dict:
         """生成统一社会信用代码并返回详细信息"""
         uscc = self.generate(context)
         return self.get_uscc_info(uscc)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -249,7 +248,7 @@ class USCCGenerator(DataGenerator[str]):
 class ChineseUSCCGenerator(USCCGenerator):
     """中国统一社会信用代码生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

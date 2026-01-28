@@ -6,8 +6,9 @@ DataForge 数据预加载模块
 import logging
 import threading
 import time
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Callable, Optional
+from typing import Any
 
 from .cache import get_cached_data, get_data_file_path
 
@@ -35,10 +36,10 @@ class DataPreloader:
         self,
         name: str,
         file_path: str,
-        loader_func: Optional[Callable] = None,
+        loader_func: Callable | None = None,
         priority: int = 0,
         auto_reload: bool = False,
-        dependencies: Optional[list[str]] = None,
+        dependencies: list[str] | None = None,
     ) -> None:
         """
         注册数据源
@@ -97,7 +98,7 @@ class DataPreloader:
                 self._completion_callbacks[name] = []
             self._completion_callbacks[name].append(callback)
 
-    def preload_all(self, timeout: Optional[float] = None) -> dict[str, Any]:
+    def preload_all(self, timeout: float | None = None) -> dict[str, Any]:
         """
         同步预加载所有注册的数据源
 
@@ -233,7 +234,7 @@ class DataPreloader:
             logger.error(f"数据源加载失败 {name}: {e}")
             return False
 
-    def get_loading_status(self, name: Optional[str] = None) -> dict[str, str]:
+    def get_loading_status(self, name: str | None = None) -> dict[str, str]:
         """
         获取加载状态
 
@@ -249,7 +250,7 @@ class DataPreloader:
             else:
                 return self._loading_status.copy()
 
-    def _get_config_by_name(self, name: str) -> Optional[dict[str, Any]]:
+    def _get_config_by_name(self, name: str) -> dict[str, Any] | None:
         """根据名称获取配置"""
         for config in self._preload_configs:
             if config["name"] == name:
@@ -306,7 +307,7 @@ class DataPreloader:
         batch: list[dict],
         results: dict,
         completed_sources: set,
-        timeout: Optional[float],
+        timeout: float | None,
     ):
         """处理一批加载任务"""
         futures = {}
@@ -376,10 +377,10 @@ default_preloader = DataPreloader()
 def register_data_source(
     name: str,
     file_path: str,
-    loader_func: Optional[Callable] = None,
+    loader_func: Callable | None = None,
     priority: int = 0,
     auto_reload: bool = False,
-    dependencies: Optional[list[str]] = None,
+    dependencies: list[str] | None = None,
 ) -> None:
     """注册数据源的便捷函数"""
     default_preloader.register_data_source(

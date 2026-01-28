@@ -52,7 +52,9 @@ class TestTimestampGenerator:
 
 
 @pytest.mark.unit
-@pytest.mark.skip(reason="EnhancedTimestampGenerator - advanced feature not fully implemented")
+@pytest.mark.skip(
+    reason="EnhancedTimestampGenerator - advanced feature not fully implemented"
+)
 class TestEnhancedTimestampGenerator:
     """增强时间戳生成器测试"""
 
@@ -68,7 +70,7 @@ class TestEnhancedTimestampGenerator:
         result = generator.generate()
         assert isinstance(result, str)
         # Verify date format YYYY-MM-DD
-        parts = result.split('-')
+        parts = result.split("-")
         assert len(parts) == 3
         assert len(parts[0]) == 4  # Year
 
@@ -110,14 +112,11 @@ class TestDateGenerator:
         gen = DateGenerator({})
         result = gen.generate()
         assert isinstance(result, str)
-        assert len(result.split('-')) == 3  # YYYY-MM-DD格式
+        assert len(result.split("-")) == 3  # YYYY-MM-DD格式
 
     def test_custom_date_range(self):
         """测试自定义日期范围"""
-        gen = DateGenerator({
-            "start_date": "2023-01-01",
-            "end_date": "2023-12-31"
-        })
+        gen = DateGenerator({"start_date": "2023-01-01", "end_date": "2023-12-31"})
         result = gen.generate()
         assert isinstance(result, str)
         # Verify date is within range
@@ -131,7 +130,7 @@ class TestDateGenerator:
         gen = DateGenerator({"format": "%Y/%m/%d"})
         result = gen.generate()
         assert "/" in result
-        parts = result.split('/')
+        parts = result.split("/")
         assert len(parts) == 3
 
 
@@ -145,14 +144,14 @@ class TestTimeGenerator:
         result = gen.generate()
         assert isinstance(result, str)
         # HH:MM:SS format
-        parts = result.split(':')
+        parts = result.split(":")
         assert len(parts) == 3
 
     def test_custom_format(self):
         """测试自定义时间格式"""
         gen = TimeGenerator({"format": "%H:%M"})
         result = gen.generate()
-        parts = result.split(':')
+        parts = result.split(":")
         assert len(parts) == 2  # HH:MM only
 
 
@@ -189,10 +188,12 @@ class TestDateTimeRangeGenerator:
 
     def test_date_range_constraints(self):
         """测试日期范围约束"""
-        gen = DateTimeRangeGenerator({
-            "start_datetime": "2024-01-01T00:00:00",
-            "end_datetime": "2024-01-31T23:59:59",
-        })
+        gen = DateTimeRangeGenerator(
+            {
+                "start_datetime": "2024-01-01T00:00:00",
+                "end_datetime": "2024-01-31T23:59:59",
+            }
+        )
         result = gen.generate()
         assert isinstance(result, str)
 
@@ -209,10 +210,12 @@ class TestAdvancedDateTimeRangeGenerator:
 
     def test_with_constraints(self):
         """测试带约束的生成"""
-        gen = AdvancedDateTimeRangeGenerator({
-            "start_datetime": "2024-01-01T00:00:00",
-            "end_datetime": "2024-12-31T23:59:59",
-        })
+        gen = AdvancedDateTimeRangeGenerator(
+            {
+                "start_datetime": "2024-01-01T00:00:00",
+                "end_datetime": "2024-12-31T23:59:59",
+            }
+        )
         result = gen.generate()
         assert result is not None
 
@@ -229,14 +232,14 @@ class TestDateTimeIntegration:
         advanced_gen = AdvancedTimestampGenerator()
         date_gen = DateGenerator({})
         time_gen = TimeGenerator({})
-        
+
         # Generate from each
         timestamp = timestamp_gen.generate()
         enhanced = enhanced_gen.generate()
         advanced = advanced_gen.generate()
         date = date_gen.generate()
         time = time_gen.generate()
-        
+
         # Verify all generated successfully
         assert timestamp is not None
         assert enhanced is not None
@@ -249,10 +252,10 @@ class TestDateTimeIntegration:
         # All timestamp generators should produce valid timestamps
         timestamp_gen = TimestampGenerator({})
         advanced_gen = AdvancedTimestampGenerator()
-        
+
         ts1 = timestamp_gen.generate()
         ts2 = advanced_gen.generate()
-        
+
         # Both should be positive integers
         assert isinstance(ts1, int) and ts1 > 0
         assert isinstance(ts2, int) and ts2 > 0

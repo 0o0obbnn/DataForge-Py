@@ -1,13 +1,20 @@
 """
-交易日历生成器
+交易日历生成器（重构版）
 
 生成中国股市（上交所、深交所）的交易日、休市日数据
-支持2020-2025年期间的交易日历，包含法定节假日和调休安排
+支持通过配置文件管理节假日数据，便于更新和维护
+
+改进：
+- ✅ 使用YAML配置文件管理节假日数据
+- ✅ 懒加载 + 内存缓存，性能无损
+- ✅ 支持API自动更新节假日
+- ✅ 降级机制：配置缺失时使用内置默认数据
+- ✅ 完全向后兼容
 """
 
 import datetime
 from dataclasses import dataclass
-from typing import ClassVar, Optional
+from typing import ClassVar
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -15,6 +22,7 @@ from ...core.generator import (
     GenerationContext,
 )
 from ...core.types import GeneratorType
+from ...data.trading_calendar_config import get_trading_calendar_config
 
 
 @dataclass
@@ -24,18 +32,24 @@ class TradingDay:
     date: datetime.date
     is_trading_day: bool
     day_type: str  # "TRADING", "WEEKEND", "HOLIDAY", "ADJUSTED_WORKING"
-    holiday_name: Optional[str] = None
+    holiday_name: str | None = None
     market: str = "ALL"  # "SH", "SZ", "ALL"
 
 
 class TradingCalendarGenerator(DataGenerator[dict[str, str | bool | None]]):
-    """中国A股交易日历生成器
+    """中国A股交易日历生成器（重构版）
 
     功能特性：
     - 生成指定日期范围内的交易日或休市日
-    - 支持2020-2025年完整交易日历
+    - 支持动态加载节假日配置
     - 包含法定节假日和调休安排
     - 可指定交易所（上交所/深交所）
+    - 自动缓存配置数据，性能优化
+
+    改进说明：
+    - 节假日数据从YAML配置文件加载（不再硬编码）
+    - 支持通过API自动更新节假日数据
+    - 首次加载后缓存在内存，查询性能O(1)
     """
 
     # 实例属性声明，便于静态类型检查
@@ -44,8 +58,8 @@ class TradingCalendarGenerator(DataGenerator[dict[str, str | bool | None]]):
     market: str
     include_weekends: bool
     day_type_filter: str
-    china_holidays: dict[str, str]
-    adjusted_working_days: set[str]
+    china_holidays: dict[str, str]  # 从配置加载
+    adjusted_working_days: set[str]  # 从配置加载
 
     # 参数模式定义（用于文档/描述），不参与运行时类型约束
     PARAMETER_SCHEMA: ClassVar[dict[str, dict[str, str | bool]]] = {
@@ -77,178 +91,53 @@ class TradingCalendarGenerator(DataGenerator[dict[str, str | bool | None]]):
     }
 
     def _setup(self) -> None:
-        """初始化交易日历数据"""
+        """初始化交易日历数据
+
+        改进：
+        - 从配置文件加载节假日数据（不再硬编码）
+        - 懒加载：首次使用时才加载配置
+        - 自动缓存：加载后缓存在内存
+        """
         self.start_date = self.parameters.get("start_date", "2024-01-01")
         self.end_date = self.parameters.get("end_date", "2024-12-31")
         self.market = self.parameters.get("market", "ALL")
         self.include_weekends = self.parameters.get("include_weekends", False)
         self.day_type_filter = self.parameters.get("day_type", "TRADING")
 
-        # 中国法定节假日（2020-2025）
-        self.china_holidays = {
-            # 2020年
-            "2020-01-01": "元旦",
-            "2020-01-24": "春节",
-            "2020-01-27": "春节",
-            "2020-01-28": "春节",
-            "2020-01-29": "春节",
-            "2020-01-30": "春节",
-            "2020-04-04": "清明节",
-            "2020-04-06": "清明节",
-            "2020-05-01": "劳动节",
-            "2020-05-04": "劳动节",
-            "2020-05-05": "劳动节",
-            "2020-06-25": "端午节",
-            "2020-06-26": "端午节",
-            "2020-10-01": "国庆节",
-            "2020-10-02": "国庆节",
-            "2020-10-05": "国庆节",
-            "2020-10-06": "国庆节",
-            "2020-10-07": "国庆节",
-            "2020-10-08": "国庆节",
-            # 2021年
-            "2021-01-01": "元旦",
-            "2021-02-11": "春节",
-            "2021-02-15": "春节",
-            "2021-02-16": "春节",
-            "2021-02-17": "春节",
-            "2021-04-05": "清明节",
-            "2021-05-03": "劳动节",
-            "2021-05-04": "劳动节",
-            "2021-05-05": "劳动节",
-            "2021-06-14": "端午节",
-            "2021-09-20": "中秋节",
-            "2021-09-21": "中秋节",
-            "2021-10-01": "国庆节",
-            "2021-10-04": "国庆节",
-            "2021-10-05": "国庆节",
-            "2021-10-06": "国庆节",
-            "2021-10-07": "国庆节",
-            # 2022年
-            "2022-01-03": "元旦",
-            "2022-01-31": "春节",
-            "2022-02-01": "春节",
-            "2022-02-02": "春节",
-            "2022-02-03": "春节",
-            "2022-02-04": "春节",
-            "2022-04-04": "清明节",
-            "2022-04-05": "清明节",
-            "2022-05-02": "劳动节",
-            "2022-05-03": "劳动节",
-            "2022-05-04": "劳动节",
-            "2022-06-03": "端午节",
-            "2022-09-12": "中秋节",
-            "2022-10-03": "国庆节",
-            "2022-10-04": "国庆节",
-            "2022-10-05": "国庆节",
-            "2022-10-06": "国庆节",
-            "2022-10-07": "国庆节",
-            # 2023年
-            "2023-01-02": "元旦",
-            "2023-01-23": "春节",
-            "2023-01-24": "春节",
-            "2023-01-25": "春节",
-            "2023-01-26": "春节",
-            "2023-01-27": "春节",
-            "2023-04-05": "清明节",
-            "2023-05-01": "劳动节",
-            "2023-05-02": "劳动节",
-            "2023-05-03": "劳动节",
-            "2023-06-22": "端午节",
-            "2023-06-23": "端午节",
-            "2023-09-29": "中秋节",
-            "2023-10-02": "国庆节",
-            "2023-10-03": "国庆节",
-            "2023-10-04": "国庆节",
-            "2023-10-05": "国庆节",
-            "2023-10-06": "国庆节",
-            # 2024年
-            "2024-01-01": "元旦",
-            "2024-02-09": "春节",
-            "2024-02-12": "春节",
-            "2024-02-13": "春节",
-            "2024-02-14": "春节",
-            "2024-02-15": "春节",
-            "2024-02-16": "春节",
-            "2024-02-17": "春节",
-            "2024-04-04": "清明节",
-            "2024-04-05": "清明节",
-            "2024-05-01": "劳动节",
-            "2024-05-02": "劳动节",
-            "2024-05-03": "劳动节",
-            "2024-06-10": "端午节",
-            "2024-09-16": "中秋节",
-            "2024-09-17": "中秋节",
-            "2024-10-01": "国庆节",
-            "2024-10-02": "国庆节",
-            "2024-10-03": "国庆节",
-            "2024-10-04": "国庆节",
-            "2024-10-07": "国庆节",
-            # 2025年
-            "2025-01-01": "元旦",
-            "2025-01-29": "春节",
-            "2025-01-30": "春节",
-            "2025-01-31": "春节",
-            "2025-02-03": "春节",
-            "2025-02-04": "春节",
-            "2025-04-04": "清明节",
-            "2025-05-01": "劳动节",
-            "2025-05-02": "劳动节",
-            "2025-06-02": "端午节",
-            "2025-10-01": "国庆节",
-            "2025-10-02": "国庆节",
-            "2025-10-03": "国庆节",
-            "2025-10-06": "国庆节",
-            "2025-10-07": "国庆节",
-        }
+        # 从配置文件加载节假日数据（懒加载 + 缓存）
+        self._load_holidays_from_config()
 
-        # 调休工作日（周末补班）
-        self.adjusted_working_days = {
-            "2020-01-19",
-            "2020-02-01",
-            "2020-04-26",
-            "2020-05-09",
-            "2020-06-28",
-            "2020-09-27",
-            "2020-10-10",
-            "2021-02-07",
-            "2021-02-20",
-            "2021-04-25",
-            "2021-05-08",
-            "2021-09-18",
-            "2021-09-26",
-            "2021-10-09",
-            "2022-01-29",
-            "2022-01-30",
-            "2022-04-02",
-            "2022-04-24",
-            "2022-05-07",
-            "2022-10-08",
-            "2022-10-09",
-            "2023-01-28",
-            "2023-01-29",
-            "2023-04-23",
-            "2023-05-06",
-            "2023-06-25",
-            "2023-10-07",
-            "2023-10-08",
-            "2024-02-04",
-            "2024-02-18",
-            "2024-04-07",
-            "2024-04-28",
-            "2024-05-11",
-            "2024-09-14",
-            "2024-09-29",
-            "2024-10-12",
-            "2025-01-26",
-            "2025-02-08",
-            "2025-04-27",
-            "2025-09-28",
-            "2025-10-11",
-        }
+    def _load_holidays_from_config(self) -> None:
+        """从配置文件加载节假日数据
+
+        特性：
+        - 懒加载：首次调用时才加载配置文件
+        - 内存缓存：加载后缓存在内存，后续访问秒级响应
+        - 降级机制：配置文件缺失时使用内置默认数据
+        - 年份自动识别：根据日期范围自动加载所需年份数据
+        """
+        # 获取全局配置加载器实例（单例）
+        config = get_trading_calendar_config()
+
+        # 解析日期范围
+        start_year = int(self.start_date[:4])
+        end_year = int(self.end_date[:4])
+
+        # 合并所有年份的节假日数据
+        self.china_holidays = {}
+        self.adjusted_working_days = set()
+
+        for year in range(start_year, end_year + 1):
+            # 获取该年份的节假日（从缓存或配置文件）
+            year_holidays = config.get_holidays(year)
+            self.china_holidays.update(year_holidays)
+
+            # 获取该年份的调休工作日
+            year_working_days = config.get_adjusted_working_days(year)
+            self.adjusted_working_days.update(year_working_days)
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> dict[str, str | bool | None]:
         """生成交易日历数据"""
         import secrets
@@ -341,9 +230,9 @@ class TradingCalendarGenerator(DataGenerator[dict[str, str | bool | None]]):
         return secrets.choice(filtered_dates)
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> dict[str, str | bool | None]:
-        """生成单个数据项 - TODO: Implement generation logic"""
+        """生成单个数据项"""
         return self._generate_raw(context)
 
     @property

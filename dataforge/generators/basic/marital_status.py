@@ -5,7 +5,7 @@
 """
 
 import random
-from typing import Any, Optional, Union
+from typing import Any
 
 try:
     from typing import override
@@ -67,7 +67,7 @@ class MaritalStatusGenerator(DataGenerator[str]):
                 "separated",
             ]
 
-    def _age_based_weights(self, age: Optional[int] = None) -> list[float]:
+    def _age_based_weights(self, age: int | None = None) -> list[float]:
         """基于年龄的婚姻状况权重"""
         if age is None or not self.include_age_factor:
             # 默认权重分布
@@ -85,12 +85,12 @@ class MaritalStatusGenerator(DataGenerator[str]):
             return [0.05, 0.65, 0.15, 0.10, 0.05]  # 老年丧偶率增加
 
     @override
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成原始婚姻状况字符串"""
         options = self._get_marital_status_options()
 
         # 从context获取年龄信息
-        age: Optional[int] = None
+        age: int | None = None
         if context and context.related_data:
             if "age" in context.related_data:
                 age = context.related_data["age"]
@@ -107,12 +107,12 @@ class MaritalStatusGenerator(DataGenerator[str]):
         """获取婚姻状况选项（公共方法）"""
         return self._get_marital_status_options()
 
-    def get_age_based_weights(self, age: Optional[int] = None) -> list[float]:
+    def get_age_based_weights(self, age: int | None = None) -> list[float]:
         """获取基于年龄的权重（公共方法）"""
         return self._age_based_weights(age)
 
     def generate(
-        self, context: Optional[Union[GenerationContext, dict[str, Any]]] = None
+        self, context: GenerationContext | dict[str, Any] | None = None
     ) -> str:
         """生成单个数据项（重载以支持字典类型的context）"""
         if isinstance(context, dict):

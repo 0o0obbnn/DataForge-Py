@@ -4,7 +4,7 @@
 
 import secrets
 from datetime import date, datetime, timedelta
-from typing import Optional, cast
+from typing import cast
 
 import pandas as pd
 
@@ -90,7 +90,7 @@ class IDCardGenerator(DataGenerator[str]):
         """
         初始化配置参数。
         """
-        self.region: Optional[str] = self.parameters.get("region")
+        self.region: str | None = self.parameters.get("region")
         self.birth_date_range: tuple[str, str] = self.parameters.get(
             "birth_date_range", ("1980-01-01", "2000-12-31")
         )
@@ -107,7 +107,7 @@ class IDCardGenerator(DataGenerator[str]):
             self.start_date = date(1980, 1, 1)
             self.end_date = date(2000, 12, 31)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """
         生成一个有效的18位身份证号码。
 
@@ -181,7 +181,7 @@ class IDCardGenerator(DataGenerator[str]):
         return secrets.choice(self.all_district_codes)
 
     def _get_random_birth_date(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> date:
         """
         获取一个随机的出生日期。

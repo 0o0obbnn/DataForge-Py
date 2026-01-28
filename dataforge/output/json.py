@@ -1,7 +1,6 @@
 """JSON output formatter for DataForge."""
 
 import json
-from typing import Union
 
 
 class JSONFormatter:
@@ -17,7 +16,7 @@ class JSONFormatter:
         self.indent = indent
         self.ensure_ascii = ensure_ascii
 
-    def format(self, data: Union[dict, list], **kwargs) -> str:
+    def format(self, data: dict | list, **kwargs) -> str:
         """Format data as JSON.
 
         Args:
@@ -31,7 +30,7 @@ class JSONFormatter:
             data, indent=self.indent, ensure_ascii=self.ensure_ascii, **kwargs
         )
 
-    def format_to_file(self, data: Union[dict, list], filepath: str, **kwargs) -> None:
+    def format_to_file(self, data: dict | list, filepath: str, **kwargs) -> None:
         """Format data to JSON file.
 
         Args:

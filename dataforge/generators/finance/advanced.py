@@ -7,7 +7,6 @@ import datetime
 import random  # TODO: Convert to secrets
 import re
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
@@ -15,6 +14,7 @@ from ...core.generator import (  # WARNING: This file uses random.randint/randra
     GenerationContext,
 )
 from ...core.types import GeneratorType
+from ...resources.finance_data_loader import load_finance_data_config
 
 
 @register_generator("derivatives", aliases=["derivative", "option", "swap"])
@@ -32,7 +32,11 @@ class DerivativesGenerator(DataGenerator[str]):
         )  # STOCK, INDEX, COMMODITY
         self.expiry_days = self.parameters.get("expiry_days", 30)  # 到期天数
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+        # 加载金融数据配置
+        locale = self.parameters.get("locale", "zh_CN")
+        self.finance_config = load_finance_data_config(locale=locale)
+
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成衍生品代码"""
         if self.derivative_type == "OPTION":
             return self._generate_option()
@@ -54,7 +58,9 @@ class DerivativesGenerator(DataGenerator[str]):
 
     def _generate_us_option(self) -> str:
         """生成美股期权代码"""
-        symbols = ["AAPL", "TSLA", "MSFT", "GOOGL", "AMZN", "NVDA", "META"]
+        symbols = self.finance_config.get("stock_symbols", {}).get(
+            "US", ["AAPL", "TSLA", "MSFT", "GOOGL", "AMZN", "NVDA", "META"]
+        )
         symbol = secrets.choice(symbols)
 
         # 生成到期日 (每月第三个周五)
@@ -76,7 +82,9 @@ class DerivativesGenerator(DataGenerator[str]):
 
     def _generate_china_option(self) -> str:
         """生成A股期权代码"""
-        symbols = ["510050", "510300", "159915", "510500"]  # ETF期权标的
+        symbols = self.finance_config.get("etf_option_symbols", {}).get(
+            "CHINA", ["510050", "510300", "159915", "510500"]
+        )
         symbol = secrets.choice(symbols)
 
         # 生成到期月份
@@ -94,12 +102,14 @@ class DerivativesGenerator(DataGenerator[str]):
 
     def _generate_swap(self) -> str:
         """生成掉期合约"""
-        currencies = ["USD", "EUR", "CNY", "JPY", "GBP"]
+        currencies = self.finance_config.get(
+            "currencies", ["USD", "EUR", "CNY", "JPY", "GBP"]
+        )
         base_currency = secrets.choice(currencies)
         quote_currency = secrets.choice([c for c in currencies if c != base_currency])
 
         # 期限
-        tenors = ["1M", "3M", "6M", "1Y", "2Y", "5Y"]
+        tenors = self.finance_config.get("tenors", ["1M", "3M", "6M", "1Y", "2Y", "5Y"])
         tenor = secrets.choice(tenors)
 
         # 掉期利率
@@ -118,7 +128,9 @@ class DerivativesGenerator(DataGenerator[str]):
 
     def _generate_stock_future(self) -> str:
         """生成股指期货"""
-        indices = ["IF", "IC", "IH", "TF", "TS"]  # 中金所股指期货
+        indices = self.finance_config.get("stock_futures", {}).get(
+            "CHINA", ["IF", "IC", "IH", "TF", "TS"]
+        )
         index = secrets.choice(indices)
 
         # 到期月份
@@ -132,20 +144,23 @@ class DerivativesGenerator(DataGenerator[str]):
 
     def _generate_commodity_future(self) -> str:
         """生成商品期货"""
-        commodities = {
-            "CU": "沪铜",
-            "AL": "沪铝",
-            "ZN": "沪锌",
-            "PB": "沪铅",
-            "AU": "沪金",
-            "AG": "沪银",
-            "RB": "螺纹钢",
-            "HC": "热卷",
-            "SC": "原油",
-            "FU": "燃料油",
-            "BU": "沥青",
-            "RU": "橡胶",
-        }
+        commodities = self.finance_config.get(
+            "commodity_futures",
+            {
+                "CU": "沪铜",
+                "AL": "沪铝",
+                "ZN": "沪锌",
+                "PB": "沪铅",
+                "AU": "沪金",
+                "AG": "沪银",
+                "RB": "螺纹钢",
+                "HC": "热卷",
+                "SC": "原油",
+                "FU": "燃料油",
+                "BU": "沥青",
+                "RU": "橡胶",
+            },
+        )
 
         symbol = secrets.choice(list(commodities.keys()))
 
@@ -195,9 +210,9 @@ class DerivativesGenerator(DataGenerator[str]):
 
     @property
     def supported_parameters(self) -> list[str]:
-        return ["type", "market", "underlying", "expiry_days"]
+        return ["type", "market", "underlying", "expiry_days", "locale"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -215,7 +230,7 @@ class MarketDataGenerator(DataGenerator[dict]):
         self.market = self.parameters.get("market", "US")
         self.volatility = self.parameters.get("volatility", 0.02)  # 波动率
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> dict:
+    def _generate_raw(self, context: GenerationContext | None = None) -> dict:
         """生成市场数据"""
         if self.data_type == "PRICE":
             return self._generate_price_data()
@@ -293,7 +308,7 @@ class MarketDataGenerator(DataGenerator[dict]):
     def supported_parameters(self) -> list[str]:
         return ["data_type", "symbol", "market", "volatility"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_single(self, context: GenerationContext | None = None) -> dict:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -312,7 +327,7 @@ class FinancialReportGenerator(DataGenerator[dict]):
         self.currency = self.parameters.get("currency", "USD")
         self.fiscal_year = self.parameters.get("fiscal_year", 2024)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> dict:
+    def _generate_raw(self, context: GenerationContext | None = None) -> dict:
         """生成财务报表数据"""
         if self.report_type == "BALANCE_SHEET":
             return self._generate_balance_sheet()
@@ -422,7 +437,7 @@ class FinancialReportGenerator(DataGenerator[dict]):
     def supported_parameters(self) -> list[str]:
         return ["report_type", "company_size", "industry", "currency", "fiscal_year"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_single(self, context: GenerationContext | None = None) -> dict:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 

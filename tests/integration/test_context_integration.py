@@ -30,6 +30,7 @@ def test_basic_context():
     assert age == 25
     print("✓ 基础上下文测试通过\n")
 
+
 def test_dependency_management():
     """测试依赖管理"""
     print("=== 测试依赖管理 ===")
@@ -50,6 +51,7 @@ def test_dependency_management():
 
     assert "name" in deps
     print("✓ 依赖管理测试通过\n")
+
 
 def test_person_data_generator():
     """测试个人数据综合生成器"""
@@ -76,6 +78,7 @@ def test_person_data_generator():
 
     print("✓ 个人数据生成器测试通过\n")
 
+
 def test_batch_generation():
     """测试批量生成"""
     print("=== 测试批量生成 ===")
@@ -98,6 +101,7 @@ def test_batch_generation():
     assert all("data" in person for person in batch_data)
     print("✓ 批量生成测试通过\n")
 
+
 def test_context_consistency():
     """测试上下文一致性"""
     print("=== 测试上下文一致性 ===")
@@ -111,6 +115,7 @@ def test_context_consistency():
     id_card = result["data"]["id_card"]
     birth_year = int(id_card[6:10])
     from datetime import datetime
+
     current_year = datetime.now().year
     calculated_age = current_year - birth_year
 
@@ -123,6 +128,7 @@ def test_context_consistency():
     # 年龄差异在合理范围内（±3岁，考虑生日月份差异）
     assert abs(calculated_age - context_age) <= 3
     print("✓ 上下文一致性测试通过\n")
+
 
 if __name__ == "__main__":
     try:

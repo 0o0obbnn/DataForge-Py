@@ -283,3 +283,5 @@ archive_*/
 *.bak2
 *.backup
 *~
+# Node temp directories
+node_modules/.tmp

@@ -3,7 +3,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -11,6 +10,7 @@ from ...core.generator import (
     GenerationContext,
 )
 from ...core.types import GeneratorType
+from ...resources.company_name_loader import load_company_name_config
 
 
 class CompanyNameGenerator(DataGenerator[str]):
@@ -27,240 +27,23 @@ class CompanyNameGenerator(DataGenerator[str]):
             "prefix_region", True
         )  # 是否加地区前缀
 
-        # 地区前缀
-        self.regions = [
-            "北京",
-            "上海",
-            "深圳",
-            "广州",
-            "杭州",
-            "苏州",
-            "成都",
-            "武汉",
-            "西安",
-            "南京",
-            "天津",
-            "重庆",
-            "青岛",
-            "大连",
-            "宁波",
-            "厦门",
-            "长沙",
-            "郑州",
-            "无锡",
-            "佛山",
-            "东莞",
-            "合肥",
-            "昆明",
-            "福州",
-            "哈尔滨",
-            "济南",
-            "长春",
-            "石家庄",
-            "常州",
-            "嘉兴",
-        ]
+        # 从配置文件加载数据（支持locale参数，默认为zh_CN）
+        locale = self.parameters.get("locale", "zh_CN")
+        config = load_company_name_config(locale=locale)
 
-        # 行业关键词
-        self.industry_keywords = {
-            "IT": [
-                "科技",
-                "信息",
-                "网络",
-                "软件",
-                "数据",
-                "云计算",
-                "智能",
-                "互联网",
-                "电子",
-                "通信",
-                "技术",
-                "系统",
-                "平台",
-                "数字",
-                "创新",
-                "智慧",
-            ],
-            "FINANCE": [
-                "金融",
-                "投资",
-                "资本",
-                "财富",
-                "基金",
-                "证券",
-                "银行",
-                "保险",
-                "资产",
-                "理财",
-                "信托",
-                "租赁",
-                "担保",
-                "小贷",
-                "支付",
-                "金服",
-            ],
-            "RETAIL": [
-                "商贸",
-                "贸易",
-                "销售",
-                "零售",
-                "批发",
-                "商城",
-                "购物",
-                "百货",
-                "超市",
-                "连锁",
-                "专卖",
-                "代理",
-                "经销",
-                "营销",
-                "电商",
-                "商业",
-            ],
-            "MANUFACTURING": [
-                "制造",
-                "生产",
-                "工业",
-                "机械",
-                "设备",
-                "加工",
-                "装备",
-                "重工",
-                "轻工",
-                "化工",
-                "材料",
-                "能源",
-                "环保",
-                "新材料",
-                "精密",
-                "自动化",
-            ],
-            "EDUCATION": [
-                "教育",
-                "培训",
-                "学校",
-                "学院",
-                "大学",
-                "研究",
-                "科研",
-                "学术",
-                "文化",
-                "艺术",
-                "体育",
-                "健康",
-                "医疗",
-                "咨询",
-                "服务",
-                "管理",
-            ],
-            "REAL_ESTATE": [
-                "房地产",
-                "地产",
-                "置业",
-                "物业",
-                "建设",
-                "建筑",
-                "工程",
-                "装饰",
-                "设计",
-                "规划",
-                "开发",
-                "投资",
-                "置地",
-                "城建",
-                "基建",
-                "园区",
-            ],
-        }
+        # 地区前缀（从配置文件加载）
+        self.regions = config.get("regions", [])
 
-        # 通用关键词
-        self.general_keywords = [
-            "华",
-            "中",
-            "国",
-            "民",
-            "天",
-            "地",
-            "人",
-            "和",
-            "信",
-            "诚",
-            "德",
-            "正",
-            "金",
-            "银",
-            "宝",
-            "珠",
-            "玉",
-            "龙",
-            "凤",
-            "麒",
-            "麟",
-            "鹤",
-            "鹏",
-            "燕",
-            "东",
-            "西",
-            "南",
-            "北",
-            "中",
-            "上",
-            "下",
-            "大",
-            "小",
-            "新",
-            "老",
-            "古",
-            "春",
-            "夏",
-            "秋",
-            "冬",
-            "晨",
-            "晚",
-            "阳",
-            "月",
-            "星",
-            "云",
-            "海",
-            "山",
-            "兴",
-            "发",
-            "达",
-            "通",
-            "顺",
-            "盛",
-            "昌",
-            "泰",
-            "安",
-            "康",
-            "富",
-            "贵",
-            "美",
-            "好",
-            "优",
-            "佳",
-            "精",
-            "品",
-            "质",
-            "高",
-            "尚",
-            "雅",
-            "洁",
-            "净",
-        ]
+        # 行业关键词（从配置文件加载）
+        self.industry_keywords = config.get("industry_keywords", {})
 
-        # 公司类型后缀
-        self.company_types = {
-            "CO_LTD": ["有限公司", "有限责任公司"],
-            "GROUP": ["集团", "集团有限公司", "控股集团"],
-            "INSTITUTE": ["研究所", "研究院", "技术研究院"],
-            "CORP": ["公司", "企业", "实业"],
-            "TECH": ["科技有限公司", "技术有限公司"],
-            "TRADING": ["贸易有限公司", "商贸有限公司"],
-            "INVESTMENT": ["投资有限公司", "资本管理有限公司"],
-        }
+        # 通用关键词（从配置文件加载）
+        self.general_keywords = config.get("general_keywords", [])
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+        # 公司类型后缀（从配置文件加载）
+        self.company_types = config.get("company_types", {})
+
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始企业名称，确保最小长度要求"""
         parts = []
 
@@ -448,9 +231,9 @@ class CompanyNameGenerator(DataGenerator[str]):
 
     @property
     def supported_parameters(self) -> list[str]:
-        return ["industry", "type", "prefix_region"]
+        return ["industry", "type", "prefix_region", "locale"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         # 支持language参数
         language = self.parameters.get("language", "").lower()
@@ -537,7 +320,7 @@ class ChineseCompanyNameGenerator(CompanyNameGenerator):
 
     pass
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         # 调用父类的_generate_raw方法
         return super()._generate_raw(context)

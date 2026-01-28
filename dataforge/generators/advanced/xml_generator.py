@@ -8,7 +8,7 @@ import random
 import re
 import secrets
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
@@ -238,7 +238,7 @@ class XMLGenerator(DataGenerator):
 
         return "\n".join(lines)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个XML数据"""
         template = self.config.parameters.get("template")
         root_name = self.config.parameters.get("root_name", "root")
@@ -328,7 +328,7 @@ class GenericXMLGenerator(XMLGenerator):
         self.use_attributes = self.config.parameters.get("use_attributes", True)
         self.template = self.config.parameters.get("template")
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成原始XML字符串"""
         template = self.config.parameters.get("template")
         root_name = self.config.parameters.get("root_name", "root")

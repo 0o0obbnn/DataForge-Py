@@ -9,7 +9,6 @@ import random  # TODO: Convert to secrets
 import re
 import secrets
 from dataclasses import dataclass
-from typing import Optional, Union
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -43,7 +42,7 @@ class LogisticsValidator(Validator):
     def __init__(self, carrier_config: dict):
         self.carrier_config = carrier_config
 
-    def validate(self, data: dict[str, Union[str, int]]) -> bool:
+    def validate(self, data: dict[str, str | int]) -> bool:
         """验证生成的物流单号数据"""
         if "tracking_number" not in data:
             return False
@@ -71,7 +70,7 @@ class LogisticsValidator(Validator):
         return "Invalid logistics number format"
 
 
-class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
+class LogisticsGenerator(DataGenerator[dict[str, str | int]]):
     """物流单号生成器
 
     功能特性：
@@ -228,8 +227,8 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
         }
 
     def generate(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int]:
         """生成物流单号数据
 
         Returns:
@@ -270,8 +269,8 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
         return result
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int]:
         """生成单个数据项
 
         返回包含完整物流信息的字典
@@ -288,7 +287,7 @@ class LogisticsGenerator(DataGenerator[dict[str, Union[str, int]]]):
         """返回支持的参数列表"""
         return ["carrier", "include_cities", "include_date", "service_type"]
 
-    def validate(self, data: dict[str, Union[str, int]]) -> bool:
+    def validate(self, data: dict[str, str | int]) -> bool:
         """验证生成的数据
 
         Args:
@@ -308,12 +307,12 @@ class GenericTrackingNumberGenerator(LogisticsGenerator):
     """通用物流单号生成器注册版本"""
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int]:
         """生成单个数据项"""
         return self.generate(context)
 
-    def validate(self, data: dict[str, Union[str, int]]) -> bool:
+    def validate(self, data: dict[str, str | int]) -> bool:
         """验证生成的数据"""
         validator = LogisticsValidator(self.carrier_config)
         return validator.validate(data)
@@ -358,12 +357,12 @@ class GenericWaybillGenerator(LogisticsGenerator):
         )
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int]:
         """生成单个数据项"""
         return self.generate(context)
 
-    def validate(self, data: dict[str, Union[str, int]]) -> bool:
+    def validate(self, data: dict[str, str | int]) -> bool:
         """验证生成的数据"""
         validator = LogisticsValidator(self.carrier_config)
         return validator.validate(data)

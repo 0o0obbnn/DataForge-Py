@@ -5,7 +5,7 @@ import re
 import secrets
 import socket
 import struct
-from typing import Any, Optional
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -109,7 +109,7 @@ class IPAddressGenerator(DataGenerator[str]):
             "format", "STANDARD"
         )  # STANDARD, COMPRESSED (IPv6)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始IP地址"""
         if self.version == 6:
             return self._generate_ipv6()
@@ -286,7 +286,7 @@ class IPAddressGenerator(DataGenerator[str]):
 
         return False
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -365,7 +365,7 @@ class MACAddressGenerator(DataGenerator[str]):
         self.vendor_oui = self.parameters.get("vendor_oui", None)  # 厂商OUI前缀
         self.locally_administered = self.parameters.get("locally_administered", False)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始MAC地址"""
         if self.vendor_oui:
             # 使用指定的厂商OUI
@@ -429,7 +429,7 @@ class MACAddressGenerator(DataGenerator[str]):
 
         return {"vendor": "Unknown", "oui": formatted_oui}
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -522,7 +522,7 @@ class DomainGenerator(DataGenerator[str]):
         self.use_real_words = self.parameters.get("use_real_words", True)
         self.custom_tlds = self.parameters.get("custom_tlds", None)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始域名"""
         # 生成子域名
         subdomains = self._generate_subdomains()
@@ -600,7 +600,7 @@ class DomainGenerator(DataGenerator[str]):
         else:  # COMMON
             return secrets.choice(self.common_tlds)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -677,7 +677,7 @@ class PortNumberGenerator(DataGenerator[int]):
         self.protocol = self.parameters.get("protocol", "ANY")  # TCP, UDP, ANY
         self.exclude_well_known = self.parameters.get("exclude_well_known", False)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> int:
+    def generate(self, context: GenerationContext | None = None) -> int:
         """生成原始端口号"""
         if self.port_type.upper() == "COMMON":
             return self._generate_common_port()
@@ -761,7 +761,7 @@ class PortNumberGenerator(DataGenerator[int]):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> int:
+    def generate_single(self, context: GenerationContext | None = None) -> int:
         """生成单个数据项"""
         return self.generate(context)
 

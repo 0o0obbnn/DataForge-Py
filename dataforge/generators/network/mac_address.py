@@ -5,7 +5,6 @@ MAC地址生成器
 """
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -54,7 +53,7 @@ class MACAddressGenerator(DataGenerator[str]):
             "broadcom": "00:05:B5",
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成原始MAC地址"""
         # 1. 生成或使用指定的厂商前缀
         if self.vendor_prefix:

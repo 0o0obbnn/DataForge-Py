@@ -226,7 +226,7 @@ class ConfigParser:
                             raise ValueError(
                                 f"无法解析配置文件格式: {file_path}"
                             ) from None
-            
+
             # 确保返回类型一致
             if isinstance(result, dict):
                 return result
@@ -234,6 +234,6 @@ class ConfigParser:
                 # 如果解析结果不是字典，返回空字典
                 logger.warning(f"配置文件 {file_path} 解析结果不是字典格式")
                 return {}
-                
+
         except Exception as e:
             raise ValueError(f"读取配置文件失败: {e}") from e

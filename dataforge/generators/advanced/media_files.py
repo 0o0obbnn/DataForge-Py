@@ -9,7 +9,6 @@ import hashlib
 import random
 import secrets
 from dataclasses import dataclass
-from typing import Optional, Union
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -29,12 +28,12 @@ class MediaFileInfo:
     file_type: str
     mime_type: str
     format: str
-    duration: Optional[float] = None
-    dimensions: Optional[dict[str, Union[int, float]]] = None
-    metadata: Optional[dict[str, Union[str, int, float]]] = None
+    duration: float | None = None
+    dimensions: dict[str, int | float] | None = None
+    metadata: dict[str, str | int | float] | None = None
 
 
-class MediaFileGenerator(DataGenerator[dict[str, Union[str, int, float]]]):
+class MediaFileGenerator(DataGenerator[dict[str, str | int | float]]):
     """媒体文件模拟生成器
 
     功能特性：
@@ -184,7 +183,7 @@ class MediaFileGenerator(DataGenerator[dict[str, Union[str, int, float]]]):
 
     def _generate_dimensions(
         self, media_type: str, size_range: str
-    ) -> dict[str, Union[int, float]]:
+    ) -> dict[str, int | float]:
         """生成分辨率/尺寸信息"""
         if media_type not in ["image", "video"]:
             return {}
@@ -209,7 +208,7 @@ class MediaFileGenerator(DataGenerator[dict[str, Union[str, int, float]]]):
 
     def _generate_metadata(
         self, media_type: str, format: str, file_size: int
-    ) -> dict[str, Union[str, int, float]]:
+    ) -> dict[str, str | int | float]:
         """生成详细元数据"""
         import time
 
@@ -291,8 +290,8 @@ class MediaFileGenerator(DataGenerator[dict[str, Union[str, int, float]]]):
         return template.format(**variables)
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int, float]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int | float]:
         """生成媒体文件数据"""
         # 验证媒体类型和格式
         if self.media_type not in self.media_configs:
@@ -339,12 +338,12 @@ class MediaFileGenerator(DataGenerator[dict[str, Union[str, int, float]]]):
         return result
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> dict[str, Union[str, int, float]]:
+        self, context: GenerationContext | None = None
+    ) -> dict[str, str | int | float]:
         """生成单个媒体文件数据项"""
         return self._generate_raw(context)
 
-    def validate(self, data: dict[str, Union[str, int, float]]) -> bool:
+    def validate(self, data: dict[str, str | int | float]) -> bool:
         """验证生成的媒体文件数据"""
         required_fields = ["filename", "file_type", "format", "file_size"]
 

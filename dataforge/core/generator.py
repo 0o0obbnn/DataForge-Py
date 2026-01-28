@@ -4,7 +4,7 @@ DataForge核心生成器接口和基类
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Generic, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 from .exceptions import (
     DataGenerationError,
@@ -24,7 +24,7 @@ class GeneratorConfig:
     count: int = 1
     validate: bool = True
     unique: bool = False
-    related_fields: Optional[dict[str, str]] = None
+    related_fields: dict[str, str] | None = None
 
     def get(self, key: str, default: Any = None) -> Any:
         """获取参数值，兼容字典接口
@@ -47,10 +47,10 @@ class GeneratorConfig:
 class GenerationContext:
     """数据生成上下文"""
 
-    config: Optional[GeneratorConfig] = None
-    related_data: Optional[dict[str, Any]] = None
-    batch_id: Optional[str] = None
-    index: Optional[int] = None
+    config: GeneratorConfig | None = None
+    related_data: dict[str, Any] | None = None
+    batch_id: str | None = None
+    index: int | None = None
 
 
 class DataGenerator(ABC, Generic[T]):
@@ -77,7 +77,7 @@ class DataGenerator(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    def generate_single(self, context: Optional[GenerationContext] = None) -> T:
+    def generate_single(self, context: GenerationContext | None = None) -> T:
         """生成单个数据项（必须实现）
 
         Args:
@@ -123,7 +123,7 @@ class DataGenerator(ABC, Generic[T]):
         """
         pass
 
-    def generate(self, context: Optional[GenerationContext] = None) -> T:
+    def generate(self, context: GenerationContext | None = None) -> T:
         """生成单个数据项（向后兼容方法）
 
         此方法调用generate_single()以保持向后兼容性。
@@ -141,7 +141,7 @@ class DataGenerator(ABC, Generic[T]):
         return self.generate_single(context)
 
     def generate_batch(
-        self, count: int, context: Optional[GenerationContext] = None
+        self, count: int, context: GenerationContext | None = None
     ) -> list[T]:
         """生成批量数据
 

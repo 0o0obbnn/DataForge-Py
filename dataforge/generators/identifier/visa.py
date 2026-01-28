@@ -9,7 +9,6 @@ import re
 import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Optional, Union
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -313,8 +312,8 @@ class VisaGenerator(DataGenerator[dict[str, str]]):
             return "单次入境"
 
     def generate(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, str]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, str]:
         """生成签证信息
 
         Returns:
@@ -367,8 +366,8 @@ class VisaGenerator(DataGenerator[dict[str, str]]):
         return result
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, str]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, str]:
         """生成单个数据项
 
         默认返回签证号码字符串，除非明确设置string_only=False
@@ -389,7 +388,7 @@ class VisaGenerator(DataGenerator[dict[str, str]]):
         """返回支持的参数列表"""
         return ["country", "duration_days", "entries", "include_passport", "visa_type"]
 
-    def validate(self, data: Union[str, dict[str, str]]) -> bool:
+    def validate(self, data: str | dict[str, str]) -> bool:
         """验证生成的数据
 
         Args:

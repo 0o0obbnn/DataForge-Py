@@ -1,7 +1,6 @@
 """段落生成器"""
 
 import random
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -54,7 +53,7 @@ class ParagraphGenerator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成段落"""
         sentence_count = self.parameters.get("sentence_count", random.randint(3, 7))
         sentences = []
@@ -71,7 +70,7 @@ class ParagraphGenerator(DataGenerator):
         """验证段落"""
         return isinstance(data, str) and len(data) > 0
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

@@ -5,7 +5,6 @@
 import re
 import secrets
 import string
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -14,6 +13,7 @@ from ...core.generator import (
 )
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
+from ...resources.name_config_loader import load_pinyin_map
 
 
 class EmailValidator(Validator):
@@ -113,7 +113,7 @@ class EmailGenerator(DataGenerator[str]):
         # 常见顶级域名
         self.tlds = [".com", ".org", ".net", ".cn", ".com.cn", ".gov", ".edu"]
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始电子邮件地址"""
         # 如果要生成无效邮箱
         if not self.valid:
@@ -127,7 +127,7 @@ class EmailGenerator(DataGenerator[str]):
 
         return f"{username}@{domain}"
 
-    def _generate_username(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_username(self, context: GenerationContext | None = None) -> str:
         """生成用户名"""
         # 如果允许基于姓名生成且上下文中有姓名数据
         if self.allow_name_based and context and context.related_data:
@@ -189,56 +189,27 @@ class EmailGenerator(DataGenerator[str]):
 
     def _chinese_to_pinyin_simple(self, chinese_name: str) -> str:
         """简单的中文名转拼音（使用映射表）"""
-        # 常见姓氏和名字字符的拼音映射
-        chinese_pinyin_map = {
-            "张": "zhang",
-            "王": "wang",
-            "李": "li",
-            "赵": "zhao",
-            "刘": "liu",
-            "陈": "chen",
-            "杨": "yang",
-            "黄": "huang",
-            "周": "zhou",
-            "吴": "wu",
-            "徐": "xu",
-            "孙": "sun",
-            "胡": "hu",
-            "朱": "zhu",
-            "高": "gao",
-            "林": "lin",
-            "何": "he",
-            "郭": "guo",
-            "马": "ma",
-            "罗": "luo",
-            "三": "san",
-            "四": "si",
-            "五": "wu",
-            "六": "liu",
-            "七": "qi",
-            "八": "ba",
-            "九": "jiu",
-            "十": "shi",
-            "一": "yi",
-            "二": "er",
-            "明": "ming",
-            "华": "hua",
-            "强": "qiang",
-            "军": "jun",
-            "伟": "wei",
-            "磊": "lei",
-            "洋": "yang",
-            "勇": "yong",
-            "刚": "gang",
-            "峰": "feng",
-        }
+        maps = load_pinyin_map()
+        surname_map = maps["surname"]
+        given_map = maps["given_char"]
+
+        if not chinese_name:
+            return "user"
 
         result = ""
-        for char in chinese_name:
-            if char in chinese_pinyin_map:
-                result += chinese_pinyin_map[char]
+        # 简单拆分：首字当姓，其余当名
+        surname_char = chinese_name[0]
+        given_chars = chinese_name[1:]
+
+        if surname_char in surname_map:
+            result += surname_map[surname_char]
+        else:
+            result += secrets.choice(string.ascii_lowercase)
+
+        for char in given_chars:
+            if char in given_map:
+                result += given_map[char]
             elif char.strip():
-                # 未知字符用随机字母替代
                 result += secrets.choice(string.ascii_lowercase)
 
         return result or "user"
@@ -343,7 +314,7 @@ class EmailGenerator(DataGenerator[str]):
             "allow_name_based",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 

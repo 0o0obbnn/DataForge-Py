@@ -7,7 +7,7 @@ import secrets
 import time
 import uuid
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -92,7 +92,7 @@ class UUIDGenerator(DataGenerator[str]):
         self.namespace = self.parameters.get("namespace", None)  # 用于v3和v5
         self.name = self.parameters.get("name", None)  # 用于v3和v5
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始UUID"""
         if self.version == 1:
             # 基于MAC地址和时间的UUID
@@ -131,7 +131,7 @@ class UUIDGenerator(DataGenerator[str]):
         else:  # STANDARD
             return uuid_str.lower()
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -194,7 +194,7 @@ class ULIDGenerator(DataGenerator[str]):
         self.lowercase = self.parameters.get("lowercase", False)
         self.timestamp = self.parameters.get("timestamp", None)  # 固定时间戳
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始ULID"""
         # 获取时间戳部分(48位)
         if self.timestamp:
@@ -224,7 +224,7 @@ class ULIDGenerator(DataGenerator[str]):
         """生成16个字符的随机部分"""
         return "".join(random.choices(self.BASE32_CHARS, k=16))
 
-    def extract_timestamp(self, ulid: str) -> Optional[datetime]:
+    def extract_timestamp(self, ulid: str) -> datetime | None:
         """从ULID中提取时间戳"""
         if not self.validator.validate(ulid):
             return None
@@ -240,7 +240,7 @@ class ULIDGenerator(DataGenerator[str]):
         except (ValueError, OSError):
             return None
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -373,7 +373,7 @@ class BusinessNumberGenerator(DataGenerator[str]):
         self.checksum = self.parameters.get("checksum", False)  # 是否包含校验位
         self.business_type = self.parameters.get("type", "ORDER")  # 业务类型
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始业务单据号"""
         parts = []
 
@@ -521,7 +521,7 @@ class BusinessNumberGenerator(DataGenerator[str]):
 
         return result
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -555,7 +555,7 @@ class BusinessNumberGenerator(DataGenerator[str]):
 class GenericUUIDGenerator(UUIDGenerator):
     """通用UUID生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个UUID"""
         return self.generate(context)
 
@@ -580,7 +580,7 @@ class GenericUUIDGenerator(UUIDGenerator):
 class GenericULIDGenerator(ULIDGenerator):
     """通用ULID生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个ULID"""
         return self.generate(context)
 
@@ -629,7 +629,7 @@ class IDGenerator(DataGenerator[str]):
         self.suffix = self.parameters.get("suffix", "")
         self._counter = 0
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成ID"""
         if self.id_type == "numeric":
             return self._generate_numeric_id()
@@ -669,7 +669,7 @@ class IDGenerator(DataGenerator[str]):
 
         return True
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

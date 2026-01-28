@@ -4,7 +4,6 @@
 """
 
 import random
-from typing import Optional
 
 from ...core.context import GenerationContext
 from ...core.factory import register_generator
@@ -110,7 +109,7 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
         self.output_format = self.parameters.get("output_format", "decimal")
         self.validator = GeoCoordinatesValidator(self.format, self.include_altitude)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始地理坐标"""
         lat, lon = self._generate_coordinates()
 
@@ -193,7 +192,7 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -209,7 +208,7 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
+        if self.validator is not None and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
         return True
 
@@ -217,12 +216,26 @@ class GeoCoordinatesGenerator(DataGenerator[str]):
 class GenericGeoCoordinatesGenerator(GeoCoordinatesGenerator):
     """通用地理坐标生成器"""
 
+    # 添加类型提示以避免 Pylance 错误
+    format: str
+    include_altitude: bool
+    validator: GeoCoordinatesValidator | None
+
     def __init__(self, config: GeneratorConfig):
+        # 先初始化属性以避免 Pylance 错误
+        self.format = "decimal"
+        self.include_altitude = False
+        self.validator = None
         super().__init__(config)
+
+    def _setup(self) -> None:
+        """重写设置方法以确保正确的初始化顺序"""
+        # 先调用父类的设置方法
+        super()._setup()
         # 确保 validator 被正确初始化
         self.validator = GeoCoordinatesValidator(self.format, self.include_altitude)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

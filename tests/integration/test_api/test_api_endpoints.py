@@ -31,6 +31,7 @@ def start_api_server():
         stderr=subprocess.DEVNULL,
     )
 
+
 def test_api_endpoints():
     """测试API端点"""
     base_url = "http://127.0.0.1:8000"
@@ -179,6 +180,7 @@ def test_api_endpoints():
     except Exception as e:
         print(f"❌ API测试错误: {e}")
 
+
 def main():
     """主函数"""
     server_process = None
@@ -212,6 +214,7 @@ def main():
                 server_process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 server_process.kill()
+
 
 if __name__ == "__main__":
     main()

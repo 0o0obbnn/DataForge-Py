@@ -29,14 +29,15 @@ def test_basic_bankcard_generation():
         print(f"  长度: {len(clean_number)}")
         print(f"  是否为数字: {clean_number.isdigit()}")
 
-
-
-        assert len(clean_number) in [15, 16, 19], (
-            f"卡号长度应为15, 16或19位，实际为{len(clean_number)}"
-        )
+        assert len(clean_number) in [
+            15,
+            16,
+            19,
+        ], f"卡号长度应为15, 16或19位，实际为{len(clean_number)}"
         assert clean_number.isdigit(), "卡号应只包含数字"
         assert generator.validate(card_number), f"生成的卡号应通过验证: {card_number}"
     print()
+
 
 def test_specific_bank_generation():
     """测试特定银行银行卡号生成"""
@@ -55,6 +56,7 @@ def test_specific_bank_generation():
         )
     print()
 
+
 def test_card_type_generation():
     """测试卡类型银行卡号生成"""
     config = GeneratorConfig(
@@ -72,6 +74,7 @@ def test_card_type_generation():
         )
     print()
 
+
 def test_formatted_generation():
     """测试格式化银行卡号生成"""
     config = GeneratorConfig(
@@ -85,6 +88,7 @@ def test_formatted_generation():
     for i, card_number in enumerate(results, 1):
         print(f"{i}. {card_number}")
     print()
+
 
 def test_validation():
     """测试银行卡号验证"""
@@ -133,6 +137,7 @@ def test_validation():
         print(f"{card}: {'✅ 有效' if is_valid else '❌ 无效'}")
     print()
 
+
 def test_bank_info():
     """测试银行卡信息获取"""
     config = GeneratorConfig(generator_type="bankcard", parameters={})
@@ -156,6 +161,7 @@ def test_bank_info():
         print(f"  类型: {info['card_type']}")
         print(f"  有效: {'是' if info['is_valid'] else '否'}")
         print()
+
 
 if __name__ == "__main__":
     try:

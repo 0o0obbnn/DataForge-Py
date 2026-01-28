@@ -1,12 +1,11 @@
 """SQL output formatter for DataForge."""
 
-from typing import Union
 
 
 class SQLFormatter:
     """Formatter for SQL output."""
 
-    def __init__(self, table_name: str = "test_data", batch_size: int = None):
+    def __init__(self, table_name: str = "test_data", batch_size: int | None = None):
         """Initialize SQL formatter.
 
         Args:
@@ -16,7 +15,9 @@ class SQLFormatter:
         self.table_name = table_name
         self.batch_size = batch_size
 
-    def format(self, data: Union[dict, list], table_name: str = None, **kwargs) -> str:
+    def format(
+        self, data: dict | list, table_name: str | None = None, **kwargs
+    ) -> str:
         """Format data as SQL INSERT statements.
 
         Args:
@@ -64,7 +65,11 @@ class SQLFormatter:
         return "\n".join(sql_lines)
 
     def format_to_file(
-        self, data: Union[dict, list], filepath: str, table_name: str = None, **kwargs
+        self,
+        data: dict | list,
+        filepath: str,
+        table_name: str | None = None,
+        **kwargs,
     ) -> None:
         """Format data to SQL file.
 

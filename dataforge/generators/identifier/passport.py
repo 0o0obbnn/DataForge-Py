@@ -10,6 +10,7 @@ from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext, GeneratorConfig
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
+from ...resources.name_config_loader import load_name_en_config
 
 
 @dataclass
@@ -157,9 +158,15 @@ class PassportGenerator(DataGenerator[dict[str, Any]]):
 
     def _generate_english_name(self) -> str:
         """生成英文姓名"""
-        first_names = ["John", "Jane", "Michael", "Emily", "David", "Sarah"]
-        last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller"]
-        return f"{secrets.choice(first_names)} {secrets.choice(last_names)}"
+        cfg = load_name_en_config()
+        first_names = cfg.get("first_names_male", []) + cfg.get(
+            "first_names_female", []
+        )
+        last_names = cfg.get("last_names", [])
+
+        first = secrets.choice(first_names or ["John", "Jane"])
+        last = secrets.choice(last_names or ["Smith"])
+        return f"{first} {last}"
 
     def generate_single(
         self, context: GenerationContext | None = None

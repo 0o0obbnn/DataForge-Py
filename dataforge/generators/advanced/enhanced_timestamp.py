@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-from typing import Optional, Union
+from typing import Union
 
 import pytz
 
@@ -13,7 +13,7 @@ from ...core.types import GeneratorType
 class EnhancedTimestampValidator(Validator):
     """Validator for EnhancedTimestampGenerator."""
 
-    def validate(self, data: Union[int, float, str]) -> bool:
+    def validate(self, data: int | float | str) -> bool:
         """验证时间戳"""
         try:
             if isinstance(data, str):
@@ -44,7 +44,7 @@ class EnhancedTimestampValidator(Validator):
 class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
     """增强版时间戳生成器，支持多种精度和格式"""
 
-    def __init__(self, config: Optional[Union[GeneratorConfig, dict]] = None):
+    def __init__(self, config: GeneratorConfig | dict | None = None):
         """初始化增强版时间戳生成器"""
         if config is None:
             config = {}
@@ -72,8 +72,8 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
         self.offset_seconds = self.parameters.get("offset_seconds", 0)
 
     def generate(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, float, str]:
+        self, context: GenerationContext | None = None
+    ) -> int | float | str:
         """生成原始时间戳"""
         base_time = self._get_base_time()
 
@@ -153,8 +153,8 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
         return base_time
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, float, str]:
+        self, context: GenerationContext | None = None
+    ) -> int | float | str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -177,7 +177,7 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
             "timezone_aware",
         ]
 
-    def validate(self, data: Union[int, float, str]) -> bool:
+    def validate(self, data: int | float | str) -> bool:
         """验证生成的数据"""
         if hasattr(self, "validator") and hasattr(self.validator, "validate"):
             return self.validator.validate(data)
@@ -227,7 +227,7 @@ class DateTimeRangeValidator(Validator):
 class DateTimeRangeGenerator(DataGenerator[str]):
     """日期时间范围生成器"""
 
-    def __init__(self, config: Optional[Union[GeneratorConfig, dict]] = None):
+    def __init__(self, config: GeneratorConfig | dict | None = None):
         """初始化日期时间范围生成器"""
         if config is None:
             config = {}
@@ -251,7 +251,7 @@ class DateTimeRangeGenerator(DataGenerator[str]):
         self.include_timezone = self.parameters.get("include_timezone", False)
         self.timezone = self.parameters.get("timezone", "UTC")
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成日期时间字符串"""
         start_dt = None
         end_dt = None
@@ -297,7 +297,7 @@ class DateTimeRangeGenerator(DataGenerator[str]):
         else:
             return dt.isoformat()
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

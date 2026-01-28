@@ -1,6 +1,9 @@
+import json
+import logging
 import re
 import secrets
-from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -33,8 +36,8 @@ class PhoneNumberGenerator(DataGenerator[str]):
         try:
             phone_data = load_json("phone_prefixes.json")
             self._load_mobile_prefixes_from_config(phone_data)
-        except Exception:
-            # 如果配置文件不存在，使用硬编码的前缀
+        except (FileNotFoundError, json.JSONDecodeError, KeyError) as e:
+            logger.warning(f"Failed to load phone data: {e}")
             self._use_hardcoded_mobile_prefixes()
 
         # 固定电话区号
@@ -171,7 +174,7 @@ class PhoneNumberGenerator(DataGenerator[str]):
             "VIRTUAL": {"name": "虚拟运营商", "generations": {}},
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个电话号码"""
         # 如果要生成无效号码
         if not self.valid:
@@ -237,7 +240,7 @@ class PhoneNumberGenerator(DataGenerator[str]):
         # 生成本地号码
         if area_code.startswith("0"):
             area_digits = area_code[1:]  # 去掉前导0
-            if len(area_digits) == 2:  # 如010 -> 10
+            if len(area_digits) == 2:  # 如界10 -> 10
                 local_number = f"{secrets.randbelow(8) + 2}{secrets.randbelow(9000) + 1000}{secrets.randbelow(900) + 100}"
             else:  # 如0755 -> 755
                 local_number = (

@@ -2,7 +2,7 @@
 DataForge统一异常处理模块
 """
 
-from typing import Any, Optional
+from typing import Any
 
 
 class DataForgeException(Exception):
@@ -11,8 +11,8 @@ class DataForgeException(Exception):
     def __init__(
         self,
         message: str,
-        error_code: Optional[str] = None,
-        details: Optional[dict[str, Any]] = None,
+        error_code: str | None = None,
+        details: dict[str, Any] | None = None,
     ):
         super().__init__(message)
         self.message = message
@@ -31,8 +31,8 @@ class GeneratorConfigError(DataForgeException):
     def __init__(
         self,
         message: str,
-        generator_type: Optional[str] = None,
-        invalid_params: Optional[list[str]] = None,
+        generator_type: str | None = None,
+        invalid_params: list[str] | None = None,
     ):
         super().__init__(message, "GENERATOR_CONFIG_ERROR")
         self.generator_type = generator_type
@@ -45,8 +45,8 @@ class ValidationError(DataForgeException):
     def __init__(
         self,
         message: str,
-        data: Optional[Any] = None,
-        validation_rule: Optional[str] = None,
+        data: Any | None = None,
+        validation_rule: str | None = None,
     ):
         super().__init__(message, "VALIDATION_ERROR")
         self.data = data
@@ -68,8 +68,8 @@ class DataGenerationError(DataForgeException):
     def __init__(
         self,
         message: str,
-        generator_type: Optional[str] = None,
-        context: Optional[dict[str, Any]] = None,
+        generator_type: str | None = None,
+        context: dict[str, Any] | None = None,
     ):
         super().__init__(message, "DATA_GENERATION_ERROR")
         self.generator_type = generator_type
@@ -82,8 +82,8 @@ class RelationError(DataForgeException):
     def __init__(
         self,
         message: str,
-        field_name: Optional[str] = None,
-        related_field: Optional[str] = None,
+        field_name: str | None = None,
+        related_field: str | None = None,
     ):
         super().__init__(message, "RELATION_ERROR")
         self.field_name = field_name
@@ -93,7 +93,7 @@ class RelationError(DataForgeException):
 class OutputFormatError(DataForgeException):
     """输出格式错误"""
 
-    def __init__(self, message: str, format_type: Optional[str] = None):
+    def __init__(self, message: str, format_type: str | None = None):
         super().__init__(message, "OUTPUT_FORMAT_ERROR")
         self.format_type = format_type
 
@@ -102,7 +102,7 @@ class APIError(DataForgeException):
     """API相关错误"""
 
     def __init__(
-        self, message: str, status_code: int = 400, endpoint: Optional[str] = None
+        self, message: str, status_code: int = 400, endpoint: str | None = None
     ):
         super().__init__(message, "API_ERROR")
         self.status_code = status_code
@@ -115,8 +115,8 @@ class ConfigurationError(DataForgeException):
     def __init__(
         self,
         message: str,
-        config_key: Optional[str] = None,
-        config_file: Optional[str] = None,
+        config_key: str | None = None,
+        config_file: str | None = None,
     ):
         super().__init__(message, "CONFIGURATION_ERROR")
         self.config_key = config_key
@@ -126,6 +126,6 @@ class ConfigurationError(DataForgeException):
 class ResourceError(DataForgeException):
     """资源相关错误（内存、文件等）"""
 
-    def __init__(self, message: str, resource_type: Optional[str] = None):
+    def __init__(self, message: str, resource_type: str | None = None):
         super().__init__(message, "RESOURCE_ERROR")
         self.resource_type = resource_type

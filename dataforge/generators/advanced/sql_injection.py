@@ -47,7 +47,6 @@ By using this tool, you acknowledge that:
 """
 
 import secrets
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -61,7 +60,7 @@ from dataforge.core.generator import (
 class SQLInjectionGenerator(DataGenerator):
     """SQL注入测试payload生成器"""
 
-    def __init__(self, config: Optional[GeneratorConfig] = None):
+    def __init__(self, config: GeneratorConfig | None = None):
         # 提供默认配置
         default_config = GeneratorConfig(generator_type="security", parameters={})
         super().__init__(config or default_config)
@@ -165,7 +164,7 @@ class SQLInjectionGenerator(DataGenerator):
         """获取支持的数据库类型列表"""
         return self.supported_databases
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         # 尝试调用现有方法
         if hasattr(self, "generate") and callable(self.generate):
@@ -181,6 +180,6 @@ class SQLInjectionGenerator(DataGenerator):
 class GenericSQLInjectionGenerator(SQLInjectionGenerator):
     """通用SQL注入Payload生成器"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw()

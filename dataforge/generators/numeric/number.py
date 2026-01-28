@@ -1,7 +1,6 @@
 """数字生成器模块"""
 
 import random
-from typing import Optional, Union
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -19,8 +18,8 @@ class NumberGenerator(DataGenerator):
         pass
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, float]:
+        self, context: GenerationContext | None = None
+    ) -> int | float:
         """生成数字"""
         num_type = self.parameters.get("type", "integer")
         min_val = self.parameters.get("min", 0)
@@ -41,7 +40,7 @@ class NumberGenerator(DataGenerator):
         value = random.uniform(float(min_val), float(max_val))
         return round(value, decimal_places)
 
-    def validate(self, data: Union[int, float]) -> bool:
+    def validate(self, data: int | float) -> bool:
         """验证数字"""
         if not isinstance(data, (int, float)):
             return False
@@ -52,8 +51,8 @@ class NumberGenerator(DataGenerator):
         return min_val <= data <= max_val
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[int, float]:
+        self, context: GenerationContext | None = None
+    ) -> int | float:
         """生成单个数据项"""
         return self._generate_raw(context)
 

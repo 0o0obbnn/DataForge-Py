@@ -4,7 +4,6 @@
 
 import random
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -57,7 +56,7 @@ class AgeGenerator(DataGenerator[int]):
 
         self.validator = AgeValidator(self.min_age, self.max_age)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> int:
+    def generate(self, context: GenerationContext | None = None) -> int:
         """生成原始年龄"""
         if self.distribution == "normal":
             # 正态分布：集中在中间年龄段
@@ -134,7 +133,7 @@ class AgeGenerator(DataGenerator[int]):
         else:
             return "高龄"
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> int:
+    def generate_single(self, context: GenerationContext | None = None) -> int:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -163,7 +162,7 @@ class ChineseAgeGenerator(AgeGenerator):
 
     pass
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> int:
+    def generate_single(self, context: GenerationContext | None = None) -> int:
         """生成单个数据项"""
         # 调用父类的generate方法
         return super().generate(context)

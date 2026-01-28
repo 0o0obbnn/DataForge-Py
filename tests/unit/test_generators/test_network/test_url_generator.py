@@ -90,9 +90,7 @@ class TestURLGenerator:
     def test_keyword_query_generation(self):
         """测试关键词查询参数生成"""
         generator = URLGenerator(
-            include_query=True,
-            query_style="KEYWORD",
-            query_params_count=(2, 2)
+            include_query=True, query_style="KEYWORD", query_params_count=(2, 2)
         )
         url = generator.generate()
 
@@ -152,6 +150,7 @@ class TestURLGenerator:
         url = generator.generate()
 
         assert "?" in url
+
 
 class TestGenericURLGenerator:
     """测试注册的通用URL生成器"""

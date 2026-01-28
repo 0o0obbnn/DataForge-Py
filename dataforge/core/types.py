@@ -5,7 +5,7 @@
 """
 
 from enum import Enum
-from typing import Any, Union
+from typing import Any
 
 
 class GeneratorType(Enum):
@@ -61,6 +61,6 @@ class GenerationMode(Enum):
 
 # 基础类型别名
 Parameters = dict[str, Any]
-ValidationResult = dict[str, Union[bool, str, list[str]]]
+ValidationResult = dict[str, bool | str | list[str]]
 GeneratorConfig = dict[str, Any]
 DataSchema = dict[str, Any]

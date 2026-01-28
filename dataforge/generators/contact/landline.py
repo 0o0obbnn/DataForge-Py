@@ -4,7 +4,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -184,7 +183,7 @@ class LandlineGenerator(DataGenerator[str]):
 
         return result
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成座机号码"""
         if self.country.upper() == "CN":
             return self._generate_china_landline()
@@ -198,7 +197,7 @@ class LandlineGenerator(DataGenerator[str]):
         pattern = r"^[\d\s\-\(\)\+]+$"
         return bool(re.match(pattern, data))
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context) if context else self._generate_raw()
 
@@ -258,7 +257,7 @@ class FaxNumberGenerator(DataGenerator[str]):
         else:
             return f"{prefix} "
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成传真号码"""
         # 使用座机生成器生成基础号码
         config = GeneratorConfig(
@@ -282,7 +281,7 @@ class FaxNumberGenerator(DataGenerator[str]):
         pattern = r"^\+?[\d\s\-\(\)]+(?:ext\d+)?$"
         return bool(re.match(pattern, data))
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context) if context else self._generate_raw()
 
@@ -335,7 +334,7 @@ class TollFreeNumberGenerator(DataGenerator[str]):
             number = "".join([str(secrets.randbelow(10)) for _ in range(6)])
             return f"{prefix}{self.separator}{number}"
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成客服号码"""
         if self.country.upper() == "CN":
             return self._generate_cn_toll_free()
@@ -357,7 +356,7 @@ class TollFreeNumberGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["country", "number_type", "format_type", "separator"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context) if context else self._generate_raw()
 
@@ -372,7 +371,7 @@ class ExtensionGenerator(DataGenerator[str]):
         self.prefix = self.parameters.get("prefix", "ext")
         self.format_type = self.parameters.get("format_type", "short")  # short, long
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成分机号"""
         extension = str(
             secrets.randbelow(self.max_extension - self.min_extension + 1)
@@ -399,7 +398,7 @@ class ExtensionGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["min_extension", "max_extension", "prefix", "format_type"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context) if context else self._generate_raw()
 

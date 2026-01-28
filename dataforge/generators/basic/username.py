@@ -6,7 +6,6 @@
 
 import secrets
 import string
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -32,7 +31,7 @@ class UsernameGenerator(DataGenerator[str]):
             "style", "random"
         )  # random, readable, email_style
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成用户名"""
         if self.style == "readable":
             username = self._generate_readable_username()
@@ -218,6 +217,6 @@ class UsernameGenerator(DataGenerator[str]):
             "style",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)

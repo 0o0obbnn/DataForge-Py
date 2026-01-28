@@ -4,7 +4,8 @@ This module provides validation functions for generated data and configuration.
 """
 
 import re
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 
 def validate_data(data: Any, data_type: str, **kwargs: Any) -> bool:
@@ -30,8 +31,8 @@ def validate_data(data: Any, data_type: str, **kwargs: Any) -> bool:
     }
 
     validator = validators.get(data_type)
-    if not validator:
-        return True  # No specific validator, assume valid
+    if validator is None:
+        return False
 
     return validator(data, **kwargs)
 
@@ -110,16 +111,13 @@ def _validate_bankcard(card: str, **kwargs: Any) -> bool:
         return False
 
     # Luhn algorithm
-    def luhn_checksum(card_num):
-        def digits_of(n):
-            return [int(d) for d in str(n)]
-
-        digits = digits_of(card_num)
-        odd_digits = digits[-1::-2]
-        even_digits = digits[-2::-2]
-        checksum = sum(odd_digits)
+    def luhn_checksum(card_num: str) -> int:
+        odd_digits = [int(d) for d in card_num[-1::-2]]
+        even_digits = [int(d) for d in card_num[-2::-2]]
+        checksum = 0
+        checksum += sum(odd_digits)
         for d in even_digits:
-            checksum += sum(digits_of(d * 2))
+            checksum += sum(int(d2) for d2 in str(d * 2))
         return checksum % 10
 
     return luhn_checksum(card) == 0

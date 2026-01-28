@@ -4,7 +4,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -201,7 +200,7 @@ class MultilingualTextGenerator(DataGenerator):
         self.max_length = self.parameters.get("max_length", 200)
         self.mixed_ratio = self.parameters.get("mixed_ratio", 0.3)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成多语言文本"""
         corpus = self.LANGUAGE_CORPORA.get(
             self.language, self.LANGUAGE_CORPORA["chinese"]
@@ -317,7 +316,7 @@ class MultilingualTextGenerator(DataGenerator):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

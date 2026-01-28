@@ -1,14 +1,16 @@
 """XML output formatter for DataForge."""
 
 import xml.etree.ElementTree as ET
-from typing import Union
 
 
 class XMLFormatter:
     """Formatter for XML output."""
 
     def __init__(
-        self, root_name: str = "data", item_name: str = "item", root_tag: str = None
+        self,
+        root_name: str = "data",
+        item_name: str = "item",
+        root_tag: str | None = None,
     ):
         """Initialize XML formatter.
 
@@ -20,7 +22,7 @@ class XMLFormatter:
         self.root_name = root_tag if root_tag is not None else root_name
         self.item_name = item_name
 
-    def format(self, data: Union[dict, list], **kwargs) -> str:
+    def format(self, data: dict | list, **kwargs) -> str:
         """Format data as XML.
 
         Args:
@@ -40,7 +42,7 @@ class XMLFormatter:
 
         return self._element_to_string(root)
 
-    def format_to_file(self, data: Union[dict, list], filepath: str, **kwargs) -> None:
+    def format_to_file(self, data: dict | list, filepath: str, **kwargs) -> None:
         """Format data to XML file.
 
         Args:

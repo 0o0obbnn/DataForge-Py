@@ -3,7 +3,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -11,6 +10,7 @@ from ...core.generator import (
     GenerationContext,
 )
 from ...core.types import GeneratorType
+from ...resources.license_plate_loader import load_license_plate_config
 
 
 class LicensePlateGenerator(DataGenerator[str]):
@@ -23,52 +23,33 @@ class LicensePlateGenerator(DataGenerator[str]):
         self.include_io = self.parameters.get("include_io", False)  # 是否包含I和O
         self.valid = self.parameters.get("valid", True)  # 是否保证符合基本格式规则
 
-        # 省份简称映射
-        self.provinces = {
-            "京": "北京",
-            "津": "天津",
-            "冀": "河北",
-            "晋": "山西",
-            "蒙": "内蒙古",
-            "辽": "辽宁",
-            "吉": "吉林",
-            "黑": "黑龙江",
-            "沪": "上海",
-            "苏": "江苏",
-            "浙": "浙江",
-            "皖": "安徽",
-            "闽": "福建",
-            "赣": "江西",
-            "鲁": "山东",
-            "豫": "河南",
-            "鄂": "湖北",
-            "湘": "湖南",
-            "粤": "广东",
-            "桂": "广西",
-            "琼": "海南",
-            "渝": "重庆",
-            "川": "四川",
-            "贵": "贵州",
-            "云": "云南",
-            "藏": "西藏",
-            "陕": "陕西",
-            "甘": "甘肃",
-            "青": "青海",
-            "宁": "宁夏",
-            "新": "新疆",
-        }
+        # 从配置文件加载数据（支持locale参数，默认为zh_CN）
+        locale = self.parameters.get("locale", "zh_CN")
+        config = load_license_plate_config(locale=locale)
 
-        # 城市代码字母
-        self.city_codes = list("ABCDEFGHJKLMNPQRSTUVWXYZ")  # 默认不包含I和O
+        # 省份简称映射（从配置文件加载）
+        self.provinces = config.get("provinces", {})
+
+        # 城市代码字母（从配置文件加载）
+        self.city_codes = config.get("city_codes", []).copy()
         if self.include_io:
-            self.city_codes.extend(["I", "O"])
+            if "I" not in self.city_codes:
+                self.city_codes.append("I")
+            if "O" not in self.city_codes:
+                self.city_codes.append("O")
 
-        # 车牌字符（不包含I和O）
-        self.plate_chars = list("ABCDEFGHJKLMNPQRSTUVWXYZ0123456789")
+        # 车牌字符（从配置文件加载）
+        self.plate_chars = config.get("plate_chars", []).copy()
         if self.include_io:
-            self.plate_chars.extend(["I", "O"])
+            if "I" not in self.plate_chars:
+                self.plate_chars.append("I")
+            if "O" not in self.plate_chars:
+                self.plate_chars.append("O")
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+        # 新能源车牌前缀（从配置文件加载）
+        self.new_energy_prefixes = config.get("new_energy_prefixes", ["D", "F"])
+
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始车牌号"""
         # 先生成一个有效车牌
         if self.plate_type == "NEW_ENERGY":
@@ -119,8 +100,8 @@ class LicensePlateGenerator(DataGenerator[str]):
         else:
             city_code = secrets.choice(self.city_codes)
 
-        # 新能源车牌以D或F开头
-        new_energy_prefix = secrets.choice(["D", "F"])
+        # 新能源车牌以D或F开头（从配置加载）
+        new_energy_prefix = secrets.choice(self.new_energy_prefixes)
 
         # 生成5位字母数字组合
         plate_suffix = "".join(secrets.choice(self.plate_chars) for _ in range(5))
@@ -175,8 +156,8 @@ class LicensePlateGenerator(DataGenerator[str]):
                 if char not in self.plate_chars:
                     return False
         elif len(data) == 8:  # 新能源车牌
-            # 第3位应该是D或F
-            if data[2] not in ["D", "F"]:
+            # 第3位应该是D或F（从配置加载）
+            if data[2] not in self.new_energy_prefixes:
                 return False
             # 后5位应该是字母或数字
             for char in data[3:]:
@@ -214,10 +195,10 @@ class LicensePlateGenerator(DataGenerator[str]):
 
     @property
     def supported_parameters(self) -> list[str]:
-        return ["type", "province", "city", "include_io", "valid"]
+        return ["type", "province", "city", "include_io", "valid", "locale"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
-        """生成单个数据项 - TODO: Implement generation logic"""
+    def generate_single(self, context: GenerationContext | None = None) -> str:
+        """生成单个数据项 - Implemented generation logic"""
         return self._generate_raw(context)
 
 
@@ -225,7 +206,7 @@ class LicensePlateGenerator(DataGenerator[str]):
 class ChineseLicensePlateGenerator(LicensePlateGenerator):
     """中国车牌号生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

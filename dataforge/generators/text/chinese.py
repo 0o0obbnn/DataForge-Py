@@ -4,7 +4,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -24,7 +23,7 @@ class ChineseTextGenerator(DataGenerator[str]):
         self.min_length = self.parameters.get("min_length", 30)
         self.max_length = self.parameters.get("max_length", 100)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         # 主题词库
         themes = {
             "general": {
@@ -140,10 +139,10 @@ class ChineseTextGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["theme", "text_type", "min_length", "max_length"]
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         return self._generate_raw(context)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 
@@ -158,7 +157,7 @@ class EnglishTextGenerator(DataGenerator[str]):
         self.min_length = self.parameters.get("min_length", 5)
         self.max_length = self.parameters.get("max_length", 50)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         # 英文语料库
         themes = {
             "lorem": {
@@ -233,7 +232,7 @@ class EnglishTextGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["theme", "text_type", "min_length", "max_length"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

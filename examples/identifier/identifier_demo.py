@@ -3,9 +3,9 @@ DataForge 标识符生成器示例
 演示各种标识符相关生成器的使用方法
 """
 
+import json
 import os
 import sys
-import json
 from datetime import datetime
 
 # 添加项目根目录到路径
@@ -18,7 +18,7 @@ def basic_usage():
     """基础用法示例"""
     print("1. 基础用法示例")
     print("=" * 60)
-    
+
     # UUID生成器
     print("\nUUID生成器 (uuid):")
     config = GeneratorConfig("uuid", parameters={})
@@ -26,7 +26,7 @@ def basic_usage():
     for i in range(3):
         uid = generator.generate()
         print(f"  示例 {i+1}: {uid}")
-    
+
     # ULID生成器
     print("\nULID生成器 (ulid):")
     config = GeneratorConfig("ulid", parameters={})
@@ -34,7 +34,7 @@ def basic_usage():
     for i in range(3):
         ulid = generator.generate()
         print(f"  示例 {i+1}: {ulid}")
-    
+
     # 银行卡生成器
     print("\n银行卡生成器 (bankcard):")
     config = GeneratorConfig("bankcard", parameters={})
@@ -42,7 +42,7 @@ def basic_usage():
     for i in range(3):
         card = generator.generate()
         print(f"  示例 {i+1}: {card}")
-    
+
     # 护照生成器
     print("\n护照生成器 (passport):")
     config = GeneratorConfig("passport", parameters={})
@@ -50,7 +50,7 @@ def basic_usage():
     for i in range(3):
         passport = generator.generate()
         print(f"  示例 {i+1}: {passport}")
-    
+
     # 身份证生成器
     print("\n身份证生成器 (idcard):")
     config = GeneratorConfig("idcard", parameters={})
@@ -64,7 +64,7 @@ def parameter_configuration():
     """参数配置示例"""
     print("\n\n2. 参数配置示例")
     print("=" * 60)
-    
+
     # UUID - 不同版本
     print("\nUUID生成器 - 版本配置:")
     uuid_configs = [
@@ -78,7 +78,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 银行卡 - 不同类型
     print("\n银行卡生成器 - 类型配置:")
     card_configs = [
@@ -93,7 +93,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 护照 - 不同国家
     print("\n护照生成器 - 国家配置:")
     passport_configs = [
@@ -108,7 +108,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 物流单号 - 不同公司
     print("\n物流单号生成器 - 公司配置:")
     tracking_configs = [
@@ -123,7 +123,7 @@ def parameter_configuration():
         result = generator.generate()
         print(f"  配置 {i}: {params}")
         print(f"    结果: {result}")
-    
+
     # 统一社会信用代码 - 不同类型
     print("\n统一社会信用代码生成器 - 类型配置:")
     uscc_configs = [
@@ -144,29 +144,29 @@ def batch_generation():
     """批量生成示例"""
     print("\n\n3. 批量生成示例")
     print("=" * 60)
-    
+
     print("\n批量生成标识符数据:")
-    
+
     # 生成UUID
     uuid_config = GeneratorConfig("uuid", parameters={"version": 4})
     uuid_gen = default_factory.create_generator(uuid_config)
-    
+
     # 生成ULID
     ulid_config = GeneratorConfig("ulid", parameters={})
     ulid_gen = default_factory.create_generator(ulid_config)
-    
+
     # 生成银行卡
     card_config = GeneratorConfig("bankcard", parameters={"type": "visa"})
     card_gen = default_factory.create_generator(card_config)
-    
+
     # 生成护照
     passport_config = GeneratorConfig("passport", parameters={"country": "CN"})
     passport_gen = default_factory.create_generator(passport_config)
-    
+
     # 生成身份证
     idcard_config = GeneratorConfig("idcard", parameters={})
     idcard_gen = default_factory.create_generator(idcard_config)
-    
+
     # 生成5条标识符数据
     identifier_data = []
     for i in range(5):
@@ -180,7 +180,7 @@ def batch_generation():
             "created_at": datetime.now().isoformat()
         }
         identifier_data.append(data)
-    
+
     # 打印标识符数据
     print("-" * 100)
     print(f"{'ID':<4} | {'UUID':<36} | {'ULID':<26} | {'银行卡':<19} | {'护照':<18}")
@@ -198,60 +198,60 @@ def validation_examples():
     """数据验证示例"""
     print("\n\n4. 数据验证示例")
     print("=" * 60)
-    
+
     # UUID验证
     print("\nUUID格式验证:")
     config = GeneratorConfig("uuid", parameters={"version": 4})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         uid = generator.generate()
         is_valid = generator.validate(uid)
         print(f"  {i+1}. {uid}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     长度: {len(uid)}")
-    
+
     # 银行卡验证
     print("\n银行卡格式验证:")
     config = GeneratorConfig("bankcard", parameters={"type": "visa"})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         card = generator.generate()
         is_valid = generator.validate(card)
         print(f"  {i+1}. {card}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     长度: {len(card)}")
-    
+
     # 护照验证
     print("\n护照格式验证:")
     config = GeneratorConfig("passport", parameters={"country": "CN"})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         passport = generator.generate()
         is_valid = generator.validate(passport)
         print(f"  {i+1}. {passport}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     长度: {len(passport)}")
-    
+
     # 身份证验证
     print("\n身份证格式验证:")
     config = GeneratorConfig("idcard", parameters={})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         idcard = generator.generate()
         is_valid = generator.validate(idcard)
         print(f"  {i+1}. {idcard}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     长度: {len(idcard)}")
-    
+
     # 统一社会信用代码验证
     print("\n统一社会信用代码格式验证:")
     config = GeneratorConfig("uscc", parameters={"type": "enterprise"})
     generator = default_factory.create_generator(config)
-    
+
     for i in range(3):
         uscc = generator.generate()
         is_valid = generator.validate(uscc)
@@ -264,7 +264,7 @@ def error_handling():
     """错误处理示例"""
     print("\n\n5. 错误处理示例")
     print("=" * 60)
-    
+
     # 处理无效的UUID版本
     print("\n处理无效的UUID版本:")
     try:
@@ -274,7 +274,7 @@ def error_handling():
         print(f"  生成的UUID: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效UUID版本错误: {type(e).__name__}")
-    
+
     # 处理无效的银行卡类型
     print("\n处理无效的银行卡类型:")
     try:
@@ -284,7 +284,7 @@ def error_handling():
         print(f"  生成的银行卡: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效银行卡类型错误: {type(e).__name__}")
-    
+
     # 处理无效的护照国家
     print("\n处理无效的护照国家:")
     try:
@@ -294,7 +294,7 @@ def error_handling():
         print(f"  生成的护照: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效护照国家错误: {type(e).__name__}")
-    
+
     # 处理无效的物流公司
     print("\n处理无效的物流公司:")
     try:
@@ -304,7 +304,7 @@ def error_handling():
         print(f"  生成的物流单号: {result}")
     except Exception as e:
         print(f"  ✅ 正确捕获了无效物流公司错误: {type(e).__name__}")
-    
+
     # 处理无效的USCC类型
     print("\n处理无效的USCC类型:")
     try:
@@ -320,7 +320,7 @@ def best_practices():
     """最佳实践示例"""
     print("\n\n6. 最佳实践示例")
     print("=" * 60)
-    
+
     # 实践1: 生成完整的标识符配置
     print("\n实践1: 生成完整的标识符配置")
     identifier_config = {
@@ -354,17 +354,17 @@ def best_practices():
             "tracking_validation": True
         }
     }
-    
+
     print("  标识符配置:")
     for key, value in identifier_config.items():
         print(f"    {key}:")
         for sub_key, sub_value in value.items():
             print(f"      {sub_key}: {sub_value}")
-    
+
     # 实践2: 批量导出标识符数据
     print("\n实践2: 批量导出标识符数据 (JSON格式)")
     identifier_data = []
-    
+
     for i in range(3):
         identifier_record = {
             "record_id": f"identifier_{i+1:03d}",
@@ -423,7 +423,7 @@ def best_practices():
             }
         }
         identifier_data.append(identifier_record)
-    
+
     print("  JSON格式输出:")
     print(json.dumps(identifier_data, ensure_ascii=False, indent=2))
 
@@ -432,9 +432,9 @@ def identifier_demo():
     """标识符演示"""
     print("\n\n7. 标识符演示")
     print("=" * 60)
-    
+
     print("\n生成用户身份信息演示:")
-    
+
     # 生成用户身份信息
     print("\n用户身份信息:")
     user_profiles = []
@@ -482,7 +482,7 @@ def identifier_demo():
             "timestamp": datetime.now().isoformat()
         }
         user_profiles.append(profile)
-    
+
     print("  用户档案:")
     for profile in user_profiles:
         print(f"    用户ID: {profile['user_id']}")
@@ -501,10 +501,10 @@ def identifier_demo():
             print(f"      {key}: {display_value}")
         print(f"    时间戳: {profile['timestamp'][:19]}")
         print()
-    
+
     # 生成物流追踪信息
     print("\n物流追踪信息演示:")
-    
+
     shipments = []
     for i in range(3):
         shipment = {
@@ -555,7 +555,7 @@ def identifier_demo():
             ]
         }
         shipments.append(shipment)
-    
+
     print("  货运信息:")
     for shipment in shipments:
         print(f"    货运ID: {shipment['shipment_id']}")
@@ -570,10 +570,10 @@ def identifier_demo():
         for event in shipment['timeline']:
             print(f"      {event['timestamp'][:19]} - {event['location']}: {event['status']}")
         print()
-    
+
     # 生成企业标识信息
     print("\n企业标识信息演示:")
-    
+
     companies = []
     for i in range(3):
         company = {
@@ -610,7 +610,7 @@ def identifier_demo():
             "registration_date": datetime.now().isoformat()
         }
         companies.append(company)
-    
+
     print("  企业信息:")
     for company in companies:
         print(f"    企业ID: {company['company_id']}")
@@ -636,7 +636,7 @@ def main():
     """主函数"""
     print("🆔 DataForge 标识符生成器示例")
     print("本示例展示了标识符相关生成器的各种使用方法\n")
-    
+
     try:
         basic_usage()
         parameter_configuration()
@@ -645,17 +645,17 @@ def main():
         error_handling()
         best_practices()
         identifier_demo()
-        
+
         print("\n" + "=" * 60)
         print("✅ 示例演示完成")
         print("=" * 60)
         print("🎉 所有标识符相关生成器示例已成功运行！")
-        
+
         print("\n📚 相关文档:")
         print("  • 查看 examples/integration/integration_demo.py 了解集成示例")
         print("  • 查看 examples/utility/utility_demo.py 了解实用工具示例")
         print("  • 查看 examples/comprehensive_demo.py 了解所有生成器概览")
-        
+
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback

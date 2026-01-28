@@ -2,14 +2,17 @@
 地址生成器
 """
 
+import logging
 import random  # TODO: Convert to secrets
 import secrets
-from typing import Any, Optional
+from typing import Any
 
 from ...core.cache import LazyDataLoader, get_data_file_path
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
 from ...core.types import GeneratorType
+
+logger = logging.getLogger(__name__)
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -45,46 +48,73 @@ class AddressGenerator(DataGenerator[str]):
     def regions_data(self):
         """获取地区数据（惰性加载）"""
         try:
-            return self._regions_loader.data
-        except (FileNotFoundError, RuntimeError):
+            data = self._regions_loader.data
+            # 验证数据完整性
+            if not data or "provinces" not in data or not data["provinces"]:
+                logger.warning(
+                    "Regions data file exists but appears incomplete, using fallback"
+                )
+                return self._get_default_regions_data()
+            return data
+        except (FileNotFoundError, RuntimeError) as e:
+            logger.error(f"Failed to load regions data: {e}, using fallback")
             return self._get_default_regions_data()
 
     def _get_default_regions_data(self):
-        """获取默认地区数据"""
+        """获取默认地区数据（最小化fallback，仅用于数据文件完全缺失时）
+
+        注意：此方法仅在 regions.json 文件完全无法加载时使用。
+        正常情况下应使用 regions.json 中的完整数据。
+        """
+        logger.warning(
+            "Using minimal fallback regions data. "
+            "Please ensure data/chinese/regions.json exists and is valid."
+        )
+        # 最小化fallback数据，仅保留最基本的3个省份用于紧急情况
+        # 这确保了即使数据文件缺失，生成器仍能基本工作
         return {
             "provinces": [
                 {"code": "110000", "name": "北京市", "short": "京"},
                 {"code": "310000", "name": "上海市", "short": "沪"},
                 {"code": "440000", "name": "广东省", "short": "粤"},
-                {"code": "320000", "name": "江苏省", "short": "苏"},
-                {"code": "330000", "name": "浙江省", "short": "浙"},
             ],
             "major_cities": {
                 "110000": [
                     {
                         "name": "北京市",
-                        "districts": ["朝阳区", "海淀区", "丰台区", "西城区", "东城区"],
+                        "code": "110100",
+                        "districts": [
+                            {"code": "110105", "name": "朝阳区", "zipcode": "100020"},
+                            {"code": "110108", "name": "海淀区", "zipcode": "100080"},
+                            {"code": "110106", "name": "丰台区", "zipcode": "100071"},
+                        ],
                     }
                 ],
                 "310000": [
                     {
                         "name": "上海市",
-                        "districts": ["黄浦区", "徐汇区", "长宁区", "静安区", "普陀区"],
+                        "code": "310100",
+                        "districts": [
+                            {"code": "310101", "name": "黄浦区", "zipcode": "200001"},
+                            {"code": "310104", "name": "徐汇区", "zipcode": "200030"},
+                            {"code": "310105", "name": "长宁区", "zipcode": "200050"},
+                        ],
                     }
                 ],
                 "440000": [
                     {
                         "name": "广州市",
-                        "districts": ["天河区", "越秀区", "荔湾区", "海珠区", "白云区"],
-                    },
-                    {
-                        "name": "深圳市",
-                        "districts": ["南山区", "福田区", "罗湖区", "宝安区", "龙岗区"],
+                        "code": "440100",
+                        "districts": [
+                            {"code": "440106", "name": "天河区", "zipcode": "510630"},
+                            {"code": "440104", "name": "越秀区", "zipcode": "510030"},
+                            {"code": "440103", "name": "荔湾区", "zipcode": "510145"},
+                        ],
                     },
                 ],
             },
-            "street_types": ["路", "街", "巷", "大道", "大街", "胡同"],
-            "building_types": ["号", "号楼", "单元", "室", "栋"],
+            "street_types": ["路", "街", "巷", "大道"],
+            "building_types": ["号", "号楼", "单元", "室"],
         }
 
     def _load_address_data(self):
@@ -211,7 +241,7 @@ class AddressGenerator(DataGenerator[str]):
             "祥",
         ]
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始地址"""
         # 如果指定了city但没有指定province，需要先找到city所属的province
         if self.city and not self.province:
@@ -310,12 +340,35 @@ class AddressGenerator(DataGenerator[str]):
         # 随机选择区县
         districts = city_data.get("districts", [])
         if districts:
-            district_data = secrets.choice(districts)
-            district_info = {
-                "name": district_data["name"],
-                "code": district_data["code"],
-                "zipcode": district_data.get("zipcode", "000000"),
-            }
+            # 处理 districts 可能是字符串列表或字典列表的情况
+            if isinstance(districts[0], str):
+                # 旧格式：字符串列表
+                district_name = secrets.choice(districts)
+                district_info = {
+                    "name": district_name,
+                    "code": f"{city_info['code']}01",
+                    "zipcode": "000000",
+                }
+            else:
+                # 新格式：字典列表
+                district_data = secrets.choice(districts)
+                district_info = {
+                    "name": (
+                        district_data.get("name", district_data)
+                        if isinstance(district_data, dict)
+                        else str(district_data)
+                    ),
+                    "code": (
+                        district_data.get("code", f"{city_info['code']}01")
+                        if isinstance(district_data, dict)
+                        else f"{city_info['code']}01"
+                    ),
+                    "zipcode": (
+                        district_data.get("zipcode", "000000")
+                        if isinstance(district_data, dict)
+                        else "000000"
+                    ),
+                }
         else:
             # 生成虚拟区县
             district_info = {
@@ -494,7 +547,7 @@ class AddressGenerator(DataGenerator[str]):
     def supported_parameters(self) -> list[str]:
         return ["country", "province", "city", "district", "detail_level", "zipcode"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

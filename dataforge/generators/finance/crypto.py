@@ -5,7 +5,7 @@
 """
 
 import secrets
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -117,7 +117,7 @@ class CryptoAddressGenerator(DataGenerator[str]):
             },
         }
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成加密货币地址"""
         if self.crypto_type not in self.crypto_configs:
             self.crypto_type = "BITCOIN"
@@ -294,7 +294,7 @@ class CryptoAddressGenerator(DataGenerator[str]):
             "format",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -379,8 +379,8 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         self.crypto_types = ["coin", "token", "stablecoin"]
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, Any]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成加密货币数据"""
         if self.data_type == "symbol":
             return self._generate_symbol()
@@ -399,8 +399,8 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         """生成加密货币符号"""
         return secrets.choice(self.crypto_symbols)
 
-    def _generate_price(self) -> float:
-        """生成加密货币价格"""
+    def _generate_price_float(self) -> float:
+        """生成加密货币价格（内部使用，返回浮点数）"""
         # 生成随机价格，范围从0.01到100000
         price_range = secrets.choice(
             [
@@ -415,6 +415,10 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
             + price_range[0]
         )
         return round(price, 2)
+
+    def _generate_price(self) -> str | dict[str, Any]:
+        """生成加密货币价格"""
+        return str(self._generate_price_float())
 
     def _generate_bitcoin_address(self) -> str:
         """生成比特币地址"""
@@ -445,7 +449,8 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         """生成完整的加密货币数据"""
         symbol = self._generate_symbol()
         name = self.crypto_names.get(symbol, symbol)
-        price = self._generate_price()
+        price = self._generate_price_float()
+        price_str = str(price)  # String version for the dictionary
 
         # 生成市值和交易量
         market_cap = round(price * secrets.randbelow(1000000000) + 100000000, 2)
@@ -473,7 +478,7 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         return {
             "symbol": symbol,
             "name": name,
-            "price": price,
+            "price": price_str,
             "market_cap": market_cap,
             "volume_24h": volume_24h,
             "change_24h": change_24h,
@@ -482,18 +487,27 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
             "type": crypto_type,
         }
 
-    def validate(self, data: Union[str, dict[str, Any]]) -> bool:
+    def validate(self, data: str | dict[str, Any]) -> bool:
         """验证加密货币数据"""
         if self.data_type == "symbol":
             return isinstance(data, str) and len(data) >= 2 and data.isupper()
         elif self.data_type == "price":
-            if isinstance(data, (int, float)):
-                return data > 0
-            elif isinstance(data, str):
+            if isinstance(data, str):
                 try:
                     return float(data) > 0
                 except ValueError:
                     return False
+            elif isinstance(data, (int, float)):
+                return data > 0
+            elif isinstance(data, dict):
+                # For dictionary format, check if it has a 'price' key
+                price = data.get("price")
+                if price is not None:
+                    try:
+                        return float(price) > 0
+                    except (ValueError, TypeError):
+                        return False
+                return False
             return False
         elif self.data_type in ["bitcoin_address", "ethereum_address", "address"]:
             return isinstance(data, str) and len(data) >= 26
@@ -513,7 +527,7 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         return ["type", "crypto_type", "network"]
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, Any]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成单个数据项"""
         return self._generate_raw(context)

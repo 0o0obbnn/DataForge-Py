@@ -16,6 +16,7 @@ from dataforge.output.formatter import OutputFormatter
 
 # --- Test IDCardGenerator ---
 
+
 def test_idcard_generate_single(generator_factory: GeneratorFactory):
     """测试生成单个身份证号"""
     config = GeneratorConfig(generator_type="idcard", parameters={})
@@ -25,6 +26,7 @@ def test_idcard_generate_single(generator_factory: GeneratorFactory):
     assert isinstance(id_card, str)
     assert len(id_card) == 18
     assert generator.validate(id_card)
+
 
 def test_idcard_generate_batch(generator_factory: GeneratorFactory):
     """测试批量生成身份证号"""
@@ -36,9 +38,12 @@ def test_idcard_generate_batch(generator_factory: GeneratorFactory):
     for id_card in id_cards:
         assert generator.validate(id_card)
 
+
 def test_idcard_gender_constraint(generator_factory: GeneratorFactory):
     """测试身份证性别约束"""
-    male_config = GeneratorConfig(generator_type="idcard", parameters={"gender": "MALE"})
+    male_config = GeneratorConfig(
+        generator_type="idcard", parameters={"gender": "MALE"}
+    )
     male_generator = generator_factory.create_generator(male_config)
 
     for _ in range(10):
@@ -46,7 +51,9 @@ def test_idcard_gender_constraint(generator_factory: GeneratorFactory):
         gender_digit = int(id_card[16])
         assert gender_digit % 2 == 1  # 奇数表示男性
 
+
 # --- Test BankCardGenerator ---
+
 
 def test_bankcard_generate_single(generator_factory: GeneratorFactory):
     """测试生成单个银行卡号"""
@@ -58,6 +65,7 @@ def test_bankcard_generate_single(generator_factory: GeneratorFactory):
     assert 13 <= len(card) <= 19
     assert card.isdigit()
     assert generator.validate(card)
+
 
 def test_bankcard_luhn_algorithm(generator_factory: GeneratorFactory):
     """测试Luhn算法校验"""
@@ -73,7 +81,9 @@ def test_bankcard_luhn_algorithm(generator_factory: GeneratorFactory):
     for card in invalid_cards:
         assert not generator._luhn_validate(card)
 
+
 # --- Test PhoneGenerator ---
+
 
 def test_phone_generate_single(generator_factory: GeneratorFactory):
     """测试生成单个手机号"""
@@ -86,13 +96,16 @@ def test_phone_generate_single(generator_factory: GeneratorFactory):
     assert phone.isdigit()
     assert generator.validate(phone)
 
+
 # --- TestGeneratorFactory ---
+
 
 def test_create_generator(generator_factory: GeneratorFactory):
     """测试创建生成器"""
     config = GeneratorConfig(generator_type="idcard", parameters={"region": "上海"})
     generator = generator_factory.create_generator(config)
     assert isinstance(generator, IDCardGenerator)
+
 
 def test_unknown_generator(empty_registry: GeneratorRegistry):
     """测试当生成器未注册时, 工厂应抛出GeneratorNotFoundError."""
@@ -102,10 +115,12 @@ def test_unknown_generator(empty_registry: GeneratorRegistry):
 
     with pytest.raises(GeneratorNotFoundError) as excinfo:
         factory.create_generator(config)
-    
+
     assert "'unknown_type' not found" in str(excinfo.value)
 
+
 # --- TestOutputFormatter ---
+
 
 @pytest.fixture
 def output_formatter_data() -> dict:
@@ -113,6 +128,7 @@ def output_formatter_data() -> dict:
         "idcard": ["110101199001011234", "110101199001012345"],
         "phone": ["13800138000", "13800138001"],
     }
+
 
 def test_json_format(output_formatter_data: dict):
     """测试JSON格式化"""
@@ -122,6 +138,7 @@ def test_json_format(output_formatter_data: dict):
     parsed = json.loads(result)
     assert parsed == output_formatter_data
 
+
 def test_csv_format(output_formatter_data: dict):
     """测试CSV格式化"""
     formatter = OutputFormatter()
@@ -129,6 +146,7 @@ def test_csv_format(output_formatter_data: dict):
     assert isinstance(result, str)
     assert "idcard" in result
     assert "phone" in result
+
 
 def test_xml_format(output_formatter_data: dict):
     """测试XML格式化"""

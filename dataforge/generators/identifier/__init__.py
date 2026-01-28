@@ -3,7 +3,22 @@
 """
 
 from .bankcard import GenericBankCardGenerator
+from .china_id_types import (
+    ForeignerResidenceGenerator,
+    ForeignPassportGenerator,
+    ForeignPermanentResidenceGenerator,
+    HongKongIDGenerator,
+    HouseholdRegisterGenerator,
+    MacauIDGenerator,
+    OfficerCardGenerator,
+    PoliceOfficerCardGenerator,
+    SoldierCardGenerator,
+    TaiwanIDGenerator,
+    TemporaryIDCardGenerator,
+    WujingCardGenerator,
+)
 from .drivers_license import GenericDriverLicenseGenerator
+from .hk_mo_tw_id import GenericHkMoTwIdGenerator
 from .id import (
     GenericBusinessNumberGenerator,
     GenericULIDGenerator,
@@ -31,4 +46,17 @@ __all__ = [
     "GenericTrackingNumberGenerator",
     "GenericWaybillGenerator",
     "GenericVisaGenerator",
+    "GenericHkMoTwIdGenerator",
+    "HouseholdRegisterGenerator",
+    "OfficerCardGenerator",
+    "SoldierCardGenerator",
+    "WujingCardGenerator",
+    "TemporaryIDCardGenerator",
+    "ForeignerResidenceGenerator",
+    "PoliceOfficerCardGenerator",
+    "HongKongIDGenerator",
+    "MacauIDGenerator",
+    "TaiwanIDGenerator",
+    "ForeignPermanentResidenceGenerator",
+    "ForeignPassportGenerator",
 ]

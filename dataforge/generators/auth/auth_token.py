@@ -7,7 +7,7 @@ import base64
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext
@@ -70,7 +70,7 @@ class AuthTokenGenerator(DataGenerator[str]):
         config.update(self.parameters)
         return config
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始认证令牌数据"""
         config = self._get_effective_config()
 
@@ -229,7 +229,7 @@ class AuthTokenGenerator(DataGenerator[str]):
             return {"valid": False, "error": str(e)}
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
+        self, context: GenerationContext | None = None
     ) -> dict[str, Any]:
         """生成单个令牌数据项（返回包含access_token等字段的字典）"""
         return self._generate_raw(context)

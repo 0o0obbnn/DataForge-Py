@@ -4,7 +4,8 @@
 
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 
 class DataValidator(ABC):
@@ -41,7 +42,7 @@ class LengthValidator(DataValidator):
     """长度校验器"""
 
     def __init__(
-        self, min_length: Optional[int] = None, max_length: Optional[int] = None
+        self, min_length: int | None = None, max_length: int | None = None
     ):
         self.min_length = min_length
         self.max_length = max_length
@@ -71,7 +72,7 @@ class RangeValidator(DataValidator):
     """数值范围校验器"""
 
     def __init__(
-        self, min_value: Optional[float] = None, max_value: Optional[float] = None
+        self, min_value: float | None = None, max_value: float | None = None
     ):
         self.min_value = min_value
         self.max_value = max_value

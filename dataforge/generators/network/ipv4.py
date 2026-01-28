@@ -1,7 +1,6 @@
 """IPv4地址生成器模块"""
 
 import random
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -18,7 +17,7 @@ class IPv4Generator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成IPv4地址"""
         # 获取参数
         private = self.parameters.get("private", False)
@@ -88,7 +87,7 @@ class IPv4Generator(DataGenerator):
         except ValueError:
             return False
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

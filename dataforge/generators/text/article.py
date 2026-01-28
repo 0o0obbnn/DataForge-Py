@@ -1,7 +1,6 @@
 """文章生成器"""
 
 import random
-from typing import Optional
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -54,7 +53,7 @@ class ArticleGenerator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成文章"""
         paragraph_count = self.parameters.get("paragraph_count", random.randint(2, 5))
         paragraphs = []
@@ -77,7 +76,7 @@ class ArticleGenerator(DataGenerator):
         """验证文章"""
         return isinstance(data, str) and len(data) > 0
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self._generate_raw(context)
 

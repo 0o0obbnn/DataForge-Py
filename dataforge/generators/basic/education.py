@@ -6,12 +6,13 @@
 """
 
 import random
-from typing import Optional
 
 from dataforge.core.context import GenerationContext
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GeneratorConfig
 from dataforge.core.types import GeneratorType
+
+from ...resources.education_loader import load_education_config
 
 
 @register_generator("education")
@@ -36,7 +37,7 @@ class EducationGenerator(DataGenerator):
     - POSTDOC: 博士后
     """
 
-    def __init__(self, config: Optional[GeneratorConfig] = None):
+    def __init__(self, config: GeneratorConfig | None = None):
         # 如果没有提供config，创建一个默认的
         if config is None:
             config = GeneratorConfig(generator_type="education", parameters={})
@@ -45,159 +46,17 @@ class EducationGenerator(DataGenerator):
 
     def _setup(self) -> None:
         """初始化教育数据"""
-        # 中国教育体系
-        self.china_system = {
-            "PRIMARY": {
-                "name": "小学",
-                "degrees": ["小学", "小学毕业", "小学学历"],
-                "schools": ["中心小学", "实验小学", "第一小学", "第二小学"],
-            },
-            "JUNIOR": {
-                "name": "初中",
-                "degrees": ["初中", "初中毕业", "初中学历", "初中文凭"],
-                "schools": ["第一中学", "第二中学", "实验中学", "初级中学"],
-            },
-            "HIGH": {
-                "name": "高中/中专/技校",
-                "degrees": ["高中", "高中毕业", "中专", "技校", "职高"],
-                "schools": ["第一中学", "第二中学", "职业高中", "技工学校", "中专学校"],
-            },
-            "UNIVERSITY": {
-                "name": "大学/本科",
-                "degrees": ["本科", "学士", "大学本科", "本科学历"],
-                "schools": [
-                    "北京大学",
-                    "清华大学",
-                    "复旦大学",
-                    "上海交通大学",
-                    "浙江大学",
-                    "南京大学",
-                    "武汉大学",
-                    "中山大学",
-                    "华中科技大学",
-                    "四川大学",
-                    "吉林大学",
-                    "山东大学",
-                    "中南大学",
-                    "西安交通大学",
-                    "哈尔滨工业大学",
-                ],
-            },
-            "MASTER": {
-                "name": "硕士",
-                "degrees": ["硕士", "硕士研究生", "研究生学历", "硕士学位"],
-                "schools": [
-                    "北京大学",
-                    "清华大学",
-                    "复旦大学",
-                    "上海交通大学",
-                    "浙江大学",
-                    "南京大学",
-                    "武汉大学",
-                    "中山大学",
-                    "华中科技大学",
-                    "四川大学",
-                ],
-            },
-            "PHD": {
-                "name": "博士",
-                "degrees": ["博士", "博士研究生", "博士学历", "博士学位"],
-                "schools": [
-                    "北京大学",
-                    "清华大学",
-                    "复旦大学",
-                    "上海交通大学",
-                    "浙江大学",
-                    "南京大学",
-                    "武汉大学",
-                    "中山大学",
-                    "华中科技大学",
-                    "中国科学院",
-                ],
-            },
-        }
+        # 从配置文件加载数据（支持locale参数，默认为zh_CN）
+        locale = self.parameters.get("locale", "zh_CN")
+        config = load_education_config(locale=locale)
 
-        # 国际教育体系
-        self.international_system = {
-            "HIGH_SCHOOL": {
-                "name": "高中",
-                "degrees": ["High School", "High School Diploma", "Secondary School"],
-                "schools": [
-                    "Harvard-Westlake School",
-                    "Phillips Exeter Academy",
-                    "Choate Rosemary Hall",
-                    "Lawrenceville School",
-                    "Hotchkiss School",
-                ],
-            },
-            "BACHELOR": {
-                "name": "学士",
-                "degrees": ["Bachelor", "Bachelor's Degree", "Undergraduate"],
-                "schools": [
-                    "Harvard University",
-                    "Stanford University",
-                    "MIT",
-                    "Yale University",
-                    "Princeton University",
-                    "Columbia University",
-                    "University of Chicago",
-                    "University of Pennsylvania",
-                    "Caltech",
-                    "UC Berkeley",
-                ],
-            },
-            "MASTER": {
-                "name": "硕士",
-                "degrees": ["Master", "Master's Degree", "Graduate"],
-                "schools": [
-                    "Harvard University",
-                    "Stanford University",
-                    "MIT",
-                    "Yale University",
-                    "Princeton University",
-                    "Columbia University",
-                    "University of Chicago",
-                    "University of Pennsylvania",
-                    "Caltech",
-                    "UC Berkeley",
-                ],
-            },
-            "PHD": {
-                "name": "博士",
-                "degrees": ["PhD", "Doctor", "Doctorate"],
-                "schools": [
-                    "Harvard University",
-                    "Stanford University",
-                    "MIT",
-                    "Yale University",
-                    "Princeton University",
-                    "Columbia University",
-                    "University of Chicago",
-                    "University of Pennsylvania",
-                    "Caltech",
-                    "UC Berkeley",
-                ],
-            },
-            "POSTDOC": {
-                "name": "博士后",
-                "degrees": [
-                    "Postdoc",
-                    "Postdoctoral Fellow",
-                    "Postdoctoral Researcher",
-                ],
-                "schools": [
-                    "Harvard University",
-                    "Stanford University",
-                    "MIT",
-                    "Yale University",
-                    "Princeton University",
-                    "Columbia University",
-                    "University of Chicago",
-                ],
-            },
-        }
+        # 中国教育体系（从配置文件加载）
+        self.china_system = config.get("china_system", {})
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+        # 国际教育体系（从配置文件加载）
+        self.international_system = config.get("international_system", {})
+
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个学历信息"""
         # 支持language参数（兼容性）
         language = self.parameters.get("language", "").lower()
@@ -282,7 +141,7 @@ class EducationGenerator(DataGenerator):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["system", "level", "format"]
+        return ["system", "level", "format", "locale", "language"]
 
 
 @register_generator("generic_education")
@@ -292,7 +151,7 @@ class GenericEducationGenerator(DataGenerator):
     生成通用的教育水平信息
     """
 
-    def __init__(self, config: Optional[GeneratorConfig] = None):
+    def __init__(self, config: GeneratorConfig | None = None):
         # 如果没有提供config，创建一个默认的
         if config is None:
             config = GeneratorConfig(generator_type="education", parameters={})
@@ -301,30 +160,16 @@ class GenericEducationGenerator(DataGenerator):
 
     def _setup(self) -> None:
         """初始化通用教育数据"""
-        self.education_levels = [
-            "小学",
-            "初中",
-            "高中",
-            "中专",
-            "大专",
-            "本科",
-            "硕士",
-            "博士",
-            "博士后",
-        ]
+        # 从配置文件加载数据（支持locale参数，默认为zh_CN）
+        locale = self.parameters.get("locale", "zh_CN")
+        config = load_education_config(locale=locale)
 
-        self.international_levels = [
-            "Primary School",
-            "Secondary School",
-            "High School",
-            "Associate Degree",
-            "Bachelor's Degree",
-            "Master's Degree",
-            "PhD",
-            "Postdoc",
-        ]
+        # 通用教育水平（从配置文件加载）
+        generic_levels = config.get("generic_levels", {})
+        self.education_levels = generic_levels.get("chinese", [])
+        self.international_levels = generic_levels.get("english", [])
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个通用教育水平"""
         format_type = self.parameters.get("format", "CHINESE").upper()
 
@@ -349,4 +194,4 @@ class GenericEducationGenerator(DataGenerator):
     @property
     def supported_parameters(self) -> list[str]:
         """返回支持的参数列表"""
-        return ["system", "level", "format"]
+        return ["system", "level", "format", "locale", "language"]

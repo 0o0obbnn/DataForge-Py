@@ -8,9 +8,14 @@ import time
 import os
 
 from dataforge.core.cache import get_cache_stats, invalidate_cache
-from dataforge.core.preloader import get_preload_stats, get_performance_stats, wait_for_data_preload
+from dataforge.core.preloader import (
+    get_preload_stats,
+    get_performance_stats,
+    wait_for_data_preload,
+)
 from dataforge.core.factory import GeneratorFactory
 from dataforge.core.generator import GeneratorConfig
+
 
 @pytest.mark.performance
 def test_preloading_and_cache_status(capsys):
@@ -18,31 +23,37 @@ def test_preloading_and_cache_status(capsys):
     # 1. 检查预加载状态
     preload_stats = get_preload_stats()
     assert isinstance(preload_stats, dict)
-    assert 'is_preloaded' in preload_stats
+    assert "is_preloaded" in preload_stats
 
-    if preload_stats['is_preloading']:
+    if preload_stats["is_preloading"]:
         wait_for_data_preload(timeout=20.0)
         preload_stats = get_preload_stats()
-        assert preload_stats['is_preloaded'] is True
+        assert preload_stats["is_preloaded"] is True
 
     # 2. 检查缓存状态
     cache_stats = get_cache_stats()
     assert isinstance(cache_stats, dict)
-    assert 'cache_size' in cache_stats
-    
+    assert "cache_size" in cache_stats
+
     with capsys.readouterr():
         print("\n--- Preload and Cache Status ---")
         print(f"Preloaded: {preload_stats['is_preloaded']}")
         print(f"Cache size: {cache_stats['cache_size']}")
 
+
 @pytest.mark.performance
-@pytest.mark.parametrize("generator_type, params", [
-    ('name', {}),
-    ('address', {'detail_level': 'FULL'}),
-])
-def test_generation_performance(generator_factory: GeneratorFactory, generator_type: str, params: dict, capsys):
+@pytest.mark.parametrize(
+    "generator_type, params",
+    [
+        ("name", {}),
+        ("address", {"detail_level": "FULL"}),
+    ],
+)
+def test_generation_performance(
+    generator_factory: GeneratorFactory, generator_type: str, params: dict, capsys
+):
     """测试首次生成和缓存生成的性能差异"""
-    invalidate_cache() # Ensure a clean slate
+    invalidate_cache()  # Ensure a clean slate
 
     # 第一次生成 (应该会触发数据加载)
     start_time = time.time()
@@ -60,19 +71,22 @@ def test_generation_performance(generator_factory: GeneratorFactory, generator_t
         print(f"\n--- Performance for {generator_type} ---")
         print(f"First generation (10 items): {first_time * 1000:.2f}ms")
         print(f"Cached generation (100 items): {second_time * 1000:.2f}ms")
-        
+
         per_item_first_ms = (first_time / 10) * 1000
         per_item_second_ms = (second_time / 100) * 1000
-        print(f"Per-item first: {per_item_first_ms:.3f}ms, cached: {per_item_second_ms:.3f}ms")
+        print(
+            f"Per-item first: {per_item_first_ms:.3f}ms, cached: {per_item_second_ms:.3f}ms"
+        )
 
     assert per_item_second_ms < per_item_first_ms
+
 
 @pytest.mark.performance
 def test_stress_generation(generator_factory: GeneratorFactory, capsys):
     """压力测试: 批量生成大量数据"""
-    config = GeneratorConfig(generator_type='name', parameters={})
+    config = GeneratorConfig(generator_type="name", parameters={})
     generator = generator_factory.create_generator(config)
-    
+
     start_time = time.time()
     batch_size = 2000
     generator.generate_batch(batch_size)
@@ -83,7 +97,8 @@ def test_stress_generation(generator_factory: GeneratorFactory, capsys):
         print(f"Generated {batch_size} names in {total_time * 1000:.2f}ms")
         print(f"Speed: {batch_size / total_time:.0f} items/sec")
 
-    assert total_time < 2 # Should be reasonably fast
+    assert total_time < 2  # Should be reasonably fast
+
 
 @pytest.mark.performance
 def test_memory_usage(generator_factory: GeneratorFactory, capsys):
@@ -97,10 +112,10 @@ def test_memory_usage(generator_factory: GeneratorFactory, capsys):
     mem_before = process.memory_info().rss / (1024 * 1024)
 
     for _ in range(15):
-        config = GeneratorConfig(generator_type='name', parameters={})
+        config = GeneratorConfig(generator_type="name", parameters={})
         generator = generator_factory.create_generator(config)
         generator.generate_batch(100)
-    
+
     mem_after = process.memory_info().rss / (1024 * 1024)
     mem_growth = mem_after - mem_before
 

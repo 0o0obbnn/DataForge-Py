@@ -12,7 +12,9 @@ def idcard_validator() -> IDCardValidator:
     return IDCardValidator()
 
 
-def test_generate_single_valid_id(generator_factory: GeneratorFactory, idcard_validator: IDCardValidator):
+def test_generate_single_valid_id(
+    generator_factory: GeneratorFactory, idcard_validator: IDCardValidator
+):
     """Test generating a single, valid ID card number."""
     config = GeneratorConfig(generator_type="idcard", parameters={})
     generator = generator_factory.create_generator(config)
@@ -20,14 +22,18 @@ def test_generate_single_valid_id(generator_factory: GeneratorFactory, idcard_va
     assert idcard_validator.validate(id_card), f"Generated ID {id_card} should be valid"
 
 
-def test_generate_batch_valid_ids(generator_factory: GeneratorFactory, idcard_validator: IDCardValidator):
+def test_generate_batch_valid_ids(
+    generator_factory: GeneratorFactory, idcard_validator: IDCardValidator
+):
     """Test generating a batch of valid ID card numbers."""
     config = GeneratorConfig(generator_type="idcard", parameters={})
     generator = generator_factory.create_generator(config)
     id_cards = generator.generate_batch(10)
     assert len(id_cards) == 10
     for id_card in id_cards:
-        assert idcard_validator.validate(id_card), f"Generated ID {id_card} in batch should be valid"
+        assert idcard_validator.validate(
+            id_card
+        ), f"Generated ID {id_card} in batch should be valid"
 
 
 def test_generation_with_region_constraint(generator_factory: GeneratorFactory):
@@ -36,7 +42,9 @@ def test_generation_with_region_constraint(generator_factory: GeneratorFactory):
     generator = generator_factory.create_generator(config)
     id_card = generator.generate()
     region_code = id_card[:6]
-    assert region_code.startswith("31"), f"ID {id_card} should have a Shanghai region code"
+    assert region_code.startswith(
+        "31"
+    ), f"ID {id_card} should have a Shanghai region code"
 
 
 def test_generation_with_birth_date_range(generator_factory: GeneratorFactory):
@@ -70,13 +78,17 @@ def test_generation_with_gender_constraint(generator_factory: GeneratorFactory):
     assert female_gender_digit % 2 == 0, "Female ID gender digit should be even"
 
 
-def test_generate_invalid_id(generator_factory: GeneratorFactory, idcard_validator: IDCardValidator):
+def test_generate_invalid_id(
+    generator_factory: GeneratorFactory, idcard_validator: IDCardValidator
+):
     """Test generating an invalid ID when valid=False."""
     generator = generator_factory.create_generator(
         GeneratorConfig(generator_type="idcard", parameters={"valid": False})
     )
     invalid_id = generator.generate()
-    assert not idcard_validator.validate(invalid_id), f"Generated invalid ID {invalid_id} should not be valid"
+    assert not idcard_validator.validate(
+        invalid_id
+    ), f"Generated invalid ID {invalid_id} should not be valid"
 
 
 def test_validate_method_known_values(idcard_validator: IDCardValidator):

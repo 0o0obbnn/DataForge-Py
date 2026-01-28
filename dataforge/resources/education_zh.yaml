@@ -1,0 +1,213 @@
+# 教育水平/学历生成器配置文件（中文）
+# 用于配置中国教育体系和国际教育体系的学历信息
+
+education:
+  # 中国教育体系
+  china_system:
+    PRIMARY:
+      name: "小学"
+      degrees:
+        - 小学
+        - 小学毕业
+        - 小学学历
+      schools:
+        - 中心小学
+        - 实验小学
+        - 第一小学
+        - 第二小学
+
+    JUNIOR:
+      name: "初中"
+      degrees:
+        - 初中
+        - 初中毕业
+        - 初中学历
+        - 初中文凭
+      schools:
+        - 第一中学
+        - 第二中学
+        - 实验中学
+        - 初级中学
+
+    HIGH:
+      name: "高中/中专/技校"
+      degrees:
+        - 高中
+        - 高中毕业
+        - 中专
+        - 技校
+        - 职高
+      schools:
+        - 第一中学
+        - 第二中学
+        - 职业高中
+        - 技工学校
+        - 中专学校
+
+    UNIVERSITY:
+      name: "大学/本科"
+      degrees:
+        - 本科
+        - 学士
+        - 大学本科
+        - 本科学历
+      schools:
+        - 北京大学
+        - 清华大学
+        - 复旦大学
+        - 上海交通大学
+        - 浙江大学
+        - 南京大学
+        - 武汉大学
+        - 中山大学
+        - 华中科技大学
+        - 四川大学
+        - 吉林大学
+        - 山东大学
+        - 中南大学
+        - 西安交通大学
+        - 哈尔滨工业大学
+
+    MASTER:
+      name: "硕士"
+      degrees:
+        - 硕士
+        - 硕士研究生
+        - 研究生学历
+        - 硕士学位
+      schools:
+        - 北京大学
+        - 清华大学
+        - 复旦大学
+        - 上海交通大学
+        - 浙江大学
+        - 南京大学
+        - 武汉大学
+        - 中山大学
+        - 华中科技大学
+        - 四川大学
+
+    PHD:
+      name: "博士"
+      degrees:
+        - 博士
+        - 博士研究生
+        - 博士学历
+        - 博士学位
+      schools:
+        - 北京大学
+        - 清华大学
+        - 复旦大学
+        - 上海交通大学
+        - 浙江大学
+        - 南京大学
+        - 武汉大学
+        - 中山大学
+        - 华中科技大学
+        - 中国科学院
+
+  # 国际教育体系
+  international_system:
+    HIGH_SCHOOL:
+      name: "高中"
+      degrees:
+        - High School
+        - High School Diploma
+        - Secondary School
+      schools:
+        - Harvard-Westlake School
+        - Phillips Exeter Academy
+        - Choate Rosemary Hall
+        - Lawrenceville School
+        - Hotchkiss School
+
+    BACHELOR:
+      name: "学士"
+      degrees:
+        - Bachelor
+        - Bachelor's Degree
+        - Undergraduate
+      schools:
+        - Harvard University
+        - Stanford University
+        - MIT
+        - Yale University
+        - Princeton University
+        - Columbia University
+        - University of Chicago
+        - University of Pennsylvania
+        - Caltech
+        - UC Berkeley
+
+    MASTER:
+      name: "硕士"
+      degrees:
+        - Master
+        - Master's Degree
+        - Graduate
+      schools:
+        - Harvard University
+        - Stanford University
+        - MIT
+        - Yale University
+        - Princeton University
+        - Columbia University
+        - University of Chicago
+        - University of Pennsylvania
+        - Caltech
+        - UC Berkeley
+
+    PHD:
+      name: "博士"
+      degrees:
+        - PhD
+        - Doctor
+        - Doctorate
+      schools:
+        - Harvard University
+        - Stanford University
+        - MIT
+        - Yale University
+        - Princeton University
+        - Columbia University
+        - University of Chicago
+        - University of Pennsylvania
+        - Caltech
+        - UC Berkeley
+
+    POSTDOC:
+      name: "博士后"
+      degrees:
+        - Postdoc
+        - Postdoctoral Fellow
+        - Postdoctoral Researcher
+      schools:
+        - Harvard University
+        - Stanford University
+        - MIT
+        - Yale University
+        - Princeton University
+        - Columbia University
+        - University of Chicago
+
+  # 通用教育水平（用于 generic_education 生成器）
+  generic_levels:
+    chinese:
+      - 小学
+      - 初中
+      - 高中
+      - 中专
+      - 大专
+      - 本科
+      - 硕士
+      - 博士
+      - 博士后
+    english:
+      - Primary School
+      - Secondary School
+      - High School
+      - Associate Degree
+      - Bachelor's Degree
+      - Master's Degree
+      - PhD
+      - Postdoc

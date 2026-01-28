@@ -11,7 +11,7 @@ import secrets
 import uuid
 from collections.abc import AsyncGenerator
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from ...core.generator import (
     DataGenerator,
@@ -137,7 +137,7 @@ class StreamPriceGenerator(DataGenerator[dict]):
             yield batch if len(batch) > 1 else batch[0]
             await asyncio.sleep(self.update_interval)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate(self, context: GenerationContext | None = None) -> dict:
         """同步生成单条价格数据"""
         symbol = secrets.choice(self.symbols)
         change_percent = random.gauss(0, self.volatility)
@@ -154,7 +154,7 @@ class StreamPriceGenerator(DataGenerator[dict]):
             "timestamp": datetime.now().isoformat(),
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_single(self, context: GenerationContext | None = None) -> dict:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -263,7 +263,7 @@ class StreamOrderbookGenerator(DataGenerator[dict]):
             yield orderbook_data
             await asyncio.sleep(self.update_interval)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate(self, context: GenerationContext | None = None) -> dict:
         """同步生成订单簿数据"""
         symbol = secrets.choice(self.symbols)
         current_price = random.uniform(50, 500)
@@ -276,7 +276,7 @@ class StreamOrderbookGenerator(DataGenerator[dict]):
             "timestamp": datetime.now().isoformat(),
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_single(self, context: GenerationContext | None = None) -> dict:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -361,7 +361,7 @@ class StreamTradeGenerator(DataGenerator[dict]):
 
             await asyncio.sleep(1.0 / self.trade_rate)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate(self, context: GenerationContext | None = None) -> dict:
         """同步生成单条交易数据"""
         symbol = secrets.choice(self.symbols)
         price = random.uniform(50, 500)
@@ -380,7 +380,7 @@ class StreamTradeGenerator(DataGenerator[dict]):
             "timestamp": datetime.now().isoformat(),
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_single(self, context: GenerationContext | None = None) -> dict:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -473,7 +473,7 @@ class StreamNewsGenerator(DataGenerator[dict]):
             yield news_data
             await asyncio.sleep(interval)
 
-    def generate(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate(self, context: GenerationContext | None = None) -> dict:
         """同步生成新闻数据"""
         symbol = secrets.choice(self.symbols)
         template = secrets.choice(self.templates)
@@ -491,7 +491,7 @@ class StreamNewsGenerator(DataGenerator[dict]):
             "timestamp": datetime.now().isoformat(),
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_single(self, context: GenerationContext | None = None) -> dict:
         """生成单个数据项"""
         return self.generate(context)
 

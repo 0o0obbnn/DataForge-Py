@@ -6,7 +6,6 @@
 import random  # TODO: Convert to secrets
 import re
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
@@ -70,7 +69,7 @@ class FundCodeGenerator(DataGenerator[str]):
             "REITs": {"length": [3, 4], "pattern": r"^[A-Z]{3,4}$"},
         }
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成基金代码"""
         if self.market == "CHINA":
             if self.fund_type == "PUBLIC":
@@ -220,7 +219,7 @@ class FundCodeGenerator(DataGenerator[str]):
             "format",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 

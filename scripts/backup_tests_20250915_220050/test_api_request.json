@@ -1,8 +1,0 @@
-{
-  "generator_type": "name",
-  "count": 3,
-  "parameters": {
-    "gender": "FEMALE"
-  },
-  "output_format": "json"
-}

@@ -8,8 +8,9 @@ import logging
 import os
 import threading
 import time
+from collections.abc import Callable
 from functools import lru_cache
-from typing import Any, Callable, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 class DataCache:
     """数据缓存管理器"""
 
-    _instance = None
+    _instance: "DataCache | None" = None
     _lock = threading.Lock()
 
     def __new__(cls):
@@ -25,21 +26,21 @@ class DataCache:
             with cls._lock:
                 if cls._instance is None:
                     cls._instance = super().__new__(cls)
-                    cls._instance._initialized = False
+                    cls._instance._initialized = False  # type: ignore
         return cls._instance
 
     def __init__(self):
-        if not self._initialized:
+        if not self._initialized:  # type: ignore
             self._cache: dict[str, Any] = {}
             self._cache_times: dict[str, float] = {}
             self._access_times: dict[str, float] = {}
             self._file_mtimes: dict[str, float] = {}
-            self._lock = threading.RLock()
+            self._lock = threading.RLock()  # type: ignore
             self._max_cache_size = 100  # 最大缓存条目数
             self._cache_ttl = 3600  # 缓存生存时间（秒）
-            self._initialized = True
+            self._initialized = True  # type: ignore
 
-    def get_data(self, file_path: str, loader_func: Optional[Callable] = None) -> Any:
+    def get_data(self, file_path: str, loader_func: Callable | None = None) -> Any:
         """
         获取缓存数据，如果不存在则加载
 
@@ -146,7 +147,7 @@ class DataCache:
         with open(file_path, encoding="utf-8") as f:
             return json.load(f)
 
-    def invalidate(self, file_path: Optional[str] = None):
+    def invalidate(self, file_path: str | None = None):
         """
         使缓存失效
 
@@ -178,7 +179,7 @@ class DataCache:
 _data_cache = DataCache()
 
 
-def get_cached_data(file_path: str, loader_func: Optional[Callable] = None) -> Any:
+def get_cached_data(file_path: str, loader_func: Callable | None = None) -> Any:
     """
     获取缓存数据的便捷函数
 
@@ -192,7 +193,7 @@ def get_cached_data(file_path: str, loader_func: Optional[Callable] = None) -> A
     return _data_cache.get_data(file_path, loader_func)
 
 
-def invalidate_cache(file_path: Optional[str] = None):
+def invalidate_cache(file_path: str | None = None):
     """
     使缓存失效的便捷函数
 
@@ -225,7 +226,7 @@ def get_data_file_path(relative_path: str) -> str:
 class LazyDataLoader:
     """惰性数据加载器"""
 
-    def __init__(self, file_path: str, loader_func: Optional[Callable] = None):
+    def __init__(self, file_path: str, loader_func: Callable | None = None):
         self.file_path = file_path
         self.loader_func = loader_func
         self._data = None
@@ -256,7 +257,7 @@ class DataPreloader:
     def __init__(self):
         self._preload_tasks = []
 
-    def add_preload_task(self, file_path: str, loader_func: Optional[Callable] = None):
+    def add_preload_task(self, file_path: str, loader_func: Callable | None = None):
         """添加预加载任务"""
         self._preload_tasks.append((file_path, loader_func))
 
@@ -284,7 +285,7 @@ class DataPreloader:
 _preloader = DataPreloader()
 
 
-def add_preload_task(file_path: str, loader_func: Optional[Callable] = None):
+def add_preload_task(file_path: str, loader_func: Callable | None = None):
     """添加预加载任务的便捷函数"""
     _preloader.add_preload_task(file_path, loader_func)
 

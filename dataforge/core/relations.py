@@ -4,9 +4,10 @@
 
 import logging
 import random
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Callable
+from typing import Any
 
 from .generator import GenerationContext, GeneratorConfig
 
@@ -189,8 +190,8 @@ class DataRelationManager:
     def get_relation_dependencies(self, field_names: list[str]) -> list[str]:
         """获取字段的关联依赖顺序"""
         # 构建依赖图
-        dependencies = {}
-        in_degree = {}
+        dependencies: dict[str, list[str]] = {}
+        in_degree: dict[str, int] = {}
 
         for field in field_names:
             dependencies[field] = []

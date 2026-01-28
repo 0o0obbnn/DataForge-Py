@@ -5,7 +5,7 @@
 import random  # TODO: Convert to secrets
 import secrets
 import string
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -44,7 +44,7 @@ class StringGenerator(DataGenerator[str]):
         self.allow_repeats = self.parameters.get("allow_repeats", True)
         self.format_pattern = self.parameters.get("format", None)  # 格式模式
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始字符串"""
         # 确定长度
         if self.min_length is not None and self.max_length is not None:
@@ -102,13 +102,13 @@ class StringGenerator(DataGenerator[str]):
         result_list = list(result)
 
         for requirement in self.must_include:
-            req_chars = self.CHAR_SETS.get(requirement.upper(), [])
-            req_chars = [c for c in req_chars if c in available_chars]
+            req_chars_list = self.CHAR_SETS.get(requirement.upper(), [])
+            req_chars_list = [c for c in req_chars_list if c in available_chars]
 
-            if req_chars and not any(c in result for c in req_chars):
+            if req_chars_list and not any(c in result for c in req_chars_list):
                 # 替换一个随机位置的字符
                 pos = secrets.randbelow(len(result_list))
-                result_list[pos] = secrets.choice(req_chars)
+                result_list[pos] = secrets.choice(req_chars_list)
 
         return "".join(result_list)
 
@@ -195,7 +195,7 @@ class StringGenerator(DataGenerator[str]):
             "format",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -214,8 +214,8 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
         self.null_ratio = self.parameters.get("null_ratio", 0.0)  # null值的概率
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[bool, str, None]:
+        self, context: GenerationContext | None = None
+    ) -> bool | str | None:
         """生成原始布尔值"""
         # 处理null值
         if (
@@ -230,7 +230,7 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
         # 根据输出格式转换
         return self._format_output(bool_value)
 
-    def _format_output(self, value: bool) -> Union[bool, str]:
+    def _format_output(self, value: bool) -> bool | str:
         """格式化输出"""
         if self.custom_values:
             true_val, false_val = self.custom_values
@@ -248,7 +248,7 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
 
         return format_map.get(self.output_format.upper(), value)
 
-    def validate(self, data: Union[bool, str, int, None]) -> bool:
+    def validate(self, data: bool | str | int | None) -> bool:
         """校验布尔值"""
         if data is None:
             return self.null_ratio > 0
@@ -277,9 +277,7 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
     def supported_parameters(self) -> list[str]:
         return ["true_ratio", "format", "custom_values", "null_ratio"]
 
-    def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[bool, str]:
+    def generate_single(self, context: GenerationContext | None = None) -> bool | str:
         """生成单个数据项"""
         result = self._generate_raw(context)
         # 确保不返回None，因为函数签名不允许None
@@ -299,7 +297,7 @@ class EnumGenerator(DataGenerator[Any]):
         self.null_ratio = self.parameters.get("null_ratio", 0.1)
         self.case_sensitive = self.parameters.get("case_sensitive", True)
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> Any:
+    def _generate_raw(self, context: GenerationContext | None = None) -> Any:
         """生成原始枚举值"""
         # 处理null值
         if self.allow_null and (secrets.randbelow(1000000) / 1000000) < self.null_ratio:
@@ -347,7 +345,7 @@ class EnumGenerator(DataGenerator[Any]):
     def supported_parameters(self) -> list[str]:
         return ["values", "weights", "allow_null", "null_ratio", "case_sensitive"]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> Any:
+    def generate_single(self, context: GenerationContext | None = None) -> Any:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 

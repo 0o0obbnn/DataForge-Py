@@ -8,12 +8,14 @@ import random  # Keep for random.choices
 import secrets
 import string
 from datetime import datetime, timedelta
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.context import ContextAwareGenerator, ExtendedGenerationContext
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
 from dataforge.core.types import GeneratorType
+
+from ...data.loader import load_json
 
 
 class ContextAwareNameGenerator(ContextAwareGenerator, DataGenerator):
@@ -22,82 +24,191 @@ class ContextAwareNameGenerator(ContextAwareGenerator, DataGenerator):
     def __init__(
         self,
         config: GeneratorConfig,
-        context: Optional[ExtendedGenerationContext] = None,
+        context: ExtendedGenerationContext | None = None,
     ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
         ContextAwareGenerator.__init__(self, context)
-        self._first_names = {
-            "male": [
-                "张伟",
-                "王强",
-                "李军",
-                "刘洋",
-                "陈勇",
-                "杨帆",
-                "赵磊",
-                "黄旭",
-                "周杰",
-                "吴磊",
-                "徐浩",
-                "孙宇",
-                "朱华",
-                "胡斌",
-                "高翔",
-                "林涛",
-                "何明",
-                "郭峰",
-                "罗刚",
-                "梁宇",
-            ],
-            "female": [
-                "王丽",
-                "李娜",
-                "张敏",
-                "刘静",
-                "陈丽",
-                "杨芳",
-                "赵雪",
-                "黄莉",
-                "周婷",
-                "吴倩",
-                "徐颖",
-                "孙燕",
-                "朱琳",
-                "胡霞",
-                "高媛",
-                "林娜",
-                "何晶",
-                "郭莉",
-                "罗娟",
-                "梁芳",
-            ],
-        }
-        self._last_names = [
-            "王",
-            "李",
-            "张",
-            "刘",
-            "陈",
-            "杨",
-            "赵",
-            "黄",
-            "周",
-            "吴",
-            "徐",
-            "孙",
-            "胡",
-            "朱",
-            "高",
-            "林",
-            "何",
-            "郭",
-            "罗",
-            "梁",
-        ]
+        self._load_name_data()
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def _load_name_data(self) -> None:
+        """从数据文件加载姓名数据"""
+        try:
+            # 加载姓氏数据
+            surnames_data = load_json("surnames.json")
+            self._last_names = [
+                item["surname"] for item in surnames_data.get("common_surnames", [])
+            ]
+
+            # 加载名字数据
+            givennames_data = load_json("givennames.json")
+            male_names_data = givennames_data.get("male_names", {})
+            female_names_data = givennames_data.get("female_names", {})
+
+            # 组合单字和双字名字
+            self._first_names = {
+                "male": (
+                    male_names_data.get("single_char", [])
+                    + male_names_data.get("double_char", [])
+                ),
+                "female": (
+                    female_names_data.get("single_char", [])
+                    + female_names_data.get("double_char", [])
+                ),
+            }
+
+            # 如果数据文件加载失败，使用默认值作为fallback
+            if not self._last_names:
+                self._last_names = [
+                    "王",
+                    "李",
+                    "张",
+                    "刘",
+                    "陈",
+                    "杨",
+                    "赵",
+                    "黄",
+                    "周",
+                    "吴",
+                    "徐",
+                    "孙",
+                    "胡",
+                    "朱",
+                    "高",
+                    "林",
+                    "何",
+                    "郭",
+                    "罗",
+                    "梁",
+                ]
+
+            if not self._first_names.get("male"):
+                self._first_names["male"] = [
+                    "张伟",
+                    "王强",
+                    "李军",
+                    "刘洋",
+                    "陈勇",
+                    "杨帆",
+                    "赵磊",
+                    "黄旭",
+                    "周杰",
+                    "吴磊",
+                    "徐浩",
+                    "孙宇",
+                    "朱华",
+                    "胡斌",
+                    "高翔",
+                    "林涛",
+                    "何明",
+                    "郭峰",
+                    "罗刚",
+                    "梁宇",
+                ]
+
+            if not self._first_names.get("female"):
+                self._first_names["female"] = [
+                    "王丽",
+                    "李娜",
+                    "张敏",
+                    "刘静",
+                    "陈丽",
+                    "杨芳",
+                    "赵雪",
+                    "黄莉",
+                    "周婷",
+                    "吴倩",
+                    "徐颖",
+                    "孙燕",
+                    "朱琳",
+                    "胡霞",
+                    "高媛",
+                    "林娜",
+                    "何晶",
+                    "郭莉",
+                    "罗娟",
+                    "梁芳",
+                ]
+        except (FileNotFoundError, KeyError, Exception) as e:
+            # 如果数据文件不存在或加载失败，使用默认值
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                f"Failed to load name data from files: {e}, using default values"
+            )
+
+            self._last_names = [
+                "王",
+                "李",
+                "张",
+                "刘",
+                "陈",
+                "杨",
+                "赵",
+                "黄",
+                "周",
+                "吴",
+                "徐",
+                "孙",
+                "胡",
+                "朱",
+                "高",
+                "林",
+                "何",
+                "郭",
+                "罗",
+                "梁",
+            ]
+            self._first_names = {
+                "male": [
+                    "张伟",
+                    "王强",
+                    "李军",
+                    "刘洋",
+                    "陈勇",
+                    "杨帆",
+                    "赵磊",
+                    "黄旭",
+                    "周杰",
+                    "吴磊",
+                    "徐浩",
+                    "孙宇",
+                    "朱华",
+                    "胡斌",
+                    "高翔",
+                    "林涛",
+                    "何明",
+                    "郭峰",
+                    "罗刚",
+                    "梁宇",
+                ],
+                "female": [
+                    "王丽",
+                    "李娜",
+                    "张敏",
+                    "刘静",
+                    "陈丽",
+                    "杨芳",
+                    "赵雪",
+                    "黄莉",
+                    "周婷",
+                    "吴倩",
+                    "徐颖",
+                    "孙燕",
+                    "朱琳",
+                    "胡霞",
+                    "高媛",
+                    "林娜",
+                    "何晶",
+                    "郭莉",
+                    "罗娟",
+                    "梁芳",
+                ],
+            }
+
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成姓名，支持上下文关联"""
         # 若传入扩展上下文，则使用该上下文实例
         if isinstance(context, ExtendedGenerationContext):
@@ -170,14 +281,14 @@ class ContextAwareAgeGenerator(ContextAwareGenerator, DataGenerator):
     def __init__(
         self,
         config: GeneratorConfig,
-        context: Optional[ExtendedGenerationContext] = None,
+        context: ExtendedGenerationContext | None = None,
     ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
         # ContextAwareGenerator需要context参数
         ContextAwareGenerator.__init__(self, context)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> int:
+    def generate_single(self, context: GenerationContext | None = None) -> int:
         """生成年龄，支持上下文关联"""
         # 若传入扩展上下文，则使用该上下文实例
         if isinstance(context, ExtendedGenerationContext):
@@ -256,7 +367,7 @@ class ContextAwareIDCardGenerator(ContextAwareGenerator, DataGenerator):
     def __init__(
         self,
         config: GeneratorConfig,
-        context: Optional[ExtendedGenerationContext] = None,
+        context: ExtendedGenerationContext | None = None,
     ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
@@ -287,7 +398,7 @@ class ContextAwareIDCardGenerator(ContextAwareGenerator, DataGenerator):
             "510107",  # 成都
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成身份证号码，支持上下文关联"""
         # 若传入扩展上下文，则使用该上下文实例
         if isinstance(context, ExtendedGenerationContext):
@@ -412,7 +523,7 @@ class ContextAwareEmailGenerator(ContextAwareGenerator, DataGenerator):
     def __init__(
         self,
         config: GeneratorConfig,
-        context: Optional[ExtendedGenerationContext] = None,
+        context: ExtendedGenerationContext | None = None,
     ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
@@ -432,7 +543,7 @@ class ContextAwareEmailGenerator(ContextAwareGenerator, DataGenerator):
             "protonmail.com",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成邮箱地址，支持上下文关联"""
         # 若传入扩展上下文，则使用该上下文实例
         if isinstance(context, ExtendedGenerationContext):
@@ -510,7 +621,7 @@ class ContextAwarePhoneGenerator(ContextAwareGenerator, DataGenerator):
     def __init__(
         self,
         config: GeneratorConfig,
-        context: Optional[ExtendedGenerationContext] = None,
+        context: ExtendedGenerationContext | None = None,
     ):
         # DataGenerator需要config参数
         DataGenerator.__init__(self, config)
@@ -563,7 +674,7 @@ class ContextAwarePhoneGenerator(ContextAwareGenerator, DataGenerator):
             "199",
         ]
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成手机号，支持上下文关联"""
         # 若传入扩展上下文，则使用该上下文实例
         if isinstance(context, ExtendedGenerationContext):

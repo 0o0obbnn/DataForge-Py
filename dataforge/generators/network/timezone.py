@@ -4,7 +4,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -218,7 +217,7 @@ class TimezoneGenerator(DataGenerator[str]):
         prefix = region_prefixes.get(self.region, "")
         return [tz for tz in self.TIMEZONES if tz.startswith(prefix)] or self.TIMEZONES
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始时区标识"""
         if self.format == "iana":
             return self._generate_iana()
@@ -333,7 +332,7 @@ class TimezoneGenerator(DataGenerator[str]):
 
         return info
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -349,7 +348,11 @@ class TimezoneGenerator(DataGenerator[str]):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
+        if (
+            hasattr(self, "validator")
+            and self.validator is not None
+            and hasattr(self.validator, "validate")
+        ):
             return self.validator.validate(data)
         return True
 
@@ -357,9 +360,12 @@ class TimezoneGenerator(DataGenerator[str]):
 class GenericTimezoneGenerator(TimezoneGenerator):
     """通用时区标识生成器"""
 
+    # 添加类型提示以避免 Pylance 错误
+    validator: TimezoneValidator | None
+
     pass
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         # 尝试调用现有方法
         if hasattr(self, "generate") and callable(self.generate):
@@ -380,6 +386,10 @@ class GenericTimezoneGenerator(TimezoneGenerator):
 
     def validate(self, data: str) -> bool:
         """验证生成的数据"""
-        if hasattr(self, "validator") and hasattr(self.validator, "validate"):
+        if (
+            hasattr(self, "validator")
+            and self.validator is not None
+            and hasattr(self.validator, "validate")
+        ):
             return self.validator.validate(data)
         return isinstance(data, str) and bool(data.strip())

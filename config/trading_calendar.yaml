@@ -1,0 +1,166 @@
+# 中国A股交易日历配置文件
+# 数据来源：国务院办公厅
+# 更新时间：2025-12-23
+
+version: "2025.1"
+last_updated: "2025-12-23"
+description: "中国A股交易日历配置文件（上交所、深交所）"
+
+# 法定节假日
+holidays:
+  2024:
+    - date: "2024-01-01"
+      name: "元旦"
+      type: "LEGAL"
+
+    - date: "2024-02-09"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2024-02-12"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2024-02-13"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2024-02-14"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2024-02-15"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2024-02-16"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2024-02-17"
+      name: "春节"
+      type: "LEGAL"
+
+    - date: "2024-04-04"
+      name: "清明节"
+      type: "LEGAL"
+    - date: "2024-04-05"
+      name: "清明节"
+      type: "LEGAL"
+
+    - date: "2024-05-01"
+      name: "劳动节"
+      type: "LEGAL"
+    - date: "2024-05-02"
+      name: "劳动节"
+      type: "LEGAL"
+    - date: "2024-05-03"
+      name: "劳动节"
+      type: "LEGAL"
+
+    - date: "2024-06-10"
+      name: "端午节"
+      type: "LEGAL"
+
+    - date: "2024-09-16"
+      name: "中秋节"
+      type: "LEGAL"
+    - date: "2024-09-17"
+      name: "中秋节"
+      type: "LEGAL"
+
+    - date: "2024-10-01"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2024-10-02"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2024-10-03"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2024-10-04"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2024-10-07"
+      name: "国庆节"
+      type: "LEGAL"
+
+  2025:
+    - date: "2025-01-01"
+      name: "元旦"
+      type: "LEGAL"
+
+    - date: "2025-01-29"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2025-01-30"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2025-01-31"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2025-02-03"
+      name: "春节"
+      type: "LEGAL"
+    - date: "2025-02-04"
+      name: "春节"
+      type: "LEGAL"
+
+    - date: "2025-04-04"
+      name: "清明节"
+      type: "LEGAL"
+
+    - date: "2025-05-01"
+      name: "劳动节"
+      type: "LEGAL"
+    - date: "2025-05-02"
+      name: "劳动节"
+      type: "LEGAL"
+
+    - date: "2025-06-02"
+      name: "端午节"
+      type: "LEGAL"
+
+    - date: "2025-10-01"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2025-10-02"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2025-10-03"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2025-10-06"
+      name: "国庆节"
+      type: "LEGAL"
+    - date: "2025-10-07"
+      name: "国庆节"
+      type: "LEGAL"
+
+# 调休工作日（周末补班）
+adjusted_working_days:
+  2024:
+    - "2024-02-04"  # 春节前补班
+    - "2024-02-18"  # 春节后补班
+    - "2024-04-07"  # 清明节补班
+    - "2024-04-28"  # 劳动节补班
+    - "2024-05-11"  # 劳动节补班
+    - "2024-09-14"  # 中秋节补班
+    - "2024-09-29"  # 国庆节补班
+    - "2024-10-12"  # 国庆节补班
+
+  2025:
+    - "2025-01-26"  # 春节前补班
+    - "2025-02-08"  # 春节后补班
+    - "2025-04-27"  # 劳动节补班
+    - "2025-09-28"  # 国庆节补班
+    - "2025-10-11"  # 国庆节补班
+
+# 元数据
+metadata:
+  source: "国务院办公厅"
+  source_url: "http://www.gov.cn/zhengce/content/index.htm"
+  update_frequency: "yearly"
+  notes: "仅供参考，请以官方发布为准"
+
+# 更新说明
+update_log:
+  - version: "2025.1"
+    date: "2025-12-23"
+    changes:
+      - "添加2025年完整节假日数据"
+      - "更新调休工作日安排"

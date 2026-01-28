@@ -89,6 +89,7 @@ def test_new_generators():
 
     print("🎉 新增生成器测试完成！")
 
+
 def test_generator_info_methods():
     """测试生成器的信息解析方法"""
     print("\n=== 测试生成器信息解析方法 ===\n")
@@ -156,6 +157,7 @@ def test_generator_info_methods():
             print(f"   ❌ 错误: {e}")
 
         print()
+
 
 if __name__ == "__main__":
     test_new_generators()

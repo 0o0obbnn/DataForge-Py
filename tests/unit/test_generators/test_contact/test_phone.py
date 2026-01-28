@@ -1,4 +1,3 @@
-
 from dataforge.core.factory import default_factory
 from dataforge.core.generator import GenerationContext, GeneratorConfig
 from dataforge.generators.contact.phone import GenericPhoneNumberGenerator
@@ -27,6 +26,7 @@ def test_phone_number_generation():
             print(f"号码类型: {generator.get_number_type(phone)}")
         print()
 
+
 def test_phone_number_formats():
     """测试电话号码格式"""
     print("=== 测试电话号码格式 ===")
@@ -45,6 +45,7 @@ def test_phone_number_formats():
         if isinstance(generator, GenericPhoneNumberGenerator):
             print(f"号码类型: {generator.get_number_type(phone)}")
         print()
+
 
 def test_phone_number_relations():
     """测试电话号码关联"""
@@ -80,6 +81,7 @@ def test_phone_number_relations():
     result = default_factory.generate_batch_with_relations(configs, context)
     print(f"生成结果: {result}")
     print()
+
 
 def test_phone_number_validation():
     """测试电话号码校验"""
@@ -136,6 +138,7 @@ def test_phone_number_validation():
         print()
     print()
 
+
 def test_phone_number_integration():
     """测试电话号码与其他数据的集成"""
     print("=== 测试电话号码与其他数据的集成 ===")
@@ -171,6 +174,7 @@ def test_phone_number_integration():
     print(f"生成结果: {result}")
     print()
 
+
 def main():
     """主测试函数"""
     print("DataForge 电话号码生成器测试")
@@ -184,6 +188,7 @@ def main():
     test_phone_number_integration()
 
     print("所有测试完成！")
+
 
 if __name__ == "__main__":
     main()

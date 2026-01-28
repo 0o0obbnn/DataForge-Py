@@ -5,7 +5,7 @@
 """
 
 import secrets
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -38,8 +38,8 @@ class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         ]
 
     def _generate_raw(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, Any]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成通讯方式数据"""
         if self.comm_type == "phone":
             return self._generate_phone()
@@ -57,7 +57,7 @@ class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
             else:
                 return self._generate_social_media()
 
-    def _generate_phone(self) -> Union[str, dict[str, str]]:
+    def _generate_phone(self) -> str | dict[str, str]:
         """生成电话号码"""
         # 生成手机号
         prefixes = [
@@ -99,7 +99,7 @@ class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
             return {"type": "phone", "value": phone, "label": "手机"}
         return phone
 
-    def _generate_email(self) -> Union[str, dict[str, str]]:
+    def _generate_email(self) -> str | dict[str, str]:
         """生成邮箱地址"""
         # 生成用户名
         username_length = secrets.randbelow(8) + 5
@@ -127,7 +127,7 @@ class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
             return {"type": "email", "value": email, "label": "邮箱"}
         return email
 
-    def _generate_social_media(self) -> Union[str, dict[str, str]]:
+    def _generate_social_media(self) -> str | dict[str, str]:
         """生成社交媒体账号"""
         platform = secrets.choice(self.social_platforms)
 
@@ -159,7 +159,7 @@ class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
             }
         return f"{platform}:{account}"
 
-    def validate(self, data: Union[str, dict[str, Any]]) -> bool:
+    def validate(self, data: str | dict[str, Any]) -> bool:
         """验证通讯方式数据"""
         if isinstance(data, dict):
             return "type" in data and "value" in data
@@ -176,7 +176,7 @@ class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         return ["type", "include_label"]
 
     def generate_single(
-        self, context: Optional[GenerationContext] = None
-    ) -> Union[str, dict[str, Any]]:
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成单个数据项"""
         return self._generate_raw(context)

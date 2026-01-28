@@ -3,7 +3,6 @@
 """
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -113,7 +112,7 @@ class OrganizationCodeGenerator(DataGenerator[str]):
     def _setup(self) -> None:
         self.valid = self.parameters.get("valid", True)  # 是否保证生成有效代码
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始组织机构代码"""
         # 生成8位主体代码
         main_code = self._generate_main_code()
@@ -185,12 +184,12 @@ class OrganizationCodeGenerator(DataGenerator[str]):
             return f"{clean_code[:8]}-{clean_code[8]}"
         return code
 
-    def generate_with_info(self, context: Optional[GenerationContext] = None) -> dict:
+    def generate_with_info(self, context: GenerationContext | None = None) -> dict:
         """生成组织机构代码并返回详细信息"""
         org_code = self.generate(context)
         return self.get_org_code_info(org_code)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -215,7 +214,7 @@ class OrganizationCodeGenerator(DataGenerator[str]):
 class ChineseOrganizationCodeGenerator(OrganizationCodeGenerator):
     """中国组织机构代码生成器注册版本"""
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

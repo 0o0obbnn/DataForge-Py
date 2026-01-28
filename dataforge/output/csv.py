@@ -2,7 +2,6 @@
 
 import csv
 import io
-from typing import Union
 
 
 class CSVFormatter:
@@ -18,7 +17,7 @@ class CSVFormatter:
         self.delimiter = delimiter
         self.quotechar = quotechar
 
-    def format(self, data: Union[dict, list], **kwargs) -> str:
+    def format(self, data: dict | list, **kwargs) -> str:
         """Format data as CSV.
 
         Args:
@@ -62,7 +61,7 @@ class CSVFormatter:
 
         return output.getvalue()
 
-    def format_to_file(self, data: Union[dict, list], filepath: str, **kwargs) -> None:
+    def format_to_file(self, data: dict | list, filepath: str, **kwargs) -> None:
         """Format data to CSV file.
 
         Args:

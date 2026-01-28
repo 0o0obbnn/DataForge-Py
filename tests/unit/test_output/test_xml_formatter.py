@@ -8,7 +8,7 @@ print("XML with xmlns:", xml_with_ns)
 root1 = ET.fromstring(xml_with_ns)
 print("Root tag:", root1.tag)
 print("Root attrib:", dict(root1.attrib))
-print("Has xmlns:", 'xmlns' in root1.attrib)
+print("Has xmlns:", "xmlns" in root1.attrib)
 print()
 
 # 测试2: 不包含xmlns的XML
@@ -17,7 +17,7 @@ print("XML without xmlns:", xml_without_ns)
 root2 = ET.fromstring(xml_without_ns)
 print("Root tag:", root2.tag)
 print("Root attrib:", dict(root2.attrib))
-print("Has xmlns:", 'xmlns' in root2.attrib)
+print("Has xmlns:", "xmlns" in root2.attrib)
 print()
 
 # 测试3: 使用正则表达式检查xmlns属性

@@ -8,7 +8,7 @@ import random  # Keep for any remaining uses
 import secrets
 import string
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.context import ExtendedGenerationContext, GenerationContext
 from dataforge.core.factory import register_generator
@@ -29,13 +29,13 @@ class EnhancedNameGenerator(NameGenerator):
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.context: Optional[ExtendedGenerationContext] = None
+        self.context: ExtendedGenerationContext | None = None
 
     def set_context(self, context: ExtendedGenerationContext):
         """设置上下文"""
         self.context = context
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成姓名并存储到上下文"""
         name = super().generate_single(context)
 
@@ -88,13 +88,13 @@ class EnhancedAgeGenerator(AgeGenerator):
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.context: Optional[ExtendedGenerationContext] = None
+        self.context: ExtendedGenerationContext | None = None
 
     def set_context(self, context: ExtendedGenerationContext):
         """设置上下文"""
         self.context = context
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> int:
+    def generate_single(self, context: GenerationContext | None = None) -> int:
         """生成年龄并考虑上下文信息"""
         # 从上下文中获取姓名信息
         name_info = None
@@ -163,13 +163,13 @@ class EnhancedIDCardGenerator(IDCardGenerator):
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.context: Optional[ExtendedGenerationContext] = None
+        self.context: ExtendedGenerationContext | None = None
 
     def set_context(self, context: ExtendedGenerationContext):
         """设置上下文"""
         self.context = context
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成身份证号码并考虑上下文信息"""
         # 从上下文中获取姓名和年龄
         name_info = None
@@ -177,7 +177,7 @@ class EnhancedIDCardGenerator(IDCardGenerator):
         gender = None
 
         # 优先使用传入的 extended context，否则使用实例的 extended context
-        current_context: Optional[ExtendedGenerationContext] = (
+        current_context: ExtendedGenerationContext | None = (
             context if isinstance(context, ExtendedGenerationContext) else self.context
         )
 
@@ -292,13 +292,13 @@ class EnhancedPhoneGenerator(PhoneNumberGenerator):
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.context: Optional[ExtendedGenerationContext] = None
+        self.context: ExtendedGenerationContext | None = None
 
     def set_context(self, context: ExtendedGenerationContext):
         """设置上下文"""
         self.context = context
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成手机号并考虑上下文信息"""
         phone = super().generate_single(context)
 
@@ -343,13 +343,13 @@ class EnhancedEmailGenerator(EmailGenerator):
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
-        self.context: Optional[ExtendedGenerationContext] = None
+        self.context: ExtendedGenerationContext | None = None
 
     def set_context(self, context: ExtendedGenerationContext):
         """设置上下文"""
         self.context = context
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成邮箱并考虑上下文信息"""
         # 从上下文中获取姓名
         name_info = None
@@ -428,7 +428,7 @@ class EnhancedEmailGenerator(EmailGenerator):
 class PersonDataGenerator:
     """个人数据综合生成器"""
 
-    def __init__(self, external_context: Optional[ExtendedGenerationContext] = None):
+    def __init__(self, external_context: ExtendedGenerationContext | None = None):
         """
         初始化个人数据生成器
 

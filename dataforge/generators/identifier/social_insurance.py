@@ -1,7 +1,6 @@
 """社保/医保号生成器"""
 
 import secrets
-from typing import Optional
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -118,7 +117,7 @@ class SocialInsuranceNumberGenerator(DataGenerator[str]):
             "country", "china"
         ).lower()  # 国家: china, usa
 
-    def generate(self, context: Optional[GenerationContext] = None) -> str:
+    def generate(self, context: GenerationContext | None = None) -> str:
         """生成原始社保/医保号"""
         # 根据国家生成不同格式
         if self.country == "usa":
@@ -239,7 +238,7 @@ class SocialInsuranceNumberGenerator(DataGenerator[str]):
             "insurance_type": self.insurance_type,
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         return self.generate(context)
 

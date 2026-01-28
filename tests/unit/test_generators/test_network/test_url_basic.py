@@ -63,6 +63,7 @@ class SimpleURLGenerator:
 
         return urlunparse(url_parts)
 
+
 def test_url_generator():
     """测试URL生成器"""
     print("=== URL生成器测试 ===")
@@ -82,6 +83,7 @@ def test_url_generator():
     for i in range(3):
         url = custom_gen.generate()
         print(f"自定义URL {i + 1}: {url}")
+
 
 if __name__ == "__main__":
     test_url_generator()

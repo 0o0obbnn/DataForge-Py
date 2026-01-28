@@ -40,7 +40,9 @@ class AppSettings(BaseModel):
     def __init__(self, **data):
         # 在实例化时计算development_mode
         if "development_mode" not in data:
-            data["development_mode"] = os.getenv("DEVELOPMENT", "false").lower() == "true"
+            data["development_mode"] = (
+                os.getenv("DEVELOPMENT", "false").lower() == "true"
+            )
         super().__init__(**data)
         self._initialize_security_settings()
 
@@ -62,10 +64,11 @@ class AppSettings(BaseModel):
         if jwt_key:
             return jwt_key
         elif self.development_mode:
-            # 开发模式：使用固定的开发密钥（带明显警告）
-            logger.warning("⚠️  Using insecure development JWT key!")
+            # 开发模式：生成一个安全的开发密钥（每次重启都会变化）
+            import secrets
+            logger.warning("⚠️  Using auto-generated development JWT key!")
             logger.warning("⚠️  Set JWT_SECRET_KEY environment variable for production!")
-            return "DEV-ONLY-INSECURE-KEY-DO-NOT-USE-IN-PRODUCTION"
+            return secrets.token_hex(32)
         else:
             # 生产模式：必须设置环境变量
             raise ValueError(
@@ -122,7 +125,7 @@ def get_settings() -> AppSettings:
 # 为了向后兼容，提供settings属性
 class _SettingsProperty:
     """Settings属性访问器，确保延迟初始化"""
-    
+
     def __get__(self, obj, objtype=None):
         return get_settings()
 

@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Any
+from typing import Any
 
 # 忽略mypy对缺少类型存根的警告
 try:
@@ -22,7 +22,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 SECRET_KEY = get_settings().jwt_secret_key
 
 # 确保CryptContext存在后再初始化
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") if CryptContext else None
+pwd_context = (
+    CryptContext(schemes=["bcrypt"], deprecated="auto") if CryptContext else None
+)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -39,7 +41,9 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def create_access_token(data: dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(
+    data: dict[str, Any], expires_delta: timedelta | None = None
+) -> str:
     """创建访问令牌"""
     if not jwt:
         raise ImportError("jose 未安装")

@@ -4,6 +4,7 @@ DataForge是一款高效、灵活且高度可配置的测试数据生成工具�
 
 ## 特性
 
+- 💡 **简洁 API**: 类似 Faker 的链式调用，`gen.name()` 即可生成数据
 - 🇨🇳 **中国本土化支持**: 身份证、银行卡、手机号、统一社会信用代码等
 - 🔗 **数据关联性**: 支持字段间逻辑关联，确保数据一致性
 - 🎯 **高度可配置**: 丰富的CLI参数和YAML配置文件支持
@@ -39,10 +40,15 @@ dataforge generate --config user_data.yaml
 
 #### 基础信息类
 - **身份证号** (`idcard`): 支持地区、性别、出生日期范围配置
+- **港澳台证件** (`hk_mo_tw_id`): 支持港澳居民来往内地通行证、台湾居民来往大陆通行证、港澳台居民居住证
 - **银行卡号** (`bankcard`): 支持Luhn算法校验，多种银行和卡组织
 - **手机号** (`phone`): 支持三大运营商号段
 - **姓名** (`name`): 中英文姓名生成
 - **地址** (`address`): 基于行政区划的地址生成
+- **企业名称** (`company_name`): 支持行业、公司类型配置（✅ 已配置化）
+- **职业/职位** (`occupation`): 支持多行业、多级别配置（✅ 已配置化）
+- **教育水平** (`education`): 支持中英文教育体系（✅ 已配置化）
+- **车牌号** (`license_plate`): 支持燃油/新能源车牌（✅ 已配置化）
 
 #### 标识类
 - **UUID** (`uuid`): 多种UUID格式
@@ -75,6 +81,70 @@ output:
 ```
 
 ## Python API使用
+
+### 💡 简化 API（推荐新手使用）
+
+DataForge 提供了类似 Faker 的简洁 API，让你快速上手：
+
+```python
+from dataforge import gen
+
+# 🎯 生成单个数据
+name = gen.name()                    # 姓名
+phone = gen.phone()                  # 手机号
+email = gen.email()                  # 邮箱
+idcard = gen.idcard()                # 身份证
+address = gen.address()              # 地址
+
+# 📦 批量生成数据
+names = gen.name(count=10)           # 生成10个姓名
+phones = gen.phone(count=5)          # 生成5个手机号
+
+# ⚙️ 带参数生成
+phone = gen.phone(operator='MOBILE')                    # 中国移动号码
+idcard = gen.idcard(region='北京', gender='MALE')      # 北京男性身份证
+idcards = gen.idcard(region='上海', count=5)           # 批量生成上海身份证
+
+# 🔍 发现和帮助
+gen.list_generators()                # 查看所有可用生成器（94个）
+gen.is_available('name')             # 检查生成器是否可用
+print(gen)                           # 查看使用帮助
+```
+
+**完整示例：生成用户资料**
+
+```python
+from dataforge import gen
+
+# 生成一个完整的用户资料
+user = {
+    'name': gen.name(),
+    'gender': gen.gender(),
+    'age': gen.age(),
+    'phone': gen.phone(operator='MOBILE'),
+    'email': gen.email(),
+    'idcard': gen.idcard(region='北京'),
+    'address': gen.address(),
+    'company': gen.company_name()
+}
+
+print(user)
+# 输出示例：
+# {
+#     'name': '张伟',
+#     'gender': 'Male',
+#     'age': 28,
+#     'phone': '13812345678',
+#     'email': 'zhangwei@example.com',
+#     'idcard': '110101199501011234',
+#     'address': '北京市朝阳区...',
+#     'company': '北京科技有限公司'
+# }
+```
+
+### 🔧 高级 API（适用于复杂场景）
+
+对于更复杂的需求，可以使用配置化的 API：
 
 ```python
 from dataforge import default_factory, GeneratorConfig
@@ -146,6 +216,43 @@ class CustomIDGenerator(DataGenerator[str]):
 ```bash
 dataforge generate --help
 ```
+
+## 配置化生成器
+
+DataForge 支持通过配置文件管理生成器的数据源，无需修改代码即可更新数据。
+
+### 已配置化的生成器
+
+以下生成器已支持配置文件管理：
+
+- **企业名称** (`company_name`): `resources/company_name_zh.yaml`
+- **职业/职位** (`occupation`): `resources/occupation_zh.yaml`
+- **教育水平** (`education`): `resources/education_zh.yaml`
+- **车牌号** (`license_plate`): `resources/license_plate_zh.yaml`
+
+### 修改配置
+
+编辑对应的 YAML 配置文件即可更新数据，无需修改代码：
+
+```yaml
+# resources/occupation_zh.yaml
+occupation:
+  industries:
+    IT:
+      positions:
+        SENIOR:
+          - 技术总监
+          - 架构师
+          # 添加新的职位...
+```
+
+### 配置加载机制
+
+- **自动缓存**：配置只加载一次，后续从内存读取
+- **Fallback机制**：配置文件缺失时自动使用默认配置
+- **多语言支持**：通过 `locale` 参数支持不同语言环境
+
+详细说明请查看[配置化迁移完成报告](docs/configuration_migration_completion_report.md)。
 
 ## 开发
 

@@ -8,7 +8,7 @@ import json
 import random
 import secrets
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorConfig
@@ -27,7 +27,7 @@ class JSONGenerator(DataGenerator):
         self.use_null = self.config.parameters.get("use_null", True)
         self.key_length = self.config.parameters.get("key_length", (3, 10))
 
-    def _generate_primitive(self, type_hint: Optional[str] = None) -> Any:
+    def _generate_primitive(self, type_hint: str | None = None) -> Any:
         """生成原始类型数据"""
         type_map = {
             "string": lambda: self._generate_string(),
@@ -54,7 +54,7 @@ class JSONGenerator(DataGenerator):
         return type_map[selected_type]()
 
     def _generate_string(
-        self, min_len: Optional[int] = None, max_len: Optional[int] = None
+        self, min_len: int | None = None, max_len: int | None = None
     ) -> str:
         """生成随机字符串"""
         if min_len is None:
@@ -113,7 +113,7 @@ class JSONGenerator(DataGenerator):
         else:
             return self._generate_array(depth)
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个JSON字符串"""
         if self.schema:
             data = self._generate_from_schema(self.schema)
@@ -194,7 +194,7 @@ class JSONGenerator(DataGenerator):
             return False
 
     def generate_batch(
-        self, count: int, context: Optional[GenerationContext] = None
+        self, count: int, context: GenerationContext | None = None
     ) -> list[str]:
         """批量生成JSON数据"""
         return [self.generate_single() for _ in range(count)]
@@ -324,7 +324,7 @@ class GenericJSONGenerator(JSONGenerator):
             },
         }
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个JSON数据"""
         template = self.config.parameters.get("template")
         if template:

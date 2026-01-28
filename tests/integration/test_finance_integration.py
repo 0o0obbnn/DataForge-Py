@@ -11,6 +11,7 @@ from dataforge.core.generator import GeneratorConfig
 
 # 导入具体的金融生成器类
 
+
 class TestCryptoGenerator:
     """测试加密货币地址生成器"""
 
@@ -43,6 +44,7 @@ class TestCryptoGenerator:
         address = generator.generate()
         assert address.startswith("L") or address.startswith("M")
         assert len(address) >= 26 and len(address) <= 35
+
 
 class TestStockGenerator:
     """测试股票代码生成器"""
@@ -82,6 +84,7 @@ class TestStockGenerator:
         assert code.isupper()
         assert 1 <= len(code) <= 5
 
+
 class TestBankAccountGenerator:
     """测试银行账户生成器"""
 
@@ -119,6 +122,7 @@ class TestBankAccountGenerator:
         assert len(account) == 16
         assert account.isdigit()
 
+
 class TestDerivativesGenerator:
     """测试衍生品生成器"""
 
@@ -154,6 +158,7 @@ class TestDerivativesGenerator:
         assert len(future) >= 4
         assert future[:2].isalpha()
 
+
 class TestMarketDataGenerator:
     """测试市场数据生成器"""
 
@@ -184,6 +189,7 @@ class TestMarketDataGenerator:
         assert len(data["bids"]) == 5
         assert len(data["asks"]) == 5
         assert "spread" in data
+
 
 class TestFinancialReportGenerator:
     """测试财务报表生成器"""
@@ -231,6 +237,7 @@ class TestFinancialReportGenerator:
         assert "financing_cash_flow" in report
         assert "net_cash_flow" in report
 
+
 class TestFinanceIntegration:
     """测试金融类生成器集成"""
 
@@ -276,6 +283,7 @@ class TestFinanceIntegration:
         generator = default_factory.create_generator(config)
         report_result = generator.generate()
         assert report_result is not None
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

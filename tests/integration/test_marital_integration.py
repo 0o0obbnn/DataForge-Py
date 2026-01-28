@@ -11,7 +11,7 @@ import sys
 import pytest
 
 # 确保能够导入项目模块
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from typing import cast
 
@@ -25,8 +25,7 @@ class TestMaritalStatusGenerator:
     def test_china_options(self) -> None:
         """测试中国婚姻状况选项"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "china"}
+            generator_type="marital_status", parameters={"region": "china"}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         options: list[str] = generator.get_marital_status_options()
@@ -36,8 +35,7 @@ class TestMaritalStatusGenerator:
     def test_international_options(self) -> None:
         """测试国际婚姻状况选项"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "us"}
+            generator_type="marital_status", parameters={"region": "us"}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         options: list[str] = generator.get_marital_status_options()
@@ -47,8 +45,7 @@ class TestMaritalStatusGenerator:
     def test_age_based_weights_young(self) -> None:
         """测试年轻人权重分布"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"include_age_factor": True}
+            generator_type="marital_status", parameters={"include_age_factor": True}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         weights: list[float] = generator.get_age_based_weights(18)
@@ -57,8 +54,7 @@ class TestMaritalStatusGenerator:
     def test_age_based_weights_middle(self) -> None:
         """测试中年人权重分布"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"include_age_factor": True}
+            generator_type="marital_status", parameters={"include_age_factor": True}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         weights: list[float] = generator.get_age_based_weights(35)
@@ -67,8 +63,7 @@ class TestMaritalStatusGenerator:
     def test_age_based_weights_old(self) -> None:
         """测试老年人权重分布"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"include_age_factor": True}
+            generator_type="marital_status", parameters={"include_age_factor": True}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         weights: list[float] = generator.get_age_based_weights(60)
@@ -77,8 +72,7 @@ class TestMaritalStatusGenerator:
     def test_default_weights(self) -> None:
         """测试默认权重分布"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"include_age_factor": False}
+            generator_type="marital_status", parameters={"include_age_factor": False}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         weights: list[float] = generator.get_age_based_weights(None)
@@ -89,7 +83,7 @@ class TestMaritalStatusGenerator:
         """测试带有年龄上下文的数据生成"""
         config: GeneratorConfig = GeneratorConfig(
             generator_type="marital_status",
-            parameters={"region": "china", "include_age_factor": True}
+            parameters={"region": "china", "include_age_factor": True},
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         valid_options: list[str] = generator.get_marital_status_options()
@@ -105,20 +99,21 @@ class TestMaritalStatusGenerator:
         """测试带有出生年份上下文的数据生成"""
         config: GeneratorConfig = GeneratorConfig(
             generator_type="marital_status",
-            parameters={"region": "china", "include_age_factor": True}
+            parameters={"region": "china", "include_age_factor": True},
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         valid_options: list[str] = generator.get_marital_status_options()
 
-        context: GenerationContext = GenerationContext(related_data={"birth_year": 1990})
+        context: GenerationContext = GenerationContext(
+            related_data={"birth_year": 1990}
+        )
         result: str = generator.generate_single(context)
         assert result in valid_options
 
     def test_validate_china(self) -> None:
         """测试中国婚姻状况数据验证"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "china"}
+            generator_type="marital_status", parameters={"region": "china"}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
 
@@ -135,13 +130,18 @@ class TestMaritalStatusGenerator:
     def test_validate_international(self) -> None:
         """测试国际婚姻状况数据验证"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "us"}
+            generator_type="marital_status", parameters={"region": "us"}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
 
         # 测试有效值
-        valid_values: list[str] = ["single", "married", "divorced", "widowed", "separated"]
+        valid_values: list[str] = [
+            "single",
+            "married",
+            "divorced",
+            "widowed",
+            "separated",
+        ]
         for value in valid_values:
             assert generator.validate(value) is True
 
@@ -157,8 +157,7 @@ class TestMaritalStatusGeneratorAdvanced:
     def test_setup_default(self) -> None:
         """测试默认配置的生成器设置"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={}
+            generator_type="marital_status", parameters={}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         assert generator is not None
@@ -169,10 +168,7 @@ class TestMaritalStatusGeneratorAdvanced:
         """测试自定义配置的生成器设置"""
         config: GeneratorConfig = GeneratorConfig(
             generator_type="marital_status",
-            parameters={
-                "region": "us",
-                "include_age_factor": False
-            }
+            parameters={"region": "us", "include_age_factor": False},
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         assert generator is not None
@@ -182,8 +178,7 @@ class TestMaritalStatusGeneratorAdvanced:
     def test_generate_without_context(self) -> None:
         """测试无上下文的数据生成"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "china"}
+            generator_type="marital_status", parameters={"region": "china"}
         )
         generator = cast(MaritalStatusGenerator, MaritalStatusGenerator(config))
         valid_options: list[str] = generator.get_marital_status_options()
@@ -195,8 +190,7 @@ class TestMaritalStatusGeneratorAdvanced:
     def test_generate_with_empty_context(self) -> None:
         """测试空上下文的数据生成"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "china"}
+            generator_type="marital_status", parameters={"region": "china"}
         )
         generator: MaritalStatusGenerator = MaritalStatusGenerator(config)
         valid_options: list[str] = generator.get_marital_status_options()
@@ -209,8 +203,7 @@ class TestMaritalStatusGeneratorAdvanced:
     def test_validate_edge_cases(self) -> None:
         """测试验证功能的边界情况"""
         config: GeneratorConfig = GeneratorConfig(
-            generator_type="marital_status",
-            parameters={"region": "china"}
+            generator_type="marital_status", parameters={"region": "china"}
         )
         generator: MaritalStatusGenerator = MaritalStatusGenerator(config)
 

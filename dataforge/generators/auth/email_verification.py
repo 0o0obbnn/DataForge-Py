@@ -6,7 +6,7 @@ Email verification code generator for account authentication.
 import random
 import string
 from datetime import datetime, timedelta
-from typing import Any, Optional
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import DataGenerator, GenerationContext, GeneratorType
@@ -66,7 +66,7 @@ class EmailVerificationGenerator(DataGenerator[str]):
         config.update(self.parameters)
         return config
 
-    def _generate_raw(self, context: Optional[GenerationContext] = None) -> str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> str:
         """生成原始邮箱验证码数据"""
         config = self._get_effective_config()
 
@@ -202,7 +202,7 @@ class EmailVerificationGenerator(DataGenerator[str]):
             verification_data["attempts"] = attempts + 1
             return {"valid": False, "reason": "invalid_code", "message": "验证码错误"}
 
-    def generate_single(self, context: Optional[GenerationContext] = None) -> str:
+    def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
         # 使用_generate_raw方法生成验证码数据
         verification_data = self._generate_raw(context)
