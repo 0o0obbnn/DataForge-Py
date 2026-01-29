@@ -109,7 +109,7 @@ pytest tests/ -vv
   ```python
   def test_email_generation_with_custom_domain():
       pass
-  
+
   def test_bankcard_luhn_validation():
       pass
   ```
@@ -138,7 +138,7 @@ def test_email_generation(generator_factory):
     )
     generator = generator_factory.create_generator(config)
     email = generator.generate_single()
-    
+
     assert email
     assert "@" in email
     assert generator.validate(email)
@@ -174,7 +174,7 @@ from dataforge.core.generator import GeneratorConfig
 @pytest.mark.unit
 class TestModuleGenerator:
     """模块生成器测试"""
-    
+
     def test_generate_single(self, generator_factory):
         """测试生成单个数据"""
         config = GeneratorConfig(
@@ -183,10 +183,10 @@ class TestModuleGenerator:
         )
         generator = generator_factory.create_generator(config)
         result = generator.generate_single()
-        
+
         assert result is not None
         assert generator.validate(result)
-    
+
     def test_generate_batch(self, generator_factory):
         """测试批量生成"""
         config = GeneratorConfig(
@@ -195,11 +195,11 @@ class TestModuleGenerator:
         )
         generator = generator_factory.create_generator(config)
         results = generator.generate_batch(10)
-        
+
         assert len(results) == 10
         for result in results:
             assert generator.validate(result)
-    
+
     def test_with_parameters(self, generator_factory):
         """测试带参数生成"""
         config = GeneratorConfig(
@@ -208,7 +208,7 @@ class TestModuleGenerator:
         )
         generator = generator_factory.create_generator(config)
         result = generator.generate_single()
-        
+
         # 验证参数效果
         assert result is not None
 ```
@@ -234,7 +234,7 @@ def test_with_fixtures(generator_factory, test_data_dir):
     # 使用工厂创建生成器
     config = GeneratorConfig(generator_type="test", parameters={})
     generator = generator_factory.create_generator(config)
-    
+
     # 使用测试数据目录
     data_file = test_data_dir / "sample.json"
     # ...
@@ -321,5 +321,5 @@ CI 要求:
 
 ---
 
-**维护者**: DataForge Team  
+**维护者**: DataForge Team
 **问题反馈**: https://github.com/dataforge/dataforge/issues

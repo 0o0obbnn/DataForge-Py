@@ -34,7 +34,7 @@ export const useApiStore = defineStore('api', () => {
   })
 
   // 计算属性
-  const activeApiKeys = computed(() => 
+  const activeApiKeys = computed(() =>
     apiKeys.value.filter(key => key.isActive)
   )
 
@@ -50,28 +50,28 @@ export const useApiStore = defineStore('api', () => {
 
   const filteredCallLogs = computed(() => {
     let result = [...callLogs.value]
-    
+
     // 状态码过滤
     if (filters.value.statusCode !== 'all') {
       const statusCode = parseInt(filters.value.statusCode)
       result = result.filter(log => log.statusCode === statusCode)
     }
-    
+
     // 模板过滤
     if (filters.value.templateId !== 'all') {
       result = result.filter(log => log.templateId === filters.value.templateId)
     }
-    
+
     // 搜索过滤
     if (filters.value.search) {
       const search = filters.value.search.toLowerCase()
-      result = result.filter(log => 
+      result = result.filter(log =>
         log.templateId.toLowerCase().includes(search) ||
         log.apiKey.toLowerCase().includes(search) ||
         (log.errorMessage && log.errorMessage.toLowerCase().includes(search))
       )
     }
-    
+
     return result
   })
 
@@ -79,10 +79,10 @@ export const useApiStore = defineStore('api', () => {
   const fetchApiKeys = async () => {
     try {
       loading.value = true
-      
+
       const response = await http.get<ApiKey[]>('/api/keys')
       apiKeys.value = response.data
-      
+
       return { success: true }
     } catch (error) {
       console.error('获取API Key列表失败:', error)
@@ -95,10 +95,10 @@ export const useApiStore = defineStore('api', () => {
   const createApiKey = async (name: string) => {
     try {
       loading.value = true
-      
+
       const response = await http.post<ApiKey>('/api/keys', { name })
       apiKeys.value.unshift(response.data)
-      
+
       return { success: true, data: response.data, message: 'API Key创建成功' }
     } catch (error) {
       console.error('创建API Key失败:', error)
@@ -111,14 +111,14 @@ export const useApiStore = defineStore('api', () => {
   const updateApiKey = async (keyId: string, updates: Partial<ApiKey>) => {
     try {
       loading.value = true
-      
+
       const response = await http.put<ApiKey>(`/api/keys/${keyId}`, updates)
-      
+
       const index = apiKeys.value.findIndex(key => key.id === keyId)
       if (index > -1) {
         apiKeys.value[index] = response.data
       }
-      
+
       return { success: true, data: response.data, message: 'API Key更新成功' }
     } catch (error) {
       console.error('更新API Key失败:', error)
@@ -131,14 +131,14 @@ export const useApiStore = defineStore('api', () => {
   const deleteApiKey = async (keyId: string) => {
     try {
       loading.value = true
-      
+
       await http.delete(`/api/keys/${keyId}`)
-      
+
       const index = apiKeys.value.findIndex(key => key.id === keyId)
       if (index > -1) {
         apiKeys.value.splice(index, 1)
       }
-      
+
       return { success: true, message: 'API Key删除成功' }
     } catch (error) {
       console.error('删除API Key失败:', error)
@@ -151,14 +151,14 @@ export const useApiStore = defineStore('api', () => {
   const rotateApiKey = async (keyId: string) => {
     try {
       loading.value = true
-      
+
       const response = await http.post<ApiKey>(`/api/keys/${keyId}/rotate`)
-      
+
       const index = apiKeys.value.findIndex(key => key.id === keyId)
       if (index > -1) {
         apiKeys.value[index] = response.data
       }
-      
+
       return { success: true, data: response.data, message: 'API Key轮换成功' }
     } catch (error) {
       console.error('轮换API Key失败:', error)
@@ -171,7 +171,7 @@ export const useApiStore = defineStore('api', () => {
   const fetchCallLogs = async (page = 1, pageSize = 10) => {
     try {
       loading.value = true
-      
+
       const response = await http.get<PaginatedResponse<ApiCallLog>>('/api/logs', {
         params: {
           page,
@@ -182,14 +182,14 @@ export const useApiStore = defineStore('api', () => {
           search: filters.value.search
         }
       })
-      
+
       callLogs.value = response.data.items
       pagination.value = {
         page: response.data.page,
         pageSize: response.data.pageSize,
         total: response.data.total
       }
-      
+
       return { success: true }
     } catch (error) {
       console.error('获取调用日志失败:', error)
@@ -202,13 +202,13 @@ export const useApiStore = defineStore('api', () => {
   const fetchStatistics = async (timeRange = '7d') => {
     try {
       loading.value = true
-      
+
       const response = await http.get<typeof statistics.value>('/api/statistics', {
         params: { timeRange }
       })
-      
+
       statistics.value = response.data
-      
+
       return { success: true }
     } catch (error) {
       console.error('获取统计数据失败:', error)
@@ -248,13 +248,13 @@ export const useApiStore = defineStore('api', () => {
     loading,
     pagination,
     filters,
-    
+
     // 计算属性
     activeApiKeys,
     successRate,
     errorRate,
     filteredCallLogs,
-    
+
     // 方法
     fetchApiKeys,
     createApiKey,
@@ -267,24 +267,3 @@ export const useApiStore = defineStore('api', () => {
     clearApiData
   }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

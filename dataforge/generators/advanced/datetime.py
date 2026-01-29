@@ -5,7 +5,6 @@
 import random  # TODO: Convert to secrets
 import secrets
 from datetime import date, datetime, timedelta, timezone
-from typing import Union
 
 from ...core.generator import (
     DataGenerator,
@@ -482,7 +481,7 @@ class TimestampValidator(Validator):
         return "Invalid timestamp format or value"
 
 
-class TimestampGenerator(DataGenerator[Union[int, str]]):
+class TimestampGenerator(DataGenerator[int | str]):
     """时间戳生成器"""
 
     def __init__(self, config: GeneratorConfig | dict | None = None):
@@ -565,9 +564,7 @@ class TimestampGenerator(DataGenerator[Union[int, str]]):
         else:  # INTEGER - 返回整数
             return timestamp
 
-    def generate_single(
-        self, context: GenerationContext | None = None
-    ) -> int | str:
+    def generate_single(self, context: GenerationContext | None = None) -> int | str:
         """生成单个数据项"""
         return self.generate(context)
 
@@ -699,7 +696,9 @@ class CronExpressionValidator(Validator):
                 return False
 
         # 验证每个字段
-        for i, (part, (min_val, max_val)) in enumerate(zip(parts, field_ranges, strict=False)):
+        for i, (part, (min_val, max_val)) in enumerate(
+            zip(parts, field_ranges, strict=False)
+        ):
             is_weekday = (i == 4 and self.format_type.upper() != "EXTENDED") or (
                 i == 5 and self.format_type.upper() == "EXTENDED"
             )
@@ -928,9 +927,7 @@ class GenericTimeGenerator(TimeGenerator):
 class GenericTimestampGenerator(TimestampGenerator):
     """通用时间戳生成器注册版本"""
 
-    def generate_single(
-        self, context: GenerationContext | None = None
-    ) -> int | str:
+    def generate_single(self, context: GenerationContext | None = None) -> int | str:
         """生成单个数据项"""
         return self.generate(context)
 

@@ -123,7 +123,7 @@ class GenderGenerator(DataGenerator[str]):
 
         # 多元性别，使用默认权重
         weights = []
-        total_weight = 0
+        total_weight: float = 0.0
 
         for option in options:
             # 映射选项到标准权重
@@ -152,7 +152,7 @@ class GenderGenerator(DataGenerator[str]):
 
         # 随机选择
         rand = secrets.randbelow(1000000) / 1000000
-        cumulative = 0
+        cumulative: float = 0.0
         for i, weight in enumerate(weights):
             cumulative += weight
             if rand <= cumulative:
@@ -361,7 +361,7 @@ class GenderGenerator(DataGenerator[str]):
         total = len(data_list)
 
         # 统计各性别数量
-        gender_counts = {}
+        gender_counts: dict[str, int] = {}
         for gender in data_list:
             standard = self._map_to_standard_gender(gender)
             gender_counts[standard] = gender_counts.get(standard, 0) + 1

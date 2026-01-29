@@ -22,8 +22,8 @@ class TestDataExport:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -59,7 +59,7 @@ class TestDataExport:
         assert len(parsed_users) == len(users)
         assert parsed_users[0]["name"] == users[0]["name"]
 
-        print(f"\nJSON导出:")
+        print("\nJSON导出:")
         print(f"  记录数: {len(users)}")
         print(f"  数据大小: {len(json_data)}字节")
 
@@ -69,8 +69,8 @@ class TestDataExport:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -112,7 +112,7 @@ class TestDataExport:
         parsed_users = list(reader)
         assert len(parsed_users) == len(users)
 
-        print(f"\nCSV导出:")
+        print("\nCSV导出:")
         print(f"  记录数: {len(users)}")
         print(f"  数据大小: {len(csv_data)}字节")
 
@@ -122,8 +122,8 @@ class TestDataExport:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -161,7 +161,7 @@ class TestDataExport:
         assert "INSERT INTO users" in sql_data
         assert len(sql_statements) == len(users)
 
-        print(f"\nSQL导出:")
+        print("\nSQL导出:")
         print(f"  记录数: {len(users)}")
         print(f"  SQL语句数: {len(sql_statements)}")
 
@@ -171,8 +171,8 @@ class TestDataExport:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -200,7 +200,7 @@ class TestDataExport:
         assert len(users) == batch_size
         assert len(json_data) > 0
 
-        print(f"\n大数据集导出:")
+        print("\n大数据集导出:")
         print(f"  记录数: {len(users)}")
         print(f"  JSON大小: {len(json_data)/1024:.2f} KB")
 
@@ -210,8 +210,8 @@ class TestDataExport:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -247,6 +247,6 @@ class TestDataExport:
         # 验证所有格式
         assert all(len(data) > 0 for data in formats.values())
 
-        print(f"\n多格式导出:")
+        print("\n多格式导出:")
         for fmt, data in formats.items():
             print(f"  {fmt.upper()}: {len(data)}字节")

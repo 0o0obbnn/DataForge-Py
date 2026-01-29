@@ -60,9 +60,7 @@ from dataforge.core.generator import (
 class XSSPayloadGenerator(DataGenerator):
     """XSS攻击测试payload生成器"""
 
-    def __init__(
-        self, config: GeneratorConfig | Mapping[str, Any] | None = None
-    ):
+    def __init__(self, config: GeneratorConfig | Mapping[str, Any] | None = None):
         """
         接受严格的 GeneratorConfig 或者 Mapping 并在内部规范化为 GeneratorConfig。
         这样既兼容旧用法（传 dict），也满足严格类型检查。
@@ -132,21 +130,17 @@ class XSSPayloadGenerator(DataGenerator):
         # 根据复杂度选择payload类型
 
         if self.complexity == "basic":
-
             payload_list = payloads["basic"]
 
         elif self.complexity == "advanced":
-
             payload_list = payloads["basic"] + payloads["advanced"]
 
         else:  # bypass
-
             payload_list = payloads["basic"] + payloads["advanced"] + payloads["bypass"]
 
         # 确保列表不为空
 
         if not payload_list:
-
             return "<script>alert('XSS')</script>"
 
         return secrets.choice(payload_list)
@@ -181,11 +175,9 @@ class XSSPayloadGenerator(DataGenerator):
         old_complexity = self.complexity
 
         if xss_type:
-
             self.xss_type = xss_type
 
         if complexity:
-
             self.complexity = complexity
 
         result = self._generate_raw()
@@ -217,15 +209,12 @@ class XSSPayloadGenerator(DataGenerator):
         # 尝试调用现有方法
 
         if hasattr(self, "generate") and callable(self.generate):
-
             return self._generate_raw()
 
         elif hasattr(self, "_generate_raw") and callable(self._generate_raw):
-
             return self._generate_raw(context)
 
         else:
-
             # 基本实现
 
             return "generated_data"

@@ -1,5 +1,6 @@
 """SQL output formatter for DataForge."""
 
+from typing import Any
 
 
 class SQLFormatter:
@@ -16,7 +17,7 @@ class SQLFormatter:
         self.batch_size = batch_size
 
     def format(
-        self, data: dict | list, table_name: str | None = None, **kwargs
+        self, data: dict[str, Any] | list[Any], table_name: str | None = None, **kwargs
     ) -> str:
         """Format data as SQL INSERT statements.
 
@@ -66,7 +67,7 @@ class SQLFormatter:
 
     def format_to_file(
         self,
-        data: dict | list,
+        data: dict[str, Any] | list[Any],
         filepath: str,
         table_name: str | None = None,
         **kwargs,

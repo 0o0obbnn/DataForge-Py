@@ -17,8 +17,8 @@ import re
 import sys
 
 # 设置环境
-sys.path.insert(0, '.')
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key'
+sys.path.insert(0, ".")
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 # 导入生成器模块以触发注册
 from dataforge.core.factory import default_registry
@@ -46,8 +46,8 @@ def basic_usage():
     # 演示地址生成
     print_subsection("地址生成器 (address)")
     try:
-        config = GeneratorConfig('address', {}, count=3)
-        generator_class = default_registry.get_generator_class('address')
+        config = GeneratorConfig("address", {}, count=3)
+        generator_class = default_registry.get_generator_class("address")
         if generator_class is None:
             raise Exception("Address generator not found in registry")
         generator = generator_class(config)
@@ -61,8 +61,8 @@ def basic_usage():
     # 演示电话号码生成
     print_subsection("电话号码生成器 (phone)")
     try:
-        config = GeneratorConfig('phone', {}, count=3)
-        generator_class = default_registry.get_generator_class('phone')
+        config = GeneratorConfig("phone", {}, count=3)
+        generator_class = default_registry.get_generator_class("phone")
         if generator_class is None:
             raise Exception("Phone generator not found in registry")
         generator = generator_class(config)
@@ -76,8 +76,8 @@ def basic_usage():
     # 演示电子邮箱生成
     print_subsection("电子邮箱生成器 (email)")
     try:
-        config = GeneratorConfig('email', {}, count=3)
-        generator_class = default_registry.get_generator_class('email')
+        config = GeneratorConfig("email", {}, count=3)
+        generator_class = default_registry.get_generator_class("email")
         if generator_class is None:
             raise Exception("Email generator not found in registry")
         generator = generator_class(config)
@@ -106,8 +106,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('address', params, count=2)
-            generator_class = default_registry.get_generator_class('address')
+            config = GeneratorConfig("address", params, count=2)
+            generator_class = default_registry.get_generator_class("address")
             if generator_class is None:
                 raise Exception("Address generator not found in registry")
             generator = generator_class(config)
@@ -130,8 +130,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('phone', params, count=2)
-            generator_class = default_registry.get_generator_class('phone')
+            config = GeneratorConfig("phone", params, count=2)
+            generator_class = default_registry.get_generator_class("phone")
             if generator_class is None:
                 raise Exception("Phone generator not found in registry")
             generator = generator_class(config)
@@ -155,8 +155,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('email', params, count=2)
-            generator_class = default_registry.get_generator_class('email')
+            config = GeneratorConfig("email", params, count=2)
+            generator_class = default_registry.get_generator_class("email")
             if generator_class is None:
                 raise Exception("Email generator not found in registry")
             generator = generator_class(config)
@@ -176,7 +176,7 @@ def batch_generation():
     # 批量生成完整联系信息
     print_subsection("批量生成完整联系信息")
     try:
-        contact_generators = ['name', 'phone', 'email', 'address']
+        contact_generators = ["name", "phone", "email", "address"]
         batch_size = 5
 
         print(f"  生成 {batch_size} 个人的完整联系信息:")
@@ -188,8 +188,8 @@ def batch_generation():
             contact_info = []
 
             # 首先生成姓名
-            name_config = GeneratorConfig('name', {}, count=1)
-            name_class = default_registry.get_generator_class('name')
+            name_config = GeneratorConfig("name", {}, count=1)
+            name_class = default_registry.get_generator_class("name")
             if name_class is None:
                 contact_info.append("N/A")
             else:
@@ -198,10 +198,12 @@ def batch_generation():
                 contact_info.append(name)
 
             # 生成其他联系信息
-            for generator_name in ['phone', 'email', 'address']:
+            for generator_name in ["phone", "email", "address"]:
                 try:
                     config = GeneratorConfig(generator_name, {}, count=1)
-                    generator_class = default_registry.get_generator_class(generator_name)
+                    generator_class = default_registry.get_generator_class(
+                        generator_name
+                    )
                     if generator_class is None:
                         contact_info.append("N/A")
                     else:
@@ -232,15 +234,15 @@ def validation_examples():
     # 验证电话号码格式
     print_subsection("电话号码格式验证")
     try:
-        config = GeneratorConfig('phone', {}, count=5)
-        generator_class = default_registry.get_generator_class('phone')
+        config = GeneratorConfig("phone", {}, count=5)
+        generator_class = default_registry.get_generator_class("phone")
         if generator_class is None:
             raise Exception("Phone generator not found in registry")
         generator = generator_class(config)
         phones = generator.generate_batch(5)
 
         print("  生成的电话号码:")
-        phone_pattern = re.compile(r'^1[3-9]\d{9}$')  # 简单的手机号验证
+        phone_pattern = re.compile(r"^1[3-9]\d{9}$")  # 简单的手机号验证
 
         for i, phone in enumerate(phones, 1):
             print(f"    {i}. {phone}")
@@ -255,15 +257,15 @@ def validation_examples():
     # 验证电子邮箱格式
     print_subsection("电子邮箱格式验证")
     try:
-        config = GeneratorConfig('email', {}, count=5)
-        generator_class = default_registry.get_generator_class('email')
+        config = GeneratorConfig("email", {}, count=5)
+        generator_class = default_registry.get_generator_class("email")
         if generator_class is None:
             raise Exception("Email generator not found in registry")
         generator = generator_class(config)
         emails = generator.generate_batch(5)
 
         print("  生成的电子邮箱:")
-        email_pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+        email_pattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
         for i, email in enumerate(emails, 1):
             print(f"    {i}. {email}")
@@ -283,8 +285,8 @@ def error_handling():
     # 处理无效的地区参数
     print_subsection("处理无效的地区参数")
     try:
-        config = GeneratorConfig('address', {"province": "不存在的省份"}, count=1)
-        generator_class = default_registry.get_generator_class('address')
+        config = GeneratorConfig("address", {"province": "不存在的省份"}, count=1)
+        generator_class = default_registry.get_generator_class("address")
         if generator_class is None:
             raise Exception("Address generator not found in registry")
         generator = generator_class(config)
@@ -296,8 +298,8 @@ def error_handling():
     # 处理无效的域名参数
     print_subsection("处理无效的域名参数")
     try:
-        config = GeneratorConfig('email', {"domain": "invalid.domain.format"}, count=1)
-        generator_class = default_registry.get_generator_class('email')
+        config = GeneratorConfig("email", {"domain": "invalid.domain.format"}, count=1)
+        generator_class = default_registry.get_generator_class("email")
         if generator_class is None:
             raise Exception("Email generator not found in registry")
         generator = generator_class(config)
@@ -318,18 +320,18 @@ def best_practices():
         person_data = {}
 
         # 生成基本信息
-        name_config = GeneratorConfig('name', {}, count=1)
-        name_class = default_registry.get_generator_class('name')
+        name_config = GeneratorConfig("name", {}, count=1)
+        name_class = default_registry.get_generator_class("name")
         if name_class is None:
             raise Exception("Name generator not found in registry")
         name_gen = name_class(name_config)
-        person_data['name'] = name_gen.generate_single()
+        person_data["name"] = name_gen.generate_single()
 
         # 生成联系信息
         contact_configs = {
-            'phone': GeneratorConfig('phone', {"operator": "mobile"}, count=1),
-            'email': GeneratorConfig('email', {"domain": "gmail.com"}, count=1),
-            'address': GeneratorConfig('address', {"province": "北京市"}, count=1)
+            "phone": GeneratorConfig("phone", {"operator": "mobile"}, count=1),
+            "email": GeneratorConfig("email", {"domain": "gmail.com"}, count=1),
+            "address": GeneratorConfig("address", {"province": "北京市"}, count=1),
         }
 
         for key, config in contact_configs.items():
@@ -358,15 +360,15 @@ def best_practices():
             record = {}
 
             # 生成姓名
-            name_config = GeneratorConfig('name', {}, count=1)
-            name_class = default_registry.get_generator_class('name')
+            name_config = GeneratorConfig("name", {}, count=1)
+            name_class = default_registry.get_generator_class("name")
             if name_class is None:
                 raise Exception("Name generator not found in registry")
             name_gen = name_class(name_config)
-            record['name'] = name_gen.generate_single()
+            record["name"] = name_gen.generate_single()
 
             # 生成其他联系信息
-            for field in ['phone', 'email', 'address']:
+            for field in ["phone", "email", "address"]:
                 config = GeneratorConfig(field, {}, count=1)
                 generator_class = default_registry.get_generator_class(field)
                 if generator_class is None:

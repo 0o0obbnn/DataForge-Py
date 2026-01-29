@@ -1,7 +1,7 @@
 # 测试修复会话总结
 
-**日期**: 2025-11-08  
-**会话时长**: ~2小时  
+**日期**: 2025-11-08
+**会话时长**: ~2小时
 **状态**: 进行中
 
 ---
@@ -91,27 +91,27 @@ class SomeGenerator(DataGenerator[str]):  # 明确类型注解
     - 默认返回字符串（简单场景）
     - 设置 string_only=False 返回完整字典（复杂场景）
     """
-    
+
     def _setup(self) -> None:
         self.default_config = {
             "string_only": True,  # 默认返回字符串
             # ...
         }
-    
+
     def _generate_raw(self, context=None) -> str:
         # 生成数据
         data = self._generate_data()
-        
+
         # 如果只需要字符串，直接返回
         if self.parameters.get("string_only", True):
             return data
-        
+
         # 返回完整字典
         return {
             "data": data,
             "metadata": {...}
         }
-    
+
     def validate(self, data: str | dict) -> bool:
         # 支持两种类型
         if isinstance(data, str):
@@ -297,9 +297,9 @@ def validate(self, data):
 
 ## 🚀 项目状态
 
-**当前通过率**: 81.2%  
-**目标通过率**: 90%+  
-**剩余工作量**: 预计6-10小时  
+**当前通过率**: 81.2%
+**目标通过率**: 90%+
+**剩余工作量**: 预计6-10小时
 **可达成目标**: 85-90%通过率
 
 **建议**: 继续按照已建立的模式修复剩余问题，优先处理简单问题以快速提升通过率。

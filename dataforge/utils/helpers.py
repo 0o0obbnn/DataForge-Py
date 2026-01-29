@@ -6,9 +6,10 @@ This module provides helper functions for data formatting and processing.
 import json
 import uuid
 from datetime import datetime
+from typing import Any
 
 
-def format_output(data: dict | list, format_type: str = "json") -> str:
+def format_output(data: dict[str, Any] | list, format_type: str = "json") -> str:
     """Format data for output.
 
     Args:
@@ -41,7 +42,7 @@ def generate_batch_id() -> str:
     return f"batch_{timestamp}_{unique_id}"
 
 
-def _format_csv(data: dict | list) -> str:
+def _format_csv(data: dict[str, Any] | list) -> str:
     """Format data as CSV."""
     if not data:
         return ""
@@ -71,7 +72,7 @@ def _format_csv(data: dict | list) -> str:
     return "\n".join(lines)
 
 
-def _format_xml(data: dict | list) -> str:
+def _format_xml(data: dict[str, Any] | list) -> str:
     """Format data as XML."""
     if isinstance(data, dict):
         return _dict_to_xml(data, "root")
@@ -106,7 +107,7 @@ def _list_to_xml(lst: list, item_name: str) -> str:
     return xml
 
 
-def _format_sql(data: dict | list, table_name: str = "test_data") -> str:
+def _format_sql(data: dict[str, Any] | list, table_name: str = "test_data") -> str:
     """Format data as SQL INSERT statements."""
     if not data:
         return ""

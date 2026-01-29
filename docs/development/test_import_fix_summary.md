@@ -81,7 +81,7 @@ PytestReturnNotNoneWarning: Test functions should return None
 ## 成功指标
 
 - ✅ 导入路径问题：100% 解决
-- ✅ MaritalStatusGenerator：100% 解决  
+- ✅ MaritalStatusGenerator：100% 解决
 - ⚠️ 整体测试通过率：约 70% (154/218 通过)
 - 🎯 目标：达到 90%+ 测试通过率
 

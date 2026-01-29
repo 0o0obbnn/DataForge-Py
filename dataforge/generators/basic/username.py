@@ -6,6 +6,7 @@
 
 import secrets
 import string
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -111,7 +112,7 @@ class UsernameGenerator(DataGenerator[str]):
 
     def _generate_email_style_username(self) -> str:
         """生成邮箱风格的用户名"""
-        first_parts = [
+        first_parts: list[Any] = [
             "john",
             "jane",
             "mike",
@@ -129,7 +130,7 @@ class UsernameGenerator(DataGenerator[str]):
             "robert",
             "emily",
         ]
-        last_parts = [
+        last_parts: list[Any] = [
             "smith",
             "johnson",
             "williams",

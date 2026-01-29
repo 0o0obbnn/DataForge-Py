@@ -166,6 +166,33 @@ class SMSVerificationGenerator(DataGenerator[Any]):
         except ValueError:
             return True
 
+    def get_sms_template(self) -> str:
+        """获取短信模板"""
+        config = self._get_effective_config()
+        template = config.get("template", "SMS_123456789")
+
+        # 根据场景返回不同模板
+        templates = {
+            "SMS_123456789": "【DataForge】您的验证码是：{code}，请在{minutes}分钟内使用。如非本人操作请忽略。",
+            "SMS_LOGIN": "【DataForge】登录验证码：{code}，有效期{minutes}分钟。请勿泄露给他人。",
+            "SMS_REGISTER": "【DataForge】注册验证码：{code}，有效期{minutes}分钟。完成注册后请删除此短信。",
+            "SMS_TRANSACTION": "【DataForge】交易验证码：{code}，有效期{minutes}分钟。请勿泄露给他人。",
+        }
+
+        return templates.get(template, templates["SMS_123456789"])
+
+    def get_expiry_info(self) -> dict[str, Any]:
+        """获取过期信息"""
+        config = self._get_effective_config()
+        expiry_minutes = config.get("expiry_minutes", 5)
+        expiry_time = datetime.now() + timedelta(minutes=expiry_minutes)
+
+        return {
+            "expires_in": expiry_minutes * 60,  # 转换为秒
+            "expiry_time": expiry_time.isoformat(),
+            "expires_in_minutes": expiry_minutes,
+        }
+
     def verify_code(
         self, verification_data: dict[str, Any], input_code: str
     ) -> dict[str, Any]:

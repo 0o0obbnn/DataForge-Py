@@ -4,8 +4,6 @@ import secrets
 from typing import Any
 
 from ...core.cache import LazyDataLoader, get_data_file_path
-
-logger = logging.getLogger(__name__)
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
@@ -15,6 +13,8 @@ from ...core.generator import (
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
 from ...resources.name_config_loader import load_name_en_config, load_pinyin_map
+
+logger = logging.getLogger(__name__)
 
 
 class NameValidator(Validator):
@@ -71,14 +71,14 @@ class NameGenerator(DataGenerator[str]):
         self.validator = NameValidator()
 
         # 设置数据加载器（将在首次访问时加载）
-        self._surnames_loader = None
-        self._givennames_loader = None
+        self._surnames_loader: LazyDataLoader | None = None
+        self._givennames_loader: LazyDataLoader | None = None
 
         # 调用 _setup 初始化加载器
         self._setup()
 
     def _setup(self) -> None:
-        self.name_type = self.parameters.get("type", "BOTH")  # CN, EN, BOTH
+        self.name_type = self.parameters.get("type", "CN")  # CN, EN, BOTH - 默认中文
         self.gender = self.parameters.get("gender", "ANY")  # MALE, FEMALE, ANY
         self.surname_file = self.parameters.get("surname_file", None)
         self.givenname_file = self.parameters.get("givenname_file", None)
@@ -193,9 +193,7 @@ class NameGenerator(DataGenerator[str]):
             "givenname_file",
         ]
 
-    def _generate_chinese_name(
-        self, context: GenerationContext | None = None
-    ) -> str:
+    def _generate_chinese_name(self, context: GenerationContext | None = None) -> str:
         """生成中文姓名"""
         # 1. 选择姓氏
         surname_info = self._select_surname()

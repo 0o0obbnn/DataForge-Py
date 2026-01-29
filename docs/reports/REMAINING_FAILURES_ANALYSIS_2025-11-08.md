@@ -1,7 +1,7 @@
 # 剩余115个失败测试分析与修复方案
 
-**日期**: 2025-11-08  
-**分析人**: AI Assistant  
+**日期**: 2025-11-08
+**分析人**: AI Assistant
 **状态**: 详细分析完成
 
 ---
@@ -63,8 +63,8 @@ def _calculate_idcard_checksum(self, id_number):
 # 或者标记为@pytest.skip如果不是核心功能
 ```
 
-**优先级**: P1 (高)  
-**预计时间**: 2-3小时  
+**优先级**: P1 (高)
+**预计时间**: 2-3小时
 **影响范围**: Core模块的基础功能
 
 ---
@@ -90,13 +90,13 @@ class AuthTokenGenerator:
         if 'string_only' not in self.parameters:
             self.parameters['string_only'] = True
         return self.generate(context)
-    
+
     def generate(self, context=None):
         token = self._generate_token()
         if self.parameters.get('string_only', False):
             return token
         return {'token': token, 'expires_at': ...}
-    
+
     def validate(self, data):
         if not isinstance(data, (str, dict)):
             return False
@@ -105,9 +105,9 @@ class AuthTokenGenerator:
         return self.validator.validate(data)
 ```
 
-**优先级**: P1 (高)  
-**预计时间**: 1-2小时  
-**影响范围**: 4个Auth生成器  
+**优先级**: P1 (高)
+**预计时间**: 1-2小时
+**影响范围**: 4个Auth生成器
 **修复难度**: 低（已有成熟模式）
 
 ---
@@ -184,8 +184,8 @@ class NameOptimizedGenerator(NameGenerator):
     pass  # 继承基础功能
 ```
 
-**优先级**: P2 (中)  
-**预计时间**: 4-6小时（完整实现）或 1小时（标记跳过）  
+**优先级**: P2 (中)
+**预计时间**: 4-6小时（完整实现）或 1小时（标记跳过）
 **影响范围**: Basic模块的高级功能
 
 ---
@@ -219,14 +219,14 @@ class LandlineGenerator:
     def _generate_beijing_landline(self):
         # 北京: 010-XXXXXXXX (8位)
         return f"010-{self._random_digits(8)}"
-    
+
     def _generate_shanghai_landline(self):
         # 上海: 021-XXXXXXXX (8位)
         return f"021-{self._random_digits(8)}"
 ```
 
-**优先级**: P1 (高)  
-**预计时间**: 1小时  
+**优先级**: P1 (高)
+**预计时间**: 1小时
 **影响范围**: Contact模块
 
 ---
@@ -267,7 +267,7 @@ class CryptoGenerator:
         if 'string_only' not in self.parameters:
             self.parameters['string_only'] = True
         return self.generate(context)
-    
+
     def generate(self, context=None):
         address = self._generate_crypto_address()
         if self.parameters.get('string_only', False):
@@ -288,8 +288,8 @@ class StockGenerator:
         return results
 ```
 
-**优先级**: P2 (中)  
-**预计时间**: 2-3小时  
+**优先级**: P2 (中)
+**预计时间**: 2-3小时
 **影响范围**: Finance模块
 
 ---
@@ -321,7 +321,7 @@ class MaritalStatusGenerator:
     @property
     def generator_type(self):
         return GeneratorType.BASIC
-    
+
     @property
     def supported_parameters(self):
         return ['locale', 'format']
@@ -342,8 +342,8 @@ class OrganizationCodeGenerator:
         return len(data) >= 8 and len(data) <= 18
 ```
 
-**优先级**: P3 (低)  
-**预计时间**: 2-3小时  
+**优先级**: P3 (低)
+**预计时间**: 2-3小时
 **影响范围**: 多个模块的边缘功能
 
 ---
@@ -377,8 +377,8 @@ class OrganizationCodeGenerator:
 
 ### 方案A: 快速提升到85%+ (推荐)
 
-**目标**: 修复P1问题，通过率达到85%+  
-**时间**: 4-6小时  
+**目标**: 修复P1问题，通过率达到85%+
+**时间**: 4-6小时
 **修复**: 31个测试
 
 **步骤**:
@@ -394,8 +394,8 @@ class OrganizationCodeGenerator:
 
 ### 方案B: 全面修复到90%+ (完整)
 
-**目标**: 修复P1+P2问题，通过率达到90%+  
-**时间**: 10-15小时  
+**目标**: 修复P1+P2问题，通过率达到90%+
+**时间**: 10-15小时
 **修复**: 85个测试
 
 **步骤**:
@@ -411,8 +411,8 @@ class OrganizationCodeGenerator:
 
 ### 方案C: 完美修复到95%+ (理想)
 
-**目标**: 修复所有问题，通过率达到95%+  
-**时间**: 12-18小时  
+**目标**: 修复所有问题，通过率达到95%+
+**时间**: 12-18小时
 **修复**: 115个测试
 
 **步骤**:
@@ -433,7 +433,7 @@ class OrganizationCodeGenerator:
 # 文件: dataforge/generators/identifier/bankcard.py
 def validate(self, data, strict=None):
     """验证银行卡号
-    
+
     Args:
         data: 银行卡号
         strict: 是否严格验证（None=自动，True=严格，False=宽松）
@@ -441,13 +441,13 @@ def validate(self, data, strict=None):
     if strict is None:
         # 自动判断：如果是测试环境，使用严格模式
         strict = True
-    
+
     if not isinstance(data, (str, dict)):
         return False
-    
+
     if isinstance(data, str):
         data = {"card_number": data}
-    
+
     if strict:
         return self._strict_validate(data)
     return self._basic_validate(data)
@@ -476,7 +476,7 @@ class AuthTokenGenerator:
         if 'string_only' not in self.parameters:
             self.parameters['string_only'] = True
         return self.generate(context)
-    
+
     def generate(self, context=None):
         token = self._generate_token()
         if self.parameters.get('string_only', False):
@@ -486,7 +486,7 @@ class AuthTokenGenerator:
             'type': 'bearer',
             'expires_in': 3600
         }
-    
+
     def validate(self, data):
         if not isinstance(data, (str, dict)):
             return False

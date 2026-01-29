@@ -67,7 +67,7 @@ class PassportGeneratorConfig(GeneratorConfig):
     include_name: bool = True
 
 
-class PassportGenerator(DataGenerator[dict[str, Any]]):
+class PassportGenerator(DataGenerator[Any]):
     """护照号码生成器
 
     功能特性：
@@ -263,7 +263,9 @@ class GenericPassportGenerator(DataGenerator[str]):
 
     def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个护照号码字符串"""
-        passport_type = self._passport_generator.config.passport_type
+        passport_type: str = self._passport_generator.parameters.get(
+            "passport_type", "REGULAR"
+        )  # type: ignore
         return self._passport_generator._generate_passport_number(passport_type)
 
     def validate(self, data: str) -> bool:

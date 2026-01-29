@@ -111,7 +111,7 @@ from typing import Optional, Dict, List
 生成结果: 🍆
 验证结果: True
 
-# UnicodeSymbolGenerator 测试  
+# UnicodeSymbolGenerator 测试
 生成结果: ♩☈⚀
 验证结果: True
 ```
@@ -124,7 +124,7 @@ from typing import Optional, Dict, List
 
 ### 3. 类型检查验证
 - ✅ 解决了所有 `reportImplicitAbstractClass` 错误
-- ✅ 解决了所有 `reportMissingTypeArgument` 错误  
+- ✅ 解决了所有 `reportMissingTypeArgument` 错误
 - ✅ 解决了所有 `reportIncompatibleMethodOverride` 错误
 - ✅ 解决了所有 `reportUnannotatedClassAttribute` 错误
 - ✅ 大幅减少了 `reportAny` 类型的警告

@@ -4,6 +4,7 @@
 """
 
 import secrets
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -157,14 +158,30 @@ class LandlineGenerator(DataGenerator[str]):
 
     def _generate_international_landline(self) -> str:
         """生成国际座机号码"""
+        # 获取国家配置
+        country_config: dict[str, Any]
         if self.country.upper() in self.INTERNATIONAL_CODES:
-            country_config = self.INTERNATIONAL_CODES[self.country.upper()]
+            country_config = self.INTERNATIONAL_CODES[self.country.upper()]  # type: ignore[index]
         else:
             # 默认使用美国格式
-            country_config = self.INTERNATIONAL_CODES["US"]
+            country_config = self.INTERNATIONAL_CODES["US"]  # type: ignore[index]
 
-        country_code = country_config["code"]
-        format_str = country_config["formats"][0]  # 使用第一个格式
+        # 提取code并确保是str类型
+        code_value = country_config["code"]
+        country_code = (
+            str(code_value) if isinstance(code_value, str) else str(code_value)
+        )
+
+        # 提取format并确保是str类型
+        formats_value = country_config["formats"]
+        formats_list = (
+            list(formats_value)
+            if isinstance(formats_value, (list, tuple))
+            else ["+1-###-###-####"]
+        )
+        format_str = (
+            str(formats_list[0]) if len(formats_list) > 0 else "+1-###-###-####"
+        )
 
         # 生成号码
         result = format_str
@@ -177,9 +194,10 @@ class LandlineGenerator(DataGenerator[str]):
         if not self.include_country_code:
             # 移除国家代码
             if result.startswith("+"):
-                result = result.split("-", 1)[1] if "-" in result else result
+                result_split = result.split("-", 1)
+                result = result_split[1] if len(result_split) > 1 else result  # type: ignore[assignment]
             elif result.startswith(country_code + "-"):
-                result = result[len(country_code) + 1 :]
+                result = result[len(country_code) + 1 :]  # type: ignore[index]
 
         return result
 
@@ -275,11 +293,20 @@ class FaxNumberGenerator(DataGenerator[str]):
         return f"{prefix}{base_number}"
 
     def validate(self, data: str) -> bool:
-        """验证传真号码格式"""
+        """验证传真号码格式
+
+        支持带中文前缀的传真号，如"传真号 022-1047-9516"、"FAX: 022-1047-9516"
+        """
         import re
 
+        # 去除可能的前缀（中文、英文、冒号、空格等）
+        # 匹配并移除前缀部分，保留号码部分
+        # 前缀格式可能为：中文字符、FAX、传真、冒号、空格等
+        cleaned = re.sub(r"^[\u4e00-\u9fa5a-zA-Z]+\s*[:：]?\s*", "", data)
+
+        # 验证清理后的号码部分
         pattern = r"^\+?[\d\s\-\(\)]+(?:ext\d+)?$"
-        return bool(re.match(pattern, data))
+        return bool(re.match(pattern, cleaned))
 
     def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
@@ -411,7 +438,5 @@ for name, aliases, generator_class in [
     ("extension", ["分机", "分机号"], ExtensionGenerator),
 ]:
     # 先注册生成器主名称
-    register_generator(name, generator_class)
-    # 为每个别名单独注册相同的生成器类
-    for alias in aliases:
-        register_generator(alias, generator_class)
+    register_generator(name, aliases)(generator_class)
+    # 不需要单独注册每个别名，已经在主注册中处理了

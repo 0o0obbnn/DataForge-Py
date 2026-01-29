@@ -26,7 +26,7 @@
 # 修复前 (有问题的方式)
 generator = get_generator("marital_status", config)  # 返回 DataGenerator[Unknown]
 
-# 修复后 (正确的方式)  
+# 修复后 (正确的方式)
 generator: MaritalStatusGenerator = MaritalStatusGenerator(config)  # 明确类型
 ```
 

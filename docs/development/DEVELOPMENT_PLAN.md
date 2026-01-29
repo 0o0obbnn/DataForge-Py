@@ -187,8 +187,8 @@ from typing import Optional
 
 class TimestampGenerator(BaseGenerator):
     """高精度时间戳生成器"""
-    
-    def generate(self, 
+
+    def generate(self,
                 start_date: Optional[str] = None,
                 end_date: Optional[str] = None,
                 timezone_str: str = "UTC",
@@ -205,7 +205,7 @@ from typing import Literal
 
 class IPAddressGenerator(BaseGenerator):
     """IPv4/IPv6地址生成器"""
-    
+
     def generate(self,
                 version: Literal[4, 6] = 4,
                 ip_type: Literal["public", "private", "any"] = "any",
@@ -222,7 +222,7 @@ from typing import Dict, Any, Optional
 
 class JSONGenerator(BaseGenerator):
     """JSON数据结构生成器"""
-    
+
     def generate(self,
                 schema: Optional[Dict[str, Any]] = None,
                 depth: int = 3,
@@ -245,7 +245,7 @@ class TestTimestampGenerator:
         gen = TimestampGenerator()
         result = gen.generate()
         assert isinstance(result, str)
-        
+
     def test_timezone_handling(self):
         gen = TimestampGenerator()
         result = gen.generate(timezone_str="Asia/Shanghai")
@@ -302,7 +302,7 @@ class TestTimestampGenerator:
 
 ---
 
-**制定日期**: 2024年12月19日  
-**版本**: v1.0  
-**状态**: 待评审  
+**制定日期**: 2024年12月19日
+**版本**: v1.0
+**状态**: 待评审
 **下次评审**: 2024年12月26日

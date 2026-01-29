@@ -267,7 +267,7 @@ class TestOutputFormats:
 
                 if result.returncode == 0 and os.path.exists(output_file):
                     # 验证文件内容是有效的JSON
-                    with open(output_file, "r", encoding="utf-8") as f:
+                    with open(output_file, encoding="utf-8") as f:
                         try:
                             data = json.load(f)
                             assert isinstance(data, (list, dict))
@@ -309,7 +309,7 @@ class TestOutputFormats:
 
                 if result.returncode == 0 and os.path.exists(output_file):
                     # 验证文件内容
-                    with open(output_file, "r", encoding="utf-8") as f:
+                    with open(output_file, encoding="utf-8") as f:
                         content = f.read()
                         assert len(content) > 0
             finally:

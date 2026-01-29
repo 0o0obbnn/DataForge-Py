@@ -31,9 +31,7 @@ class ExtendedGenerationContext(GenerationContext):
         self._lock = threading.RLock()
         self._generation_order: list[str] = []
 
-    def set(
-        self, key: str, value: Any, metadata: dict[str, Any] | None = None
-    ) -> None:
+    def set(self, key: str, value: Any, metadata: dict[str, Any] | None = None) -> None:
         """设置上下文数据"""
         with self._lock:
             self._data[key] = value

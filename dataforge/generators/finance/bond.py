@@ -105,13 +105,15 @@ class BondCodeGenerator(DataGenerator[str]):
         selected_type = secrets.choice(category_types)
         type_info = self.china_bonds[selected_category][selected_type]
 
-        prefix = secrets.choice(type_info["prefix"])
+        prefix_list: list[str] = type_info["prefix"]  # type: ignore
+        prefix: str = secrets.choice(prefix_list)  # type: ignore
+        code_range: tuple[int, int] = type_info["range"]  # type: ignore
         suffix = str(
-            secrets.randbelow(type_info["range"][1] - type_info["range"][0] + 1)
-            + type_info["range"][0]
+            secrets.randbelow(int(code_range[1]) - int(code_range[0]) + 1)
+            + int(code_range[0])
         ).zfill(3)
 
-        code = prefix + suffix
+        code: str = prefix + suffix  # type: ignore
 
         # 添加交易所后缀
         if self.include_suffix and self.format == "FULL":
@@ -138,13 +140,15 @@ class BondCodeGenerator(DataGenerator[str]):
             selected_category = secrets.choice(list(self.hk_bonds.keys()))
 
         category_info = self.hk_bonds[selected_category]
-        prefix = secrets.choice(category_info["prefix"])
+        prefix_list: list[str] = category_info["prefix"]  # type: ignore
+        prefix: str = secrets.choice(prefix_list)  # type: ignore
+        code_range: tuple[int, int] = category_info["range"]  # type: ignore
         suffix = str(
-            secrets.randbelow(category_info["range"][1] - category_info["range"][0] + 1)
-            + category_info["range"][0]
+            secrets.randbelow(int(code_range[1]) - int(code_range[0]) + 1)
+            + int(code_range[0])
         ).zfill(4)
 
-        code = prefix + suffix
+        code: str = prefix + suffix  # type: ignore
 
         if self.include_suffix and self.format == "FULL":
             code += ".HK"
@@ -199,8 +203,8 @@ class BondCodeGenerator(DataGenerator[str]):
         # 检查前缀匹配
         for _category, types in self.china_bonds.items():
             for _bond_type, info in types.items():
-                for prefix in info["prefix"]:
-                    if code.startswith(prefix):
+                for prefix in info["prefix"]:  # type: ignore
+                    if code.startswith(str(prefix)):  # type: ignore
                         return True
 
         return False
@@ -212,8 +216,8 @@ class BondCodeGenerator(DataGenerator[str]):
 
         # 检查前缀匹配
         for _category, info in self.hk_bonds.items():
-            for prefix in info["prefix"]:
-                if code.startswith(prefix):
+            for prefix in info["prefix"]:  # type: ignore
+                if code.startswith(str(prefix)):  # type: ignore
                     return True
 
         return False

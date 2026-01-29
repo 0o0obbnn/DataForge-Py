@@ -188,6 +188,9 @@ class TimezoneGenerator(DataGenerator[str]):
         "GMT-12",
     ]
 
+    # 声明validator类型
+    validator: "TimezoneValidator | None"  # type: ignore
+
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
         self.format = "iana"

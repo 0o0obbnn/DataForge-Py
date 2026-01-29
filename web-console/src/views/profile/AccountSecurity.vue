@@ -22,7 +22,7 @@
             修改密码
           </a-button>
         </div>
-        
+
         <!-- 两步验证 -->
         <div class="security-item">
           <div class="item-info">
@@ -37,13 +37,13 @@
               </a-tag>
             </div>
           </div>
-          <a-switch 
-            v-model:checked="twoFactorEnabled" 
+          <a-switch
+            v-model:checked="twoFactorEnabled"
             @change="handleTwoFactorChange"
             :loading="twoFactorLoading"
           />
         </div>
-        
+
         <!-- 登录设备管理 -->
         <div class="security-item">
           <div class="item-info">
@@ -63,7 +63,7 @@
             管理设备
           </a-button>
         </div>
-        
+
         <!-- 登录通知 -->
         <div class="security-item">
           <div class="item-info">
@@ -78,13 +78,13 @@
               </a-tag>
             </div>
           </div>
-          <a-switch 
-            v-model:checked="loginNotificationEnabled" 
+          <a-switch
+            v-model:checked="loginNotificationEnabled"
             @change="handleLoginNotificationChange"
             :loading="loading"
           />
         </div>
-        
+
         <!-- 账户注销 -->
         <div class="security-item danger-item">
           <div class="item-info">
@@ -101,7 +101,7 @@
         </div>
       </div>
     </a-card>
-    
+
     <!-- 修改密码弹窗 -->
     <a-modal
       v-model:open="changePasswordVisible"
@@ -132,7 +132,7 @@
             </template>
           </a-input-password>
         </a-form-item>
-        
+
         <a-form-item
           label="新密码"
           name="newPassword"
@@ -149,12 +149,12 @@
               <KeyOutlined />
             </template>
           </a-input-password>
-          
+
           <!-- 密码强度指示器 -->
           <div v-if="passwordForm.newPassword" class="password-strength">
             <div class="strength-bar">
-              <div 
-                class="strength-level" 
+              <div
+                class="strength-level"
                 :class="currentPasswordStrength.level"
                 :style="{ width: currentPasswordStrength.width }"
               ></div>
@@ -162,7 +162,7 @@
             <span class="strength-text">{{ currentPasswordStrength.text }}</span>
           </div>
         </a-form-item>
-        
+
         <a-form-item
           label="确认新密码"
           name="confirmPassword"
@@ -181,7 +181,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
-    
+
     <!-- 设备管理弹窗 -->
     <a-modal
       v-model:open="deviceManageVisible"
@@ -210,12 +210,12 @@
               <a-tag v-else color="blue">活跃</a-tag>
             </div>
           </div>
-          
+
           <div class="device-actions">
-            <a-button 
-              v-if="!device.isCurrent" 
-              type="text" 
-              danger 
+            <a-button
+              v-if="!device.isCurrent"
+              type="text"
+              danger
               @click="handleRemoteLogout(device.id)"
               :loading="device.loading"
               size="small"
@@ -225,14 +225,14 @@
           </div>
         </div>
       </div>
-      
+
       <div class="device-footer">
         <a-button type="primary" danger @click="handleLogoutAllDevices" :loading="logoutAllLoading">
           注销所有其他设备
         </a-button>
       </div>
     </a-modal>
-    
+
     <!-- 账户注销弹窗 -->
     <a-modal
       v-model:open="deleteAccountVisible"
@@ -253,7 +253,7 @@
           </ul>
         </div>
       </div>
-      
+
       <a-form
         ref="deleteFormRef"
         :model="deleteForm"
@@ -274,7 +274,7 @@
             </template>
           </a-input-password>
         </a-form-item>
-        
+
         <a-form-item
           name="confirmDelete"
           :rules="[{ required: true, message: '请确认您理解此操作的后果' }]"
@@ -390,19 +390,19 @@ const lastPasswordUpdate = computed(() => {
 const currentPasswordStrength = computed(() => {
   const password = passwordForm.newPassword
   if (!password) return { level: '', width: '0%', text: '' }
-  
+
   let score = 0
-  
+
   // 长度评分
   if (password.length >= 8) score += 25
   else if (password.length >= 6) score += 15
-  
+
   // 复杂度评分
   if (/[a-z]/.test(password)) score += 15
   if (/[A-Z]/.test(password)) score += 15
   if (/\d/.test(password)) score += 15
   if (/[!@#$%^&*(),.?\":{}|<>]/.test(password)) score += 30
-  
+
   if (score >= 80) return { level: 'strong', width: '100%', text: '强' }
   if (score >= 60) return { level: 'medium', width: '66%', text: '中' }
   if (score >= 30) return { level: 'weak', width: '33%', text: '弱' }
@@ -473,15 +473,15 @@ const handleNewPasswordInput = () => {
 const handleChangePassword = async () => {
   try {
     await passwordFormRef.value?.validate()
-    
+
     passwordLoading.value = true
-    
+
     const result = await authStore.changePassword(
       passwordForm.oldPassword,
       passwordForm.newPassword,
       passwordForm.confirmPassword
     )
-    
+
     if (result.success) {
       message.success(result.message)
       changePasswordVisible.value = false
@@ -498,10 +498,10 @@ const handleChangePassword = async () => {
 const handleTwoFactorChange = async (checked: boolean) => {
   try {
     twoFactorLoading.value = true
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     message.success(checked ? '两步验证已启用' : '两步验证已禁用')
   } catch (error) {
     message.error('设置失败，请稍后重试')
@@ -515,10 +515,10 @@ const handleTwoFactorChange = async (checked: boolean) => {
 const handleLoginNotificationChange = async (checked: boolean) => {
   try {
     loading.value = true
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
     message.success(checked ? '登录通知已开启' : '登录通知已关闭')
   } catch (error) {
     message.error('设置失败，请稍后重试')
@@ -547,7 +547,7 @@ const formatTime = (dateString: string) => {
   const date = new Date(dateString)
   const now = new Date()
   const diff = now.getTime() - date.getTime()
-  
+
   if (diff < 60 * 1000) return '刚刚'
   if (diff < 60 * 60 * 1000) return `${Math.floor(diff / (60 * 1000))}分钟前`
   if (diff < 24 * 60 * 60 * 1000) return `${Math.floor(diff / (60 * 60 * 1000))}小时前`
@@ -559,17 +559,17 @@ const handleRemoteLogout = async (deviceId: string) => {
     const device = activeDevices.value.find(d => d.id === deviceId)
     if (device) {
       device.loading = true
-      
+
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       // 从列表中移除设备
       const index = activeDevices.value.findIndex(d => d.id === deviceId)
       if (index > -1) {
         activeDevices.value.splice(index, 1)
         activeDevicesCount.value--
       }
-      
+
       message.success('设备已注销')
     }
   } catch (error) {
@@ -586,14 +586,14 @@ const handleLogoutAllDevices = async () => {
     onOk: async () => {
       try {
         logoutAllLoading.value = true
-        
+
         // 模拟API调用
         await new Promise(resolve => setTimeout(resolve, 1500))
-        
+
         // 只保留当前设备
         activeDevices.value = activeDevices.value.filter(d => d.isCurrent)
         activeDevicesCount.value = 1
-        
+
         message.success('已注销所有其他设备')
       } catch (error) {
         message.error('批量注销失败，请稍后重试')
@@ -617,25 +617,25 @@ const handleCancelDeleteAccount = () => {
 const handleDeleteAccount = async () => {
   try {
     await deleteFormRef.value?.validate()
-    
+
     if (!deleteForm.confirmDelete) {
       message.error('请确认您理解注销账户的后果')
       return
     }
-    
+
     deleteLoading.value = true
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     message.success('账户注销成功')
     deleteAccountVisible.value = false
-    
+
     // 注销后跳转到登录页
     setTimeout(() => {
       authStore.logout()
     }, 1000)
-    
+
   } catch (error) {
     console.error('注销账户失败:', error)
   } finally {
@@ -658,18 +658,18 @@ onMounted(() => {
 .security-card {
   background: var(--df-secondary-bg);
   border: 1px solid var(--df-text-disabled);
-  
+
   :deep(.ant-card-head) {
     background: transparent;
     border-bottom-color: var(--df-text-disabled);
-    
+
     .ant-card-head-title {
       color: var(--df-text-primary);
       font-size: var(--df-font-size-lg);
       font-weight: 600;
     }
   }
-  
+
   :deep(.ant-card-body) {
     background: transparent;
   }
@@ -690,39 +690,39 @@ onMounted(() => {
   border: 1px solid var(--df-text-disabled);
   border-radius: var(--df-radius-lg);
   transition: all var(--df-transition-normal);
-  
+
   &:hover {
     border-color: var(--df-accent-primary);
     box-shadow: 0 4px 16px rgba(142, 93, 255, 0.1);
   }
-  
+
   &.danger-item {
     border-color: rgba(239, 68, 68, 0.3);
-    
+
     &:hover {
       border-color: rgba(239, 68, 68, 0.6);
       box-shadow: 0 4px 16px rgba(239, 68, 68, 0.1);
     }
   }
-  
+
   .item-info {
     flex: 1;
-    
+
     .item-header {
       display: flex;
       align-items: center;
       gap: var(--df-spacing-sm);
       margin-bottom: var(--df-spacing-xs);
-      
+
       .item-icon {
         font-size: var(--df-font-size-lg);
         color: var(--df-accent-primary);
-        
+
         &.danger-icon {
           color: var(--df-accent-error);
         }
       }
-      
+
       h4 {
         color: var(--df-text-primary);
         margin: 0;
@@ -730,24 +730,24 @@ onMounted(() => {
         font-weight: 600;
       }
     }
-    
+
     p {
       color: var(--df-text-secondary);
       margin: 0 0 var(--df-spacing-sm) 0;
       font-size: var(--df-font-size-base);
       line-height: 1.5;
-      
+
       &.danger-text {
         color: var(--df-accent-error);
         font-weight: 500;
       }
     }
-    
+
     .security-status {
       display: flex;
       align-items: center;
       gap: var(--df-spacing-md);
-      
+
       .last-update {
         color: var(--df-text-secondary);
         font-size: var(--df-font-size-sm);
@@ -762,36 +762,36 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--df-spacing-sm);
-  
+
   .strength-bar {
     flex: 1;
     height: 4px;
     background: var(--df-text-disabled);
     border-radius: 2px;
     overflow: hidden;
-    
+
     .strength-level {
       height: 100%;
       transition: all 0.3s ease;
-      
+
       &.very-weak {
         background: #FF5252;
       }
-      
+
       &.weak {
         background: #FF9800;
       }
-      
+
       &.medium {
         background: #FFC107;
       }
-      
+
       &.strong {
         background: #00E676;
       }
     }
   }
-  
+
   .strength-text {
     font-size: var(--df-font-size-xs);
     color: var(--df-text-secondary);
@@ -814,32 +814,32 @@ onMounted(() => {
   border: 1px solid var(--df-text-disabled);
   border-radius: var(--df-radius-md);
   margin-bottom: var(--df-spacing-md);
-  
+
   &:hover {
     border-color: var(--df-accent-primary);
     box-shadow: 0 2px 8px rgba(142, 93, 255, 0.1);
   }
-  
+
   &:last-child {
     margin-bottom: 0;
   }
-  
+
   .device-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex: 1;
-    
+
     .device-header {
       display: flex;
       align-items: center;
       gap: var(--df-spacing-md);
-      
+
       .device-type-icon {
         font-size: var(--df-font-size-xl);
         color: var(--df-accent-primary);
       }
-      
+
       .device-details {
         h4 {
           color: var(--df-text-primary);
@@ -847,26 +847,26 @@ onMounted(() => {
           font-size: var(--df-font-size-base);
           font-weight: 600;
         }
-        
+
         .device-meta {
           display: flex;
           align-items: center;
           gap: var(--df-spacing-xs);
           color: var(--df-text-secondary);
           font-size: var(--df-font-size-sm);
-          
+
           .ant-divider-vertical {
             border-color: var(--df-text-disabled);
           }
         }
       }
     }
-    
+
     .device-status {
       margin-left: var(--df-spacing-md);
     }
   }
-  
+
   .device-actions {
     margin-left: var(--df-spacing-lg);
   }
@@ -888,27 +888,27 @@ onMounted(() => {
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: var(--df-radius-md);
   margin-bottom: var(--df-spacing-lg);
-  
+
   .warning-icon {
     font-size: var(--df-font-size-xl);
     color: var(--df-accent-error);
     margin-top: 2px;
   }
-  
+
   .warning-content {
     flex: 1;
-    
+
     h4 {
       color: var(--df-accent-error);
       margin: 0 0 var(--df-spacing-sm) 0;
       font-weight: 600;
     }
-    
+
     .warning-list {
       margin: 0;
       padding-left: var(--df-spacing-lg);
       color: var(--df-text-primary);
-      
+
       li {
         margin-bottom: var(--df-spacing-xs);
       }
@@ -919,13 +919,13 @@ onMounted(() => {
 // 全局样式
 :deep(.ant-form-item) {
   margin-bottom: var(--df-spacing-lg);
-  
+
   .ant-form-item-label > label {
     color: var(--df-text-primary);
     font-weight: 600;
     font-size: var(--df-font-size-md);
   }
-  
+
   .ant-form-item-explain {
     color: var(--df-accent-error);
   }
@@ -936,21 +936,21 @@ onMounted(() => {
   background: var(--df-primary-bg);
   border-color: var(--df-text-disabled);
   color: var(--df-text-primary);
-  
+
   &:hover, &:focus, &.ant-input-affix-wrapper-focused {
     border-color: var(--df-accent-primary);
     box-shadow: 0 0 0 2px rgba(142, 93, 255, 0.1);
   }
-  
+
   input {
     background: transparent !important;
     color: var(--df-text-primary) !important;
-    
+
     &::placeholder {
       color: var(--df-text-secondary) !important;
     }
   }
-  
+
   .anticon {
     color: var(--df-text-secondary);
   }
@@ -960,16 +960,16 @@ onMounted(() => {
   background: linear-gradient(135deg, var(--df-accent-primary), var(--df-accent-success));
   border: none;
   font-weight: 500;
-  
+
   &:hover, &:focus {
     background: linear-gradient(135deg, #A855F7, #10B981);
     box-shadow: 0 4px 16px rgba(142, 93, 255, 0.3);
   }
-  
+
   &.ant-btn-loading {
     background: var(--df-text-disabled) !important;
   }
-  
+
   .anticon {
     margin-right: var(--df-spacing-xs);
   }
@@ -979,7 +979,7 @@ onMounted(() => {
   border-color: var(--df-accent-error);
   color: var(--df-accent-error);
   background: transparent;
-  
+
   &:hover, &:focus {
     background: var(--df-accent-error);
     border-color: var(--df-accent-error);
@@ -989,7 +989,7 @@ onMounted(() => {
 
 :deep(.ant-switch-checked) {
   background-color: var(--df-accent-primary);
-  
+
   &:hover:not(.ant-switch-disabled) {
     background-color: var(--df-accent-success);
   }
@@ -999,25 +999,25 @@ onMounted(() => {
   border-radius: var(--df-radius-sm);
   font-size: var(--df-font-size-xs);
   font-weight: 500;
-  
+
   &.ant-tag-success {
     background: rgba(16, 185, 129, 0.1);
     border-color: var(--df-accent-success);
     color: var(--df-accent-success);
   }
-  
+
   &.ant-tag-warning {
     background: rgba(245, 158, 11, 0.1);
     border-color: #F59E0B;
     color: #F59E0B;
   }
-  
+
   &.ant-tag-blue {
     background: rgba(59, 130, 246, 0.1);
     border-color: #3B82F6;
     color: #3B82F6;
   }
-  
+
   &.ant-tag-green {
     background: rgba(16, 185, 129, 0.1);
     border-color: var(--df-accent-success);
@@ -1030,21 +1030,21 @@ onMounted(() => {
     background: var(--df-secondary-bg);
     border: 1px solid var(--df-text-disabled);
   }
-  
+
   .ant-modal-header {
     background: transparent;
     border-bottom-color: var(--df-text-disabled);
-    
+
     .ant-modal-title {
       color: var(--df-text-primary);
       font-weight: 600;
     }
   }
-  
+
   .ant-modal-body {
     background: transparent;
   }
-  
+
   .ant-modal-footer {
     background: transparent;
     border-top-color: var(--df-text-disabled);
@@ -1053,19 +1053,19 @@ onMounted(() => {
 
 :deep(.ant-checkbox-wrapper) {
   color: var(--df-text-primary);
-  
+
   .ant-checkbox {
     .ant-checkbox-inner {
       background: var(--df-primary-bg);
       border-color: var(--df-text-disabled);
     }
-    
+
     &.ant-checkbox-checked .ant-checkbox-inner {
       background: var(--df-accent-primary);
       border-color: var(--df-accent-primary);
     }
   }
-  
+
   &:hover .ant-checkbox-inner {
     border-color: var(--df-accent-primary);
   }
@@ -1077,38 +1077,38 @@ onMounted(() => {
     max-width: 100%;
     padding: 0 var(--df-spacing-md);
   }
-  
+
   .security-item {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--df-spacing-lg);
     padding: var(--df-spacing-lg);
-    
+
     .item-info {
       width: 100%;
     }
   }
-  
+
   .device-item {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--df-spacing-md);
-    
+
     .device-info {
       width: 100%;
       flex-direction: column;
       align-items: flex-start;
-      
+
       .device-header {
         width: 100%;
       }
-      
+
       .device-status {
         margin-left: 0;
         align-self: flex-start;
       }
     }
-    
+
     .device-actions {
       margin-left: 0;
       align-self: flex-end;

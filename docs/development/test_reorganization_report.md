@@ -8,7 +8,7 @@
 ```
 tests/
 ├── unit/                    # 单元测试 (10 个文件)
-├── integration/             # 集成测试 (11 个文件)  
+├── integration/             # 集成测试 (11 个文件)
 ├── api/                     # API测试 (3 个文件)
 ├── performance/             # 性能测试 (1 个文件)
 ├── generators/              # 生成器专项测试 (现有)
@@ -31,7 +31,7 @@ tests/
 - test_xml_simple.py
 - test_simple_batch.py
 
-### 集成测试 (tests/integration/)  
+### 集成测试 (tests/integration/)
 - test_basic_generators_comprehensive.py
 - test_new_generators.py
 - test_finance_generators.py
@@ -68,7 +68,7 @@ pytest tests/
 
 # 按类别运行测试
 pytest tests/unit/          # 单元测试
-pytest tests/integration/   # 集成测试  
+pytest tests/integration/   # 集成测试
 pytest tests/api/           # API测试
 pytest tests/performance/   # 性能测试
 

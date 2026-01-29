@@ -20,11 +20,11 @@ export class TestUtils {
   async login(email: string = 'test@example.com', password: string = 'password123') {
     await this.page.goto('/login');
     await this.waitForPageLoad();
-    
+
     await this.page.fill('input[type="email"]', email);
     await this.page.fill('input[type="password"]', password);
     await this.page.click('button[type="submit"]');
-    
+
     // 等待登录完成，通常会有重定向
     await this.page.waitForURL(/.*(workbench|dashboard)/);
   }
@@ -96,13 +96,13 @@ export class TestUtils {
    */
   async checkConsoleErrors() {
     const errors: string[] = [];
-    
+
     this.page.on('console', msg => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
     });
-    
+
     return errors;
   }
 

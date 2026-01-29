@@ -17,9 +17,7 @@ class NumberGenerator(DataGenerator):
         """初始化设置"""
         pass
 
-    def _generate_raw(
-        self, context: GenerationContext | None = None
-    ) -> int | float:
+    def _generate_raw(self, context: GenerationContext | None = None) -> int | float:
         """生成数字"""
         num_type = self.parameters.get("type", "integer")
         min_val = self.parameters.get("min", 0)
@@ -50,9 +48,7 @@ class NumberGenerator(DataGenerator):
 
         return min_val <= data <= max_val
 
-    def generate_single(
-        self, context: GenerationContext | None = None
-    ) -> int | float:
+    def generate_single(self, context: GenerationContext | None = None) -> int | float:
         """生成单个数据项"""
         return self._generate_raw(context)
 

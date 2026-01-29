@@ -110,10 +110,10 @@ const loginForm = reactive({
 // 表单验证规则
 const usernameRules: Rule[] = [
   { required: true, message: '请输入邮箱或手机号', trigger: 'blur' },
-  { 
-    pattern: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})|^1[3-9]\d{9}$/, 
-    message: '请输入有效的邮箱或手机号', 
-    trigger: 'blur' 
+  {
+    pattern: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})|^1[3-9]\d{9}$/,
+    message: '请输入有效的邮箱或手机号',
+    trigger: 'blur'
   }
 ]
 
@@ -127,16 +127,16 @@ const passwordRules: Rule[] = [
 const handleLogin = async () => {
   try {
     loading.value = true
-    
+
     const result = await authStore.login({
       username: loginForm.username.trim(),
       password: loginForm.password,
       rememberMe: loginForm.rememberMe
     })
-    
+
     if (result.success) {
       message.success(result.message)
-      
+
       // 登录成功后跳转
       const redirectPath = (route.query.redirect as string) || '/workbench'
       await router.push(redirectPath)
@@ -166,7 +166,7 @@ onMounted(() => {
     const redirectPath = (route.query.redirect as string) || '/workbench'
     router.replace(redirectPath)
   }
-  
+
   // 如果有记住的用户名，填充表单
   const rememberedUsername = localStorage.getItem('remembered_username')
   if (rememberedUsername) {
@@ -223,7 +223,7 @@ onMounted(() => {
   text-decoration: none;
   font-size: var(--df-font-size-sm);
   transition: all var(--df-transition-fast);
-  
+
   &:hover {
     color: var(--df-accent-success);
     text-decoration: underline;
@@ -234,13 +234,13 @@ onMounted(() => {
   text-align: center;
   margin-top: var(--df-spacing-lg);
   color: var(--df-text-secondary);
-  
+
   a {
     color: var(--df-accent-primary);
     text-decoration: none;
     font-weight: 500;
     margin-left: var(--df-spacing-xs);
-    
+
     &:hover {
       color: var(--df-accent-success);
       text-decoration: underline;
@@ -250,12 +250,12 @@ onMounted(() => {
 
 :deep(.ant-form-item) {
   margin-bottom: var(--df-spacing-lg);
-  
+
   .ant-form-item-label > label {
     color: var(--df-text-primary);
     font-weight: 500;
   }
-  
+
   .ant-form-item-explain {
     color: var(--df-accent-error);
   }
@@ -264,21 +264,21 @@ onMounted(() => {
 :deep(.ant-input-affix-wrapper) {
   background: var(--df-primary-bg);
   border-color: var(--df-text-disabled);
-  
+
   &:hover, &:focus, &.ant-input-affix-wrapper-focused {
     border-color: var(--df-accent-primary);
     box-shadow: 0 0 0 2px rgba(142, 93, 255, 0.1);
   }
-  
+
   .ant-input {
     background: transparent;
     color: var(--df-text-primary);
-    
+
     &::placeholder {
       color: var(--df-text-secondary);
     }
   }
-  
+
   .anticon {
     color: var(--df-text-secondary);
   }
@@ -286,19 +286,19 @@ onMounted(() => {
 
 :deep(.ant-checkbox-wrapper) {
   color: var(--df-text-primary);
-  
+
   .ant-checkbox {
     .ant-checkbox-inner {
       background: var(--df-primary-bg);
       border-color: var(--df-text-disabled);
     }
-    
+
     &.ant-checkbox-checked .ant-checkbox-inner {
       background: var(--df-accent-primary);
       border-color: var(--df-accent-primary);
     }
   }
-  
+
   &:hover .ant-checkbox-inner {
     border-color: var(--df-accent-primary);
   }
@@ -309,16 +309,16 @@ onMounted(() => {
   border: none;
   font-weight: 500;
   height: 44px;
-  
+
   &:hover, &:focus {
     background: linear-gradient(135deg, #A855F7, #10B981);
     box-shadow: 0 4px 16px rgba(142, 93, 255, 0.3);
   }
-  
+
   &.ant-btn-loading {
     background: var(--df-text-disabled);
   }
-  
+
   .anticon {
     margin-right: var(--df-spacing-xs);
   }
@@ -329,7 +329,7 @@ onMounted(() => {
   .login-page {
     padding: var(--df-spacing-md);
   }
-  
+
   .login-card {
     padding: var(--df-spacing-lg);
   }

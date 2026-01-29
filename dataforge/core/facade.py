@@ -129,7 +129,7 @@ class DataForge:
 
             except GeneratorNotFoundError:
                 # 这个异常不应该出现，因为我们已经检查过了
-                raise AttributeError(f"生成器 '{name}' 未正确注册")
+                raise AttributeError(f"生成器 '{name}' 未正确注册") from None
 
             except Exception as e:
                 # 包装其他异常，提供更友好的错误信息

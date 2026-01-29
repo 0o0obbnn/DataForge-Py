@@ -182,7 +182,7 @@ class YAMLGenerator(DataGenerator):
             secrets.randbelow(self.array_size[1] - self.array_size[0] + 1)
             + self.array_size[0]
         )
-        items = []
+        items: list[Any] = []
 
         for _ in range(size):
             value_type = random.choice(["primitive", "dict", "list"])
@@ -201,7 +201,7 @@ class YAMLGenerator(DataGenerator):
         if depth >= self.depth:
             return {self._generate_key_name(): self._generate_primitive_value()}
 
-        data = {}
+        data: dict[str, Any] = {}
         num_keys = secrets.randbelow(4) + 2
 
         for _ in range(num_keys):

@@ -66,7 +66,9 @@ class EmailVerificationGenerator(DataGenerator[str]):
         config.update(self.parameters)
         return config
 
-    def _generate_raw(self, context: GenerationContext | None = None) -> str:
+    def _generate_raw(
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成原始邮箱验证码数据"""
         config = self._get_effective_config()
 
@@ -154,6 +156,18 @@ class EmailVerificationGenerator(DataGenerator[str]):
             return datetime.now() > expiry_time
         except ValueError:
             return True
+
+    def get_expiry_info(self) -> dict[str, Any]:
+        """获取过期信息"""
+        config = self._get_effective_config()
+        expires_in = config.get("expires_in", 1800)
+        expiry_time = datetime.now() + timedelta(seconds=expires_in)
+
+        return {
+            "expires_in": expires_in,
+            "expiry_time": expiry_time.isoformat(),
+            "expires_in_minutes": expires_in // 60,
+        }
 
     def verify_code(
         self, verification_data: dict[str, Any], input_code: str

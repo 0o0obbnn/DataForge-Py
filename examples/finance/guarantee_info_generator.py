@@ -12,7 +12,6 @@ import os
 import secrets
 import sys
 from datetime import date, datetime, timedelta
-from typing import Optional
 
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
@@ -53,10 +52,7 @@ def generate_id_number_by_type(id_type: str) -> str:
     # 如果是已知类型，使用对应的生成器
     if id_type in id_type_to_generator:
         generator_name, parameters = id_type_to_generator[id_type]
-        config = GeneratorConfig(
-            generator_type=generator_name,
-            parameters=parameters
-        )
+        config = GeneratorConfig(generator_type=generator_name, parameters=parameters)
         generator = default_factory.create_generator(config)
         id_number = generator.generate_single()
 
@@ -67,13 +63,15 @@ def generate_id_number_by_type(id_type: str) -> str:
         return id_number
     else:
         # 其他证件类型（X-其他证件），生成18位随机字符
-        return "".join(secrets.choice("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(18))
+        return "".join(
+            secrets.choice("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(18)
+        )
 
 
 def generate_common_fields() -> dict:
     """
     生成所有类型共用的字段（业务标识信息段和担保信息段）
-    
+
     Returns:
         包含共用字段的字典
     """
@@ -87,7 +85,9 @@ def generate_common_fields() -> dict:
     # 4109: 担保合同编号（64位，公司内部唯一标识）
     # 生成格式：GT + 日期(YYYYMMDD) + 随机字符
     contract_date = datetime.now().strftime("%Y%m%d")
-    random_suffix = "".join(secrets.choice("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(20))
+    random_suffix = "".join(
+        secrets.choice("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ") for _ in range(20)
+    )
     record["4109"] = f"GT{contract_date}{random_suffix}"[:64]
 
     # ========== 担保信息段 ==========
@@ -121,7 +121,7 @@ def generate_common_fields() -> dict:
 def generate_enterprise_record() -> dict:
     """
     生成企业或其他组织类型的担保信息记录
-    
+
     Returns:
         企业类型的担保信息记录字典
     """
@@ -133,8 +133,7 @@ def generate_enterprise_record() -> dict:
 
     # 4102: 被担保人名称（企业名称）
     company_config = GeneratorConfig(
-        generator_type="company_name",
-        parameters={"type": "ANY", "prefix_region": True}
+        generator_type="company_name", parameters={"type": "ANY", "prefix_region": True}
     )
     record["4102"] = default_factory.create_generator(company_config).generate_single()
 
@@ -145,25 +144,20 @@ def generate_enterprise_record() -> dict:
     # 4104: 被担保人证件号码
     if record["4103"] == "a":  # 组织机构代码
         org_code_config = GeneratorConfig(
-            generator_type="chinese_organization_code",
-            parameters={"valid": True}
+            generator_type="chinese_organization_code", parameters={"valid": True}
         )
         org_code = default_factory.create_generator(org_code_config).generate_single()
         # 移除连字符，只保留9位代码
         record["4104"] = org_code.replace("-", "")[:9]
     else:  # 社会信用代码
-        uscc_config = GeneratorConfig(
-            generator_type="uscc",
-            parameters={"valid": True}
-        )
-        record["4104"] = default_factory.create_generator(uscc_config).generate_single()[:18]
+        uscc_config = GeneratorConfig(generator_type="uscc", parameters={"valid": True})
+        record["4104"] = default_factory.create_generator(
+            uscc_config
+        ).generate_single()[:18]
 
     # 4105-4107: 企业法人信息（企业类型必填）
     # 4105: 企业法人姓名
-    name_config = GeneratorConfig(
-        generator_type="name",
-        parameters={}
-    )
+    name_config = GeneratorConfig(generator_type="name", parameters={})
     record["4105"] = default_factory.create_generator(name_config).generate_single()
 
     # 4106: 企业法人证件类型
@@ -176,7 +170,26 @@ def generate_enterprise_record() -> dict:
     if secrets.randbelow(10) < 8:  # 80%概率使用身份证
         record["4106"] = "0"
     else:
-        record["4106"] = secrets.choice(["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "Y", "Z", "X"])
+        record["4106"] = secrets.choice(
+            [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "A",
+                "B",
+                "C",
+                "D",
+                "Y",
+                "Z",
+                "X",
+            ]
+        )
 
     # 4107: 企业法人证件号码
     record["4107"] = generate_id_number_by_type(record["4106"])
@@ -190,7 +203,7 @@ def generate_enterprise_record() -> dict:
 def generate_individual_record() -> dict:
     """
     生成自然人类型的担保信息记录
-    
+
     Returns:
         自然人类型的担保信息记录字典
     """
@@ -201,10 +214,7 @@ def generate_individual_record() -> dict:
     record["4101"] = "2"  # 自然人
 
     # 4102: 被担保人名称（自然人姓名）
-    name_config = GeneratorConfig(
-        generator_type="name",
-        parameters={}
-    )
+    name_config = GeneratorConfig(generator_type="name", parameters={})
     record["4102"] = default_factory.create_generator(name_config).generate_single()
 
     # 4103: 被担保人证件类型
@@ -216,7 +226,26 @@ def generate_individual_record() -> dict:
     if secrets.randbelow(10) < 7:  # 70%概率使用身份证
         record["4103"] = "0"
     else:
-        record["4103"] = secrets.choice(["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "Y", "Z", "X"])
+        record["4103"] = secrets.choice(
+            [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "A",
+                "B",
+                "C",
+                "D",
+                "Y",
+                "Z",
+                "X",
+            ]
+        )
 
     # 4104: 被担保人证件号码
     record["4104"] = generate_id_number_by_type(record["4103"])
@@ -233,20 +262,20 @@ def generate_individual_record() -> dict:
 
 
 def generate_guarantee_info_record(
-    guarantor_type: Optional[int] = None,
+    guarantor_type: int | None = None,
     count: int = 1,
 ) -> list[dict]:
     """
     生成担保信息记录
-    
+
     根据被担保人类型的不同，调用相应的生成函数：
     - 类型1（企业或其他组织）：使用 generate_enterprise_record()
     - 类型2（自然人）：使用 generate_individual_record()
-    
+
     Args:
         guarantor_type: 被担保人类型 (1-企业或其他组织；2-自然人)，None表示随机
         count: 生成记录数量
-    
+
     Returns:
         担保信息记录列表
     """
@@ -275,23 +304,34 @@ def generate_guarantee_info_record(
 def format_guarantee_record(record: dict) -> str:
     """
     格式化担保信息记录为CSV格式
-    
+
     根据规范：
     - 数据项间逗号分隔
     - 数据项为空的，不用空格填充，但要保留逗号位置
     - 记录之间用回车换行符（"\r\n"）分隔
-    
+
     Args:
         record: 担保信息记录字典
-    
+
     Returns:
         格式化后的记录字符串
     """
     # 按照标识符顺序排列字段
     field_order = [
-        "4101", "4102", "4103", "4104", "4105", "4106", "4107",  # 人员标识信息段
-        "4108", "4109",  # 业务标识信息段
-        "4110", "4111", "4112", "4113", "4114",  # 担保信息段
+        "4101",
+        "4102",
+        "4103",
+        "4104",
+        "4105",
+        "4106",
+        "4107",  # 人员标识信息段
+        "4108",
+        "4109",  # 业务标识信息段
+        "4110",
+        "4111",
+        "4112",
+        "4113",
+        "4114",  # 担保信息段
     ]
 
     fields = []
@@ -306,11 +346,11 @@ def format_guarantee_record(record: dict) -> str:
 def generate_guarantee_info_file(
     output_file: str = "421GUARINFO.txt",
     count: int = 10,
-    guarantor_type: Optional[int] = None,
+    guarantor_type: int | None = None,
 ) -> None:
     """
     生成担保信息文件
-    
+
     Args:
         output_file: 输出文件名
         count: 生成记录数量
@@ -337,18 +377,22 @@ def generate_guarantee_info_file(
     print("\n前3条记录示例:")
     for i, record in enumerate(records[:3], 1):
         print(f"\n记录 {i}:")
-        print(f"  被担保人类型: {record['4101']} ({'企业' if record['4101'] == '1' else '自然人'})")
+        print(
+            f"  被担保人类型: {record['4101']} ({'企业' if record['4101'] == '1' else '自然人'})"
+        )
         print(f"  被担保人名称: {record['4102']}")
         print(f"  被担保人证件类型: {record['4103']}")
         print(f"  被担保人证件号码: {record['4104']}")
-        if record['4101'] == '1':
+        if record["4101"] == "1":
             print(f"  企业法人姓名: {record['4105']}")
             print(f"  企业法人证件类型: {record['4106']}")
             print(f"  企业法人证件号码: {record['4107']}")
         print(f"  业务发生机构: {record['4108']}")
         print(f"  担保合同编号: {record['4109']}")
         print(f"  担保业务种类: {record['4110']}")
-        print(f"  担保类型: {record['4111']} ({'融资担保' if record['4111'] == '1' else '非融资担保'})")
+        print(
+            f"  担保类型: {record['4111']} ({'融资担保' if record['4111'] == '1' else '非融资担保'})"
+        )
         print(f"  担保起始日期: {record['4112']}")
         print(f"  担保到期日期: {record['4113']}")
         print(f"  担保金额: {record['4114']} 元")
@@ -370,4 +414,3 @@ if __name__ == "__main__":
     print("\n" + "=" * 60)
     print("生成完成！")
     print("=" * 60)
-

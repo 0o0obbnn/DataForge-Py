@@ -4,7 +4,7 @@ DataForge 基础生成器示例 - 个人信息类
 
 这个文件展示了DataForge项目中个人信息相关生成器的使用方法，包括：
 - 姓名 (name)
-- 年龄 (age) 
+- 年龄 (age)
 - 性别 (gender)
 - 身份证号 (idcard)
 - 职业 (occupation)
@@ -19,8 +19,8 @@ import os
 import sys
 
 # 设置环境
-sys.path.insert(0, '.')
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key'
+sys.path.insert(0, ".")
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 from dataforge.core.factory import default_registry
 from dataforge.core.generator import GenerationContext, GeneratorConfig
@@ -47,8 +47,8 @@ def basic_usage():
     # 演示姓名生成
     print_subsection("姓名生成器 (name)")
     try:
-        config = GeneratorConfig('name', {}, count=3)
-        generator_class = default_registry.get_generator_class('name')
+        config = GeneratorConfig("name", {}, count=3)
+        generator_class = default_registry.get_generator_class("name")
         if generator_class is None:
             raise RuntimeError("Generator 'name' not registered")
         generator = generator_class(config)
@@ -62,8 +62,8 @@ def basic_usage():
     # 演示年龄生成
     print_subsection("年龄生成器 (age)")
     try:
-        config = GeneratorConfig('age', {}, count=3)
-        generator_class = default_registry.get_generator_class('age')
+        config = GeneratorConfig("age", {}, count=3)
+        generator_class = default_registry.get_generator_class("age")
         if generator_class is None:
             raise RuntimeError("Generator 'age' not registered")
         generator = generator_class(config)
@@ -77,8 +77,8 @@ def basic_usage():
     # 演示性别生成
     print_subsection("性别生成器 (gender)")
     try:
-        config = GeneratorConfig('gender', {}, count=3)
-        generator_class = default_registry.get_generator_class('gender')
+        config = GeneratorConfig("gender", {}, count=3)
+        generator_class = default_registry.get_generator_class("gender")
         if generator_class is None:
             raise RuntimeError("Generator 'gender' not registered")
         generator = generator_class(config)
@@ -106,8 +106,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('name', params, count=2)
-            generator_class = default_registry.get_generator_class('name')
+            config = GeneratorConfig("name", params, count=2)
+            generator_class = default_registry.get_generator_class("name")
             if generator_class is None:
                 print("    ⚠️ Generator 'name' 未注册，跳过")
                 continue
@@ -131,8 +131,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('age', params, count=2)
-            generator_class = default_registry.get_generator_class('age')
+            config = GeneratorConfig("age", params, count=2)
+            generator_class = default_registry.get_generator_class("age")
             if generator_class is None:
                 print("    ⚠️ Generator 'age' 未注册，跳过")
                 continue
@@ -153,7 +153,7 @@ def batch_generation():
     # 批量生成个人信息
     print_subsection("批量生成完整个人信息")
     try:
-        personal_info_generators = ['name', 'age', 'gender', 'occupation', 'education']
+        personal_info_generators = ["name", "age", "gender", "occupation", "education"]
         batch_size = 5
 
         print(f"  生成 {batch_size} 个人的基本信息:")
@@ -184,7 +184,9 @@ def batch_generation():
             occupation = person_info[3][:10].ljust(10)
             education = person_info[4][:8].ljust(8)
 
-            print(f"  {i+1:2d}    | {name} | {age} | {gender} | {occupation} | {education}")
+            print(
+                f"  {i+1:2d}    | {name} | {age} | {gender} | {occupation} | {education}"
+            )
 
         print("  " + "-" * 80)
 
@@ -199,8 +201,8 @@ def validation_examples():
     # 验证生成的数据
     print_subsection("身份证号生成和验证")
     try:
-        config = GeneratorConfig('idcard', {}, count=3)
-        generator_class = default_registry.get_generator_class('idcard')
+        config = GeneratorConfig("idcard", {}, count=3)
+        generator_class = default_registry.get_generator_class("idcard")
         if generator_class is None:
             raise RuntimeError("Generator 'idcard' not registered")
         generator = generator_class(config)
@@ -228,7 +230,7 @@ def error_handling():
     # 处理不存在的生成器
     print_subsection("处理不存在的生成器")
     try:
-        generator_class = default_registry.get_generator_class('nonexistent_generator')
+        generator_class = default_registry.get_generator_class("nonexistent_generator")
         if not generator_class:
             print("  ✅ 正确处理了不存在的生成器")
     except Exception as e:
@@ -237,8 +239,10 @@ def error_handling():
     # 处理无效参数
     print_subsection("处理无效参数")
     try:
-        config = GeneratorConfig('age', {"min_age": 100, "max_age": 50}, count=1)  # 无效范围
-        generator_class = default_registry.get_generator_class('age')
+        config = GeneratorConfig(
+            "age", {"min_age": 100, "max_age": 50}, count=1
+        )  # 无效范围
+        generator_class = default_registry.get_generator_class("age")
         if generator_class is None:
             raise RuntimeError("Generator 'age' not registered")
         generator = generator_class(config)
@@ -258,8 +262,8 @@ def best_practices():
         context = GenerationContext()
 
         # 生成姓名
-        name_config = GeneratorConfig('name', {}, count=1)
-        name_class = default_registry.get_generator_class('name')
+        name_config = GeneratorConfig("name", {}, count=1)
+        name_class = default_registry.get_generator_class("name")
         if name_class is None:
             raise RuntimeError("Generator 'name' not registered")
         name_gen = name_class(name_config)
@@ -280,7 +284,7 @@ def best_practices():
         # 创建可重用的配置
         base_config = {"count": 2}
 
-        generators_to_test = ['name', 'age', 'gender']
+        generators_to_test = ["name", "age", "gender"]
 
         for gen_name in generators_to_test:
             config = GeneratorConfig(gen_name, base_config)

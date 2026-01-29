@@ -29,12 +29,12 @@ const goHome = () => {
   align-items: center;
   justify-content: center;
   background: var(--df-primary-bg);
-  
+
   :deep(.ant-result) {
     .ant-result-title {
       color: var(--df-text-primary);
     }
-    
+
     .ant-result-subtitle {
       color: var(--df-text-secondary);
     }

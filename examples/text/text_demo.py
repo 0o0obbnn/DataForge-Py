@@ -37,7 +37,9 @@ def basic_usage():
 
     # 枚举生成器
     print("\n枚举生成器 (enum):")
-    config = GeneratorConfig("enum", parameters={"options": ["选项1", "选项2", "选项3"]})
+    config = GeneratorConfig(
+        "enum", parameters={"options": ["选项1", "选项2", "选项3"]}
+    )
     generator = default_factory.create_generator(config)
     for i in range(3):
         enum_val = generator.generate()
@@ -74,7 +76,7 @@ def parameter_configuration():
         {"type": "alphabetic"},
         {"type": "numeric"},
         {"type": "alphanumeric"},
-        {"type": "mixed"}
+        {"type": "mixed"},
     ]
     for i, params in enumerate(string_configs, 1):
         config = GeneratorConfig("string", parameters=params)
@@ -90,7 +92,7 @@ def parameter_configuration():
         {"true_probability": 0.2},
         {"true_probability": 0.5},
         {"true_probability": 0.0},
-        {"true_probability": 1.0}
+        {"true_probability": 1.0},
     ]
     for i, params in enumerate(bool_configs, 1):
         config = GeneratorConfig("boolean", parameters=params)
@@ -106,7 +108,7 @@ def parameter_configuration():
         {"options": ["小", "中", "大"]},
         {"options": ["低", "中", "高"]},
         {"options": ["北京", "上海", "广州", "深圳"]},
-        {"options": ["优秀", "良好", "及格", "不及格"]}
+        {"options": ["优秀", "良好", "及格", "不及格"]},
     ]
     for i, params in enumerate(enum_configs, 1):
         config = GeneratorConfig("enum", parameters=params)
@@ -122,7 +124,7 @@ def parameter_configuration():
         {"length": 50},
         {"length": 100},
         {"type": "sentence"},
-        {"type": "paragraph"}
+        {"type": "paragraph"},
     ]
     for i, params in enumerate(chinese_configs, 1):
         config = GeneratorConfig("chinese_text", parameters=params)
@@ -138,7 +140,7 @@ def parameter_configuration():
         {"length": 50},
         {"length": 100},
         {"type": "sentence"},
-        {"type": "paragraph"}
+        {"type": "paragraph"},
     ]
     for i, params in enumerate(english_configs, 1):
         config = GeneratorConfig("english_text", parameters=params)
@@ -156,7 +158,9 @@ def batch_generation():
     print("\n批量生成文本数据:")
 
     # 生成字符串
-    string_config = GeneratorConfig("string", parameters={"length": 10, "type": "alphanumeric"})
+    string_config = GeneratorConfig(
+        "string", parameters={"length": 10, "type": "alphanumeric"}
+    )
     string_gen = default_factory.create_generator(string_config)
 
     # 生成布尔值序列
@@ -164,7 +168,9 @@ def batch_generation():
     bool_gen = default_factory.create_generator(bool_config)
 
     # 生成枚举值
-    enum_config = GeneratorConfig("enum", parameters={"options": ["产品A", "产品B", "产品C"]})
+    enum_config = GeneratorConfig(
+        "enum", parameters={"options": ["产品A", "产品B", "产品C"]}
+    )
     enum_gen = default_factory.create_generator(enum_config)
 
     # 生成中文文本
@@ -185,18 +191,30 @@ def batch_generation():
             "enum": enum_gen.generate(),
             "chinese_text": chinese_gen.generate(),
             "english_text": english_gen.generate(),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         text_data.append(data)
 
     # 打印文本数据
     print("-" * 100)
-    print(f"{'ID':<4} | {'字符串':<12} | {'布尔值':<8} | {'枚举':<8} | {'中文文本':<25} | {'英文文本':<25}")
+    print(
+        f"{'ID':<4} | {'字符串':<12} | {'布尔值':<8} | {'枚举':<8} | {'中文文本':<25} | {'英文文本':<25}"
+    )
     print("-" * 100)
     for data in text_data:
-        chinese = data['chinese_text'][:23] + ".." if len(data['chinese_text']) > 25 else data['chinese_text']
-        english = data['english_text'][:23] + ".." if len(data['english_text']) > 25 else data['english_text']
-        print(f"{data['id']:<4} | {data['string']:<12} | {str(data['boolean']):<8} | {data['enum']:<8} | {chinese:<25} | {english:<25}")
+        chinese = (
+            data["chinese_text"][:23] + ".."
+            if len(data["chinese_text"]) > 25
+            else data["chinese_text"]
+        )
+        english = (
+            data["english_text"][:23] + ".."
+            if len(data["english_text"]) > 25
+            else data["english_text"]
+        )
+        print(
+            f"{data['id']:<4} | {data['string']:<12} | {str(data['boolean']):<8} | {data['enum']:<8} | {chinese:<25} | {english:<25}"
+        )
     print("-" * 100)
 
 
@@ -207,7 +225,9 @@ def validation_examples():
 
     # 字符串验证
     print("\n字符串格式验证:")
-    config = GeneratorConfig("string", parameters={"length": 10, "type": "alphanumeric"})
+    config = GeneratorConfig(
+        "string", parameters={"length": 10, "type": "alphanumeric"}
+    )
     generator = default_factory.create_generator(config)
 
     for i in range(3):
@@ -239,7 +259,8 @@ def validation_examples():
         is_valid = generator.validate(enum_val)
         print(f"  {i+1}. {enum_val}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
-        print(f"     在选项中: {'✅ 是' if enum_val in ["红色", "绿色", "蓝色"] else '❌ 否'}")
+        valid_colors = ["红色", "绿色", "蓝色"]
+        print(f"     在选项中: {'✅ 是' if enum_val in valid_colors else '❌ 否'}")
 
     # 中文文本验证
     print("\n中文文本格式验证:")
@@ -334,29 +355,29 @@ def best_practices():
             "supported_types": ["alphabetic", "numeric", "alphanumeric", "mixed"],
             "default_length": 10,
             "max_length": 100,
-            "case_sensitive": True
+            "case_sensitive": True,
         },
         "boolean_settings": {
             "default_true_probability": 0.5,
-            "allow_custom_probability": True
+            "allow_custom_probability": True,
         },
         "enum_settings": {
             "max_options": 10,
             "min_options": 2,
-            "allow_duplicates": False
+            "allow_duplicates": False,
         },
         "text_settings": {
             "chinese": {
                 "default_length": 50,
                 "supported_types": ["sentence", "paragraph", "article"],
-                "encoding": "utf-8"
+                "encoding": "utf-8",
             },
             "english": {
                 "default_length": 50,
                 "supported_types": ["sentence", "paragraph", "article"],
-                "encoding": "utf-8"
-            }
-        }
+                "encoding": "utf-8",
+            },
+        },
     }
 
     print("  文本配置:")
@@ -382,14 +403,20 @@ def best_practices():
             "record_id": f"text_{i+1:03d}",
             "strings": {
                 "alphabetic": default_factory.create_generator(
-                    GeneratorConfig("string", parameters={"length": 15, "type": "alphabetic"})
+                    GeneratorConfig(
+                        "string", parameters={"length": 15, "type": "alphabetic"}
+                    )
                 ).generate(),
                 "numeric": default_factory.create_generator(
-                    GeneratorConfig("string", parameters={"length": 10, "type": "numeric"})
+                    GeneratorConfig(
+                        "string", parameters={"length": 10, "type": "numeric"}
+                    )
                 ).generate(),
                 "alphanumeric": default_factory.create_generator(
-                    GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric"})
-                ).generate()
+                    GeneratorConfig(
+                        "string", parameters={"length": 12, "type": "alphanumeric"}
+                    )
+                ).generate(),
             },
             "flags": {
                 "enabled": default_factory.create_generator(
@@ -400,39 +427,52 @@ def best_practices():
                 ).generate(),
                 "active": default_factory.create_generator(
                     GeneratorConfig("boolean", parameters={"true_probability": 0.6})
-                ).generate()
+                ).generate(),
             },
             "categories": {
                 "priority": default_factory.create_generator(
                     GeneratorConfig("enum", parameters={"options": ["高", "中", "低"]})
                 ).generate(),
                 "status": default_factory.create_generator(
-                    GeneratorConfig("enum", parameters={"options": ["新建", "处理中", "已完成", "已关闭"]})
+                    GeneratorConfig(
+                        "enum",
+                        parameters={"options": ["新建", "处理中", "已完成", "已关闭"]},
+                    )
                 ).generate(),
                 "type": default_factory.create_generator(
-                    GeneratorConfig("enum", parameters={"options": ["任务", "缺陷", "改进", "功能"]})
-                ).generate()
+                    GeneratorConfig(
+                        "enum", parameters={"options": ["任务", "缺陷", "改进", "功能"]}
+                    )
+                ).generate(),
             },
             "content": {
                 "chinese_title": default_factory.create_generator(
-                    GeneratorConfig("chinese_text", parameters={"length": 20, "type": "sentence"})
+                    GeneratorConfig(
+                        "chinese_text", parameters={"length": 20, "type": "sentence"}
+                    )
                 ).generate(),
                 "chinese_body": default_factory.create_generator(
-                    GeneratorConfig("chinese_text", parameters={"length": 100, "type": "paragraph"})
+                    GeneratorConfig(
+                        "chinese_text", parameters={"length": 100, "type": "paragraph"}
+                    )
                 ).generate(),
                 "english_title": default_factory.create_generator(
-                    GeneratorConfig("english_text", parameters={"length": 20, "type": "sentence"})
+                    GeneratorConfig(
+                        "english_text", parameters={"length": 20, "type": "sentence"}
+                    )
                 ).generate(),
                 "english_body": default_factory.create_generator(
-                    GeneratorConfig("english_text", parameters={"length": 100, "type": "paragraph"})
-                ).generate()
+                    GeneratorConfig(
+                        "english_text", parameters={"length": 100, "type": "paragraph"}
+                    )
+                ).generate(),
             },
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
                 "generator_version": "1.0.0",
                 "data_purpose": "testing",
-                "quality_score": 0.95
-            }
+                "quality_score": 0.95,
+            },
         }
         text_data.append(text_record)
 
@@ -451,22 +491,29 @@ def text_demo():
     print("\n中文文章:")
     chinese_article = {
         "title": default_factory.create_generator(
-            GeneratorConfig("chinese_text", parameters={"length": 30, "type": "sentence"})
+            GeneratorConfig(
+                "chinese_text", parameters={"length": 30, "type": "sentence"}
+            )
         ).generate(),
         "author": default_factory.create_generator(
             GeneratorConfig("string", parameters={"length": 8, "type": "alphabetic"})
         ).generate(),
         "category": default_factory.create_generator(
-            GeneratorConfig("enum", parameters={"options": ["科技", "财经", "体育", "娱乐", "教育"]})
+            GeneratorConfig(
+                "enum", parameters={"options": ["科技", "财经", "体育", "娱乐", "教育"]}
+            )
         ).generate(),
         "content": default_factory.create_generator(
-            GeneratorConfig("chinese_text", parameters={"length": 200, "type": "paragraph"})
+            GeneratorConfig(
+                "chinese_text", parameters={"length": 200, "type": "paragraph"}
+            )
         ).generate(),
         "tags": [
             default_factory.create_generator(
                 GeneratorConfig("chinese_text", parameters={"length": 5})
-            ).generate() for _ in range(3)
-        ]
+            ).generate()
+            for _ in range(3)
+        ],
     }
 
     print(f"  标题: {chinese_article['title']}")
@@ -479,22 +526,38 @@ def text_demo():
     print("\n英文文章:")
     english_article = {
         "title": default_factory.create_generator(
-            GeneratorConfig("english_text", parameters={"length": 30, "type": "sentence"})
+            GeneratorConfig(
+                "english_text", parameters={"length": 30, "type": "sentence"}
+            )
         ).generate(),
         "author": default_factory.create_generator(
             GeneratorConfig("string", parameters={"length": 8, "type": "alphabetic"})
         ).generate(),
         "category": default_factory.create_generator(
-            GeneratorConfig("enum", parameters={"options": ["Technology", "Finance", "Sports", "Entertainment", "Education"]})
+            GeneratorConfig(
+                "enum",
+                parameters={
+                    "options": [
+                        "Technology",
+                        "Finance",
+                        "Sports",
+                        "Entertainment",
+                        "Education",
+                    ]
+                },
+            )
         ).generate(),
         "content": default_factory.create_generator(
-            GeneratorConfig("english_text", parameters={"length": 200, "type": "paragraph"})
+            GeneratorConfig(
+                "english_text", parameters={"length": 200, "type": "paragraph"}
+            )
         ).generate(),
         "tags": [
             default_factory.create_generator(
                 GeneratorConfig("english_text", parameters={"length": 5})
-            ).generate() for _ in range(3)
-        ]
+            ).generate()
+            for _ in range(3)
+        ],
     }
 
     print(f"  Title: {english_article['title']}")
@@ -510,25 +573,35 @@ def text_demo():
     for i in range(3):
         product = {
             "product_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 8, "type": "alphanumeric", "prefix": "PROD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 8, "type": "alphanumeric", "prefix": "PROD_"},
+                )
             ).generate(),
             "name": default_factory.create_generator(
-                GeneratorConfig("chinese_text", parameters={"length": 15, "type": "sentence"})
+                GeneratorConfig(
+                    "chinese_text", parameters={"length": 15, "type": "sentence"}
+                )
             ).generate(),
             "description": default_factory.create_generator(
-                GeneratorConfig("chinese_text", parameters={"length": 80, "type": "paragraph"})
+                GeneratorConfig(
+                    "chinese_text", parameters={"length": 80, "type": "paragraph"}
+                )
             ).generate(),
             "features": [
                 default_factory.create_generator(
                     GeneratorConfig("chinese_text", parameters={"length": 20})
-                ).generate() for _ in range(3)
+                ).generate()
+                for _ in range(3)
             ],
             "in_stock": default_factory.create_generator(
                 GeneratorConfig("boolean", parameters={"true_probability": 0.8})
             ).generate(),
             "rating": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["1星", "2星", "3星", "4星", "5星"]})
-            ).generate()
+                GeneratorConfig(
+                    "enum", parameters={"options": ["1星", "2星", "3星", "4星", "5星"]}
+                )
+            ).generate(),
         }
         products.append(product)
 
@@ -549,21 +622,34 @@ def text_demo():
     for i in range(3):
         comment = {
             "comment_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 10, "type": "alphanumeric", "prefix": "COMM_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={
+                        "length": 10,
+                        "type": "alphanumeric",
+                        "prefix": "COMM_",
+                    },
+                )
             ).generate(),
             "user_name": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 8, "type": "alphabetic"})
+                GeneratorConfig(
+                    "string", parameters={"length": 8, "type": "alphabetic"}
+                )
             ).generate(),
             "content": default_factory.create_generator(
-                GeneratorConfig("chinese_text", parameters={"length": 60, "type": "paragraph"})
+                GeneratorConfig(
+                    "chinese_text", parameters={"length": 60, "type": "paragraph"}
+                )
             ).generate(),
             "rating": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["好评", "中评", "差评"]})
+                GeneratorConfig(
+                    "enum", parameters={"options": ["好评", "中评", "差评"]}
+                )
             ).generate(),
             "verified": default_factory.create_generator(
                 GeneratorConfig("boolean", parameters={"true_probability": 0.6})
             ).generate(),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         comments.append(comment)
 
@@ -605,6 +691,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

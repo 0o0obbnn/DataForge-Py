@@ -2,17 +2,15 @@
 DataForge核心功能测试 (pytest风格)
 """
 
-import pytest
 import json
 
+import pytest
+
+from dataforge.core.exceptions import GeneratorNotFoundError
 from dataforge.core.factory import GeneratorFactory, GeneratorRegistry
 from dataforge.core.generator import GeneratorConfig
-from dataforge.core.exceptions import GeneratorNotFoundError
-from dataforge.generators.identifier.bankcard import BankCardGenerator
 from dataforge.generators.basic.idcard import IDCardGenerator
-from dataforge.generators.contact.phone import PhoneNumberGenerator
 from dataforge.output.formatter import OutputFormatter
-
 
 # --- Test IDCardGenerator ---
 

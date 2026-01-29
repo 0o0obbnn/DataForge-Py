@@ -5,9 +5,9 @@
 
 from dataforge.core.generator import GeneratorConfig
 from dataforge.generators.auth.email_verification import EmailVerificationGenerator
+from dataforge.generators.auth.sms_verification import SMSVerificationGenerator
 from dataforge.generators.basic.password import PasswordGenerator
 from dataforge.generators.basic.username import UsernameGenerator
-from dataforge.generators.auth.sms_verification import SMSVerificationGenerator
 
 
 def test_username_generator():

@@ -2,8 +2,6 @@
 密码生成器测试
 """
 
-import re
-
 import pytest
 
 from dataforge.core.generator import GeneratorConfig

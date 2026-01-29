@@ -11,11 +11,10 @@ DataForge 生成器总览演示
 
 import os
 import sys
-from typing import List
 
 # 设置环境
-sys.path.insert(0, '.')
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key'
+sys.path.insert(0, ".")
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 from dataforge.core.factory import default_registry
 
@@ -38,40 +37,56 @@ def get_generators_by_category():
     generators = default_registry.list_generators()
 
     categories = {
-        'basic': [],
-        'contact': [],
-        'finance': [],
-        'identifier': [],
-        'network': [],
-        'text': [],
-        'numeric': [],
-        'auth': [],
-        'advanced': []
+        "basic": [],
+        "contact": [],
+        "finance": [],
+        "identifier": [],
+        "network": [],
+        "text": [],
+        "numeric": [],
+        "auth": [],
+        "advanced": [],
     }
 
     for generator in generators:
         # 根据生成器名称分类
-        if generator in ['name', 'age', 'gender', 'company_name', 'occupation', 'education', 'marital_status']:
-            categories['basic'].append(generator)
-        elif generator in ['phone', 'email', 'address']:
-            categories['contact'].append(generator)
-        elif generator.startswith(('stock', 'fund', 'bond', 'crypto', 'bank', 'financial')):
-            categories['finance'].append(generator)
-        elif generator in ['idcard', 'uscc', 'passport', 'license_plate', 'generic_waybill']:
-            categories['identifier'].append(generator)
-        elif generator in ['ipaddress', 'mac_address', 'domain', 'url', 'port']:
-            categories['network'].append(generator)
-        elif generator in ['string', 'chinese_text', 'english_text', 'long_text']:
-            categories['text'].append(generator)
-        elif generator in ['integer', 'decimal', 'percentage', 'number']:
-            categories['numeric'].append(generator)
-        elif generator in ['auth_token', 'session_id', 'email_verification']:
-            categories['auth'].append(generator)
-        elif generator in ['advanced_timestamp', 'datetime_range', 'analytics']:
-            categories['advanced'].append(generator)
+        if generator in [
+            "name",
+            "age",
+            "gender",
+            "company_name",
+            "occupation",
+            "education",
+            "marital_status",
+        ]:
+            categories["basic"].append(generator)
+        elif generator in ["phone", "email", "address"]:
+            categories["contact"].append(generator)
+        elif generator.startswith(
+            ("stock", "fund", "bond", "crypto", "bank", "financial")
+        ):
+            categories["finance"].append(generator)
+        elif generator in [
+            "idcard",
+            "uscc",
+            "passport",
+            "license_plate",
+            "generic_waybill",
+        ]:
+            categories["identifier"].append(generator)
+        elif generator in ["ipaddress", "mac_address", "domain", "url", "port"]:
+            categories["network"].append(generator)
+        elif generator in ["string", "chinese_text", "english_text", "long_text"]:
+            categories["text"].append(generator)
+        elif generator in ["integer", "decimal", "percentage", "number"]:
+            categories["numeric"].append(generator)
+        elif generator in ["auth_token", "session_id", "email_verification"]:
+            categories["auth"].append(generator)
+        elif generator in ["advanced_timestamp", "datetime_range", "analytics"]:
+            categories["advanced"].append(generator)
         else:
             # 默认归类到basic
-            categories['basic'].append(generator)
+            categories["basic"].append(generator)
 
     return categories
 
@@ -84,9 +99,7 @@ def demonstrate_generator(generator_name: str, count: int = 3):
 
         # 创建配置
         config = GeneratorConfig(
-            generator_type=generator_name,
-            parameters={},
-            count=count
+            generator_type=generator_name, parameters={}, count=count
         )
 
         # 使用注册表的生成方法
@@ -109,7 +122,7 @@ def demonstrate_generator(generator_name: str, count: int = 3):
         return f"❌ 生成器 {generator_name} 演示失败: {e}"
 
 
-def show_category_preview(category_name: str, generators: List[str]):
+def show_category_preview(category_name: str, generators: list[str]):
     """显示类别预览"""
     print(f"\n📂 {category_name.upper()} 模块生成器 ({len(generators)}个)")
     print("─" * 60)
@@ -148,29 +161,31 @@ def show_statistics():
 
 def show_quick_start():
     """显示快速开始指南"""
-    print("""
+    print(
+        """
 🚀 快速开始指南
 
 1. 基础使用:
    from dataforge.core.factory import default_registry
    generator = default_registry.get_generator('name')
-   
+
 2. 生成单个数据:
    config = GeneratorConfig('name', {})
    gen = generator(config)
    result = gen.generate_single()
-   
+
 3. 批量生成:
    config = GeneratorConfig('name', {}, count=10)
    gen = generator(config)
    results = gen.generate_batch()
-   
+
 4. 查看所有示例:
    python examples/basic/personal_info_demo.py
    python examples/finance/banking_demo.py
-   
+
 📖 更多示例请查看 examples/ 目录下的各个模块演示文件
-""")
+"""
+    )
 
 
 def main():
@@ -187,7 +202,7 @@ def main():
     print("=" * 60)
 
     # 显示各模块预览
-    priority_modules = ['basic', 'contact', 'finance', 'identifier']
+    priority_modules = ["basic", "contact", "finance", "identifier"]
 
     for module in priority_modules:
         if module in categories and categories[module]:
@@ -195,7 +210,7 @@ def main():
 
     print("\n🔍 其他模块")
     print("─" * 30)
-    other_modules = ['network', 'text', 'numeric', 'auth', 'advanced']
+    other_modules = ["network", "text", "numeric", "auth", "advanced"]
     for module in other_modules:
         if module in categories and categories[module]:
             print(f"• {module}: {len(categories[module])} 个生成器")

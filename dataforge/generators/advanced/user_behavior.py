@@ -10,7 +10,7 @@ import secrets
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 from ...core.factory import register_generator
 
@@ -40,9 +40,7 @@ class UserBehavior:
     action_details: dict[str, str | int | float]
 
 
-class UserBehaviorGenerator(
-    DataGenerator[dict[str, str | int | float | list[Any]]]
-):
+class UserBehaviorGenerator(DataGenerator[dict[str, str | int | float | list[Any]]]):
     """用户行为数据生成器
 
     功能特性：
@@ -251,7 +249,7 @@ class UserBehaviorGenerator(
         timestamp = now - delta
         return timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-    def _generate_user_profile(self) -> dict[str, str | int | list]:
+    def _generate_user_profile(self) -> dict[str, str | int | list[Any]]:
         """生成用户画像"""
         age_range = secrets.choice(self.age_ranges)
         age = secrets.randbelow(age_range[1] - age_range[0] + 1) + age_range[0]
@@ -350,12 +348,16 @@ class UserBehaviorGenerator(
         config = self.behavior_types[behavior_type]
 
         if behavior_type == "browse":
-            page = secrets.choice(config["pages"])
+            page: str = secrets.choice(config["pages"])  # type: ignore[arg-type]
+            duration_range_obj = config["duration_range"]  # type: ignore[index]
+            duration_range: tuple[int, int] = (
+                duration_range_obj
+                if isinstance(duration_range_obj, tuple)
+                else (1, 600)
+            )  # type: ignore[assignment]
             duration = (
-                secrets.randbelow(
-                    config["duration_range"][1] - config["duration_range"][0] + 1
-                )
-                + config["duration_range"][0]
+                secrets.randbelow(duration_range[1] - duration_range[0] + 1)
+                + duration_range[0]
             )
             return {
                 "page": page,
@@ -363,8 +365,8 @@ class UserBehaviorGenerator(
                 "scroll_depth": secrets.randbelow(100 + 1),
             }
         elif behavior_type == "click":
-            element = secrets.choice(config["elements"])
-            action = secrets.choice(config["actions"])
+            element: str = secrets.choice(config["elements"])  # type: ignore[arg-type]
+            action: str = secrets.choice(config["actions"])  # type: ignore[arg-type]
             return {
                 "element_type": element,
                 "action": action,
@@ -373,9 +375,9 @@ class UserBehaviorGenerator(
                 "click_count": secrets.randbelow(5) + 1,
             }
         elif behavior_type == "search":
-            query_type = secrets.choice(config["query_types"])
+            query_type: str = secrets.choice(config["query_types"])  # type: ignore[arg-type]
             query = f"{query_type} {secrets.choice(self.product_names)}"
-            results = secrets.choice(config["result_counts"])
+            results: int = secrets.choice(config["result_counts"])  # type: ignore[arg-type]
             return {
                 "query": query,
                 "query_type": query_type,
@@ -383,9 +385,13 @@ class UserBehaviorGenerator(
                 "click_through": secrets.randbelow(min(results, 5 + 1)),
             }
         elif behavior_type == "purchase":
-            amount = round(random.uniform(*config["amount_range"]), 2)
-            category = secrets.choice(config["categories"])
-            payment = secrets.choice(config["payment_methods"])
+            amount_range_obj = config["amount_range"]  # type: ignore[index]
+            amount_range: tuple[float, float] = (
+                amount_range_obj if isinstance(amount_range_obj, tuple) else (10, 1000)
+            )  # type: ignore[assignment]
+            amount = round(random.uniform(*amount_range), 2)
+            category: str = secrets.choice(config["categories"])  # type: ignore[arg-type]
+            payment: str = secrets.choice(config["payment_methods"])  # type: ignore[arg-type]
             return {
                 "product": secrets.choice(self.product_names),
                 "amount": amount,
@@ -394,8 +400,12 @@ class UserBehaviorGenerator(
                 "quantity": secrets.randbelow(5) + 1,
             }
         elif behavior_type == "login":
-            method = secrets.choice(config["methods"])
-            success = (secrets.randbelow(1000000) / 1000000) < config["success_rate"]
+            method: str = secrets.choice(config["methods"])  # type: ignore[arg-type]
+            success_rate_obj = config["success_rate"]  # type: ignore[index]
+            success_rate: float = (
+                success_rate_obj if isinstance(success_rate_obj, (int, float)) else 0.95
+            )  # type: ignore[assignment]
+            success = (secrets.randbelow(1000000) / 1000000) < success_rate
             return {
                 "login_method": method,
                 "success": success,
@@ -407,10 +417,15 @@ class UserBehaviorGenerator(
     def _generate_page_url(self, behavior_type: str) -> str:
         """生成页面URL"""
         if behavior_type == "browse":
-            page = secrets.choice(self.behavior_types["browse"]["pages"])
+            pages = cast(list[str], self.behavior_types["browse"].get("pages", []))
+            page: str = secrets.choice(pages)
             return f"https://example.com/{page}"
         elif behavior_type == "search":
-            query = f"{secrets.choice(self.behavior_types['search']['query_types'])} {secrets.choice(self.product_names)}"
+            query_types = cast(
+                list[str], self.behavior_types["search"].get("query_types", [])
+            )
+            query_type: str = secrets.choice(query_types)
+            query = f"{query_type} {secrets.choice(self.product_names)}"
             return f"https://example.com/search?q={query.replace(' ', '+')}"
         elif behavior_type == "purchase":
             product = secrets.choice(self.product_names).replace(" ", "-").lower()

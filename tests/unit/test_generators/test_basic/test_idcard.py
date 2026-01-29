@@ -1,9 +1,10 @@
-import pytest
-from datetime import date, datetime
+from datetime import datetime
 
-from dataforge.core.generator import GeneratorConfig
-from dataforge.generators.basic.idcard import IDCardGenerator, IDCardValidator
+import pytest
+
 from dataforge.core.factory import GeneratorFactory
+from dataforge.core.generator import GeneratorConfig
+from dataforge.generators.basic.idcard import IDCardValidator
 
 
 @pytest.fixture

@@ -155,9 +155,7 @@ class OptimizedNameGenerator(DataGenerator[str]):
                 else self._generate_english_name()
             )
 
-    def _generate_chinese_name(
-        self, context: GenerationContext | None = None
-    ) -> str:
+    def _generate_chinese_name(self, context: GenerationContext | None = None) -> str:
         """生成中文姓名"""
         # 1. 选择姓氏
         surname_info = self._select_surname()
@@ -229,13 +227,11 @@ class OptimizedNameGenerator(DataGenerator[str]):
         name_info = secrets.choice(name_pool)
 
         if isinstance(name_info, dict):
-
             name = name_info.get("name")
 
             return str(name) if name is not None else str(name_info)
 
         else:
-
             return str(name_info)
 
     def _get_given_name_pinyin(self, given_name: str) -> str:
@@ -277,7 +273,6 @@ class OptimizedNameGenerator(DataGenerator[str]):
 
     @property
     def generator_type(self) -> GeneratorType:
-
         return GeneratorType.BASIC
 
     @property
@@ -305,7 +300,6 @@ class OptimizedNameGenerator(DataGenerator[str]):
 
 @register_generator("name_optimized", ["姓名优化", "name_fast", "cached_name"])
 class OptimizedNameGeneratorRegistered(OptimizedNameGenerator):
-
     def generate_single(self, context: GenerationContext | None = None) -> str:
         """生成单个数据项"""
 

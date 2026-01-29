@@ -2,9 +2,9 @@
 
 ## 🎉 修复完成状态
 
-**执行时间:** 2025-09-16 09:31:16  
-**项目根目录:** G:\nifa\data_forge_py  
-**测试目录:** G:\nifa\data_forge_py\tests  
+**执行时间:** 2025-09-16 09:31:16
+**项目根目录:** G:\nifa\data_forge_py
+**测试目录:** G:\nifa\data_forge_py\tests
 
 ## 📊 修复统计
 
@@ -92,11 +92,11 @@ class SpecialCharGenerator(ValidatedDataGenerator[str]):
     @override
     def validate(self, data: str) -> bool:
         return isinstance(data, str)
-    
+
     @override
     def _generate_raw(self, context: dict[str, Any] | None = None) -> str:
         # 完整实现
-    
+
     @override
     def generate(self, context: dict[str, Any] | None = None) -> str:
         # 完整实现

@@ -11,9 +11,9 @@ from ...core.generator import (
     GenerationContext,
     GeneratorConfig,
 )
+from ...core.luhn import calculate_luhn_check_digit, validate_luhn
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
-from ...core.luhn import calculate_luhn_check_digit, validate_luhn
 
 # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review
 # Conversion patterns:
@@ -34,13 +34,13 @@ class BankCardValidator(Validator):
 
         Args:
             data: 银行卡号
-            strict: 是否进行严格校验（包括BIN和Luhn）
+            strict: 是否进行严格校验（包括BIN）
         """
         if not isinstance(data, str):
             return False
 
-        # 移除格式字符
-        clean_number = re.sub(r"[\s\-]", "", data)
+        # 移除格式字符（空白字符和连字符）
+        clean_number = re.sub(r"[\s-]", "", data)
 
         # 检查是否为纯数字
         if not clean_number.isdigit():
@@ -50,14 +50,13 @@ class BankCardValidator(Validator):
         if len(clean_number) not in [13, 15, 16, 19]:
             return False
 
-        # 严格模式下检查BIN号和Luhn校验
-        if strict:
-            # 检查BIN号
-            if not self._is_valid_bin(clean_number):
-                return False
+        # Luhn校验（所有模式都需要）
+        if not self._validate_luhn(clean_number):
+            return False
 
-            # 验证Luhn校验
-            return self._validate_luhn(clean_number)
+        # 严格模式下检查BIN号
+        if strict:
+            return self._is_valid_bin(clean_number)
 
         return True
 
@@ -90,7 +89,7 @@ class BankCardValidator(Validator):
 class BankCardGenerator(DataGenerator[str]):
     """银行卡号生成器"""
 
-    validator: BankCardValidator | None = None
+    validator: BankCardValidator
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
@@ -220,7 +219,7 @@ class BankCardGenerator(DataGenerator[str]):
 
     def get_bank_info(self, card_number: str) -> dict:
         """获取银行卡信息"""
-        clean_number = re.sub(r"[\s\-]", "", card_number)
+        clean_number = re.sub(r"[\s-]", "", card_number)
 
         bank_info = {
             "card_number": clean_number,
@@ -282,8 +281,6 @@ class BankCardGenerator(DataGenerator[str]):
 @register_generator("generic_bankcard", aliases=["通用银行卡", "银行卡通用"])
 class GenericBankCardGenerator(BankCardGenerator):
     """通用银行卡号生成器注册版本"""
-
-    validator: BankCardValidator | None = None
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)

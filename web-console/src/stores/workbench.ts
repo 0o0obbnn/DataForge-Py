@@ -9,12 +9,12 @@ import { message, notification } from 'ant-design-vue'
 import type { FieldConfig, DataStructure, GenerationConfig } from '@/utils/types'
 import type { GenerationTemplate } from '@/services/template'
 import { OUTPUT_FORMATS } from '@/config/constants'
-import { 
-  DataForgeService, 
-  type GeneratorInfo, 
-  type GenerationResult, 
+import {
+  DataForgeService,
+  type GeneratorInfo,
+  type GenerationResult,
   type TaskInfo,
-  type HealthStatus 
+  type HealthStatus
 } from '@/services/modules/dataforge'
 
 export const useWorkbenchStore = defineStore('workbench', () => {
@@ -54,7 +54,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   const hasFields = computed(() => fields.value.length > 0)
 
   const canPreview = computed(() => {
-    return hasFields.value && fields.value.every(field => 
+    return hasFields.value && fields.value.every(field =>
       !field.required || (field.name && field.name.trim() !== '')
     )
   })
@@ -81,7 +81,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     const index = fields.value.findIndex(field => field.id === fieldId)
     if (index > -1) {
       fields.value.splice(index, 1)
-      
+
       // 如果删除的是当前选中的字段，清除选中状态
       if (selectedFieldId.value === fieldId) {
         selectedFieldId.value = null
@@ -165,7 +165,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
       }))
       generationConfig.value = { ...generationTemplate.generationConfig }
       selectedFieldId.value = null
-      
+
       message.success(`已加载模板: ${generationTemplate.name}`)
     } else {
       // 旧的 DataStructure 格式（向后兼容）
@@ -176,7 +176,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
         id: `field_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       }))
       selectedFieldId.value = null
-      
+
       message.success(`已加载数据结构: ${dataStructure.name}`)
     }
   }
@@ -252,16 +252,16 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     try {
       apiConnecting.value = true
       const connectionResult = await DataForgeService.checkConnection()
-      
+
       apiConnected.value = connectionResult.connected
       apiHealth.value = connectionResult.health || null
-      
+
       if (connectionResult.connected) {
         message.success('DataForge API 连接成功')
       } else {
         message.error(connectionResult.message)
       }
-      
+
       return connectionResult
     } catch (error: any) {
       apiConnected.value = false
@@ -276,21 +276,21 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   const loadAvailableGenerators = async () => {
     try {
       loadingGenerators.value = true
-      
+
       // 加载生成器列表
       const generatorsResponse = await DataForgeService.getGenerators()
       if (generatorsResponse.success && generatorsResponse.data) {
         availableGenerators.value = generatorsResponse.data
       }
-      
+
       // 加载生成器分类
       const categoriesResponse = await DataForgeService.getGeneratorCategories()
       if (categoriesResponse.success && categoriesResponse.data) {
         generatorCategories.value = categoriesResponse.data
       }
-      
+
       message.success(`已加载 ${availableGenerators.value.length} 个生成器`)
-      
+
     } catch (error: any) {
       message.error(`加载生成器失败: ${error.message}`)
     } finally {
@@ -306,7 +306,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
         should_validate: true,
         output_format: 'json'
       })
-      
+
       if (response.success && response.data) {
         setPreviewData(response.data.data)
         message.success(`生成 ${response.data.count} 条预览数据`)
@@ -327,13 +327,13 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   }>, count: number = 100) => {
     try {
       isGenerating.value = true
-      
+
       const response = await DataForgeService.generateBatchData({
         generators: configurations,
         count,
         output_format: 'json'
       })
-      
+
       if (response.success && response.data) {
         lastGenerationResult.value = response.data as any
         message.success(`成功生成 ${response.data.count} 条数据`)
@@ -351,8 +351,8 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   }
 
   const generateLargeDataAsync = async (
-    generatorName: string, 
-    parameters: Record<string, any> = {}, 
+    generatorName: string,
+    parameters: Record<string, any> = {},
     count: number = 10000
   ) => {
     try {
@@ -362,17 +362,17 @@ export const useWorkbenchStore = defineStore('workbench', () => {
         should_validate: true,
         output_format: 'json'
       })
-      
+
       if (response.success && response.data) {
         // 添加到活跃任务列表
         activeTasks.value.push(response.data)
-        
+
         notification.success({
           message: '异步任务已创建',
           description: `任务ID: ${response.data.task_id}，正在生成 ${count} 条数据`,
           duration: 10
         })
-        
+
         return response.data
       } else {
         message.error('异步任务创建失败')
@@ -387,14 +387,14 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   const checkTaskStatus = async (taskId: string) => {
     try {
       const response = await DataForgeService.getTaskStatus(taskId)
-      
+
       if (response.success && response.data) {
         // 更新任务状态
         const taskIndex = activeTasks.value.findIndex(task => task.task_id === taskId)
         if (taskIndex > -1) {
           activeTasks.value[taskIndex] = response.data
         }
-        
+
         // 如果任务完成，显示通知
         if (response.data.status === 'completed') {
           notification.success({
@@ -409,10 +409,10 @@ export const useWorkbenchStore = defineStore('workbench', () => {
             duration: 15
           })
         }
-        
+
         return response.data
       }
-      
+
       return null
     } catch (error: any) {
       message.error(`检查任务状态失败: ${error.message}`)
@@ -449,7 +449,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     isGenerating,
     previewData,
     validationResults,
-    
+
     // DataForge API 状态
     apiConnected,
     apiConnecting,
@@ -459,14 +459,14 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     loadingGenerators,
     activeTasks,
     lastGenerationResult,
-    
+
     // 原有计算属性
     selectedField,
     hasFields,
     canPreview,
     canGenerate,
     canSaveTemplate,
-    
+
     // 原有方法
     addField,
     removeField,
@@ -485,7 +485,7 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     saveAsTemplate,
     exportCurrentAsTemplate,
     exportDataStructure,
-    
+
     // DataForge API 方法
     checkApiConnection,
     loadAvailableGenerators,
@@ -498,24 +498,3 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     initializeDataForgeConnection
   }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

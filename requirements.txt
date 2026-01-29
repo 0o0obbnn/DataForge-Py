@@ -42,8 +42,6 @@ distro==1.9.0
     #   openai
 docstring-parser==0.17.0
     # via anthropic
-faker==40.1.2
-    # via dataforge (pyproject.toml)
 frozenlist==1.8.0
     # via
     #   aiohttp

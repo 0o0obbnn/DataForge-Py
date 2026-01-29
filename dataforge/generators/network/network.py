@@ -398,7 +398,7 @@ class MACAddressGenerator(DataGenerator[str]):
     def _format_mac(self, mac_bytes: str) -> str:
         """格式化MAC地址"""
         # 分割为6个2位字节
-        bytes_list = [mac_bytes[i : i + 2] for i in range(0, 12, 2)]
+        bytes_list: list[Any] = [mac_bytes[i : i + 2] for i in range(0, 12, 2)]
 
         # 应用大小写
         if self.case_style.upper() == "UPPER":
@@ -721,7 +721,13 @@ class PortNumberGenerator(DataGenerator[int]):
 
     def get_port_info(self, port: int) -> dict[str, Any]:
         """获取端口信息"""
-        info = {"port": port, "type": "UNKNOWN", "protocol": [], "service": "Unknown"}
+        protocol_list: list[str] = []
+        info: dict[str, Any] = {
+            "port": port,
+            "type": "UNKNOWN",
+            "protocol": protocol_list,
+            "service": "Unknown",
+        }
 
         if port < 1024:
             info["type"] = "SYSTEM"

@@ -13,7 +13,7 @@
           </a-button>
         </a-space>
       </template>
-      
+
       <!-- 筛选器 -->
       <div class="filter-section">
         <a-row :gutter="[16, 16]">
@@ -30,7 +30,7 @@
               <a-select-option value="suspicious">可疑</a-select-option>
             </a-select>
           </a-col>
-          
+
           <a-col :xs="24" :sm="12" :md="6">
             <a-select
               v-model:value="filters.deviceType"
@@ -44,7 +44,7 @@
               <a-select-option value="tablet">平板</a-select-option>
             </a-select>
           </a-col>
-          
+
           <a-col :xs="24" :sm="12" :md="8">
             <a-range-picker
               v-model:value="filters.timeRange"
@@ -54,7 +54,7 @@
               :placeholder="['开始日期', '结束日期']"
             />
           </a-col>
-          
+
           <a-col :xs="24" :sm="12" :md="4">
             <a-button @click="clearFilters" style="width: 100%">
               <ClearOutlined />
@@ -63,41 +63,41 @@
           </a-col>
         </a-row>
       </div>
-      
+
       <!-- 统计信息 -->
       <div class="stats-section">
         <a-row :gutter="16">
           <a-col :xs="12" :sm="6">
-            <a-statistic 
-              title="总登录次数" 
-              :value="stats.totalLogins" 
+            <a-statistic
+              title="总登录次数"
+              :value="stats.totalLogins"
               :value-style="{ color: 'var(--df-text-primary)' }"
             />
           </a-col>
           <a-col :xs="12" :sm="6">
-            <a-statistic 
-              title="成功登录" 
-              :value="stats.successLogins" 
+            <a-statistic
+              title="成功登录"
+              :value="stats.successLogins"
               :value-style="{ color: 'var(--df-accent-success)' }"
             />
           </a-col>
           <a-col :xs="12" :sm="6">
-            <a-statistic 
-              title="失败登录" 
-              :value="stats.failedLogins" 
+            <a-statistic
+              title="失败登录"
+              :value="stats.failedLogins"
               :value-style="{ color: 'var(--df-accent-error)' }"
             />
           </a-col>
           <a-col :xs="12" :sm="6">
-            <a-statistic 
-              title="可疑活动" 
-              :value="stats.suspiciousLogins" 
+            <a-statistic
+              title="可疑活动"
+              :value="stats.suspiciousLogins"
               :value-style="{ color: 'var(--df-accent-warning)' }"
             />
           </a-col>
         </a-row>
       </div>
-      
+
       <!-- 数据表格 -->
       <a-table
         :columns="columns"
@@ -116,7 +116,7 @@
               {{ getStatusText(record.status) }}
             </a-tag>
           </template>
-          
+
           <!-- 设备列 -->
           <template v-if="column.key === 'device'">
             <div class="device-info">
@@ -127,7 +127,7 @@
               </div>
             </div>
           </template>
-          
+
           <!-- 位置列 -->
           <template v-if="column.key === 'location'">
             <div class="location-info">
@@ -138,7 +138,7 @@
               </div>
             </div>
           </template>
-          
+
           <!-- 时间列 -->
           <template v-if="column.key === 'time'">
             <div class="time-info">
@@ -146,31 +146,31 @@
               <div class="time-relative">{{ getRelativeTime(record.time) }}</div>
             </div>
           </template>
-          
+
           <!-- 操作列 -->
           <template v-if="column.key === 'actions'">
             <a-space>
-              <a-button 
-                type="text" 
+              <a-button
+                type="text"
                 size="small"
                 @click="showLocationDetails(record)"
                 title="查看位置详情"
               >
                 <EnvironmentOutlined />
               </a-button>
-              <a-button 
-                v-if="record.status === 'suspicious'" 
-                type="text" 
+              <a-button
+                v-if="record.status === 'suspicious'"
+                type="text"
                 size="small"
                 @click="markAsSafe(record)"
                 title="标记为安全"
               >
                 <SafetyCertificateOutlined />
               </a-button>
-              <a-button 
-                v-if="record.status !== 'failed'" 
-                type="text" 
-                danger 
+              <a-button
+                v-if="record.status !== 'failed'"
+                type="text"
+                danger
                 size="small"
                 @click="reportSuspicious(record)"
                 title="举报可疑"
@@ -182,7 +182,7 @@
         </template>
       </a-table>
     </a-card>
-    
+
     <!-- 位置详情弹窗 -->
     <a-modal
       v-model:open="locationModalVisible"
@@ -211,7 +211,7 @@
             {{ selectedRecord.timezone || 'Asia/Shanghai' }}
           </a-descriptions-item>
         </a-descriptions>
-        
+
         <div class="security-assessment">
           <h4>安全评估</h4>
           <a-row :gutter="16">
@@ -232,7 +232,7 @@
               </div>
             </a-col>
           </a-row>
-          
+
           <div v-if="selectedRecord.riskFactors?.length" class="risk-factors">
             <h5>风险因素:</h5>
             <ul>
@@ -435,17 +435,17 @@ const pagination = ref({
 // 计算属性
 const filteredHistoryData = computed(() => {
   let data = [...historyData.value]
-  
+
   // 状态筛选
   if (filters.status) {
     data = data.filter(item => item.status === filters.status)
   }
-  
+
   // 设备类型筛选
   if (filters.deviceType) {
     data = data.filter(item => item.deviceType === filters.deviceType)
   }
-  
+
   // 时间范围筛选
   if (filters.timeRange && filters.timeRange.length === 2) {
     const [start, end] = filters.timeRange
@@ -454,10 +454,10 @@ const filteredHistoryData = computed(() => {
       return itemDate.isAfter(start.startOf('day')) && itemDate.isBefore(end.endOf('day'))
     })
   }
-  
+
   // 更新分页总数
   pagination.value.total = data.length
-  
+
   return data
 })
 
@@ -578,7 +578,7 @@ const clearFilters = () => {
 const handleTableChange = (pag: any, tableFilters: any, sorter: any) => {
   pagination.value.current = pag.current
   pagination.value.pageSize = pag.pageSize
-  
+
   // 处理表格筛选
   if (tableFilters.status) {
     filters.status = tableFilters.status[0]
@@ -593,10 +593,10 @@ const showLocationDetails = (record: LoginRecord) => {
 const markAsSafe = async (record: LoginRecord) => {
   try {
     loading.value = true
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
     // 更新记录状态
     const index = historyData.value.findIndex(item => item.id === record.id)
     if (index !== -1) {
@@ -604,7 +604,7 @@ const markAsSafe = async (record: LoginRecord) => {
       historyData.value[index].riskLevel = 'low'
       historyData.value[index].riskFactors = []
     }
-    
+
     message.success('已标记为安全登录')
   } catch (error) {
     message.error('操作失败，请稍后重试')
@@ -616,10 +616,10 @@ const markAsSafe = async (record: LoginRecord) => {
 const reportSuspicious = async (record: LoginRecord) => {
   try {
     loading.value = true
-    
+
     // 模拟API调用
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
     // 更新记录状态
     const index = historyData.value.findIndex(item => item.id === record.id)
     if (index !== -1) {
@@ -630,7 +630,7 @@ const reportSuspicious = async (record: LoginRecord) => {
       }
       historyData.value[index].riskFactors!.push('用户举报')
     }
-    
+
     message.success('已举报为可疑活动')
   } catch (error) {
     message.error('操作失败，请稍后重试')
@@ -654,18 +654,18 @@ onMounted(() => {
 .history-card {
   background: var(--df-secondary-bg);
   border: 1px solid var(--df-text-disabled);
-  
+
   :deep(.ant-card-head) {
     background: transparent;
     border-bottom-color: var(--df-text-disabled);
-    
+
     .ant-card-head-title {
       color: var(--df-text-primary);
       font-size: var(--df-font-size-lg);
       font-weight: 600;
     }
   }
-  
+
   :deep(.ant-card-body) {
     background: transparent;
   }
@@ -687,14 +687,14 @@ onMounted(() => {
   background: var(--df-primary-bg);
   border: 1px solid var(--df-text-disabled);
   border-radius: var(--df-radius-md);
-  
+
   :deep(.ant-statistic) {
     .ant-statistic-title {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-sm);
       margin-bottom: var(--df-spacing-xs);
     }
-    
+
     .ant-statistic-content {
       font-weight: 600;
       font-size: var(--df-font-size-xl);
@@ -705,28 +705,28 @@ onMounted(() => {
 // 表格样式
 :deep(.ant-table) {
   background: transparent;
-  
+
   .ant-table-thead > tr > th {
     background: var(--df-primary-bg);
     color: var(--df-text-primary);
     border-bottom-color: var(--df-text-disabled);
     font-weight: 600;
-    
+
     &:hover {
       background: var(--df-primary-bg);
     }
   }
-  
+
   .ant-table-tbody > tr > td {
     background: transparent;
     color: var(--df-text-primary);
     border-bottom-color: var(--df-text-disabled);
   }
-  
+
   .ant-table-tbody > tr:hover > td {
     background: rgba(142, 93, 255, 0.05);
   }
-  
+
   .ant-table-tbody > tr.ant-table-row-selected > td {
     background: rgba(142, 93, 255, 0.1);
   }
@@ -737,19 +737,19 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--df-spacing-sm);
-  
+
   .device-icon {
     font-size: var(--df-font-size-lg);
     color: var(--df-accent-primary);
   }
-  
+
   .device-details {
     .device-name {
       color: var(--df-text-primary);
       font-weight: 500;
       font-size: var(--df-font-size-sm);
     }
-    
+
     .device-os {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-xs);
@@ -761,18 +761,18 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--df-spacing-sm);
-  
+
   .location-icon {
     color: var(--df-accent-primary);
     font-size: var(--df-font-size-base);
   }
-  
+
   .location-city {
     color: var(--df-text-primary);
     font-weight: 500;
     font-size: var(--df-font-size-sm);
   }
-  
+
   .location-ip {
     color: var(--df-text-secondary);
     font-size: var(--df-font-size-xs);
@@ -786,7 +786,7 @@ onMounted(() => {
     font-size: var(--df-font-size-sm);
     font-weight: 500;
   }
-  
+
   .time-relative {
     color: var(--df-text-secondary);
     font-size: var(--df-font-size-xs);
@@ -799,38 +799,38 @@ onMounted(() => {
     margin-top: var(--df-spacing-lg);
     padding-top: var(--df-spacing-lg);
     border-top: 1px solid var(--df-text-disabled);
-    
+
     h4 {
       color: var(--df-text-primary);
       margin-bottom: var(--df-spacing-md);
       font-weight: 600;
     }
-    
+
     h5 {
       color: var(--df-text-primary);
       margin: var(--df-spacing-md) 0 var(--df-spacing-sm) 0;
       font-weight: 600;
     }
-    
+
     .risk-indicator {
       display: flex;
       align-items: center;
       gap: var(--df-spacing-sm);
       margin-bottom: var(--df-spacing-sm);
-      
+
       .risk-label {
         color: var(--df-text-secondary);
         font-size: var(--df-font-size-sm);
         min-width: 80px;
       }
     }
-    
+
     .risk-factors {
       ul {
         margin: 0;
         padding-left: var(--df-spacing-lg);
         color: var(--df-text-primary);
-        
+
         li {
           margin-bottom: var(--df-spacing-xs);
           color: var(--df-accent-error);
@@ -846,16 +846,16 @@ onMounted(() => {
     background: var(--df-primary-bg);
     border-color: var(--df-text-disabled);
     color: var(--df-text-primary);
-    
+
     &:hover, &:focus {
       border-color: var(--df-accent-primary);
     }
-    
+
     .ant-select-selection-placeholder {
       color: var(--df-text-secondary);
     }
   }
-  
+
   &.ant-select-focused .ant-select-selector {
     border-color: var(--df-accent-primary);
     box-shadow: 0 0 0 2px rgba(142, 93, 255, 0.1);
@@ -865,24 +865,24 @@ onMounted(() => {
 :deep(.ant-picker) {
   background: var(--df-primary-bg);
   border-color: var(--df-text-disabled);
-  
+
   &:hover, &:focus {
     border-color: var(--df-accent-primary);
   }
-  
+
   &.ant-picker-focused {
     border-color: var(--df-accent-primary);
     box-shadow: 0 0 0 2px rgba(142, 93, 255, 0.1);
   }
-  
+
   .ant-picker-input > input {
     color: var(--df-text-primary);
-    
+
     &::placeholder {
       color: var(--df-text-secondary);
     }
   }
-  
+
   .ant-picker-separator {
     color: var(--df-text-secondary);
   }
@@ -891,30 +891,30 @@ onMounted(() => {
 :deep(.ant-btn) {
   border-color: var(--df-text-disabled);
   color: var(--df-text-primary);
-  
+
   &:hover {
     border-color: var(--df-accent-primary);
     color: var(--df-accent-primary);
   }
-  
+
   &.ant-btn-text {
     color: var(--df-text-secondary);
-    
+
     &:hover {
       color: var(--df-accent-primary);
       background: rgba(142, 93, 255, 0.1);
     }
-    
+
     &.ant-btn-dangerous {
       color: var(--df-accent-error);
-      
+
       &:hover {
         color: var(--df-accent-error);
         background: rgba(239, 68, 68, 0.1);
       }
     }
   }
-  
+
   .anticon {
     margin-right: var(--df-spacing-xs);
   }
@@ -927,31 +927,31 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  
+
   &.ant-tag-success {
     background: rgba(16, 185, 129, 0.1);
     border-color: var(--df-accent-success);
     color: var(--df-accent-success);
   }
-  
+
   &.ant-tag-error {
     background: rgba(239, 68, 68, 0.1);
     border-color: var(--df-accent-error);
     color: var(--df-accent-error);
   }
-  
+
   &.ant-tag-warning {
     background: rgba(245, 158, 11, 0.1);
     border-color: #F59E0B;
     color: #F59E0B;
   }
-  
+
   &.ant-tag-orange {
     background: rgba(251, 146, 60, 0.1);
     border-color: #FB923C;
     color: #FB923C;
   }
-  
+
   &.ant-tag-green {
     background: rgba(16, 185, 129, 0.1);
     border-color: var(--df-accent-success);
@@ -964,17 +964,17 @@ onMounted(() => {
     color: var(--df-text-secondary);
     font-weight: 500;
   }
-  
+
   .ant-descriptions-item-content {
     color: var(--df-text-primary);
   }
-  
+
   &.ant-descriptions-bordered {
     .ant-descriptions-item-label {
       background: var(--df-primary-bg);
       border-color: var(--df-text-disabled);
     }
-    
+
     .ant-descriptions-item-content {
       background: var(--df-secondary-bg);
       border-color: var(--df-text-disabled);
@@ -987,17 +987,17 @@ onMounted(() => {
     background: var(--df-secondary-bg);
     border: 1px solid var(--df-text-disabled);
   }
-  
+
   .ant-modal-header {
     background: transparent;
     border-bottom-color: var(--df-text-disabled);
-    
+
     .ant-modal-title {
       color: var(--df-text-primary);
       font-weight: 600;
     }
   }
-  
+
   .ant-modal-body {
     background: transparent;
   }
@@ -1007,42 +1007,42 @@ onMounted(() => {
   .ant-pagination-item {
     background: var(--df-primary-bg);
     border-color: var(--df-text-disabled);
-    
+
     a {
       color: var(--df-text-primary);
     }
-    
+
     &:hover {
       border-color: var(--df-accent-primary);
-      
+
       a {
         color: var(--df-accent-primary);
       }
     }
-    
+
     &.ant-pagination-item-active {
       background: var(--df-accent-primary);
       border-color: var(--df-accent-primary);
-      
+
       a {
         color: white;
       }
     }
   }
-  
+
   .ant-pagination-prev, .ant-pagination-next {
     .ant-pagination-item-link {
       background: var(--df-primary-bg);
       border-color: var(--df-text-disabled);
       color: var(--df-text-primary);
-      
+
       &:hover {
         border-color: var(--df-accent-primary);
         color: var(--df-accent-primary);
       }
     }
   }
-  
+
   .ant-pagination-options {
     .ant-select {
       .ant-select-selector {
@@ -1068,32 +1068,32 @@ onMounted(() => {
       margin-bottom: var(--df-spacing-sm);
     }
   }
-  
+
   .stats-section {
     :deep(.ant-statistic) {
       text-align: center;
       margin-bottom: var(--df-spacing-md);
-      
+
       .ant-statistic-content {
         font-size: var(--df-font-size-lg);
       }
     }
   }
-  
+
   .device-info {
     flex-direction: column;
     align-items: flex-start;
-    
+
     .device-details {
       width: 100%;
     }
   }
-  
+
   .location-info {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   :deep(.ant-table) {
     .ant-table-tbody > tr > td {
       padding: var(--df-spacing-sm);
@@ -1108,7 +1108,7 @@ onMounted(() => {
       padding: var(--df-spacing-md);
     }
   }
-  
+
   .filter-section,
   .stats-section {
     padding: var(--df-spacing-md);

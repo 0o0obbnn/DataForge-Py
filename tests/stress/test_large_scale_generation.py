@@ -19,8 +19,8 @@ class TestLargeScaleGeneration:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -56,7 +56,7 @@ class TestLargeScaleGeneration:
         end_time = time.time()
         elapsed = end_time - start_time
 
-        print(f"\n大规模生成完成:")
+        print("\n大规模生成完成:")
         print(f"  总数量: {len(users)}")
         print(f"  总时间: {elapsed:.2f}秒")
         print(f"  平均速度: {target/elapsed:.0f}条/秒")
@@ -99,7 +99,7 @@ class TestLargeScaleGeneration:
         end_time = time.time()
         elapsed = end_time - start_time
 
-        print(f"\n大规模生成完成:")
+        print("\n大规模生成完成:")
         print(f"  总数量: {len(records)}")
         print(f"  总时间: {elapsed:.2f}秒")
         print(f"  平均速度: {target/elapsed:.0f}条/秒")
@@ -135,7 +135,7 @@ class TestLargeScaleGeneration:
         end_time = time.time()
         elapsed = end_time - start_time
 
-        print(f"\n持续生成测试完成:")
+        print("\n持续生成测试完成:")
         print(f"  运行时间: {elapsed:.2f}秒")
         print(f"  生成总数: {count}")
         print(f"  平均速度: {count/elapsed:.0f}条/秒")
@@ -169,7 +169,7 @@ class TestLargeScaleGeneration:
 
             print(f"\n批次 {i + 1}/{batch_count} 完成")
 
-        print(f"\n内存稳定性测试完成")
+        print("\n内存稳定性测试完成")
 
     def test_high_volume_batch(self):
         """测试高容量批量生成"""

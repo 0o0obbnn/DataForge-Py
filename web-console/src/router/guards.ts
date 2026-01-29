@@ -11,12 +11,12 @@ export function setupRouterGuards(router: Router) {
   // 全局前置守卫
   router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore()
-    
+
     // 更新页面标题
     if (to.meta.title) {
       document.title = to.meta.title as string
     }
-    
+
     // 检查是否需要认证
     if (to.meta.requiresAuth) {
       if (!authStore.isLoggedIn || !authStore.userToken) {
@@ -28,13 +28,13 @@ export function setupRouterGuards(router: Router) {
         return
       }
     }
-    
+
     // 如果已登录且访问登录/注册页面，重定向到工作台
     if ((to.name === 'Login' || to.name === 'Register') && authStore.isLoggedIn) {
       next('/workbench')
       return
     }
-    
+
     // 权限检查（未来扩展）
     if (to.meta.roles && Array.isArray(to.meta.roles) && to.meta.roles.length > 0) {
       const userRole = authStore.userInfo?.role
@@ -44,16 +44,16 @@ export function setupRouterGuards(router: Router) {
         return
       }
     }
-    
+
     next()
   })
-  
+
   // 全局后置钩子
   router.afterEach((to) => {
     // 页面加载完成后的处理
     console.log(`导航到: ${to.fullPath}`)
   })
-  
+
   // 路由错误处理
   router.onError((error) => {
     console.error('路由错误:', error)

@@ -1,7 +1,7 @@
 # Auth返回类型问题修复报告
 
-**日期**: 2025-11-08  
-**任务**: 修复Auth生成器返回类型不一致问题  
+**日期**: 2025-11-08
+**任务**: 修复Auth生成器返回类型不一致问题
 **状态**: ✅ 完成
 
 ---
@@ -25,7 +25,7 @@
 
 **失败测试**:
 1. `test_auth/test_auth_token.py` - 6个测试
-2. `test_auth/test_email_verification.py` - 2个测试  
+2. `test_auth/test_email_verification.py` - 2个测试
 3. `test_auth/test_session_id.py` - 2个测试
 4. `test_auth/test_sms_verification.py` - 2个测试
 
@@ -57,7 +57,7 @@ class AuthTokenGenerator(DataGenerator[str]):
     - 默认返回字符串（仅access_token）
     - 设置 string_only=False 返回完整字典
     """
-    
+
     @property
     def supported_parameters(self) -> list[str]:
         return [
@@ -65,7 +65,7 @@ class AuthTokenGenerator(DataGenerator[str]):
             "user_id", "scope", "issuer", "audience",
             "string_only", "format",  # 新增参数
         ]
-    
+
     def _setup(self) -> None:
         self.default_config = {
             "algorithm": "HS256",
@@ -75,21 +75,21 @@ class AuthTokenGenerator(DataGenerator[str]):
             "format": "jwt",  # jwt 或 hex
             # ...
         }
-    
+
     def _generate_raw(self, context=None) -> str:
         config = self._get_effective_config()
-        
+
         # 支持hex格式
         if config["format"] == "hex":
             return secrets.token_hex(32)
-        
+
         # 生成JWT token
         access_token = self._generate_jwt(header, payload)
-        
+
         # 如果只需要字符串，直接返回token
         if config["string_only"]:
             return access_token
-        
+
         # 返回完整字典
         return {
             "access_token": access_token,
@@ -97,13 +97,13 @@ class AuthTokenGenerator(DataGenerator[str]):
             "expires_in": expiry_hours * 3600,
             # ...
         }
-    
+
     def validate(self, data: str | dict[str, Any]) -> bool:
         # 如果是字符串，直接验证token格式
         if isinstance(data, str):
             parts = data.split(".")
             return len(parts) == 3 and all(len(part) > 0 for part in parts)
-        
+
         # 如果是字典，验证完整数据
         # ...
 ```
@@ -118,22 +118,22 @@ class SessionIDGenerator(DataGenerator[str]):
     - 默认返回字符串（仅session_id）
     - 设置 string_only=False 返回完整字典
     """
-    
+
     def _generate_raw(self, context=None) -> str:
         # 生成session_id
         session_id = random_bytes.hex()
-        
+
         # 如果只需要字符串，直接返回
         if config["string_only"]:
             return session_id
-        
+
         # 返回完整字典
         return {
             "session_id": session_id,
             "created_at": now.isoformat(),
             # ...
         }
-    
+
     def generate_single(self, context=None) -> str:
         session_data = self._generate_raw(context)
         # 如果是字符串，直接返回
@@ -141,7 +141,7 @@ class SessionIDGenerator(DataGenerator[str]):
             return session_data
         # 如果是字典，返回session_id字段
         return session_data.get("session_id", "")
-    
+
     def validate(self, data: str | dict[str, Any]) -> bool:
         # 如果是字符串，直接验证长度
         if isinstance(data, str):
@@ -159,22 +159,22 @@ class EmailVerificationGenerator(DataGenerator[str]):
     - 默认返回字符串（仅验证码）
     - 设置 string_only=False 返回完整字典
     """
-    
+
     def _generate_raw(self, context=None) -> str:
         # 生成验证码
         code = "".join(random.choices(charset, k=length))
-        
+
         # 如果只需要字符串，直接返回验证码
         if config["string_only"]:
             return code
-        
+
         # 返回完整字典
         return {
             "code": code,
             "expiry_time": expiry_time.isoformat(),
             # ...
         }
-    
+
     def generate_single(self, context=None) -> str:
         verification_data = self._generate_raw(context)
         # 如果是字符串，直接返回
@@ -182,7 +182,7 @@ class EmailVerificationGenerator(DataGenerator[str]):
             return verification_data
         # 如果是字典，返回code字段
         return verification_data.get("code", "")
-    
+
     def validate(self, data: str | dict[str, Any]) -> bool:
         # 如果是字符串，直接验证长度
         if isinstance(data, str):
@@ -200,22 +200,22 @@ class SMSVerificationGenerator(DataGenerator[str]):
     - 默认返回字符串（仅验证码）
     - 设置 string_only=False 返回完整字典
     """
-    
+
     def _generate_raw(self, context=None) -> str:
         # 生成纯数字验证码
         code = "".join(random.choices(string.digits, k=length))
-        
+
         # 如果只需要字符串，直接返回验证码
         if config["string_only"]:
             return code
-        
+
         # 返回完整字典
         return {
             "code": code,
             "expiry_time": expiry_time.isoformat(),
             # ...
         }
-    
+
     def generate_single(self, context=None) -> str:
         verification_data = self._generate_raw(context)
         # 如果是字符串，直接返回
@@ -223,7 +223,7 @@ class SMSVerificationGenerator(DataGenerator[str]):
             return verification_data
         # 如果是字典，返回code字段
         return verification_data.get("code", "")
-    
+
     def validate(self, data: str | dict[str, Any]) -> bool:
         # 如果是字符串，直接验证格式
         if isinstance(data, str):
@@ -354,9 +354,9 @@ class SMSVerificationGenerator(DataGenerator[str]):
 
 ### 修复成果
 
-✅ **11个Auth测试全部通过**  
-✅ **整体通过率提升2.0%**  
-✅ **返回类型一致性问题解决**  
+✅ **11个Auth测试全部通过**
+✅ **整体通过率提升2.0%**
+✅ **返回类型一致性问题解决**
 ✅ **Auth模块100%稳定**
 
 ### 技术价值

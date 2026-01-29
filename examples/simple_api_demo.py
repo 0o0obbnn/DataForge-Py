@@ -67,19 +67,19 @@ def example_with_parameters():
     print("=" * 50)
 
     # 生成北京地区身份证
-    idcard_beijing = gen.idcard(region='北京')
+    idcard_beijing = gen.idcard(region="北京")
     print(f"北京身份证: {idcard_beijing}")
 
     # 生成男性身份证
-    idcard_male = gen.idcard(gender='MALE')
+    idcard_male = gen.idcard(gender="MALE")
     print(f"男性身份证: {idcard_male}")
 
     # 生成中国移动手机号
-    phone_mobile = gen.phone(operator='MOBILE')
+    phone_mobile = gen.phone(operator="MOBILE")
     print(f"中国移动号码: {phone_mobile}")
 
     # 生成工商银行卡号
-    bankcard_icbc = gen.bankcard(bank='ICBC')
+    bankcard_icbc = gen.bankcard(bank="ICBC")
     print(f"工商银行卡号: {bankcard_icbc}")
 
     print()
@@ -92,13 +92,13 @@ def example_combined():
     print("=" * 50)
 
     # 批量生成北京女性身份证
-    idcards = gen.idcard(region='北京', gender='FEMALE', count=3)
+    idcards = gen.idcard(region="北京", gender="FEMALE", count=3)
     print("北京女性身份证 (3个):")
     for i, idcard in enumerate(idcards, 1):
         print(f"  {i}. {idcard}")
 
     # 批量生成中国移动手机号
-    phones = gen.phone(operator='MOBILE', count=5)
+    phones = gen.phone(operator="MOBILE", count=5)
     print("\n中国移动手机号 (5个):")
     for i, phone in enumerate(phones, 1):
         print(f"  {i}. {phone}")
@@ -115,13 +115,13 @@ def example_user_profile():
     # 生成5个用户资料
     for i in range(5):
         user = {
-            'name': gen.name(),
-            'gender': gen.gender(),
-            'age': gen.age(),
-            'phone': gen.phone(operator='MOBILE'),
-            'email': gen.email(),
-            'idcard': gen.idcard(),
-            'address': gen.address(),
+            "name": gen.name(),
+            "gender": gen.gender(),
+            "age": gen.age(),
+            "phone": gen.phone(operator="MOBILE"),
+            "email": gen.email(),
+            "idcard": gen.idcard(),
+            "address": gen.address(),
         }
 
         print(f"\n用户 #{i + 1}:")
@@ -201,7 +201,8 @@ def example_comparison():
     print("names = generator.generate_batch(5)")
 
     from dataforge import GeneratorConfig, default_factory
-    config = GeneratorConfig(generator_type='name', parameters={})
+
+    config = GeneratorConfig(generator_type="name", parameters={})
     generator = default_factory.create_generator(config)
     names_old = generator.generate_batch(5)
     print(f"结果: {names_old}")
@@ -231,4 +232,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()

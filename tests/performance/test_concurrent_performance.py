@@ -46,7 +46,7 @@ class TestConcurrentPerformance:
         elapsed = end_time - start_time
         total_items = num_threads * items_per_thread
 
-        print(f"\n并发姓名生成性能:")
+        print("\n并发姓名生成性能:")
         print(f"  线程数: {num_threads}")
         print(f"  每线程生成: {items_per_thread}条")
         print(f"  总生成: {total_items}条")
@@ -61,9 +61,9 @@ class TestConcurrentPerformance:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -100,7 +100,7 @@ class TestConcurrentPerformance:
         elapsed = end_time - start_time
         total_items = num_threads * items_per_thread
 
-        print(f"\n并发多生成器性能:")
+        print("\n并发多生成器性能:")
         print(f"  线程数: {num_threads}")
         print(f"  每线程生成: {items_per_thread}条")
         print(f"  总生成: {total_items}条")
@@ -177,7 +177,7 @@ class TestConcurrentPerformance:
         elapsed = end_time - start_time
         total_items = num_threads * items_per_thread
 
-        print(f"\n并发身份证生成性能:")
+        print("\n并发身份证生成性能:")
         print(f"  线程数: {num_threads}")
         print(f"  每线程生成: {items_per_thread}条")
         print(f"  总生成: {total_items}条")
@@ -220,7 +220,7 @@ class TestConcurrentPerformance:
         elapsed = end_time - start_time
         total_items = num_threads * items_per_thread
 
-        print(f"\n并发压力测试:")
+        print("\n并发压力测试:")
         print(f"  线程数: {num_threads}")
         print(f"  每线程生成: {items_per_thread}条")
         print(f"  总生成: {total_items}条")

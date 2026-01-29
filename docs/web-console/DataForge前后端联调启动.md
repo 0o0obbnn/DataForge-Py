@@ -31,7 +31,7 @@
 
 ## Plan
 
-Note: 
+Note:
 
 - [ ] is holding
 - [/] is doing

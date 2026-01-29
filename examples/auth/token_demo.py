@@ -75,7 +75,7 @@ def parameter_configuration():
         {"type": "api_key"},
         {"type": "oauth"},
         {"length": 64},
-        {"prefix": "Bearer"}
+        {"prefix": "Bearer"},
     ]
     for i, params in enumerate(token_types, 1):
         config = GeneratorConfig("auth_token", parameters=params)
@@ -91,7 +91,7 @@ def parameter_configuration():
         {"length": 6, "type": "alphanumeric"},
         {"length": 8, "type": "mixed"},
         {"case": "upper"},
-        {"exclude_ambiguous": True}
+        {"exclude_ambiguous": True},
     ]
     for i, params in enumerate(code_configs, 1):
         config = GeneratorConfig("email_verification", parameters=params)
@@ -107,7 +107,7 @@ def parameter_configuration():
         {"length": 12, "strength": "medium"},
         {"length": 16, "strength": "strong"},
         {"include_symbols": True},
-        {"exclude_similar": True}
+        {"exclude_similar": True},
     ]
     for i, params in enumerate(password_configs, 1):
         config = GeneratorConfig("password", parameters=params)
@@ -124,7 +124,7 @@ def parameter_configuration():
         {"style": "gaming"},
         {"style": "email_based"},
         {"separator": "_"},
-        {"include_numbers": True}
+        {"include_numbers": True},
     ]
     for i, params in enumerate(username_styles, 1):
         config = GeneratorConfig("username", parameters=params)
@@ -142,32 +142,28 @@ def batch_generation():
     print("\n批量生成用户认证信息:")
 
     # 生成认证令牌
-    token_config = GeneratorConfig("auth_token", parameters={
-        "type": "jwt",
-        "length": 32
-    })
+    token_config = GeneratorConfig(
+        "auth_token", parameters={"type": "jwt", "length": 32}
+    )
     token_gen = default_factory.create_generator(token_config)
 
     # 生成邮箱验证码
-    email_config = GeneratorConfig("email_verification", parameters={
-        "length": 6,
-        "type": "numeric"
-    })
+    email_config = GeneratorConfig(
+        "email_verification", parameters={"length": 6, "type": "numeric"}
+    )
     email_gen = default_factory.create_generator(email_config)
 
     # 生成密码
-    password_config = GeneratorConfig("password", parameters={
-        "length": 12,
-        "strength": "medium",
-        "include_symbols": True
-    })
+    password_config = GeneratorConfig(
+        "password",
+        parameters={"length": 12, "strength": "medium", "include_symbols": True},
+    )
     password_gen = default_factory.create_generator(password_config)
 
     # 生成用户名
-    username_config = GeneratorConfig("username", parameters={
-        "style": "professional",
-        "include_numbers": True
-    })
+    username_config = GeneratorConfig(
+        "username", parameters={"style": "professional", "include_numbers": True}
+    )
     username_gen = default_factory.create_generator(username_config)
 
     # 生成5个用户认证信息
@@ -179,7 +175,7 @@ def batch_generation():
             "auth_token": token_gen.generate(),
             "email_verification": email_gen.generate(),
             "created_at": datetime.now().isoformat(),
-            "expires_at": (datetime.now() + timedelta(hours=24)).isoformat()
+            "expires_at": (datetime.now() + timedelta(hours=24)).isoformat(),
         }
         auth_users.append(user)
 
@@ -188,10 +184,22 @@ def batch_generation():
     print(f"{'用户名':<20} | {'密码':<15} | {'令牌':<30} | {'验证码'}")
     print("-" * 100)
     for user in auth_users:
-        username = user['username'][:18] + ".." if len(user['username']) > 20 else user['username']
-        password = user['password'][:13] + ".." if len(user['password']) > 15 else user['password']
-        token = user['auth_token'][:28] + ".." if len(user['auth_token']) > 30 else user['auth_token']
-        code = user['email_verification']
+        username = (
+            user["username"][:18] + ".."
+            if len(user["username"]) > 20
+            else user["username"]
+        )
+        password = (
+            user["password"][:13] + ".."
+            if len(user["password"]) > 15
+            else user["password"]
+        )
+        token = (
+            user["auth_token"][:28] + ".."
+            if len(user["auth_token"]) > 30
+            else user["auth_token"]
+        )
+        code = user["email_verification"]
         print(f"{username:<20} | {password:<15} | {token:<30} | {code}")
     print("-" * 100)
 
@@ -227,11 +235,10 @@ def validation_examples():
 
     # 密码强度验证
     print("\n密码强度验证:")
-    config = GeneratorConfig("password", parameters={
-        "length": 12,
-        "strength": "strong",
-        "include_symbols": True
-    })
+    config = GeneratorConfig(
+        "password",
+        parameters={"length": 12, "strength": "strong", "include_symbols": True},
+    )
     generator = default_factory.create_generator(config)
 
     for i in range(3):
@@ -311,14 +318,14 @@ def best_practices():
             "require_lowercase": True,
             "require_digits": True,
             "require_symbols": True,
-            "max_age_days": 90
+            "max_age_days": 90,
         },
         "verification_settings": {
             "email_code_length": 6,
             "sms_code_length": 6,
             "code_expiry_minutes": 10,
-            "max_attempts": 3
-        }
+            "max_attempts": 3,
+        },
     }
 
     print("  认证系统配置:")
@@ -328,7 +335,9 @@ def best_practices():
             for sub_key, sub_value in value.items():
                 print(f"      {sub_key}: {sub_value}")
         else:
-            display_value = str(value)[:60] + "..." if len(str(value)) > 60 else str(value)
+            display_value = (
+                str(value)[:60] + "..." if len(str(value)) > 60 else str(value)
+            )
             print(f"    {key}: {display_value}")
 
     # 实践2: 批量导出认证数据
@@ -343,24 +352,33 @@ def best_practices():
                     GeneratorConfig("username", parameters={"style": "professional"})
                 ).generate(),
                 "password": default_factory.create_generator(
-                    GeneratorConfig("password", parameters={
-                        "length": 16,
-                        "strength": "strong",
-                        "include_symbols": True
-                    })
+                    GeneratorConfig(
+                        "password",
+                        parameters={
+                            "length": 16,
+                            "strength": "strong",
+                            "include_symbols": True,
+                        },
+                    )
                 ).generate(),
-                "email": f"user{i+1}@example.com"
+                "email": f"user{i+1}@example.com",
             },
             "tokens": {
                 "access_token": default_factory.create_generator(
-                    GeneratorConfig("auth_token", parameters={"type": "bearer", "length": 32})
+                    GeneratorConfig(
+                        "auth_token", parameters={"type": "bearer", "length": 32}
+                    )
                 ).generate(),
                 "refresh_token": default_factory.create_generator(
-                    GeneratorConfig("auth_token", parameters={"type": "jwt", "length": 64})
+                    GeneratorConfig(
+                        "auth_token", parameters={"type": "jwt", "length": 64}
+                    )
                 ).generate(),
                 "api_key": default_factory.create_generator(
-                    GeneratorConfig("auth_token", parameters={"type": "api_key", "prefix": "sk_"})
-                ).generate()
+                    GeneratorConfig(
+                        "auth_token", parameters={"type": "api_key", "prefix": "sk_"}
+                    )
+                ).generate(),
             },
             "verification": {
                 "email_code": default_factory.create_generator(
@@ -368,8 +386,8 @@ def best_practices():
                 ).generate(),
                 "phone_code": default_factory.create_generator(
                     GeneratorConfig("sms_verification", parameters={"length": 6})
-                ).generate()
-            }
+                ).generate(),
+            },
         }
         auth_data.append(user_auth)
 
@@ -385,11 +403,10 @@ def security_demo():
     print("\n密码哈希演示:")
 
     # 生成密码
-    password_config = GeneratorConfig("password", parameters={
-        "length": 12,
-        "strength": "strong",
-        "include_symbols": True
-    })
+    password_config = GeneratorConfig(
+        "password",
+        parameters={"length": 12, "strength": "strong", "include_symbols": True},
+    )
     password_gen = default_factory.create_generator(password_config)
 
     # 生成多个密码并展示哈希
@@ -411,10 +428,9 @@ def security_demo():
     # 生成不同类型的令牌
     token_types = ["jwt", "bearer", "api_key", "oauth"]
     for token_type in token_types:
-        config = GeneratorConfig("auth_token", parameters={
-            "type": token_type,
-            "length": 32
-        })
+        config = GeneratorConfig(
+            "auth_token", parameters={"type": token_type, "length": 32}
+        )
         generator = default_factory.create_generator(config)
         token = generator.generate()
 
@@ -428,10 +444,9 @@ def security_demo():
     print("\n验证码安全演示:")
 
     # 生成验证码并展示过期时间
-    verification_config = GeneratorConfig("email_verification", parameters={
-        "length": 6,
-        "type": "numeric"
-    })
+    verification_config = GeneratorConfig(
+        "email_verification", parameters={"length": 6, "type": "numeric"}
+    )
     verification_gen = default_factory.create_generator(verification_config)
 
     for i in range(3):
@@ -470,6 +485,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

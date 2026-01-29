@@ -51,9 +51,9 @@ class TestBatchPerformance:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -216,6 +216,6 @@ class TestBatchPerformance:
         ratio_1 = times[1] / times[0]  # 200/100
         ratio_2 = times[2] / times[1]  # 500/200
 
-        print(f"\n扩展性比率:")
+        print("\n扩展性比率:")
         print(f"  200/100: {ratio_1:.2f}")
         print(f"  500/200: {ratio_2:.2f}")

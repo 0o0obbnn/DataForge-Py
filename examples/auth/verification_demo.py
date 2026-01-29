@@ -59,7 +59,7 @@ def parameter_configuration():
         {"case": "lower"},
         {"exclude_ambiguous": True},
         {"prefix": "CODE-"},
-        {"suffix": "-END"}
+        {"suffix": "-END"},
     ]
     for i, params in enumerate(email_configs, 1):
         config = GeneratorConfig("email_verification", parameters=params)
@@ -76,7 +76,7 @@ def parameter_configuration():
         {"country_code": "+86"},
         {"country_code": "+1"},
         {"template": "Your code is: {}"},
-        {"template": "Verification code: {}"}
+        {"template": "Verification code: {}"},
     ]
     for i, params in enumerate(sms_configs, 1):
         config = GeneratorConfig("sms_verification", parameters=params)
@@ -93,7 +93,7 @@ def parameter_configuration():
         {"format": "hex"},
         {"format": "base64"},
         {"prefix": "sess_"},
-        {"separator": "-"}
+        {"separator": "-"},
     ]
     for i, params in enumerate(session_configs, 1):
         config = GeneratorConfig("session_id", parameters=params)
@@ -111,25 +111,22 @@ def batch_generation():
     print("\n批量生成验证信息:")
 
     # 生成邮箱验证码
-    email_config = GeneratorConfig("email_verification", parameters={
-        "length": 6,
-        "type": "numeric"
-    })
+    email_config = GeneratorConfig(
+        "email_verification", parameters={"length": 6, "type": "numeric"}
+    )
     email_gen = default_factory.create_generator(email_config)
 
     # 生成短信验证码
-    sms_config = GeneratorConfig("sms_verification", parameters={
-        "length": 6,
-        "type": "numeric",
-        "country_code": "+86"
-    })
+    sms_config = GeneratorConfig(
+        "sms_verification",
+        parameters={"length": 6, "type": "numeric", "country_code": "+86"},
+    )
     sms_gen = default_factory.create_generator(sms_config)
 
     # 生成会话ID
-    session_config = GeneratorConfig("session_id", parameters={
-        "length": 32,
-        "format": "hex"
-    })
+    session_config = GeneratorConfig(
+        "session_id", parameters={"length": 32, "format": "hex"}
+    )
     session_gen = default_factory.create_generator(session_config)
 
     # 生成5个验证信息
@@ -142,7 +139,7 @@ def batch_generation():
             "created_at": datetime.now().isoformat(),
             "expires_at": (datetime.now() + timedelta(minutes=10)).isoformat(),
             "attempts": 0,
-            "max_attempts": 3
+            "max_attempts": 3,
         }
         verification_data.append(verification)
 
@@ -151,10 +148,14 @@ def batch_generation():
     print(f"{'邮箱验证码':<12} | {'短信验证码':<12} | {'会话ID':<35} | {'过期时间'}")
     print("-" * 100)
     for data in verification_data:
-        email = data['email_code']
-        sms = data['sms_code']
-        session = data['session_id'][:32] + ".." if len(data['session_id']) > 35 else data['session_id']
-        expires = data['expires_at'][:19]
+        email = data["email_code"]
+        sms = data["sms_code"]
+        session = (
+            data["session_id"][:32] + ".."
+            if len(data["session_id"]) > 35
+            else data["session_id"]
+        )
+        expires = data["expires_at"][:19]
         print(f"{email:<12} | {sms:<12} | {session:<35} | {expires}")
     print("-" * 100)
 
@@ -200,7 +201,9 @@ def validation_examples():
         print(f"  {i+1}. {session_id}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     长度检查: {'✅ 符合' if len(session_id) == 32 else '❌ 不符合'}")
-        print(f"     十六进制: {'✅ 是' if all(c in '0123456789abcdefABCDEF' for c in session_id) else '❌ 否'}")
+        print(
+            f"     十六进制: {'✅ 是' if all(c in '0123456789abcdefABCDEF' for c in session_id) else '❌ 否'}"
+        )
 
 
 def error_handling():
@@ -254,7 +257,7 @@ def best_practices():
             "max_attempts": 3,
             "cooldown_minutes": 1,
             "template": "您的验证码是: {}",
-            "subject": "验证码"
+            "subject": "验证码",
         },
         "sms_settings": {
             "code_length": 6,
@@ -263,15 +266,15 @@ def best_practices():
             "max_attempts": 3,
             "cooldown_minutes": 1,
             "template": "【DataForge】您的验证码是: {}",
-            "supported_countries": ["+86", "+1", "+44"]
+            "supported_countries": ["+86", "+1", "+44"],
         },
         "session_settings": {
             "id_length": 32,
             "id_format": "hex",
             "expiry_hours": 24,
             "max_sessions": 5,
-            "cleanup_interval_hours": 1
-        }
+            "cleanup_interval_hours": 1,
+        },
     }
 
     print("  验证系统配置:")
@@ -297,21 +300,23 @@ def best_practices():
                     GeneratorConfig("sms_verification", parameters={"length": 6})
                 ).generate(),
                 "session_id": default_factory.create_generator(
-                    GeneratorConfig("session_id", parameters={"length": 32, "format": "hex"})
-                ).generate()
+                    GeneratorConfig(
+                        "session_id", parameters={"length": 32, "format": "hex"}
+                    )
+                ).generate(),
             },
             "timestamps": {
                 "created_at": datetime.now().isoformat(),
                 "expires_at": (datetime.now() + timedelta(minutes=10)).isoformat(),
                 "last_attempt": None,
-                "verified_at": None
+                "verified_at": None,
             },
             "status": {
                 "is_verified": False,
                 "attempts": 0,
                 "max_attempts": 3,
-                "is_locked": False
-            }
+                "is_locked": False,
+            },
         }
         verification_data.append(verification_record)
 
@@ -331,7 +336,7 @@ def multi_channel_demo():
         "user_id": "user_001",
         "email": "john.doe@example.com",
         "phone": "+13800138000",
-        "preferred_channels": ["email", "sms"]
+        "preferred_channels": ["email", "sms"],
     }
 
     print(f"  用户信息: {user_info}")
@@ -340,30 +345,30 @@ def multi_channel_demo():
     verification_codes = {}
 
     # 邮箱验证码
-    email_config = GeneratorConfig("email_verification", parameters={
-        "length": 6,
-        "type": "numeric",
-        "prefix": "EMAIL-"
-    })
+    email_config = GeneratorConfig(
+        "email_verification",
+        parameters={"length": 6, "type": "numeric", "prefix": "EMAIL-"},
+    )
     email_gen = default_factory.create_generator(email_config)
     verification_codes["email"] = email_gen.generate()
 
     # 短信验证码
-    sms_config = GeneratorConfig("sms_verification", parameters={
-        "length": 6,
-        "type": "numeric",
-        "prefix": "SMS-",
-        "country_code": "+86"
-    })
+    sms_config = GeneratorConfig(
+        "sms_verification",
+        parameters={
+            "length": 6,
+            "type": "numeric",
+            "prefix": "SMS-",
+            "country_code": "+86",
+        },
+    )
     sms_gen = default_factory.create_generator(sms_config)
     verification_codes["sms"] = sms_gen.generate()
 
     # 生成会话ID
-    session_config = GeneratorConfig("session_id", parameters={
-        "length": 32,
-        "format": "hex",
-        "prefix": "sess_"
-    })
+    session_config = GeneratorConfig(
+        "session_id", parameters={"length": 32, "format": "hex", "prefix": "sess_"}
+    )
     session_gen = default_factory.create_generator(session_config)
     session_id = session_gen.generate()
 
@@ -381,23 +386,31 @@ def multi_channel_demo():
 
     # 验证邮箱验证码
     email_valid = email_gen.validate(user_input_email)
-    print(f"    邮箱验证码 '{user_input_email}': {'✅ 验证成功' if email_valid else '❌ 验证失败'}")
+    print(
+        f"    邮箱验证码 '{user_input_email}': {'✅ 验证成功' if email_valid else '❌ 验证失败'}"
+    )
 
     # 验证短信验证码
     sms_valid = sms_gen.validate(user_input_sms)
-    print(f"    短信验证码 '{user_input_sms}': {'✅ 验证成功' if sms_valid else '❌ 验证失败'}")
+    print(
+        f"    短信验证码 '{user_input_sms}': {'✅ 验证成功' if sms_valid else '❌ 验证失败'}"
+    )
 
     # 验证会话ID
     session_valid = session_gen.validate(session_id)
-    print(f"    会话ID '{session_id[:20]}...': {'✅ 验证成功' if session_valid else '❌ 验证失败'}")
+    print(
+        f"    会话ID '{session_id[:20]}...': {'✅ 验证成功' if session_valid else '❌ 验证失败'}"
+    )
 
     # 生成验证结果
     verification_result = {
         "user_id": user_info["user_id"],
         "session_id": session_id,
-        "verification_status": "success" if email_valid and sms_valid and session_valid else "failed",
+        "verification_status": (
+            "success" if email_valid and sms_valid and session_valid else "failed"
+        ),
         "verified_channels": [],
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
 
     if email_valid:
@@ -437,6 +450,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

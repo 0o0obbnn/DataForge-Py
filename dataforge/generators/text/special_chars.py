@@ -532,9 +532,7 @@ class SpecialCharGenerator(DataGenerator[str]):
         self.include_emoji: bool = self.parameters.get("include_emoji", True)
         self.include_special: bool = self.parameters.get("include_special", True)
         self.unicode_range: str | None = self.parameters.get("unicode_range", None)
-        self.custom_chars: list[str] | None = self.parameters.get(
-            "custom_chars", None
-        )
+        self.custom_chars: list[str] | None = self.parameters.get("custom_chars", None)
 
     def _get_special_chars(self) -> list[str]:
         """获取特殊字符集合"""

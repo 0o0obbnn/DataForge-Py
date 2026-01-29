@@ -24,7 +24,7 @@
 
 **预加载的数据文件：**
 - `chinese/surnames.json` - 中文姓氏数据
-- `chinese/givennames.json` - 中文名字数据  
+- `chinese/givennames.json` - 中文名字数据
 - `chinese/regions.json` - 中国地区数据
 
 ### 3. 优化的生成器实现

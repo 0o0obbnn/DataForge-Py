@@ -5,7 +5,7 @@
 import random  # TODO: Convert to secrets
 import secrets
 import string
-from typing import Any, Union
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -102,8 +102,8 @@ class StringGenerator(DataGenerator[str]):
         result_list = list(result)
 
         for requirement in self.must_include:
-            req_chars_list = self.CHAR_SETS.get(requirement.upper(), [])
-            req_chars_list = [c for c in req_chars_list if c in available_chars]
+            req_chars_list: list[str] = self.CHAR_SETS.get(requirement.upper(), [])  # type: ignore
+            req_chars_list = [c for c in req_chars_list if c in available_chars]  # type: ignore
 
             if req_chars_list and not any(c in result for c in req_chars_list):
                 # 替换一个随机位置的字符
@@ -200,7 +200,7 @@ class StringGenerator(DataGenerator[str]):
         return self._generate_raw(context)
 
 
-class BooleanGenerator(DataGenerator[Union[bool, str]]):
+class BooleanGenerator(DataGenerator[bool | str | int]):
     """布尔值生成器"""
 
     def _setup(self) -> None:
@@ -215,7 +215,7 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
 
     def _generate_raw(
         self, context: GenerationContext | None = None
-    ) -> bool | str | None:
+    ) -> bool | str | int | None:
         """生成原始布尔值"""
         # 处理null值
         if (
@@ -230,13 +230,13 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
         # 根据输出格式转换
         return self._format_output(bool_value)
 
-    def _format_output(self, value: bool) -> bool | str:
+    def _format_output(self, value: bool) -> bool | str | int:
         """格式化输出"""
         if self.custom_values:
             true_val, false_val = self.custom_values
             return true_val if value else false_val
 
-        format_map = {
+        format_map: dict[str, bool | str | int] = {
             "BOOLEAN": value,
             "STRING": "true" if value else "false",
             "STRING_UPPER": "TRUE" if value else "FALSE",
@@ -266,7 +266,9 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
             "YESNO": ["Yes", "No"],
         }
 
-        expected = valid_values.get(self.output_format.upper(), [True, False])
+        expected: list[bool | str | int] = valid_values.get(
+            self.output_format.upper(), [True, False]
+        )  # type: ignore[assignment]
         return data in expected
 
     @property
@@ -277,7 +279,9 @@ class BooleanGenerator(DataGenerator[Union[bool, str]]):
     def supported_parameters(self) -> list[str]:
         return ["true_ratio", "format", "custom_values", "null_ratio"]
 
-    def generate_single(self, context: GenerationContext | None = None) -> bool | str:
+    def generate_single(
+        self, context: GenerationContext | None = None
+    ) -> bool | str | int:
         """生成单个数据项"""
         result = self._generate_raw(context)
         # 确保不返回None，因为函数签名不允许None

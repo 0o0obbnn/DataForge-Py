@@ -29,33 +29,33 @@ export const useTemplatesStore = defineStore('templates', () => {
   // 计算属性
   const filteredTemplates = computed(() => {
     let result = [...templates.value]
-    
+
     // 搜索过滤
     if (filters.value.search) {
       const search = filters.value.search.toLowerCase()
-      result = result.filter(template => 
+      result = result.filter(template =>
         template.name.toLowerCase().includes(search) ||
         template.description.toLowerCase().includes(search)
       )
     }
-    
+
     // 创建者过滤
     if (filters.value.creator !== 'all') {
       result = result.filter(template => template.creator === filters.value.creator)
     }
-    
+
     // 排序
     result.sort((a, b) => {
       const aValue = a[filters.value.sortBy as keyof Template]
       const bValue = b[filters.value.sortBy as keyof Template]
-      
+
       if (filters.value.sortOrder === 'asc') {
         return aValue > bValue ? 1 : -1
       } else {
         return aValue < bValue ? 1 : -1
       }
     })
-    
+
     return result
   })
 
@@ -67,7 +67,7 @@ export const useTemplatesStore = defineStore('templates', () => {
   const fetchTemplates = async (page = 1, pageSize = 10) => {
     try {
       loading.value = true
-      
+
       const response = await http.get<PaginatedResponse<Template>>('/templates', {
         params: {
           page,
@@ -78,14 +78,14 @@ export const useTemplatesStore = defineStore('templates', () => {
           sortOrder: filters.value.sortOrder
         }
       })
-      
+
       templates.value = response.data.items
       pagination.value = {
         page: response.data.page,
         pageSize: response.data.pageSize,
         total: response.data.total
       }
-      
+
       return { success: true }
     } catch (error) {
       console.error('获取模板列表失败:', error)
@@ -98,10 +98,10 @@ export const useTemplatesStore = defineStore('templates', () => {
   const createTemplate = async (templateData: Omit<Template, 'id' | 'createdAt' | 'updatedAt' | 'version'>) => {
     try {
       loading.value = true
-      
+
       const response = await http.post<Template>('/templates', templateData)
       templates.value.unshift(response.data)
-      
+
       return { success: true, data: response.data, message: '模板创建成功' }
     } catch (error) {
       console.error('创建模板失败:', error)
@@ -114,14 +114,14 @@ export const useTemplatesStore = defineStore('templates', () => {
   const updateTemplate = async (templateId: string, updates: Partial<Template>) => {
     try {
       loading.value = true
-      
+
       const response = await http.put<Template>(`/templates/${templateId}`, updates)
-      
+
       const index = templates.value.findIndex(t => t.id === templateId)
       if (index > -1) {
         templates.value[index] = response.data
       }
-      
+
       return { success: true, data: response.data, message: '模板更新成功' }
     } catch (error) {
       console.error('更新模板失败:', error)
@@ -134,14 +134,14 @@ export const useTemplatesStore = defineStore('templates', () => {
   const deleteTemplate = async (templateId: string) => {
     try {
       loading.value = true
-      
+
       await http.delete(`/templates/${templateId}`)
-      
+
       const index = templates.value.findIndex(t => t.id === templateId)
       if (index > -1) {
         templates.value.splice(index, 1)
       }
-      
+
       return { success: true, message: '模板删除成功' }
     } catch (error) {
       console.error('删除模板失败:', error)
@@ -154,10 +154,10 @@ export const useTemplatesStore = defineStore('templates', () => {
   const duplicateTemplate = async (templateId: string) => {
     try {
       loading.value = true
-      
+
       const response = await http.post<Template>(`/templates/${templateId}/duplicate`)
       templates.value.unshift(response.data)
-      
+
       return { success: true, data: response.data, message: '模板复制成功' }
     } catch (error) {
       console.error('复制模板失败:', error)
@@ -174,9 +174,9 @@ export const useTemplatesStore = defineStore('templates', () => {
   }) => {
     try {
       loading.value = true
-      
+
       await http.post(`/templates/${templateId}/share`, shareData)
-      
+
       return { success: true, message: '模板分享成功' }
     } catch (error) {
       console.error('分享模板失败:', error)
@@ -189,10 +189,10 @@ export const useTemplatesStore = defineStore('templates', () => {
   const fetchTemplateVersions = async (templateId: string) => {
     try {
       loading.value = true
-      
+
       const response = await http.get<TemplateVersion[]>(`/templates/${templateId}/versions`)
       templateVersions.value = response.data
-      
+
       return { success: true }
     } catch (error) {
       console.error('获取模板版本失败:', error)
@@ -205,16 +205,16 @@ export const useTemplatesStore = defineStore('templates', () => {
   const revertToVersion = async (templateId: string, versionId: string) => {
     try {
       loading.value = true
-      
+
       const response = await http.post<Template>(`/templates/${templateId}/revert`, {
         versionId
       })
-      
+
       const index = templates.value.findIndex(t => t.id === templateId)
       if (index > -1) {
         templates.value[index] = response.data
       }
-      
+
       return { success: true, data: response.data, message: '模板回滚成功' }
     } catch (error) {
       console.error('回滚模板失败:', error)
@@ -251,11 +251,11 @@ export const useTemplatesStore = defineStore('templates', () => {
     loading,
     pagination,
     filters,
-    
+
     // 计算属性
     filteredTemplates,
     totalPages,
-    
+
     // 方法
     fetchTemplates,
     createTemplate,
@@ -270,24 +270,3 @@ export const useTemplatesStore = defineStore('templates', () => {
     clearTemplates
   }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

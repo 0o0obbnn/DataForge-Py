@@ -15,7 +15,7 @@ from dataforge.core.types import GeneratorType
 
 
 @register_generator("auth_token", ["token"])
-class AuthTokenGenerator(DataGenerator[str]):
+class AuthTokenGenerator(DataGenerator[Any]):
     """
     认证令牌生成器
 
@@ -70,7 +70,9 @@ class AuthTokenGenerator(DataGenerator[str]):
         config.update(self.parameters)
         return config
 
-    def _generate_raw(self, context: GenerationContext | None = None) -> str:
+    def _generate_raw(
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成原始认证令牌数据"""
         config = self._get_effective_config()
 
@@ -232,4 +234,8 @@ class AuthTokenGenerator(DataGenerator[str]):
         self, context: GenerationContext | None = None
     ) -> dict[str, Any]:
         """生成单个令牌数据项（返回包含access_token等字段的字典）"""
-        return self._generate_raw(context)
+        result = self._generate_raw(context)
+        # 如果返回字符串（hex格式），包装成字典
+        if isinstance(result, str):
+            return {"access_token": result, "token_type": "Bearer"}
+        return result  # type: ignore[return-value]

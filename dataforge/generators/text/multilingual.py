@@ -4,6 +4,7 @@
 """
 
 import secrets
+from typing import Any
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -226,7 +227,9 @@ class MultilingualTextGenerator(DataGenerator):
                 # 动态生成句子
                 words = corpus.get("words", ["test", "data", "generate"])
                 word_count = secrets.randbelow(6) + 3
-                sentence_parts = [secrets.choice(words) for _ in range(word_count)]
+                sentence_parts: list[Any] = [
+                    secrets.choice(words) for _ in range(word_count)
+                ]
                 sentence = " ".join(sentence_parts)
 
                 # 添加标点
@@ -240,7 +243,7 @@ class MultilingualTextGenerator(DataGenerator):
             sentences = corpus.get("sentences", ["This is a test sentence."])
             words = corpus.get("words", ["test", "data", "generate"])
 
-            result_parts = []
+            result_parts: list[Any] = []
             current_length = 0
 
             while current_length < target_length:
@@ -250,7 +253,9 @@ class MultilingualTextGenerator(DataGenerator):
                 else:
                     # 生成短语
                     word_count = secrets.randbelow(4) + 2
-                    phrase_parts = [secrets.choice(words) for _ in range(word_count)]
+                    phrase_parts: list[Any] = [
+                        secrets.choice(words) for _ in range(word_count)
+                    ]
                     text = " ".join(phrase_parts)
 
                 if result_parts:

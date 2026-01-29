@@ -234,7 +234,7 @@ class EnhancedIDCardGenerator(IDCardGenerator):
             # 解析身份证信息
             region_code = id_card[:6]
             birth_date_from_id = id_card[6:14]
-            sequence = id_card[14:17]
+            sequence_str = id_card[14:17]
             check_digit = id_card[17]
 
             # 计算年龄
@@ -242,8 +242,8 @@ class EnhancedIDCardGenerator(IDCardGenerator):
             calculated_age = datetime.now().year - birth_year
 
             # 确定性别
-            gender_digit = int(sequence[-1])
-            calculated_gender = "male" if gender_digit % 2 == 1 else "female"
+            sequence = int(sequence_str[-1])
+            calculated_gender = "male" if sequence % 2 == 1 else "female"
 
             self.context.set(
                 "id_card",
@@ -427,6 +427,9 @@ class EnhancedEmailGenerator(EmailGenerator):
 
 class PersonDataGenerator:
     """个人数据综合生成器"""
+
+    # 声明generators类型
+    generators: dict[str, Any]  # type: ignore[assignment]
 
     def __init__(self, external_context: ExtendedGenerationContext | None = None):
         """

@@ -43,7 +43,7 @@ def basic_usage():
             ).generate(),
             "gender": default_factory.create_generator(
                 GeneratorConfig("gender", parameters={})
-            ).generate()
+            ).generate(),
         },
         "location": {
             "address": default_factory.create_generator(
@@ -54,7 +54,7 @@ def basic_usage():
             ).generate(),
             "timezone": default_factory.create_generator(
                 GeneratorConfig("timezone", parameters={})
-            ).generate()
+            ).generate(),
         },
         "device_info": {
             "device_id": default_factory.create_generator(
@@ -62,12 +62,14 @@ def basic_usage():
             ).generate(),
             "user_agent": default_factory.create_generator(
                 GeneratorConfig("http_header", parameters={"browser": "chrome"})
-            ).generate().get("User-Agent", ""),
+            )
+            .generate()
+            .get("User-Agent", ""),
             "ip_address": default_factory.create_generator(
                 GeneratorConfig("ipaddress", parameters={"version": "ipv4"})
-            ).generate()
+            ).generate(),
         },
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().isoformat(),
     }
 
     print("  用户档案:")
@@ -78,10 +80,16 @@ def basic_usage():
                 if isinstance(sub_value, dict):
                     print(f"      {sub_key}: {sub_value}")
                 else:
-                    display_value = str(sub_value)[:30] + "..." if len(str(sub_value)) > 30 else str(sub_value)
+                    display_value = (
+                        str(sub_value)[:30] + "..."
+                        if len(str(sub_value)) > 30
+                        else str(sub_value)
+                    )
                     print(f"      {sub_key}: {display_value}")
         else:
-            display_value = str(value)[:30] + "..." if len(str(value)) > 30 else str(value)
+            display_value = (
+                str(value)[:30] + "..." if len(str(value)) > 30 else str(value)
+            )
             print(f"    {key}: {display_value}")
 
 
@@ -96,15 +104,23 @@ def parameter_configuration():
     # 生成订单基本信息
     order_basic = {
         "order_id": default_factory.create_generator(
-            GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"})
+            GeneratorConfig(
+                "string",
+                parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"},
+            )
         ).generate(),
         "customer_id": default_factory.create_generator(
             GeneratorConfig("uuid", parameters={"version": 4})
         ).generate(),
         "order_date": datetime.now().isoformat(),
         "status": default_factory.create_generator(
-            GeneratorConfig("enum", parameters={"options": ["待付款", "已付款", "已发货", "已送达", "已取消"]})
-        ).generate()
+            GeneratorConfig(
+                "enum",
+                parameters={
+                    "options": ["待付款", "已付款", "已发货", "已送达", "已取消"]
+                },
+            )
+        ).generate(),
     }
 
     # 生成商品信息
@@ -112,34 +128,48 @@ def parameter_configuration():
     for i in range(3):
         product = {
             "product_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 8, "type": "alphanumeric", "prefix": "PROD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 8, "type": "alphanumeric", "prefix": "PROD_"},
+                )
             ).generate(),
             "name": default_factory.create_generator(
                 GeneratorConfig("chinese_text", parameters={"length": 20})
             ).generate(),
             "price": default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "decimal",
+                    parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2},
+                )
             ).generate(),
             "quantity": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 1, "max": 10})
             ).generate(),
             "category": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["电子产品", "服装", "食品", "图书", "家居"]})
-            ).generate()
+                GeneratorConfig(
+                    "enum",
+                    parameters={
+                        "options": ["电子产品", "服装", "食品", "图书", "家居"]
+                    },
+                )
+            ).generate(),
         }
         products.append(product)
 
     # 生成支付信息
     payment_info = {
         "payment_method": default_factory.create_generator(
-            GeneratorConfig("enum", parameters={"options": ["支付宝", "微信支付", "银行卡", "PayPal"]})
+            GeneratorConfig(
+                "enum",
+                parameters={"options": ["支付宝", "微信支付", "银行卡", "PayPal"]},
+            )
         ).generate(),
         "transaction_id": default_factory.create_generator(
             GeneratorConfig("string", parameters={"length": 20, "type": "alphanumeric"})
         ).generate(),
         "amount": sum(p["price"] * p["quantity"] for p in products),
         "currency": "CNY",
-        "paid_at": (datetime.now() - timedelta(hours=1)).isoformat()
+        "paid_at": (datetime.now() - timedelta(hours=1)).isoformat(),
     }
 
     # 生成配送信息
@@ -151,7 +181,7 @@ def parameter_configuration():
         "shipping_address": default_factory.create_generator(
             GeneratorConfig("address", parameters={})
         ).generate(),
-        "estimated_delivery": (datetime.now() + timedelta(days=3)).isoformat()
+        "estimated_delivery": (datetime.now() + timedelta(days=3)).isoformat(),
     }
 
     # 组装完整订单
@@ -163,15 +193,22 @@ def parameter_configuration():
         "total_amount": payment_info["amount"],
         "metadata": {
             "source": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["Web", "Mobile App", "微信小程序", "第三方平台"]})
+                GeneratorConfig(
+                    "enum",
+                    parameters={
+                        "options": ["Web", "Mobile App", "微信小程序", "第三方平台"]
+                    },
+                )
             ).generate(),
             "ip_address": default_factory.create_generator(
                 GeneratorConfig("ipaddress", parameters={"version": "ipv4"})
             ).generate(),
             "user_agent": default_factory.create_generator(
                 GeneratorConfig("http_header", parameters={"browser": "chrome"})
-            ).generate().get("User-Agent", "")
-        }
+            )
+            .generate()
+            .get("User-Agent", ""),
+        },
     }
 
     print("  订单信息:")
@@ -181,7 +218,7 @@ def parameter_configuration():
     print(f"    状态: {order['status']}")
 
     print("  商品列表:")
-    for i, product in enumerate(order['products'], 1):
+    for i, product in enumerate(order["products"], 1):
         print(f"    商品 {i}: {product['name']}")
         print(f"      价格: ¥{product['price']}")
         print(f"      数量: {product['quantity']}")
@@ -236,7 +273,7 @@ def batch_generation():
                     GeneratorConfig("address", parameters={})
                 ).generate(),
                 "website": f"https://example.com/{default_factory.create_generator(GeneratorConfig('string', parameters={'length': 8, 'type': 'alphabetic'})).generate()}",
-                "avatar": f"https://api.example.com/avatar/{default_factory.create_generator(GeneratorConfig('string', parameters={'length': 8, 'type': 'alphanumeric'})).generate()}.jpg"
+                "avatar": f"https://api.example.com/avatar/{default_factory.create_generator(GeneratorConfig('string', parameters={'length': 8, 'type': 'alphanumeric'})).generate()}.jpg",
             },
             "stats": {
                 "followers": default_factory.create_generator(
@@ -250,22 +287,32 @@ def batch_generation():
                 ).generate(),
                 "likes": default_factory.create_generator(
                     GeneratorConfig("integer", parameters={"min": 0, "max": 50000})
-                ).generate()
+                ).generate(),
             },
             "activity": {
-                "last_login": (datetime.now() - timedelta(hours=default_factory.create_generator(
-                    GeneratorConfig("integer", parameters={"min": 0, "max": 72})
-                ).generate())).isoformat(),
+                "last_login": (
+                    datetime.now()
+                    - timedelta(
+                        hours=default_factory.create_generator(
+                            GeneratorConfig("integer", parameters={"min": 0, "max": 72})
+                        ).generate()
+                    )
+                ).isoformat(),
                 "is_online": default_factory.create_generator(
                     GeneratorConfig("boolean", parameters={"true_probability": 0.3})
                 ).generate(),
                 "is_verified": default_factory.create_generator(
                     GeneratorConfig("boolean", parameters={"true_probability": 0.1})
-                ).generate()
+                ).generate(),
             },
-            "created_at": (datetime.now() - timedelta(days=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 30, "max": 365})
-            ).generate())).isoformat()
+            "created_at": (
+                datetime.now()
+                - timedelta(
+                    days=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 30, "max": 365})
+                    ).generate()
+                )
+            ).isoformat(),
         }
         users.append(user)
 
@@ -274,7 +321,14 @@ def batch_generation():
     for i in range(10):
         post = {
             "post_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "POST_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={
+                        "length": 12,
+                        "type": "alphanumeric",
+                        "prefix": "POST_",
+                    },
+                )
             ).generate(),
             "author_id": default_factory.create_generator(
                 GeneratorConfig("uuid", parameters={"version": 4})
@@ -284,17 +338,26 @@ def batch_generation():
             ).generate(),
             "hashtags": [
                 f"#{default_factory.create_generator(GeneratorConfig('string', parameters={'length': 5, 'type': 'alphabetic'})).generate()}"
-                for _ in range(default_factory.create_generator(
-                    GeneratorConfig("integer", parameters={"min": 1, "max": 5})
-                ).generate())
+                for _ in range(
+                    default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 1, "max": 5})
+                    ).generate()
+                )
             ],
             "media": {
                 "type": default_factory.create_generator(
-                    GeneratorConfig("enum", parameters={"options": ["image", "video", "link", "none"]})
+                    GeneratorConfig(
+                        "enum",
+                        parameters={"options": ["image", "video", "link", "none"]},
+                    )
                 ).generate(),
-                "url": f"https://cdn.example.com/media/{default_factory.create_generator(GeneratorConfig('string', parameters={'length': 10, 'type': 'alphanumeric'})).generate()}.jpg" if default_factory.create_generator(
-                    GeneratorConfig("boolean", parameters={"true_probability": 0.6})
-                ).generate() else None
+                "url": (
+                    f"https://cdn.example.com/media/{default_factory.create_generator(GeneratorConfig('string', parameters={'length': 10, 'type': 'alphanumeric'})).generate()}.jpg"
+                    if default_factory.create_generator(
+                        GeneratorConfig("boolean", parameters={"true_probability": 0.6})
+                    ).generate()
+                    else None
+                ),
             },
             "stats": {
                 "likes": default_factory.create_generator(
@@ -308,11 +371,16 @@ def batch_generation():
                 ).generate(),
                 "views": default_factory.create_generator(
                     GeneratorConfig("integer", parameters={"min": 0, "max": 10000})
-                ).generate()
+                ).generate(),
             },
-            "created_at": (datetime.now() - timedelta(hours=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 0, "max": 168})
-            ).generate())).isoformat()
+            "created_at": (
+                datetime.now()
+                - timedelta(
+                    hours=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 0, "max": 168})
+                    ).generate()
+                )
+            ).isoformat(),
         }
         posts.append(post)
 
@@ -321,7 +389,14 @@ def batch_generation():
     for i in range(20):
         comment = {
             "comment_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "COMM_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={
+                        "length": 12,
+                        "type": "alphanumeric",
+                        "prefix": "COMM_",
+                    },
+                )
             ).generate(),
             "post_id": default_factory.create_generator(
                 GeneratorConfig("uuid", parameters={"version": 4})
@@ -338,9 +413,14 @@ def batch_generation():
             "replies": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 0, "max": 10})
             ).generate(),
-            "created_at": (datetime.now() - timedelta(hours=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 0, "max": 72})
-            ).generate())).isoformat()
+            "created_at": (
+                datetime.now()
+                - timedelta(
+                    hours=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 0, "max": 72})
+                    ).generate()
+                )
+            ).isoformat(),
         }
         comments.append(comment)
 
@@ -403,29 +483,37 @@ def validation_examples():
         ).generate(),
         "bankcard": default_factory.create_generator(
             GeneratorConfig("bankcard", parameters={"type": "visa"})
-        ).generate()
+        ).generate(),
     }
 
     # 验证各个字段
     print("  验证结果:")
 
     # 验证UUID
-    uuid_gen = default_factory.create_generator(GeneratorConfig("uuid", parameters={"version": 4}))
+    uuid_gen = default_factory.create_generator(
+        GeneratorConfig("uuid", parameters={"version": 4})
+    )
     is_uuid_valid = uuid_gen.validate(user_data["user_id"])
     print(f"    UUID: {'✅ 有效' if is_uuid_valid else '❌ 无效'}")
 
     # 验证邮箱
-    email_gen = default_factory.create_generator(GeneratorConfig("email", parameters={}))
+    email_gen = default_factory.create_generator(
+        GeneratorConfig("email", parameters={})
+    )
     is_email_valid = email_gen.validate(user_data["email"])
     print(f"    邮箱: {'✅ 有效' if is_email_valid else '❌ 无效'}")
 
     # 验证手机号
-    phone_gen = default_factory.create_generator(GeneratorConfig("phone", parameters={}))
+    phone_gen = default_factory.create_generator(
+        GeneratorConfig("phone", parameters={})
+    )
     is_phone_valid = phone_gen.validate(user_data["phone"])
     print(f"    手机号: {'✅ 有效' if is_phone_valid else '❌ 无效'}")
 
     # 验证身份证
-    idcard_gen = default_factory.create_generator(GeneratorConfig("idcard", parameters={}))
+    idcard_gen = default_factory.create_generator(
+        GeneratorConfig("idcard", parameters={})
+    )
     is_idcard_valid = idcard_gen.validate(user_data["idcard"])
     print(f"    身份证: {'✅ 有效' if is_idcard_valid else '❌ 无效'}")
 
@@ -435,12 +523,23 @@ def validation_examples():
     print(f"    年龄: {'✅ 有效' if is_age_valid else '❌ 无效'}")
 
     # 验证银行卡
-    card_gen = default_factory.create_generator(GeneratorConfig("bankcard", parameters={"type": "visa"}))
+    card_gen = default_factory.create_generator(
+        GeneratorConfig("bankcard", parameters={"type": "visa"})
+    )
     is_card_valid = card_gen.validate(user_data["bankcard"])
     print(f"    银行卡: {'✅ 有效' if is_card_valid else '❌ 无效'}")
 
     # 整体验证结果
-    all_valid = all([is_uuid_valid, is_email_valid, is_phone_valid, is_idcard_valid, is_age_valid, is_card_valid])
+    all_valid = all(
+        [
+            is_uuid_valid,
+            is_email_valid,
+            is_phone_valid,
+            is_idcard_valid,
+            is_age_valid,
+            is_card_valid,
+        ]
+    )
     print(f"\n  整体验证: {'✅ 全部有效' if all_valid else '❌ 存在无效字段'}")
 
 
@@ -461,7 +560,7 @@ def error_handling():
             ).generate(),
             "age": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": -10, "max": -1})
-            ).generate()
+            ).generate(),
         }
         print(f"  生成的用户: {user['name']}, 年龄: {user['age']}")
     except Exception as e:
@@ -494,7 +593,7 @@ def error_handling():
             "parent_id": primary_data.get("non_existent_id", "default_value"),
             "name": default_factory.create_generator(
                 GeneratorConfig("name", parameters={})
-            ).generate()
+            ).generate(),
         }
         print(f"  依赖数据: {dependent_data}")
     except Exception as e:
@@ -545,7 +644,7 @@ def best_practices():
                 ),
                 "company": default_factory.create_generator(
                     GeneratorConfig("company_name", parameters={})
-                )
+                ),
             }
 
         def generate_user(self):
@@ -555,7 +654,7 @@ def best_practices():
                 "name": self.generators["name"].generate(),
                 "email": self.generators["email"].generate(),
                 "phone": self.generators["phone"].generate(),
-                "address": self.generators["address"].generate()
+                "address": self.generators["address"].generate(),
             }
 
         def generate_company(self):
@@ -563,7 +662,7 @@ def best_practices():
             return {
                 "id": self.generators["uuid"].generate(),
                 "name": self.generators["company"].generate(),
-                "address": self.generators["address"].generate()
+                "address": self.generators["address"].generate(),
             }
 
     # 使用工厂生成数据
@@ -594,7 +693,7 @@ def best_practices():
         ).generate(),
         "email": default_factory.create_generator(
             GeneratorConfig("email", parameters={})
-        ).generate()
+        ).generate(),
     }
 
     # 生成该客户的订单
@@ -602,23 +701,34 @@ def best_practices():
     for i in range(3):
         order = {
             "order_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"},
+                )
             ).generate(),
             "customer_id": customer["customer_id"],  # 关联客户ID
             "order_date": (datetime.now() - timedelta(days=i)).isoformat(),
             "amount": default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 100.0, "max": 1000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "decimal",
+                    parameters={"min": 100.0, "max": 1000.0, "decimal_places": 2},
+                )
             ).generate(),
             "status": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["待付款", "已付款", "已发货", "已完成"]})
-            ).generate()
+                GeneratorConfig(
+                    "enum",
+                    parameters={"options": ["待付款", "已付款", "已发货", "已完成"]},
+                )
+            ).generate(),
         }
         orders.append(order)
 
     print(f"    客户: {customer['name']} ({customer['email']})")
     print("    订单列表:")
     for order in orders:
-        print(f"      订单 {order['order_id']}: ¥{order['amount']} - {order['status']} ({order['order_date'][:10]})")
+        print(
+            f"      订单 {order['order_id']}: ¥{order['amount']} - {order['status']} ({order['order_date'][:10]})"
+        )
 
     print("\n实践3: 批量数据导出")
 
@@ -640,7 +750,7 @@ def best_practices():
                 ).generate(),
                 "gender": default_factory.create_generator(
                     GeneratorConfig("gender", parameters={})
-                ).generate()
+                ).generate(),
             },
             "contact": {
                 "email": default_factory.create_generator(
@@ -651,7 +761,7 @@ def best_practices():
                 ).generate(),
                 "address": default_factory.create_generator(
                     GeneratorConfig("address", parameters={})
-                ).generate()
+                ).generate(),
             },
             "identifiers": {
                 "idcard": default_factory.create_generator(
@@ -662,13 +772,13 @@ def best_practices():
                 ).generate(),
                 "bankcard": default_factory.create_generator(
                     GeneratorConfig("bankcard", parameters={"type": "visa"})
-                ).generate()
+                ).generate(),
             },
             "metadata": {
                 "created_at": datetime.now().isoformat(),
                 "source": "integration_demo",
-                "version": "1.0"
-            }
+                "version": "1.0",
+            },
         }
         batch_data.append(user_data)
 
@@ -688,12 +798,12 @@ def integration_demo():
         "platform": {
             "name": "DataForge商城",
             "version": "2.0.0",
-            "created_at": "2023-01-01T00:00:00Z"
+            "created_at": "2023-01-01T00:00:00Z",
         },
         "users": [],
         "products": [],
         "orders": [],
-        "reviews": []
+        "reviews": [],
     }
 
     # 生成用户数据
@@ -721,22 +831,33 @@ def integration_demo():
                 ).generate(),
                 "location": default_factory.create_generator(
                     GeneratorConfig("address", parameters={})
-                ).generate()
+                ).generate(),
             },
             "stats": {
                 "total_orders": default_factory.create_generator(
                     GeneratorConfig("integer", parameters={"min": 0, "max": 50})
                 ).generate(),
                 "total_spent": default_factory.create_generator(
-                    GeneratorConfig("decimal", parameters={"min": 0, "max": 10000, "decimal_places": 2})
+                    GeneratorConfig(
+                        "decimal",
+                        parameters={"min": 0, "max": 10000, "decimal_places": 2},
+                    )
                 ).generate(),
                 "avg_rating": default_factory.create_generator(
-                    GeneratorConfig("decimal", parameters={"min": 3.0, "max": 5.0, "decimal_places": 1})
-                ).generate()
+                    GeneratorConfig(
+                        "decimal",
+                        parameters={"min": 3.0, "max": 5.0, "decimal_places": 1},
+                    )
+                ).generate(),
             },
-            "registered_at": (datetime.now() - timedelta(days=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 30, "max": 365})
-            ).generate())).isoformat()
+            "registered_at": (
+                datetime.now()
+                - timedelta(
+                    days=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 30, "max": 365})
+                    ).generate()
+                )
+            ).isoformat(),
         }
         platform_data["users"].append(user)
 
@@ -746,7 +867,14 @@ def integration_demo():
     for i in range(20):
         product = {
             "product_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 10, "type": "alphanumeric", "prefix": "PROD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={
+                        "length": 10,
+                        "type": "alphanumeric",
+                        "prefix": "PROD_",
+                    },
+                )
             ).generate(),
             "name": default_factory.create_generator(
                 GeneratorConfig("chinese_text", parameters={"length": 20})
@@ -758,23 +886,35 @@ def integration_demo():
                 GeneratorConfig("enum", parameters={"options": categories})
             ).generate(),
             "price": default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "decimal",
+                    parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2},
+                )
             ).generate(),
             "stock": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 0, "max": 1000})
             ).generate(),
             "brand": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 10, "type": "alphabetic"})
+                GeneratorConfig(
+                    "string", parameters={"length": 10, "type": "alphabetic"}
+                )
             ).generate(),
             "rating": default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 3.0, "max": 5.0, "decimal_places": 1})
+                GeneratorConfig(
+                    "decimal", parameters={"min": 3.0, "max": 5.0, "decimal_places": 1}
+                )
             ).generate(),
             "reviews_count": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 0, "max": 500})
             ).generate(),
-            "created_at": (datetime.now() - timedelta(days=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 1, "max": 365})
-            ).generate())).isoformat()
+            "created_at": (
+                datetime.now()
+                - timedelta(
+                    days=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 1, "max": 365})
+                    ).generate()
+                )
+            ).isoformat(),
         }
         platform_data["products"].append(product)
 
@@ -804,44 +944,79 @@ def integration_demo():
             ).generate()
 
             # 找到商品价格
-            product_info = next((p for p in platform_data["products"] if p["product_id"] == product), None)
+            product_info = next(
+                (p for p in platform_data["products"] if p["product_id"] == product),
+                None,
+            )
             if product_info:
                 amount = product_info["price"] * quantity
                 total_amount += amount
             else:
                 # 如果找不到商品，使用默认价格
-                amount = default_factory.create_generator(
-                    GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
-                ).generate() * quantity
+                amount = (
+                    default_factory.create_generator(
+                        GeneratorConfig(
+                            "decimal",
+                            parameters={
+                                "min": 10.0,
+                                "max": 1000.0,
+                                "decimal_places": 2,
+                            },
+                        )
+                    ).generate()
+                    * quantity
+                )
                 total_amount += amount
 
-            products_in_order.append({
-                "product_id": product,
-                "quantity": quantity,
-                "price": product_info["price"] if product_info else (amount / quantity if quantity > 0 else 0),
-                "amount": amount
-            })
+            products_in_order.append(
+                {
+                    "product_id": product,
+                    "quantity": quantity,
+                    "price": (
+                        product_info["price"]
+                        if product_info
+                        else (amount / quantity if quantity > 0 else 0)
+                    ),
+                    "amount": amount,
+                }
+            )
 
         order = {
             "order_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"},
+                )
             ).generate(),
             "user_id": user,
             "products": products_in_order,
             "total_amount": total_amount,
             "status": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["待付款", "已付款", "已发货", "已送达", "已取消"]})
+                GeneratorConfig(
+                    "enum",
+                    parameters={
+                        "options": ["待付款", "已付款", "已发货", "已送达", "已取消"]
+                    },
+                )
             ).generate(),
             "payment_method": default_factory.create_generator(
-                GeneratorConfig("enum", parameters={"options": ["支付宝", "微信支付", "银行卡", "PayPal"]})
+                GeneratorConfig(
+                    "enum",
+                    parameters={"options": ["支付宝", "微信支付", "银行卡", "PayPal"]},
+                )
             ).generate(),
             "shipping_address": default_factory.create_generator(
                 GeneratorConfig("address", parameters={})
             ).generate(),
-            "order_date": (datetime.now() - timedelta(days=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 0, "max": 30})
-            ).generate())).isoformat(),
-            "created_at": datetime.now().isoformat()
+            "order_date": (
+                datetime.now()
+                - timedelta(
+                    days=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 0, "max": 30})
+                    ).generate()
+                )
+            ).isoformat(),
+            "created_at": datetime.now().isoformat(),
         }
         platform_data["orders"].append(order)
 
@@ -849,14 +1024,19 @@ def integration_demo():
     print("  生成评价数据...")
     for i in range(50):
         # 随机选择订单
-        delivered_orders = [o["order_id"] for o in platform_data["orders"] if o["status"] in ["已送达"]]
+        delivered_orders = [
+            o["order_id"] for o in platform_data["orders"] if o["status"] in ["已送达"]
+        ]
         if delivered_orders:
             order = default_factory.create_generator(
                 GeneratorConfig("enum", parameters={"options": delivered_orders})
             ).generate()
         else:
             order = default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 12, "type": "alphanumeric", "prefix": "ORD_"},
+                )
             ).generate()
 
         # 随机选择商品
@@ -867,23 +1047,46 @@ def integration_demo():
             ).generate()
         else:
             product = default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 10, "type": "alphanumeric", "prefix": "PROD_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={
+                        "length": 10,
+                        "type": "alphanumeric",
+                        "prefix": "PROD_",
+                    },
+                )
             ).generate()
 
         # 找到商品价格
         try:
-            product_info = next((p for p in platform_data["products"] if p["product_id"] == product), None)
-            product_price = product_info["price"] if product_info else default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
-            ).generate()
+            product_info = next(
+                (p for p in platform_data["products"] if p["product_id"] == product),
+                None,
+            )
+            product_price = (
+                product_info["price"]
+                if product_info
+                else default_factory.create_generator(
+                    GeneratorConfig(
+                        "decimal",
+                        parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2},
+                    )
+                ).generate()
+            )
         except StopIteration:
             product_price = default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "decimal",
+                    parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2},
+                )
             ).generate()
 
         review = {
             "review_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 12, "type": "alphanumeric", "prefix": "REV_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 12, "type": "alphanumeric", "prefix": "REV_"},
+                )
             ).generate(),
             "order_id": order,
             "product_id": product,
@@ -902,9 +1105,14 @@ def integration_demo():
             "verified": default_factory.create_generator(
                 GeneratorConfig("boolean", parameters={"true_probability": 0.8})
             ).generate(),
-            "created_at": (datetime.now() - timedelta(days=default_factory.create_generator(
-                GeneratorConfig("integer", parameters={"min": 0, "max": 30})
-            ).generate())).isoformat()
+            "created_at": (
+                datetime.now()
+                - timedelta(
+                    days=default_factory.create_generator(
+                        GeneratorConfig("integer", parameters={"min": 0, "max": 30})
+                    ).generate()
+                )
+            ).isoformat(),
         }
         platform_data["reviews"].append(review)
 
@@ -916,12 +1124,18 @@ def integration_demo():
     print(f"    评价数量: {len(platform_data['reviews'])}")
 
     # 计算总销售额
-    total_sales = sum(order["total_amount"] for order in platform_data["orders"] if order["status"] != "已取消")
+    total_sales = sum(
+        order["total_amount"]
+        for order in platform_data["orders"]
+        if order["status"] != "已取消"
+    )
     print(f"    总销售额: ¥{total_sales:.2f}")
 
     # 计算平均评分
     if platform_data["reviews"]:
-        avg_rating = sum(review["rating"] for review in platform_data["reviews"]) / len(platform_data["reviews"])
+        avg_rating = sum(review["rating"] for review in platform_data["reviews"]) / len(
+            platform_data["reviews"]
+        )
         print(f"    平均评分: {avg_rating:.1f}")
 
     # 保存数据到文件
@@ -958,6 +1172,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

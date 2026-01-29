@@ -19,8 +19,8 @@ import re
 import sys
 
 # 设置环境
-sys.path.insert(0, '.')
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key'
+sys.path.insert(0, ".")
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 from dataforge.core.factory import default_registry
 from dataforge.core.generator import GeneratorConfig
@@ -47,8 +47,8 @@ def basic_usage():
     # 演示股票代码生成
     print_subsection("股票代码生成器 (stock_code)")
     try:
-        config = GeneratorConfig('stock_code', {}, count=5)
-        generator_class = default_registry.get_generator_class('stock_code')
+        config = GeneratorConfig("stock_code", {}, count=5)
+        generator_class = default_registry.get_generator_class("stock_code")
         if generator_class is None:
             raise Exception("Stock code generator not found in registry")
         generator = generator_class(config)
@@ -62,8 +62,8 @@ def basic_usage():
     # 演示基金代码生成
     print_subsection("基金代码生成器 (fund_code)")
     try:
-        config = GeneratorConfig('fund_code', {}, count=5)
-        generator_class = default_registry.get_generator_class('fund_code')
+        config = GeneratorConfig("fund_code", {}, count=5)
+        generator_class = default_registry.get_generator_class("fund_code")
         if generator_class is None:
             raise Exception("Fund code generator not found in registry")
         generator = generator_class(config)
@@ -77,8 +77,8 @@ def basic_usage():
     # 演示债券代码生成
     print_subsection("债券代码生成器 (bond_code)")
     try:
-        config = GeneratorConfig('bond_code', {}, count=5)
-        generator_class = default_registry.get_generator_class('bond_code')
+        config = GeneratorConfig("bond_code", {}, count=5)
+        generator_class = default_registry.get_generator_class("bond_code")
         if generator_class is None:
             raise Exception("Bond code generator not found in registry")
         generator = generator_class(config)
@@ -92,8 +92,8 @@ def basic_usage():
     # 演示期货代码生成
     print_subsection("期货代码生成器 (future_code)")
     try:
-        config = GeneratorConfig('future_code', {}, count=5)
-        generator_class = default_registry.get_generator_class('future_code')
+        config = GeneratorConfig("future_code", {}, count=5)
+        generator_class = default_registry.get_generator_class("future_code")
         if generator_class is None:
             raise Exception("Future code generator not found in registry")
         generator = generator_class(config)
@@ -117,14 +117,14 @@ def parameter_configuration():
             {},  # 默认配置
             {"market": "shanghai"},  # 上海证券交易所
             {"market": "shenzhen"},  # 深圳证券交易所
-            {"market": "nasdaq"},    # 纳斯达克
-            {"market": "nyse"},      # 纽约证券交易所
+            {"market": "nasdaq"},  # 纳斯达克
+            {"market": "nyse"},  # 纽约证券交易所
         ]
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('stock_code', params, count=3)
-            generator_class = default_registry.get_generator_class('stock_code')
+            config = GeneratorConfig("stock_code", params, count=3)
+            generator_class = default_registry.get_generator_class("stock_code")
             if generator_class is None:
                 raise Exception("Stock code generator not found in registry")
             generator = generator_class(config)
@@ -141,16 +141,16 @@ def parameter_configuration():
     try:
         configs = [
             {},  # 默认配置
-            {"fund_type": "stock"},      # 股票型基金
-            {"fund_type": "bond"},       # 债券型基金
-            {"fund_type": "mixed"},      # 混合型基金
-            {"fund_type": "money_market"}, # 货币市场基金
+            {"fund_type": "stock"},  # 股票型基金
+            {"fund_type": "bond"},  # 债券型基金
+            {"fund_type": "mixed"},  # 混合型基金
+            {"fund_type": "money_market"},  # 货币市场基金
         ]
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('fund_code', params, count=3)
-            generator_class = default_registry.get_generator_class('fund_code')
+            config = GeneratorConfig("fund_code", params, count=3)
+            generator_class = default_registry.get_generator_class("fund_code")
             if generator_class is None:
                 raise Exception("Fund code generator not found in registry")
             generator = generator_class(config)
@@ -170,7 +170,7 @@ def batch_generation():
     # 批量生成投资组合
     print_subsection("批量生成投资组合")
     try:
-        investment_generators = ['stock_code', 'fund_code', 'bond_code', 'future_code']
+        investment_generators = ["stock_code", "fund_code", "bond_code", "future_code"]
         batch_size = 5
 
         print(f"  生成 {batch_size} 个投资组合:")
@@ -185,7 +185,9 @@ def batch_generation():
             for generator_name in investment_generators:
                 try:
                     config = GeneratorConfig(generator_name, {}, count=1)
-                    generator_class = default_registry.get_generator_class(generator_name)
+                    generator_class = default_registry.get_generator_class(
+                        generator_name
+                    )
                     if generator_class is None:
                         investment_info.append("N/A")
                     else:
@@ -216,8 +218,8 @@ def validation_examples():
     # 验证股票代码格式
     print_subsection("股票代码格式验证")
     try:
-        config = GeneratorConfig('stock_code', {}, count=5)
-        generator_class = default_registry.get_generator_class('stock_code')
+        config = GeneratorConfig("stock_code", {}, count=5)
+        generator_class = default_registry.get_generator_class("stock_code")
         if generator_class is None:
             raise Exception("Stock code generator not found in registry")
         generator = generator_class(config)
@@ -225,7 +227,7 @@ def validation_examples():
 
         print("  生成的股票代码:")
         # 简单的股票代码验证
-        stock_pattern = re.compile(r'^[A-Z]{1,6}\d{4,6}$')
+        stock_pattern = re.compile(r"^[A-Z]{1,6}\d{4,6}$")
 
         for i, stock_code in enumerate(stock_codes, 1):
             print(f"    {i}. {stock_code}")
@@ -236,7 +238,9 @@ def validation_examples():
 
             # 验证股票代码长度
             length_valid = 6 <= len(stock_code) <= 12
-            print(f"       长度验证: {'✅ 有效' if length_valid else '❌ 无效'} (长度: {len(stock_code)})")
+            print(
+                f"       长度验证: {'✅ 有效' if length_valid else '❌ 无效'} (长度: {len(stock_code)})"
+            )
 
     except Exception as e:
         print(f"  ❌ 股票代码验证失败: {e}")
@@ -244,15 +248,15 @@ def validation_examples():
     # 验证基金代码格式
     print_subsection("基金代码格式验证")
     try:
-        config = GeneratorConfig('fund_code', {}, count=5)
-        generator_class = default_registry.get_generator_class('fund_code')
+        config = GeneratorConfig("fund_code", {}, count=5)
+        generator_class = default_registry.get_generator_class("fund_code")
         if generator_class is None:
             raise Exception("Fund code generator not found in registry")
         generator = generator_class(config)
         fund_codes = generator.generate_batch(5)
 
         print("  生成的基金代码:")
-        fund_pattern = re.compile(r'^[A-Z]{2}\d{4}$')
+        fund_pattern = re.compile(r"^[A-Z]{2}\d{4}$")
 
         for i, fund_code in enumerate(fund_codes, 1):
             print(f"    {i}. {fund_code}")
@@ -272,8 +276,8 @@ def error_handling():
     # 处理不存在的市场
     print_subsection("处理不存在的市场")
     try:
-        config = GeneratorConfig('stock_code', {"market": "不存在的市场"}, count=1)
-        generator_class = default_registry.get_generator_class('stock_code')
+        config = GeneratorConfig("stock_code", {"market": "不存在的市场"}, count=1)
+        generator_class = default_registry.get_generator_class("stock_code")
         if generator_class is None:
             raise Exception("Stock code generator not found in registry")
         generator = generator_class(config)
@@ -285,8 +289,8 @@ def error_handling():
     # 处理无效的基金类型
     print_subsection("处理无效的基金类型")
     try:
-        config = GeneratorConfig('fund_code', {"fund_type": "不存在的类型"}, count=1)
-        generator_class = default_registry.get_generator_class('fund_code')
+        config = GeneratorConfig("fund_code", {"fund_type": "不存在的类型"}, count=1)
+        generator_class = default_registry.get_generator_class("fund_code")
         if generator_class is None:
             raise Exception("Fund code generator not found in registry")
         generator = generator_class(config)
@@ -307,20 +311,20 @@ def best_practices():
         investment_portfolio = {}
 
         # 生成股票投资
-        stock_config = GeneratorConfig('stock_code', {"market": "shanghai"}, count=3)
-        stock_class = default_registry.get_generator_class('stock_code')
+        stock_config = GeneratorConfig("stock_code", {"market": "shanghai"}, count=3)
+        stock_class = default_registry.get_generator_class("stock_code")
         if stock_class is None:
             raise Exception("Stock code generator not found in registry")
         stock_gen = stock_class(stock_config)
-        investment_portfolio['stocks'] = stock_gen.generate_batch(3)
+        investment_portfolio["stocks"] = stock_gen.generate_batch(3)
 
         # 生成基金投资
-        fund_config = GeneratorConfig('fund_code', {"fund_type": "mixed"}, count=2)
-        fund_class = default_registry.get_generator_class('fund_code')
+        fund_config = GeneratorConfig("fund_code", {"fund_type": "mixed"}, count=2)
+        fund_class = default_registry.get_generator_class("fund_code")
         if fund_class is None:
             raise Exception("Fund code generator not found in registry")
         fund_gen = fund_class(fund_config)
-        investment_portfolio['funds'] = fund_gen.generate_batch(2)
+        investment_portfolio["funds"] = fund_gen.generate_batch(2)
 
         print("  生成的投资组合:")
         for key, value in investment_portfolio.items():
@@ -341,7 +345,7 @@ def best_practices():
             record = {}
 
             # 生成投资信息
-            for field in ['stock_code', 'fund_code', 'bond_code']:
+            for field in ["stock_code", "fund_code", "bond_code"]:
                 config = GeneratorConfig(field, {}, count=1)
                 generator_class = default_registry.get_generator_class(field)
                 if generator_class is None:
@@ -350,15 +354,15 @@ def best_practices():
                 record[field] = generator.generate_single()
 
             # 添加投资者信息
-            name_config = GeneratorConfig('name', {}, count=1)
-            name_class = default_registry.get_generator_class('name')
+            name_config = GeneratorConfig("name", {}, count=1)
+            name_class = default_registry.get_generator_class("name")
             if name_class is None:
                 raise Exception("Name generator not found in registry")
             name_gen = name_class(name_config)
-            record['investor_name'] = name_gen.generate_single()
+            record["investor_name"] = name_gen.generate_single()
 
             # 添加投资金额
-            record['investment_amount'] = f"{10000 + i * 5000}"
+            record["investment_amount"] = f"{10000 + i * 5000}"
 
             investment_data.append(record)
 
@@ -391,7 +395,7 @@ def investment_analysis_demo():
                 "risk_level": ["低风险", "中风险", "高风险"][i],
                 "expected_return": 0.05 + i * 0.02,
                 "diversification_score": 0.7 + i * 0.1,
-                "created_at": f"2025-11-10T{i+9:02d}:00:00"
+                "created_at": f"2025-11-10T{i+9:02d}:00:00",
             }
             analysis_data.append(analysis)
 

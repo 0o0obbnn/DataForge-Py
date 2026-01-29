@@ -442,7 +442,7 @@ class AddressGenerator(DataGenerator[str]):
         detailed_address: dict,
     ) -> str:
         """组装完整地址"""
-        address_parts = []
+        address_parts: list[Any] = []
 
         # 省份
         address_parts.append(province_info["name"])
@@ -463,7 +463,7 @@ class AddressGenerator(DataGenerator[str]):
             address_parts.append(detailed_address["community"])
 
         # 建筑信息
-        building_parts = []
+        building_parts: list[Any] = []
         if "building" in detailed_address:
             building_parts.append(detailed_address["building"])
         if "unit" in detailed_address:

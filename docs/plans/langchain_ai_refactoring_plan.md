@@ -57,16 +57,16 @@ LangChainGenerator (LangChain 实现)
 ```python
 class AIModelManager:
     """AI 模型管理器"""
-    
+
     def __init__(self):
         self.local_models: dict[str, Any] = {}
         self.cloud_models: dict[str, Any] = {}
         self.default_model: str = "local"
-    
+
     def get_model(self, model_name: str, provider: str = "auto") -> Any:
         """获取模型实例，支持自动降级"""
         pass
-    
+
     def load_local_model(self, model_name: str, model_path: str = None):
         """加载本地模型（Ollama 或 Transformers）"""
         pass
@@ -83,16 +83,16 @@ class AIModelManager:
 ```python
 class DataGenerationChain:
     """数据生成链"""
-    
+
     def __init__(self, llm: BaseLLM, prompt_template: str):
         self.llm = llm
         self.prompt = PromptTemplate.from_template(prompt_template)
         self.chain = LLMChain(llm=llm, prompt=self.prompt)
-    
+
     def generate(self, context: dict) -> str:
         """执行链式生成"""
         pass
-    
+
     def generate_batch(self, contexts: list[dict]) -> list[str]:
         """批量生成（优化）"""
         pass
@@ -109,13 +109,13 @@ class DataGenerationChain:
 ```python
 class AIGenerator(DataGenerator[T]):
     """AI 驱动的生成器基类"""
-    
+
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
         self.model_manager = AIModelManager()
         self.cache = GenerationCache()
         self.fallback_generator: Optional[DataGenerator[T]] = None
-    
+
     def generate_single(self, context: Optional[GenerationContext] = None) -> T:
         """AI 生成，失败时降级到传统生成器"""
         # 1. 检查缓存
@@ -376,15 +376,15 @@ name_generation:
   system: |
     你是一个专业的测试数据生成助手。
     根据给定的上下文信息，生成符合要求的测试数据。
-  
+
   user: |
     请生成一个{count}个中文姓名，要求：
     - 性别: {gender}
     - 地区: {region}
     - 风格: {style}
-    
+
     只返回姓名列表，每行一个，不要其他解释。
-  
+
   output_format: "list"
   validation_rules:
     - "每个姓名应为2-4个字符"
@@ -418,12 +418,12 @@ async def generate_batch_async(self, contexts: list[dict]) -> list[str]:
     """异步批量生成"""
     # 构建批量提示
     batch_prompt = self.build_batch_prompt(contexts)
-    
+
     # 并行调用（限制并发数）
     semaphore = asyncio.Semaphore(max_concurrent=5)
     tasks = [self._generate_with_semaphore(semaphore, ctx) for ctx in contexts]
     results = await asyncio.gather(*tasks)
-    
+
     return results
 ```
 
@@ -524,6 +524,6 @@ async def generate_batch_async(self, contexts: list[dict]) -> list[str]:
 
 ---
 
-**计划制定日期**: 2025-12-22  
-**计划审核状态**: 待审核  
+**计划制定日期**: 2025-12-22
+**计划审核状态**: 待审核
 **计划执行状态**: 待开始

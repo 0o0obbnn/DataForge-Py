@@ -1,7 +1,7 @@
 # Phase 2 自动修复方案
 
-**日期**: 2025-11-23  
-**策略**: 使用自动化工具 + 手动修复  
+**日期**: 2025-11-23
+**策略**: 使用自动化工具 + 手动修复
 **目标**: 修复所有453个mypy错误
 
 ---
@@ -137,7 +137,7 @@ python -m libcst.tool codemod autotyping.AutotypeCommand dataforge/generators/ad
 python -m libcst.tool codemod autotyping.AutotypeCommand dataforge/generators/auth/
 ```
 
-**预期效果**: 
+**预期效果**:
 - 修复150-200个`no-untyped-def`错误
 - 修复30-50个`no-implicit-optional`错误
 - 总计: 180-250个错误自动修复
@@ -170,7 +170,7 @@ monkeytype apply dataforge.utils.validation
 monkeytype apply dataforge.utils.helpers
 ```
 
-**预期效果**: 
+**预期效果**:
 - 为核心模块生成准确的类型注解
 - 修复50-80个类型相关错误
 
@@ -395,7 +395,7 @@ python -m mypy dataforge/ 2>&1 | Select-String "Found.*error"
 
 ### 风险1: 自动工具可能生成不准确的类型
 
-**缓解**: 
+**缓解**:
 - 运行完整测试套件验证
 - 手动审查关键模块
 - 使用mypy验证类型正确性
@@ -429,6 +429,6 @@ python -m mypy dataforge/ 2>&1 | Select-String "Found.*error"
 
 ---
 
-**报告生成时间**: 2025-11-23  
-**推荐**: 自动化+手动混合方案  
+**报告生成时间**: 2025-11-23
+**推荐**: 自动化+手动混合方案
 **预计完成**: 2-3天

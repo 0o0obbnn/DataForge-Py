@@ -59,9 +59,7 @@ class AIModelManager:
         if self._default_model is None:
             self._default_model = key
 
-    def get_model(
-        self, name: str | None = None, provider: str | None = None
-    ) -> Any:
+    def get_model(self, name: str | None = None, provider: str | None = None) -> Any:
         """根据名称与提供方获取模型实例。
 
         如果未显式指定，则返回默认模型。

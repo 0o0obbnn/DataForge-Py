@@ -4,7 +4,7 @@
 
 import json
 
-from dataforge.core.context import GenerationContext
+from dataforge.core.context import ExtendedGenerationContext as GenerationContext
 from dataforge.generators.basic.enhanced_generators import PersonDataGenerator
 
 

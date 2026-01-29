@@ -42,7 +42,7 @@ dataforgeClient.interceptors.request.use(
         _t: Date.now()
       }
     }
-    
+
     return config
   },
   (error) => {
@@ -59,7 +59,7 @@ authClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    
+
     // 添加请求时间戳（防止缓存）
     if (config.method === 'get') {
       config.params = {
@@ -67,7 +67,7 @@ authClient.interceptors.request.use(
         _t: Date.now()
       }
     }
-    
+
     return config
   },
   (error) => {
@@ -80,7 +80,7 @@ authClient.interceptors.request.use(
 dataforgeClient.interceptors.response.use(
   (response: AxiosResponse) => {
     const { data } = response
-    
+
     // DataForge API 不使用统一的 ApiResponse 格式，直接返回数据
     // 但我们需要包装成统一格式以兼容现有代码
     if (data && typeof data === 'object') {
@@ -96,7 +96,7 @@ dataforgeClient.interceptors.response.use(
         }
       }
     }
-    
+
     return response
   },
   (error) => {
@@ -109,14 +109,14 @@ dataforgeClient.interceptors.response.use(
 authClient.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
     const { data } = response
-    
+
     // 统一处理业务错误
     if (!data.success) {
       const errorMessage = data.message || '请求失败'
       message.error(errorMessage)
       return Promise.reject(new Error(errorMessage))
     }
-    
+
     return response
   },
   (error) => {
@@ -130,7 +130,7 @@ function handleApiError(error: any, apiType: string = 'API') {
   // 处理HTTP状态码错误
   if (error.response) {
     const { status, data } = error.response
-    
+
     switch (status) {
       case 401:
         // 未授权，清除token并跳转到登录页
@@ -143,11 +143,11 @@ function handleApiError(error: any, apiType: string = 'API') {
           message.error('DataForge API 访问被拒绝')
         }
         break
-        
+
       case 403:
         message.error(`没有权限访问该${apiType}资源`)
         break
-        
+
       case 404:
         if (apiType === 'DataForge API') {
           message.error('请求的生成器不存在')
@@ -155,7 +155,7 @@ function handleApiError(error: any, apiType: string = 'API') {
           message.error('请求的资源不存在')
         }
         break
-        
+
       case 422:
         // 表单验证错误
         if (data.errors) {
@@ -165,7 +165,7 @@ function handleApiError(error: any, apiType: string = 'API') {
           message.error(data.message || data.detail || '数据验证失败')
         }
         break
-        
+
       case 500:
         if (apiType === 'DataForge API') {
           message.error('DataForge 服务器内部错误')
@@ -181,7 +181,7 @@ function handleApiError(error: any, apiType: string = 'API') {
           message.error('服务器内部错误')
         }
         break
-        
+
       default:
         const errorMsg = data?.message || data?.detail || `${apiType}请求失败 (${status})`
         message.error(errorMsg)
@@ -202,7 +202,7 @@ function handleApiError(error: any, apiType: string = 'API') {
     // 其他错误
     message.error(`${apiType}请求配置错误`)
   }
-  
+
   return Promise.reject(error)
 }
 
@@ -211,27 +211,27 @@ export const http = {
   get: <T = any>(url: string, config?: any): Promise<ApiResponse<T>> => {
     return httpClient.get(url, config).then(res => res.data)
   },
-  
+
   post: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return httpClient.post(url, data, config).then(res => res.data)
   },
-  
+
   put: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return httpClient.put(url, data, config).then(res => res.data)
   },
-  
+
   patch: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return httpClient.patch(url, data, config).then(res => res.data)
   },
-  
+
   delete: <T = any>(url: string, config?: any): Promise<ApiResponse<T>> => {
     return httpClient.delete(url, config).then(res => res.data)
   },
-  
+
   upload: <T = any>(url: string, file: File, onProgress?: (progress: number) => void): Promise<ApiResponse<T>> => {
     const formData = new FormData()
     formData.append('file', file)
-    
+
     return httpClient.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -251,27 +251,27 @@ export const authHttp = {
   get: <T = any>(url: string, config?: any): Promise<ApiResponse<T>> => {
     return authClient.get(url, config).then(res => res.data)
   },
-  
+
   post: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return authClient.post(url, data, config).then(res => res.data)
   },
-  
+
   put: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return authClient.put(url, data, config).then(res => res.data)
   },
-  
+
   patch: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return authClient.patch(url, data, config).then(res => res.data)
   },
-  
+
   delete: <T = any>(url: string, config?: any): Promise<ApiResponse<T>> => {
     return authClient.delete(url, config).then(res => res.data)
   },
-  
+
   upload: <T = any>(url: string, file: File, onProgress?: (progress: number) => void): Promise<ApiResponse<T>> => {
     const formData = new FormData()
     formData.append('file', file)
-    
+
     return authClient.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -291,19 +291,19 @@ export const dataforgeHttp = {
   get: <T = any>(url: string, config?: any): Promise<ApiResponse<T>> => {
     return dataforgeClient.get(url, config).then(res => res.data)
   },
-  
+
   post: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return dataforgeClient.post(url, data, config).then(res => res.data)
   },
-  
+
   put: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return dataforgeClient.put(url, data, config).then(res => res.data)
   },
-  
+
   patch: <T = any>(url: string, data?: any, config?: any): Promise<ApiResponse<T>> => {
     return dataforgeClient.patch(url, data, config).then(res => res.data)
   },
-  
+
   delete: <T = any>(url: string, config?: any): Promise<ApiResponse<T>> => {
     return dataforgeClient.delete(url, config).then(res => res.data)
   }

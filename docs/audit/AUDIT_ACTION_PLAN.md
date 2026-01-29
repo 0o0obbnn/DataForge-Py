@@ -180,10 +180,10 @@ def validate_phone(phone):
 # 修复后
 def validate_phone(phone: str) -> bool:
     """验证手机号格式
-    
+
     Args:
         phone: 待验证的手机号
-        
+
     Returns:
         bool: 是否有效
     """
@@ -223,23 +223,23 @@ from typing import Optional
 
 def __init__(self, batch_size: Optional[int] = None) -> None:
     """初始化SQL格式化器
-    
+
     Args:
         batch_size: 可选的批量大小
     """
     self.batch_size = batch_size
 
 def format_data(
-    self, 
-    data: list[dict[str, any]], 
+    self,
+    data: list[dict[str, any]],
     table_name: Optional[str] = None
 ) -> str:
     """格式化数据为SQL语句
-    
+
     Args:
         data: 待格式化的数据列表
         table_name: 可选的表名
-        
+
     Returns:
         str: SQL语句
     """
@@ -265,22 +265,22 @@ def write_to_file(data, filename):
 # 修复后
 def format_data(self, data: list[dict[str, any]]) -> str:
     """格式化数据为CSV
-    
+
     Args:
         data: 待格式化的数据
-        
+
     Returns:
         str: CSV格式字符串
     """
     ...
 
 def write_to_file(
-    self, 
-    data: list[dict[str, any]], 
+    self,
+    data: list[dict[str, any]],
     filename: str
 ) -> None:
     """写入CSV文件
-    
+
     Args:
         data: 待写入的数据
         filename: 文件名
@@ -301,23 +301,23 @@ from typing import Any
 
 def format_data(self, data: list[dict[str, Any]]) -> str:
     """格式化数据为JSON
-    
+
     Args:
         data: 待格式化的数据
-        
+
     Returns:
         str: JSON格式字符串
     """
     ...
 
 def write_to_file(
-    self, 
-    data: list[dict[str, Any]], 
+    self,
+    data: list[dict[str, Any]],
     filename: str,
     pretty: bool = True
 ) -> None:
     """写入JSON文件
-    
+
     Args:
         data: 待写入的数据
         filename: 文件名
@@ -341,7 +341,7 @@ from typing import Optional, Any
 
 def __init__(self, root_tag: Optional[str] = None) -> None:
     """初始化XML格式化器
-    
+
     Args:
         root_tag: 可选的根标签名
     """
@@ -349,10 +349,10 @@ def __init__(self, root_tag: Optional[str] = None) -> None:
 
 def format_data(self, data: list[dict[str, Any]]) -> str:
     """格式化数据为XML
-    
+
     Args:
         data: 待格式化的数据
-        
+
     Returns:
         str: XML格式字符串
     """
@@ -374,26 +374,26 @@ import csv
 from typing import Any, TextIO
 
 def format_csv(
-    self, 
-    data: list[dict[str, Any]], 
+    self,
+    data: list[dict[str, Any]],
     output: TextIO
 ) -> None:
     """格式化为CSV
-    
+
     Args:
         data: 待格式化的数据
         output: 输出流
     """
     if not data:
         return
-    
+
     # 使用csv.writer而非DictWriter
     writer = csv.writer(output)
-    
+
     # 写入表头
     headers = list(data[0].keys())
     writer.writerow(headers)
-    
+
     # 写入数据行
     for row in data:
         writer.writerow([row.get(h, '') for h in headers])
@@ -414,13 +414,13 @@ import redis
 from redis.asyncio import Redis as AsyncRedis
 
 def __init__(
-    self, 
-    host: str = "localhost", 
-    port: int = 6379, 
+    self,
+    host: str = "localhost",
+    port: int = 6379,
     db: int = 0
 ) -> None:
     """初始化Redis客户端
-    
+
     Args:
         host: Redis主机地址
         port: Redis端口
@@ -456,10 +456,10 @@ T = TypeVar('T')
 
 class Cache(Generic[T]):
     """线程安全的缓存类"""
-    
+
     def __init__(self, max_size: int = 1000) -> None:
         """初始化缓存
-        
+
         Args:
             max_size: 最大缓存大小
         """
@@ -467,22 +467,22 @@ class Cache(Generic[T]):
         self._lock: RLock = RLock()
         self._max_size = max_size
         self._initialized: bool = False
-    
+
     def get(self, key: str) -> Optional[T]:
         """获取缓存值
-        
+
         Args:
             key: 缓存键
-            
+
         Returns:
             Optional[T]: 缓存值或None
         """
         with self._lock:
             return self._cache.get(key)
-    
+
     def set(self, key: str, value: T) -> None:
         """设置缓存值
-        
+
         Args:
             key: 缓存键
             value: 缓存值
@@ -507,10 +507,10 @@ class RelationManager:
     def __init__(self) -> None:
         """初始化关系管理器"""
         self.dependencies: dict[str, list[str]] = {}
-    
+
     def add_dependency(self, source: str, target: str) -> None:
         """添加依赖关系
-        
+
         Args:
             source: 源字段
             target: 目标字段
@@ -518,13 +518,13 @@ class RelationManager:
         if source not in self.dependencies:
             self.dependencies[source] = []
         self.dependencies[source].append(target)
-    
+
     def resolve(self, data: dict[str, Any]) -> dict[str, Any]:
         """解析依赖关系
-        
+
         Args:
             data: 输入数据
-            
+
         Returns:
             dict[str, Any]: 解析后的数据
         """
@@ -545,19 +545,19 @@ from typing import Any, Optional
 class GenerationContext:
     def __init__(self, **kwargs: Any) -> None:
         """初始化生成上下文
-        
+
         Args:
             **kwargs: 上下文参数
         """
         self._data: dict[str, Any] = kwargs
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """获取上下文值
-        
+
         Args:
             key: 键名
             default: 默认值
-            
+
         Returns:
             Any: 上下文值
         """
@@ -579,17 +579,17 @@ from typing import cast
 
 def setup_logging(level: str = "INFO") -> None:
     """配置日志系统
-    
+
     Args:
         level: 日志级别
     """
     logger = logging.getLogger("dataforge")
     logger.setLevel(level)
-    
+
     # 控制台处理器
     console_handler = logging.StreamHandler()
     logger.addHandler(console_handler)
-    
+
     # 文件处理器
     file_handler = RotatingFileHandler(
         "dataforge.log",
@@ -619,14 +619,14 @@ class GeneratorFactory:
     def __init__(self) -> None:
         """初始化工厂"""
         self._registry: dict[str, type[DataGenerator]] = {}
-    
+
     def register(
-        self, 
-        name: str, 
+        self,
+        name: str,
         generator_class: type[DataGenerator]
     ) -> None:
         """注册生成器
-        
+
         Args:
             name: 生成器名称
             generator_class: 生成器类
@@ -635,19 +635,19 @@ class GeneratorFactory:
             raise ValueError(f"Generator {name} already registered")
         self._registry[name] = generator_class
         # 移除不可达代码
-    
+
     def create(
-        self, 
+        self,
         config: GeneratorConfig
     ) -> DataGenerator:
         """创建生成器实例
-        
+
         Args:
             config: 生成器配置
-            
+
         Returns:
             DataGenerator: 生成器实例
-            
+
         Raises:
             ValueError: 生成器未注册
         """
@@ -675,15 +675,15 @@ from datetime import datetime
 
 def generate_timestamp(self, context: Optional[GenerationContext] = None) -> Union[int, str]:
     """生成时间戳
-    
+
     Args:
         context: 生成上下文
-        
+
     Returns:
         Union[int, str]: 时间戳（整数或字符串格式）
     """
     format_type = self.parameters.get('format', 'unix')
-    
+
     if format_type == 'unix':
         return int(datetime.now().timestamp())
     elif format_type == 'iso':
@@ -708,14 +708,14 @@ from datetime import datetime
 from typing import Optional
 
 def generate_with_timezone(
-    self, 
+    self,
     timezone: str = "UTC"
 ) -> datetime:
     """生成带时区的时间戳
-    
+
     Args:
         timezone: 时区名称
-        
+
     Returns:
         datetime: 带时区的datetime对象
     """
@@ -852,7 +852,7 @@ def test_generator_generate_batch_with_zero_count():
     """测试生成零个数据"""
     config = GeneratorConfig(generator_type="test")
     generator = TestGenerator(config)
-    
+
     with pytest.raises(DataGenerationError):
         generator.generate_batch(0)
 
@@ -860,7 +860,7 @@ def test_generator_generate_batch_with_negative_count():
     """测试生成负数个数据"""
     config = GeneratorConfig(generator_type="test")
     generator = TestGenerator(config)
-    
+
     with pytest.raises(DataGenerationError):
         generator.generate_batch(-1)
 ```
@@ -884,19 +884,19 @@ interrogate -v dataforge/
 # 模板
 def function_name(param1: str, param2: int = 0) -> bool:
     """简短描述（一行）
-    
+
     详细描述（可选，多行）
-    
+
     Args:
         param1: 参数1描述
         param2: 参数2描述，默认为0
-        
+
     Returns:
         bool: 返回值描述
-        
+
     Raises:
         ValueError: 异常描述
-        
+
     Examples:
         >>> function_name("test", 1)
         True
@@ -977,7 +977,7 @@ def test_idcard_generation_performance(benchmark):
     """测试身份证生成性能"""
     config = GeneratorConfig(generator_type='idcard')
     generator = default_factory.create_generator(config)
-    
+
     result = benchmark(generator.generate_batch, 1000)
     assert len(result) == 1000
 
@@ -1092,5 +1092,5 @@ git commit -m "test: improve core module coverage to 95%"
 
 ---
 
-**文档版本**: 1.0  
+**文档版本**: 1.0
 **最后更新**: 2025-11-21

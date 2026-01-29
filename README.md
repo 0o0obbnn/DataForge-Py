@@ -67,7 +67,7 @@ generators:
       region: "北京"
       gender: "ANY"
       birth_date_range: ["1990-01-01", "2000-12-31"]
-  
+
   - generator_type: phone
     count: 100
     parameters:
@@ -174,18 +174,18 @@ from dataforge import DataGenerator, register_generator, GeneratorType
 class CustomIDGenerator(DataGenerator[str]):
     def _setup(self):
         self.prefix = self.parameters.get('prefix', 'ID')
-    
+
     def generate_single(self, context=None):
         import uuid
         return f"{self.prefix}_{uuid.uuid4().hex[:8].upper()}"
-    
+
     def validate(self, data):
         return isinstance(data, str) and data.startswith(self.prefix)
-    
-    @property 
+
+    @property
     def generator_type(self):
         return GeneratorType.IDENTIFIER
-    
+
     @property
     def supported_parameters(self):
         return ['prefix']
@@ -207,7 +207,7 @@ class CustomIDGenerator(DataGenerator[str]):
 
 ### 身份证选项
 - `--idcard.region`: 地区代码或名称
-- `--idcard.gender`: 性别 (MALE/FEMALE/ANY) 
+- `--idcard.gender`: 性别 (MALE/FEMALE/ANY)
 - `--idcard.birth_date_range`: 出生日期范围
 - `--idcard.valid`: 是否生成有效身份证
 

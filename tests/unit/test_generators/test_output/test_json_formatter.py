@@ -6,8 +6,6 @@ import json
 
 import pytest
 
-from dataforge.core.generator import GeneratorConfig
-
 
 @pytest.mark.unit
 class TestJSONFormatter:

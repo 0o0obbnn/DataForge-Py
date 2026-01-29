@@ -3,6 +3,7 @@
 """
 
 import secrets
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -91,6 +92,7 @@ class CompanyNameGenerator(DataGenerator[str]):
     def _generate_core_name(self) -> str:
         """生成核心名称"""
         # 根据行业选择关键词
+        core_parts: list[Any] = []
         if self.industry != "ANY" and self.industry in self.industry_keywords:
             industry_words = self.industry_keywords[self.industry]
             if (secrets.randbelow(1000000) / 1000000) < 0.8:  # 80%概率使用行业关键词

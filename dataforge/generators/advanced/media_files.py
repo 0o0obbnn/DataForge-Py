@@ -9,6 +9,7 @@ import hashlib
 import random
 import secrets
 from dataclasses import dataclass
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -178,7 +179,8 @@ class MediaFileGenerator(DataGenerator[dict[str, str | int | float]]):
     def _generate_file_size(self, size_range: str, media_type: str) -> int:
         """生成文件大小"""
         config = self.media_configs[media_type]
-        min_size, max_size = config["size_ranges"][size_range]
+        size_range_tuple: tuple[int, int] = tuple(config["size_ranges"][size_range])  # type: ignore[index, assignment]
+        min_size, max_size = size_range_tuple
         return secrets.randbelow(max_size - min_size + 1) + min_size
 
     def _generate_dimensions(
@@ -189,7 +191,8 @@ class MediaFileGenerator(DataGenerator[dict[str, str | int | float]]):
             return {}
 
         config = self.media_configs[media_type]
-        dimensions = random.choice(config["dimensions"][size_range])
+        dimensions_list: list[list[int]] = list(config["dimensions"][size_range])  # type: ignore[index, assignment]
+        dimensions = random.choice(dimensions_list)
 
         return {
             "width": dimensions[0],
@@ -203,12 +206,13 @@ class MediaFileGenerator(DataGenerator[dict[str, str | int | float]]):
             return 0.0
 
         config = self.media_configs[media_type]
-        min_duration, max_duration = config["durations"][size_range]
+        duration_tuple: tuple[float, float] = tuple(config["durations"][size_range])  # type: ignore[index, assignment]
+        min_duration, max_duration = duration_tuple
         return round(random.uniform(min_duration, max_duration), 2)
 
     def _generate_metadata(
         self, media_type: str, format: str, file_size: int
-    ) -> dict[str, str | int | float]:
+    ) -> dict[str, Any]:
         """生成详细元数据"""
         import time
 
@@ -298,13 +302,18 @@ class MediaFileGenerator(DataGenerator[dict[str, str | int | float]]):
             self.media_type = "image"
 
         config = self.media_configs[self.media_type]
-        if self.format not in config["formats"]:
-            self.format = random.choice(config["formats"])
+        formats_list: list[str] = list(config["formats"])  # type: ignore[index, assignment]
+        if self.format not in formats_list:
+            self.format = random.choice(formats_list)
 
         # 生成基础信息
         filename = self._generate_filename(self.media_type, self.format)
         file_size = self._generate_file_size(self.size_range, self.media_type)
-        mime_type = config["mime_types"][self.format]
+        mime_types_obj = config["mime_types"]  # type: ignore[index]
+        mime_types: dict[str, str] = (
+            mime_types_obj if isinstance(mime_types_obj, dict) else {}
+        )  # type: ignore[assignment]
+        mime_type = mime_types[self.format]
 
         result = {
             "filename": filename,

@@ -5,6 +5,7 @@
 
 import logging
 import os
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +44,7 @@ def check_security_configuration() -> tuple[bool, list[str]]:
         issues.append("❌ ERROR: CORS allows all origins (*) in production")
     else:
         # 如果设置了CORS，验证格式
-        origins_list = [
+        origins_list: list[Any] = [
             origin.strip() for origin in cors_origins.split(",") if origin.strip()
         ]
         for origin in origins_list:

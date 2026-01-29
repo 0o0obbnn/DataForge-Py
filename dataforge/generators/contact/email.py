@@ -153,11 +153,22 @@ class EmailGenerator(DataGenerator[str]):
             chinese_chars = "张王李赵钱孙杨周吴徐黄赵朱秦尤许沈周胡何郭林罗史钟曹严华蒋韩冯马侯龙万罗梁宋郑谢韩邓萧曹袁邓许韩邓萧叶潘杜戴夏钟汪田任姜范方石姚"
             first_char = secrets.choice(chinese_chars)
             rest_chars = "".join(secrets.choice(chars) for _ in range(length - 1))
-            return first_char + rest_chars
+            username = first_char + rest_chars
         else:
             first_char = secrets.choice(string.ascii_lowercase + string.digits)
             rest_chars = "".join(secrets.choice(chars) for _ in range(length - 1))
-            return first_char + rest_chars
+            username = first_char + rest_chars
+
+        # 确保用户名不以特殊字符结尾（修复验证失败问题）
+        while username and username[-1] in "._-":
+            username = username[:-1]
+            if not username:
+                # 如果变成空字符串，生成一个简单的用户名
+                username = secrets.choice(string.ascii_lowercase) + secrets.choice(
+                    string.digits
+                )
+
+        return username
 
     def _generate_username_from_name(self, name: str) -> str:
         """基于姓名生成用户名"""

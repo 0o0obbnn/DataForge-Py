@@ -5,9 +5,9 @@
       <div class="connection-status">
         <h3>连接状态</h3>
         <a-space>
-          <a-button 
-            type="primary" 
-            :loading="apiConnecting" 
+          <a-button
+            type="primary"
+            :loading="apiConnecting"
             @click="testConnection"
           >
             测试连接
@@ -16,7 +16,7 @@
             {{ apiConnected ? '已连接' : '未连接' }}
           </a-tag>
         </a-space>
-        
+
         <div v-if="apiHealth" class="health-info">
           <p><strong>API 状态:</strong> {{ apiHealth.status }}</p>
           <p><strong>版本:</strong> {{ apiHealth.version }}</p>
@@ -29,20 +29,20 @@
       <a-divider />
       <div class="generators-section">
         <h3>
-          可用生成器 
-          <a-button 
-            type="text" 
-            size="small" 
-            :loading="loadingGenerators" 
+          可用生成器
+          <a-button
+            type="text"
+            size="small"
+            :loading="loadingGenerators"
             @click="loadGenerators"
           >
             刷新
           </a-button>
         </h3>
-        
+
         <div v-if="availableGenerators.length > 0" class="generators-grid">
-          <a-card 
-            v-for="generator in availableGenerators.slice(0, 12)" 
+          <a-card
+            v-for="generator in availableGenerators.slice(0, 12)"
             :key="generator.name"
             size="small"
             class="generator-card"
@@ -55,24 +55,24 @@
                 {{ generator.name }}
               </a-space>
             </template>
-            
+
             <p class="generator-description">{{ generator.description }}</p>
             <p class="generator-params">
-              <strong>支持参数:</strong> 
+              <strong>支持参数:</strong>
               {{ generator.parameters.length > 0 ? generator.parameters.join(', ') : '无' }}
             </p>
-            
+
             <a-space>
-              <a-button 
-                size="small" 
+              <a-button
+                size="small"
                 @click="testGenerator(generator.name)"
                 :loading="testingGenerators.includes(generator.name)"
               >
                 测试生成
               </a-button>
-              <a-button 
-                size="small" 
-                type="text" 
+              <a-button
+                size="small"
+                type="text"
                 @click="showGeneratorDetails(generator.name)"
               >
                 详情
@@ -80,7 +80,7 @@
             </a-space>
           </a-card>
         </div>
-        
+
         <a-empty v-else description="暂无可用生成器" />
       </div>
 
@@ -88,10 +88,10 @@
       <a-divider />
       <div class="test-results">
         <h3>测试结果</h3>
-        <a-textarea 
-          v-model:value="testResults" 
-          :rows="10" 
-          readonly 
+        <a-textarea
+          v-model:value="testResults"
+          :rows="10"
+          readonly
           placeholder="测试结果将显示在这里..."
         />
         <a-space style="margin-top: 12px;">
@@ -122,8 +122,8 @@
             {{ selectedGeneratorDetails.description }}
           </a-descriptions-item>
           <a-descriptions-item label="支持参数">
-            <a-tag 
-              v-for="param in selectedGeneratorDetails.parameters" 
+            <a-tag
+              v-for="param in selectedGeneratorDetails.parameters"
               :key="param"
               style="margin-bottom: 4px;"
             >
@@ -167,9 +167,9 @@ const {
 // 方法
 const testConnection = async () => {
   addTestResult('开始测试 DataForge API 连接...')
-  
+
   const result = await workbenchStore.checkApiConnection()
-  
+
   if (result.connected) {
     addTestResult('✅ API 连接成功！')
     if (result.health) {
@@ -182,7 +182,7 @@ const testConnection = async () => {
 
 const loadGenerators = async () => {
   addTestResult('正在加载生成器列表...')
-  
+
   try {
     await workbenchStore.loadAvailableGenerators()
     addTestResult(`✅ 成功加载 ${availableGenerators.length} 个生成器`)
@@ -194,10 +194,10 @@ const loadGenerators = async () => {
 const testGenerator = async (generatorName: string) => {
   testingGenerators.value.push(generatorName)
   addTestResult(`开始测试生成器: ${generatorName}`)
-  
+
   try {
     const result = await workbenchStore.generatePreviewData(generatorName, {}, 3)
-    
+
     if (result) {
       addTestResult(`✅ ${generatorName} 生成成功:`)
       addTestResult(JSON.stringify(result.data.slice(0, 3), null, 2))
@@ -279,18 +279,18 @@ onMounted(() => {
 .test-card {
   background: var(--df-secondary-bg);
   border: 1px solid var(--df-text-disabled);
-  
+
   :deep(.ant-card-head) {
     background: transparent;
     border-bottom-color: var(--df-text-disabled);
-    
+
     .ant-card-head-title {
       color: var(--df-text-primary);
       font-size: var(--df-font-size-lg);
       font-weight: 600;
     }
   }
-  
+
   :deep(.ant-card-body) {
     background: transparent;
   }
@@ -303,7 +303,7 @@ onMounted(() => {
     background: var(--df-primary-bg);
     border: 1px solid var(--df-text-disabled);
     border-radius: var(--df-radius-md);
-    
+
     p {
       margin: var(--df-spacing-xs) 0;
       color: var(--df-text-primary);
@@ -316,31 +316,31 @@ onMounted(() => {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--df-spacing-md);
   margin-top: var(--df-spacing-md);
-  
+
   .generator-card {
     background: var(--df-primary-bg);
     border: 1px solid var(--df-text-disabled);
-    
+
     :deep(.ant-card-head) {
       background: transparent;
       border-bottom-color: var(--df-text-disabled);
-      
+
       .ant-card-head-title {
         color: var(--df-text-primary);
         font-size: var(--df-font-size-sm);
       }
     }
-    
+
     :deep(.ant-card-body) {
       background: transparent;
     }
-    
+
     .generator-description {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-sm);
       margin: var(--df-spacing-xs) 0;
     }
-    
+
     .generator-params {
       color: var(--df-text-primary);
       font-size: var(--df-font-size-xs);
@@ -369,7 +369,7 @@ onMounted(() => {
   background: linear-gradient(135deg, var(--df-accent-primary), var(--df-accent-success));
   border: none;
   font-weight: 500;
-  
+
   &:hover, &:focus {
     background: linear-gradient(135deg, #A855F7, #10B981);
     box-shadow: 0 4px 16px rgba(142, 93, 255, 0.3);
@@ -383,7 +383,7 @@ onMounted(() => {
     color: var(--df-text-secondary);
     font-weight: 500;
   }
-  
+
   .ant-descriptions-item-content {
     background: var(--df-secondary-bg);
     border-color: var(--df-text-disabled);
@@ -396,17 +396,17 @@ onMounted(() => {
     background: var(--df-secondary-bg);
     border: 1px solid var(--df-text-disabled);
   }
-  
+
   .ant-modal-header {
     background: transparent;
     border-bottom-color: var(--df-text-disabled);
-    
+
     .ant-modal-title {
       color: var(--df-text-primary);
       font-weight: 600;
     }
   }
-  
+
   .ant-modal-body {
     background: transparent;
   }
@@ -423,7 +423,7 @@ h3 {
   .dataforge-test {
     padding: var(--df-spacing-md);
   }
-  
+
   .generators-grid {
     grid-template-columns: 1fr;
   }

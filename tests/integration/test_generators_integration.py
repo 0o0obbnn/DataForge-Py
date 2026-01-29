@@ -11,13 +11,13 @@ from dataforge.core.factory import GeneratorConfig, default_factory, default_reg
 
 # 导入并注册所有基础生成器
 from dataforge.generators.basic.age import ChineseAgeGenerator as AgeGenerator
-from dataforge.generators.identifier.bankcard import BankCardGenerator
-from dataforge.generators.contact.email import EmailGenerator
 from dataforge.generators.basic.idcard import IDCardGenerator
 from dataforge.generators.basic.name import NameGenerator
 from dataforge.generators.basic.password import PasswordGenerator
-from dataforge.generators.contact.phone import PhoneNumberGenerator
 from dataforge.generators.basic.username import UsernameGenerator
+from dataforge.generators.contact.email import EmailGenerator
+from dataforge.generators.contact.phone import PhoneNumberGenerator
+from dataforge.generators.identifier.bankcard import BankCardGenerator
 
 
 def register_all_basic_generators():

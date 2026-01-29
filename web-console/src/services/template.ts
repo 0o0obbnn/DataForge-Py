@@ -83,7 +83,7 @@ export class TemplateService {
    */
   static saveTemplate(template: Omit<GenerationTemplate, 'id' | 'metadata'>): GenerationTemplate {
     const templates = this.getAllTemplates()
-    
+
     const newTemplate: GenerationTemplate = {
       ...template,
       id: this.generateId(),
@@ -105,7 +105,7 @@ export class TemplateService {
 
     templates.push(newTemplate)
     this.saveTemplates(templates)
-    
+
     message.success(`模板 "${template.name}" 已保存`)
     return newTemplate
   }
@@ -116,7 +116,7 @@ export class TemplateService {
   static updateTemplate(id: string, updates: Partial<GenerationTemplate>): boolean {
     const templates = this.getAllTemplates()
     const index = templates.findIndex(template => template.id === id)
-    
+
     if (index === -1) {
       message.error('模板不存在')
       return false
@@ -143,7 +143,7 @@ export class TemplateService {
   static deleteTemplate(id: string): boolean {
     const templates = this.getAllTemplates()
     const index = templates.findIndex(template => template.id === id)
-    
+
     if (index === -1) {
       message.error('模板不存在')
       return false
@@ -152,7 +152,7 @@ export class TemplateService {
     const templateName = templates[index].name
     templates.splice(index, 1)
     this.saveTemplates(templates)
-    
+
     message.success(`模板 "${templateName}" 已删除`)
     return true
   }
@@ -199,7 +199,7 @@ export class TemplateService {
         templates = templates.filter(t => t.category === filters.category)
       }
       if (filters.tags && filters.tags.length > 0) {
-        templates = templates.filter(t => 
+        templates = templates.filter(t =>
           filters.tags!.some(tag => t.metadata.tags.includes(tag))
         )
       }
@@ -231,7 +231,7 @@ export class TemplateService {
     try {
       const stored = localStorage.getItem(this.CATEGORIES_KEY)
       const categories = stored ? JSON.parse(stored) : this.getDefaultCategories()
-      
+
       // 更新模板数量
       const templates = this.getAllTemplates()
       return categories.map((category: TemplateCategory) => ({
@@ -264,17 +264,17 @@ export class TemplateService {
       const blob = new Blob([JSON.stringify(exportData, null, 2)], {
         type: 'application/json'
       })
-      
+
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
       link.download = `${template.name.replace(/[^a-zA-Z0-9]/g, '_')}_template.json`
-      
+
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
-      
+
       message.success('模板已导出')
     } catch (error) {
       message.error('导出失败')
@@ -289,7 +289,7 @@ export class TemplateService {
     try {
       const text = await file.text()
       const importData = JSON.parse(text)
-      
+
       // 验证模板格式
       if (!this.validateTemplateFormat(importData)) {
         message.error('模板格式无效')
@@ -310,7 +310,7 @@ export class TemplateService {
       const templates = this.getAllTemplates()
       templates.push(template)
       this.saveTemplates(templates)
-      
+
       message.success(`模板 "${template.name}" 导入成功`)
       return template
     } catch (error) {
@@ -326,7 +326,7 @@ export class TemplateService {
   static updateTemplateStats(id: string, statsUpdate: Partial<GenerationTemplate['statistics']>): boolean {
     const templates = this.getAllTemplates()
     const index = templates.findIndex(template => template.id === id)
-    
+
     if (index === -1) return false
 
     templates[index].statistics = {

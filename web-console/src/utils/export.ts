@@ -72,7 +72,7 @@ export class ExportService {
 
       const finalFilename = `${filename || defaultFilename}.${fileExtension}`
       await this.downloadFile(content, finalFilename, mimeType)
-      
+
       message.success(`数据已导出为 ${format.toUpperCase()} 格式`)
     } catch (error: any) {
       console.error('导出失败:', error)
@@ -125,13 +125,13 @@ export class ExportService {
 
     for (const [index, row] of data.entries()) {
       xmlRows.push(`  <record id="${index + 1}">`)
-      
+
       for (const [key, value] of Object.entries(row)) {
         const escapedKey = this.escapeXMLTag(key)
         const escapedValue = this.escapeXMLContent(String(value || ''))
         xmlRows.push(`    <${escapedKey}>${escapedValue}</${escapedKey}>`)
       }
-      
+
       xmlRows.push('  </record>')
     }
 
@@ -156,7 +156,7 @@ export class ExportService {
     sqlRows.push(`DROP TABLE IF EXISTS \`${tableName}\`;`)
     sqlRows.push('')
     sqlRows.push(`CREATE TABLE \`${tableName}\` (`)
-    
+
     const columnDefs = headers.map((header, index) => {
       const isLast = index === headers.length - 1
       return `  \`${header}\` TEXT${isLast ? '' : ','}`
@@ -176,7 +176,7 @@ export class ExportService {
       const isLast = index === data.length - 1
       return `  (${values.join(', ')})${isLast ? ';' : ','}`
     })
-    
+
     sqlRows.push(...valueRows)
     return sqlRows.join('\n')
   }
@@ -217,15 +217,15 @@ export class ExportService {
     if (value === null || value === undefined) {
       return 'NULL'
     }
-    
+
     if (typeof value === 'number') {
       return String(value)
     }
-    
+
     if (typeof value === 'boolean') {
       return value ? '1' : '0'
     }
-    
+
     // 字符串值需要转义单引号
     const stringValue = String(value)
     return `'${stringValue.replace(/'/g, "''")}'`
@@ -238,17 +238,17 @@ export class ExportService {
     try {
       // 创建Blob对象
       const blob = new Blob([content], { type: mimeType })
-      
+
       // 创建下载链接
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
       link.download = filename
-      
+
       // 添加到DOM并触发下载
       document.body.appendChild(link)
       link.click()
-      
+
       // 清理
       document.body.removeChild(link)
       URL.revokeObjectURL(url)
@@ -263,7 +263,7 @@ export class ExportService {
   static estimateFileSize(data: any[], format: ExportFormat): string {
     try {
       let content: string
-      
+
       switch (format) {
         case 'json':
           content = this.toJSON(data, true)
@@ -293,10 +293,10 @@ export class ExportService {
    */
   private static formatBytes(bytes: number): string {
     if (bytes === 0) return '0 B'
-    
+
     const sizes = ['B', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    
+
     return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`
   }
 
@@ -322,9 +322,9 @@ export class ExportService {
     for (const [index, row] of data.entries()) {
       const rowKeys = Object.keys(row)
       if (rowKeys.length !== firstRowKeys.length) {
-        return { 
-          valid: false, 
-          message: `第 ${index + 1} 行字段数量不一致` 
+        return {
+          valid: false,
+          message: `第 ${index + 1} 行字段数量不一致`
         }
       }
     }

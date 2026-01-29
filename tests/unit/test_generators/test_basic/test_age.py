@@ -5,7 +5,6 @@
 import pytest
 
 from dataforge.core.generator import GeneratorConfig
-from dataforge.generators.basic.age import AgeGenerator
 
 
 @pytest.mark.unit

@@ -16,7 +16,7 @@
 ### 2. 类型系统深度修复（100% 完成）
 - **核心问题**: `MaritalStatusGenerator` 被识别为 `DataGenerator[Unknown]` 而非 `DataGenerator[str]`
 - **根本原因**: 类型推断系统无法正确识别泛型参数
-- **解决方案**: 
+- **解决方案**:
   - 移除了有问题的 `cast()` 调用
   - 使用显式类型注解 `generator: MaritalStatusGenerator = MaritalStatusGenerator(config)`
   - 优化了导入结构，避免循环导入问题

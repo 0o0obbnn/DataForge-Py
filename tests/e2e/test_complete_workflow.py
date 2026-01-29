@@ -18,12 +18,12 @@ class TestCompleteWorkflow:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.password import PasswordGenerator
         from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.password import PasswordGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -65,7 +65,7 @@ class TestCompleteWorkflow:
         assert isinstance(user_data["phone"], str)
         assert isinstance(user_data["password"], str)
 
-        print(f"\n用户注册数据:")
+        print("\n用户注册数据:")
         for key, value in user_data.items():
             print(f"  {key}: {value}")
 
@@ -75,14 +75,14 @@ class TestCompleteWorkflow:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.education import EducationGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.identifier.id import IDGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.address import AddressGenerator
-        from dataforge.generators.basic.education import EducationGenerator
+        from dataforge.generators.identifier.id import IDGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -122,7 +122,7 @@ class TestCompleteWorkflow:
         # 验证数据完整性
         assert all(v is not None for v in employee_data.values())
 
-        print(f"\n员工入职数据:")
+        print("\n员工入职数据:")
         for key, value in employee_data.items():
             print(f"  {key}: {value}")
 
@@ -133,10 +133,10 @@ class TestCompleteWorkflow:
 
         # 注册所需的生成器
         from dataforge.generators.basic.name import NameGenerator
-        from dataforge.generators.identifier.id import IDGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.identifier.bankcard import BankCardGenerator
         from dataforge.generators.finance.bank_account import BankAccountGenerator
+        from dataforge.generators.identifier.bankcard import BankCardGenerator
+        from dataforge.generators.identifier.id import IDGenerator
 
         registry.register("name", NameGenerator)
         registry.register("id", IDGenerator)
@@ -167,7 +167,7 @@ class TestCompleteWorkflow:
         # 验证数据完整性
         assert all(v is not None for v in account_data.values())
 
-        print(f"\n金融账户数据:")
+        print("\n金融账户数据:")
         for key, value in account_data.items():
             print(f"  {key}: {value}")
 
@@ -177,9 +177,9 @@ class TestCompleteWorkflow:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -215,7 +215,7 @@ class TestCompleteWorkflow:
         unique_names = set(user["name"] for user in users)
         unique_emails = set(user["email"] for user in users)
 
-        print(f"\n批量用户生成:")
+        print("\n批量用户生成:")
         print(f"  生成数量: {len(users)}")
         print(f"  唯一姓名: {len(unique_names)}")
         print(f"  唯一邮箱: {len(unique_emails)}")
@@ -229,8 +229,8 @@ class TestCompleteWorkflow:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -267,8 +267,8 @@ class TestCompleteWorkflow:
         parsed_users = json.loads(json_data)
         assert len(parsed_users) == len(users)
 
-        print(f"\n数据导出:")
-        print(f"  导出格式: JSON")
+        print("\n数据导出:")
+        print("  导出格式: JSON")
         print(f"  数据量: {len(users)}条")
         print(f"  数据大小: {len(json_data)}字节")
 
@@ -278,8 +278,8 @@ class TestCompleteWorkflow:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("address", AddressGenerator)
@@ -341,7 +341,7 @@ class TestCompleteWorkflow:
         assert generators["phone"].validate(phone)
         assert generators["id"].validate(id_card)
 
-        print(f"\n数据验证:")
+        print("\n数据验证:")
         print(f"  邮箱: {email} - 有效")
         print(f"  手机: {phone} - 有效")
         print(f"  身份证: {id_card} - 有效")

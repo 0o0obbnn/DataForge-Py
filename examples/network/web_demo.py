@@ -57,7 +57,7 @@ def parameter_configuration():
         {"protocol": ["http", "https"]},
         {"include_path": False},
         {"include_query": True},
-        {"include_fragment": True}
+        {"include_fragment": True},
     ]
     for i, params in enumerate(protocols, 1):
         config = GeneratorConfig("url", parameters=params)
@@ -73,7 +73,7 @@ def parameter_configuration():
         {"browser": "firefox"},
         {"browser": "safari"},
         {"browser": "edge"},
-        {"include_cookies": True}
+        {"include_cookies": True},
     ]
     for i, params in enumerate(browsers, 1):
         config = GeneratorConfig("http_header", parameters=params)
@@ -90,7 +90,7 @@ def parameter_configuration():
         {"domain_type": "country"},
         {"subdomain_levels": (2, 3)},
         {"use_real_words": False},
-        {"custom_tlds": [".tech", ".app", ".dev"]}
+        {"custom_tlds": [".tech", ".app", ".dev"]},
     ]
     for i, params in enumerate(domain_types, 1):
         config = GeneratorConfig("domain", parameters=params)
@@ -108,25 +108,22 @@ def batch_generation():
     print("\n批量生成Web资源:")
 
     # 生成URL
-    url_config = GeneratorConfig("url", parameters={
-        "include_path": True,
-        "include_query": True,
-        "path_length": (2, 4)
-    })
+    url_config = GeneratorConfig(
+        "url",
+        parameters={"include_path": True, "include_query": True, "path_length": (2, 4)},
+    )
     url_gen = default_factory.create_generator(url_config)
 
     # 生成域名
-    domain_config = GeneratorConfig("domain", parameters={
-        "domain_type": "com",
-        "subdomain_levels": (0, 2)
-    })
+    domain_config = GeneratorConfig(
+        "domain", parameters={"domain_type": "com", "subdomain_levels": (0, 2)}
+    )
     domain_gen = default_factory.create_generator(domain_config)
 
     # 生成HTTP头
-    header_config = GeneratorConfig("http_header", parameters={
-        "browser": "chrome",
-        "include_cookies": True
-    })
+    header_config = GeneratorConfig(
+        "http_header", parameters={"browser": "chrome", "include_cookies": True}
+    )
     header_gen = default_factory.create_generator(header_config)
 
     # 生成5个Web资源
@@ -136,7 +133,7 @@ def batch_generation():
             "url": url_gen.generate(),
             "domain": domain_gen.generate(),
             "headers": header_gen.generate(),
-            "resource_type": "web_page"
+            "resource_type": "web_page",
         }
         web_resources.append(resource)
 
@@ -145,9 +142,17 @@ def batch_generation():
     print(f"{'URL':<50} | {'域名':<25} | {'类型'}")
     print("-" * 100)
     for resource in web_resources:
-        url = resource['url'][:47] + "..." if len(resource['url']) > 50 else resource['url']
-        domain = resource['domain'][:22] + "..." if len(resource['domain']) > 25 else resource['domain']
-        resource_type = resource['resource_type']
+        url = (
+            resource["url"][:47] + "..."
+            if len(resource["url"]) > 50
+            else resource["url"]
+        )
+        domain = (
+            resource["domain"][:22] + "..."
+            if len(resource["domain"]) > 25
+            else resource["domain"]
+        )
+        resource_type = resource["resource_type"]
         print(f"{url:<50} | {domain:<25} | {resource_type}")
     print("-" * 100)
 
@@ -238,32 +243,41 @@ def best_practices():
     print("\n实践1: 生成完整的网站信息")
     website_info = {
         "url": default_factory.create_generator(
-            GeneratorConfig("url", parameters={
-                "protocol": "https",
-                "include_path": True,
-                "include_query": True,
-                "path_style": "RESTFUL"
-            })
+            GeneratorConfig(
+                "url",
+                parameters={
+                    "protocol": "https",
+                    "include_path": True,
+                    "include_query": True,
+                    "path_style": "RESTFUL",
+                },
+            )
         ).generate(),
         "domain": default_factory.create_generator(
-            GeneratorConfig("domain", parameters={
-                "domain_type": "com",
-                "subdomain_levels": (1, 2),
-                "use_real_words": True
-            })
+            GeneratorConfig(
+                "domain",
+                parameters={
+                    "domain_type": "com",
+                    "subdomain_levels": (1, 2),
+                    "use_real_words": True,
+                },
+            )
         ).generate(),
         "headers": default_factory.create_generator(
-            GeneratorConfig("http_header", parameters={
-                "browser": "chrome",
-                "include_cookies": True,
-                "include_auth": False
-            })
+            GeneratorConfig(
+                "http_header",
+                parameters={
+                    "browser": "chrome",
+                    "include_cookies": True,
+                    "include_auth": False,
+                },
+            )
         ).generate(),
         "ssl_info": {
             "protocol": "TLSv1.3",
             "cipher_suite": "TLS_AES_256_GCM_SHA384",
-            "certificate": "self-signed"
-        }
+            "certificate": "self-signed",
+        },
     }
 
     print("  网站信息:")
@@ -273,7 +287,9 @@ def best_practices():
             for sub_key, sub_value in value.items():
                 print(f"      {sub_key}: {sub_value}")
         else:
-            display_value = str(value)[:80] + "..." if len(str(value)) > 80 else str(value)
+            display_value = (
+                str(value)[:80] + "..." if len(str(value)) > 80 else str(value)
+            )
             print(f"    {key}: {display_value}")
 
     # 实践2: 批量导出Web数据
@@ -284,25 +300,28 @@ def best_practices():
         web_item = {
             "request": {
                 "url": default_factory.create_generator(
-                    GeneratorConfig("url", parameters={
-                        "protocol": "https",
-                        "include_path": True,
-                        "include_query": True
-                    })
+                    GeneratorConfig(
+                        "url",
+                        parameters={
+                            "protocol": "https",
+                            "include_path": True,
+                            "include_query": True,
+                        },
+                    )
                 ).generate(),
                 "method": "GET",
                 "headers": default_factory.create_generator(
-                    GeneratorConfig("http_header", parameters={
-                        "browser": "chrome",
-                        "include_cookies": True
-                    })
-                ).generate()
+                    GeneratorConfig(
+                        "http_header",
+                        parameters={"browser": "chrome", "include_cookies": True},
+                    )
+                ).generate(),
             },
             "response": {
                 "status_code": 200,
                 "content_type": "text/html; charset=utf-8",
-                "server": "nginx/1.18.0"
-            }
+                "server": "nginx/1.18.0",
+            },
         }
         web_data.append(web_item)
 
@@ -318,19 +337,21 @@ def web_crawling_demo():
     print("\n模拟爬虫请求信息:")
 
     # 生成多个URL
-    url_config = GeneratorConfig("url", parameters={
-        "protocol": "https",
-        "path_style": "REALISTIC",
-        "include_query": True
-    })
+    url_config = GeneratorConfig(
+        "url",
+        parameters={
+            "protocol": "https",
+            "path_style": "REALISTIC",
+            "include_query": True,
+        },
+    )
     url_gen = default_factory.create_generator(url_config)
 
     # 生成不同的User-Agent
-    ua_config = GeneratorConfig("http_header", parameters={
-        "browser": "chrome",
-        "min_headers": 5,
-        "max_headers": 8
-    })
+    ua_config = GeneratorConfig(
+        "http_header",
+        parameters={"browser": "chrome", "min_headers": 5, "max_headers": 8},
+    )
     ua_gen = default_factory.create_generator(ua_config)
 
     # 生成爬虫请求
@@ -341,7 +362,7 @@ def web_crawling_demo():
             "headers": ua_gen.generate(),
             "method": "GET",
             "delay": 1 + (i * 0.5),  # 模拟延迟
-            "retry_count": 0
+            "retry_count": 0,
         }
         crawl_requests.append(request)
 
@@ -351,7 +372,7 @@ def web_crawling_demo():
         print(f"      URL: {req['url']}")
         print(f"      方法: {req['method']}")
         print(f"      延迟: {req['delay']}秒")
-        user_agent = req['headers'].get('User-Agent', 'N/A')
+        user_agent = req["headers"].get("User-Agent", "N/A")
         print(f"      User-Agent: {user_agent[:60]}...")
         print()
 
@@ -383,6 +404,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

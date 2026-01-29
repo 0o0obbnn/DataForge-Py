@@ -4,7 +4,7 @@
       <h1>模板管理</h1>
       <a-button type="primary" @click="createTemplate">新建模板</a-button>
     </div>
-    
+
     <div class="page-content">
       <div class="filters">
         <a-space>
@@ -24,7 +24,7 @@
           </a-select>
         </a-space>
       </div>
-      
+
       <a-table
         :columns="columns"
         :data-source="templatesData"
@@ -192,7 +192,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--df-spacing-lg);
-  
+
   h1 {
     color: var(--df-text-primary);
     font-size: var(--df-font-size-2xl);
@@ -213,19 +213,19 @@ onMounted(() => {
 
 :deep(.ant-table) {
   background: transparent;
-  
+
   .ant-table-thead > tr > th {
     background: var(--df-primary-bg);
     color: var(--df-text-primary);
     border-bottom-color: var(--df-text-disabled);
   }
-  
+
   .ant-table-tbody > tr > td {
     background: transparent;
     color: var(--df-text-primary);
     border-bottom-color: var(--df-text-disabled);
   }
-  
+
   .ant-table-tbody > tr:hover > td {
     background: rgba(142, 93, 255, 0.1);
   }

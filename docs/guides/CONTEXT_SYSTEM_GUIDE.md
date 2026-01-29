@@ -203,7 +203,7 @@ class BusinessContext(GenerationContext):
     def add_business_rule(self, rule_name, rule_config):
         # 添加业务规则
         pass
-    
+
     def validate_business_rules(self):
         # 验证业务规则
         pass
@@ -215,7 +215,7 @@ class DatabaseContext(GenerationContext):
     def load_from_database(self, query):
         # 从数据库加载上下文
         pass
-    
+
     def sync_with_api(self, api_endpoint):
         # 与API同步数据
         pass

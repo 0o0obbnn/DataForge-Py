@@ -9,7 +9,7 @@ generators:
       gender: "ANY"
       birth_date_range: ["1980-01-01", "2000-12-31"]
       valid: true
-  
+
   - generator_type: phone
     count: 10
     validate: true
@@ -17,7 +17,7 @@ generators:
     parameters:
       operator: "ANY"
       valid: true
-  
+
   - generator_type: bankcard
     count: 10
     validate: true

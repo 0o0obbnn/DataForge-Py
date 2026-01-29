@@ -11,22 +11,13 @@
 
 import json
 from datetime import datetime
+from importlib.util import find_spec
 from pathlib import Path
 from typing import Any
 
-try:
-    import requests
-
-    REQUESTS_AVAILABLE = True
-except ImportError:
-    REQUESTS_AVAILABLE = False
-
-try:
-    import yaml
-
-    YAML_AVAILABLE = True
-except ImportError:
-    YAML_AVAILABLE = False
+# 使用find_spec检查依赖是否可用，避免F401错误
+REQUESTS_AVAILABLE = find_spec("requests") is not None
+YAML_AVAILABLE = find_spec("yaml") is not None
 
 
 class TradingCalendarUpdater:
@@ -87,7 +78,16 @@ class TradingCalendarUpdater:
         Returns:
             节假日数据字典
         """
-        url = self.API_SOURCES["timor"]["url"].format(year=year)
+        # 在函数内导入requests，避免顶层导入F401问题
+        import requests  # noqa: F401
+
+        url_template_obj = self.API_SOURCES["timor"]["url"]  # type: ignore[index]
+        url_template: str = (
+            url_template_obj
+            if isinstance(url_template_obj, str)
+            else "http://timor.tech/api/holiday/year/{year}"
+        )  # type: ignore[assignment]
+        url = url_template.format(year=year)
 
         try:
             # 添加User-Agent避免被ban
@@ -110,7 +110,7 @@ class TradingCalendarUpdater:
 
     def _parse_timor_data(
         self, raw_data: dict[str, Any], year: int
-    ) -> tuple[list[dict], list[str]]:
+    ) -> tuple[list[dict[str, Any]], list[str]]:
         """解析Timor API返回的数据
 
         Args:

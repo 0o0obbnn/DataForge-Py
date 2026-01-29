@@ -25,7 +25,7 @@ test_template_management.py
 ```
 tests/
 ├── api/                    ✅ 已创建
-├── integration/            ✅ 已创建  
+├── integration/            ✅ 已创建
 ├── performance/            ✅ 已创建
 ├── unit/                   ✅ 已存在 (10个文件)
 ├── data/                   ✅ 已存在 (4个数据文件)
@@ -39,7 +39,7 @@ tests/
 ### API测试 (3个文件 → tests/api/)
 ```powershell
 Move-Item "test_api_fixed.py" "tests/api/test_api_endpoints.py"
-Move-Item "test_batch_generation.py" "tests/api/test_batch_api.py"  
+Move-Item "test_batch_generation.py" "tests/api/test_batch_api.py"
 Move-Item "test_fastapi.py" "tests/api/test_fastapi_server.py"
 ```
 
@@ -107,7 +107,7 @@ pytest tests/
 
 # 按类别运行
 pytest tests/unit/          # 单元测试
-pytest tests/integration/   # 集成测试  
+pytest tests/integration/   # 集成测试
 pytest tests/api/           # API测试
 pytest tests/performance/   # 性能测试
 

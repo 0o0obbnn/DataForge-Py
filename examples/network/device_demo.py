@@ -81,7 +81,7 @@ def parameter_configuration():
         {"country": "CN", "city": "Beijing"},
         {"country": "US", "city": "New York"},
         {"country": "JP", "city": "Tokyo"},
-        {"bounds": {"lat": (-90, 90), "lng": (-180, 180)}}
+        {"bounds": {"lat": (-90, 90), "lng": (-180, 180)}},
     ]
     for i, params in enumerate(regions, 1):
         config = GeneratorConfig("geo_coordinates", parameters=params)
@@ -92,12 +92,17 @@ def parameter_configuration():
 
     # HTTP头 - 不同浏览器
     print("\nHTTP头生成器 - 浏览器配置:")
-    browsers = [{}, {"browser": "chrome"}, {"browser": "firefox"}, {"browser": "safari"}]
+    browsers = [
+        {},
+        {"browser": "chrome"},
+        {"browser": "firefox"},
+        {"browser": "safari"},
+    ]
     for i, params in enumerate(browsers, 1):
         config = GeneratorConfig("http_header", parameters=params)
         generator = default_factory.create_generator(config)
         result = generator.generate()
-        user_agent = result.get('User-Agent', 'N/A')
+        user_agent = result.get("User-Agent", "N/A")
         print(f"  配置 {i}: {params}")
         print(f"    User-Agent: {user_agent[:80]}...")
 
@@ -107,7 +112,7 @@ def parameter_configuration():
         {"length": 16},
         {"length": 32, "prefix": "sess_"},
         {"format": "jwt"},
-        {"format": "base64"}
+        {"format": "base64"},
     ]
     for i, params in enumerate(token_formats, 1):
         config = GeneratorConfig("session_token", parameters=params)
@@ -122,7 +127,7 @@ def parameter_configuration():
         {"type": "popular"},
         {"type": "all"},
         {"region": "Asia"},
-        {"offset": 8}  # UTC+8
+        {"offset": 8},  # UTC+8
     ]
     for i, params in enumerate(tz_types, 1):
         config = GeneratorConfig("timezone", parameters=params)
@@ -144,13 +149,17 @@ def batch_generation():
     device_id_config = GeneratorConfig("device_id", parameters={"type": "uuid"})
     device_id_gen = default_factory.create_generator(device_id_config)
 
-    geo_config = GeneratorConfig("geo_coordinates", parameters={"country": "CN", "output_format": "dict"})
+    geo_config = GeneratorConfig(
+        "geo_coordinates", parameters={"country": "CN", "output_format": "dict"}
+    )
     geo_gen = default_factory.create_generator(geo_config)
 
     header_config = GeneratorConfig("http_header", parameters={"browser": "chrome"})
     header_gen = default_factory.create_generator(header_config)
 
-    token_config = GeneratorConfig("session_token", parameters={"length": 32, "prefix": "dev_"})
+    token_config = GeneratorConfig(
+        "session_token", parameters={"length": 32, "prefix": "dev_"}
+    )
     token_gen = default_factory.create_generator(token_config)
 
     tz_config = GeneratorConfig("timezone", parameters={"type": "popular"})
@@ -164,7 +173,7 @@ def batch_generation():
             "headers": header_gen.generate(),
             "session_token": token_gen.generate(),
             "timezone": tz_gen.generate(),
-            "last_seen": datetime.now().isoformat()
+            "last_seen": datetime.now().isoformat(),
         }
         devices.append(device)
 
@@ -173,10 +182,22 @@ def batch_generation():
     print(f"{'设备ID':<36} | {'位置':<20} | {'时区':<15} | {'会话令牌'}")
     print("-" * 80)
     for device in devices:
-        device_id = device['device_id'][:34] + "..." if len(device['device_id']) > 34 else device['device_id']
+        device_id = (
+            device["device_id"][:34] + "..."
+            if len(device["device_id"]) > 34
+            else device["device_id"]
+        )
         location = f"{device['location']['lat']:.2f},{device['location']['lng']:.2f}"
-        tz = device['timezone'][:13] + ".." if len(device['timezone']) > 15 else device['timezone']
-        token = device['session_token'][:20] + "..." if len(device['session_token']) > 20 else device['session_token']
+        tz = (
+            device["timezone"][:13] + ".."
+            if len(device["timezone"]) > 15
+            else device["timezone"]
+        )
+        token = (
+            device["session_token"][:20] + "..."
+            if len(device["session_token"]) > 20
+            else device["session_token"]
+        )
         print(f"{device_id:<36} | {location:<20} | {tz:<15} | {token}")
     print("-" * 80)
 
@@ -204,7 +225,7 @@ def validation_examples():
 
     for i in range(3):
         coords = generator.generate()
-        lat, lng = coords['lat'], coords['lng']
+        lat, lng = coords["lat"], coords["lng"]
         is_valid_lat = -90 <= lat <= 90
         is_valid_lng = -180 <= lng <= 180
         print(f"  {i+1}. 纬度: {lat}, 经度: {lng}")
@@ -242,7 +263,9 @@ def error_handling():
     # 处理无效的地理坐标范围
     print("\n处理无效的地理坐标范围:")
     try:
-        config = GeneratorConfig("geo_coordinates", parameters={"bounds": {"lat": (100, 200)}})
+        config = GeneratorConfig(
+            "geo_coordinates", parameters={"bounds": {"lat": (100, 200)}}
+        )
         generator = default_factory.create_generator(config)
         result = generator.generate()
         print(f"  生成的坐标: {result}")
@@ -273,7 +296,9 @@ def best_practices():
         ).generate(),
         "user_agent": default_factory.create_generator(
             GeneratorConfig("http_header", parameters={"browser": "chrome"})
-        ).generate().get("User-Agent", ""),
+        )
+        .generate()
+        .get("User-Agent", ""),
         "screen_resolution": "1920x1080",
         "timezone": default_factory.create_generator(
             GeneratorConfig("timezone", parameters={"region": "Asia"})
@@ -282,7 +307,7 @@ def best_practices():
         "platform": "Win32",
         "location": default_factory.create_generator(
             GeneratorConfig("geo_coordinates", parameters={"country": "CN"})
-        ).generate()
+        ).generate(),
     }
 
     print("  设备指纹信息:")
@@ -290,7 +315,9 @@ def best_practices():
         if isinstance(value, dict):
             print(f"    {key}: {json.dumps(value, ensure_ascii=False)}")
         else:
-            display_value = str(value)[:80] + "..." if len(str(value)) > 80 else str(value)
+            display_value = (
+                str(value)[:80] + "..." if len(str(value)) > 80 else str(value)
+            )
             print(f"    {key}: {display_value}")
 
     # 实践2: 批量导出设备数据
@@ -311,11 +338,11 @@ def best_practices():
                 ).generate(),
                 "headers": default_factory.create_generator(
                     GeneratorConfig("http_header", parameters={"browser": "mobile"})
-                ).generate()
+                ).generate(),
             },
             "timezone": default_factory.create_generator(
                 GeneratorConfig("timezone", parameters={"type": "popular"})
-            ).generate()
+            ).generate(),
         }
         devices_data.append(device_data)
 
@@ -340,7 +367,7 @@ def device_tracking_demo():
     beijing_bounds_with_format = {
         "lat": (39.8, 40.2),
         "lng": (116.3, 116.7),
-        "output_format": "dict"
+        "output_format": "dict",
     }
 
     geo_gen = default_factory.create_generator(
@@ -353,17 +380,21 @@ def device_tracking_demo():
 
     for i in range(5):
         location = geo_gen.generate()
-        trajectory.append({
-            "timestamp": datetime.fromtimestamp(base_time + i * 3600).isoformat(),
-            "location": location,
-            "accuracy": 10 + (i * 2)  # 模拟精度变化
-        })
+        trajectory.append(
+            {
+                "timestamp": datetime.fromtimestamp(base_time + i * 3600).isoformat(),
+                "location": location,
+                "accuracy": 10 + (i * 2),  # 模拟精度变化
+            }
+        )
 
     print(f"  设备ID: {device_id}")
     print("  移动轨迹:")
     for point in trajectory:
         print(f"    时间: {point['timestamp'][:19]}")
-        print(f"    位置: {point['location']['lat']:.6f}, {point['location']['lng']:.6f}")
+        print(
+            f"    位置: {point['location']['lat']:.6f}, {point['location']['lng']:.6f}"
+        )
         print(f"    精度: ±{point['accuracy']}米")
         print()
 
@@ -395,6 +426,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

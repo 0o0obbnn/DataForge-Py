@@ -18,10 +18,10 @@ class TestMultiGeneratorCoordination:
         factory = GeneratorFactory(registry)
 
         # 注册所有需要的生成器
-        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
 
@@ -63,9 +63,9 @@ class TestMultiGeneratorCoordination:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -97,8 +97,8 @@ class TestMultiGeneratorCoordination:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.identifier.bankcard import BankCardGenerator
         from dataforge.generators.finance.bank_account import BankAccountGenerator
+        from dataforge.generators.identifier.bankcard import BankCardGenerator
 
         registry.register("bankcard", BankCardGenerator)
         registry.register("bank_account", BankAccountGenerator)
@@ -178,10 +178,12 @@ class TestMultiGeneratorCoordination:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.advanced.datetime import (
+            TimestampGenerator as DateTimeGenerator,
+        )
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.uuid import UUIDGenerator
-        from dataforge.generators.advanced.datetime import DateTimeGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -210,9 +212,9 @@ class TestMultiGeneratorCoordination:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
-        from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)

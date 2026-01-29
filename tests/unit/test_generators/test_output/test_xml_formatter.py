@@ -4,8 +4,6 @@ XML格式化器测试
 
 import pytest
 
-from dataforge.core.generator import GeneratorConfig
-
 
 @pytest.mark.unit
 class TestXMLFormatter:

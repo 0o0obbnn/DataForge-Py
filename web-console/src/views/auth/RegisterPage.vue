@@ -4,7 +4,7 @@
       <div class="register-card">
         <h1 class="register-title">注册 DataForge</h1>
         <p class="register-subtitle">创建您的账户，开始您的数据生成之旅</p>
-        
+
         <a-form
           ref="formRef"
           :model="registerForm"
@@ -68,12 +68,12 @@
                 <LockOutlined />
               </template>
             </a-input-password>
-            
+
             <!-- 密码强度指示器 -->
             <div v-if="registerForm.password" class="password-strength">
               <div class="strength-bar">
-                <div 
-                  class="strength-level" 
+                <div
+                  class="strength-level"
                   :class="passwordStrength.level"
                   :style="{ width: passwordStrength.width }"
                 ></div>
@@ -175,10 +175,10 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
-import { 
-  MailOutlined, 
-  PhoneOutlined, 
-  LockOutlined, 
+import {
+  MailOutlined,
+  PhoneOutlined,
+  LockOutlined,
   SafetyOutlined,
   UserAddOutlined,
   CheckCircleOutlined,
@@ -220,19 +220,19 @@ const registerForm = reactive({
 const passwordStrength = computed(() => {
   const password = registerForm.password
   if (!password) return { level: '', width: '0%', text: '' }
-  
+
   let score = 0
-  
+
   // 长度评分
   if (password.length >= 8) score += 25
   else if (password.length >= 6) score += 15
-  
+
   // 复杂度评分
   if (/[a-z]/.test(password)) score += 15
   if (/[A-Z]/.test(password)) score += 15
   if (/\d/.test(password)) score += 15
   if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 30
-  
+
   if (score >= 80) return { level: 'strong', width: '100%', text: '强' }
   if (score >= 60) return { level: 'medium', width: '66%', text: '中' }
   if (score >= 30) return { level: 'weak', width: '33%', text: '弱' }
@@ -241,9 +241,9 @@ const passwordStrength = computed(() => {
 
 // 表单验证状态
 const formValid = computed(() => {
-  return registerForm.email && 
-         registerForm.password && 
-         registerForm.confirmPassword && 
+  return registerForm.email &&
+         registerForm.password &&
+         registerForm.confirmPassword &&
          registerForm.verificationCode &&
          registerForm.agreeTerms &&
          emailValid.value &&
@@ -258,18 +258,18 @@ const canSendCode = computed(() => {
 // 表单验证规则
 const emailRules: Rule[] = [
   { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-  { 
-    type: 'email', 
-    message: '请输入有效的邮箱地址', 
-    trigger: 'blur' 
+  {
+    type: 'email',
+    message: '请输入有效的邮箱地址',
+    trigger: 'blur'
   }
 ]
 
 const phoneRules: Rule[] = [
-  { 
-    pattern: /^1[3-9]\d{9}$/, 
-    message: '请输入有效的手机号', 
-    trigger: 'blur' 
+  {
+    pattern: /^1[3-9]\d{9}$/,
+    message: '请输入有效的手机号',
+    trigger: 'blur'
   }
 ]
 
@@ -315,7 +315,7 @@ const debouncedEmailCheck = debounce(async (email: string) => {
     emailChecked.value = false
     return
   }
-  
+
   try {
     const result = await authStore.checkAvailability(undefined, email)
     if (result.success && result.data) {
@@ -347,12 +347,12 @@ const handlePasswordInput = () => {
 
 const sendVerificationCode = async () => {
   if (!canSendCode.value) return
-  
+
   try {
     codeLoading.value = true
-    
+
     const result = await authStore.sendVerificationCode(registerForm.email, undefined, 'register')
-    
+
     if (result.success) {
       message.success(result.message)
       startCountdown()
@@ -369,7 +369,7 @@ const sendVerificationCode = async () => {
 
 const startCountdown = () => {
   codeCountdown.value = 60
-  
+
   countdownTimer = setInterval(() => {
     codeCountdown.value--
     if (codeCountdown.value <= 0) {
@@ -381,7 +381,7 @@ const startCountdown = () => {
 const handleRegister = async () => {
   try {
     loading.value = true
-    
+
     const result = await authStore.register({
       email: registerForm.email.trim(),
       phone: registerForm.phone?.trim(),
@@ -390,10 +390,10 @@ const handleRegister = async () => {
       verificationCode: registerForm.verificationCode,
       agreeTerms: registerForm.agreeTerms
     })
-    
+
     if (result.success) {
       message.success(result.message)
-      
+
       // 注册成功后跳转到工作台
       await router.push('/workbench')
     } else {
@@ -476,36 +476,36 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--df-spacing-sm);
-  
+
   .strength-bar {
     flex: 1;
     height: 4px;
     background: var(--df-text-disabled);
     border-radius: 2px;
     overflow: hidden;
-    
+
     .strength-level {
       height: 100%;
       transition: all 0.3s ease;
-      
+
       &.very-weak {
         background: #FF5252;
       }
-      
+
       &.weak {
         background: #FF9800;
       }
-      
+
       &.medium {
         background: #FFC107;
       }
-      
+
       &.strong {
         background: #00E676;
       }
     }
   }
-  
+
   .strength-text {
     font-size: var(--df-font-size-xs);
     color: var(--df-text-secondary);
@@ -516,17 +516,17 @@ onMounted(() => {
 .verification-input {
   display: flex;
   gap: var(--df-spacing-sm);
-  
+
   .code-button {
     min-width: 120px;
     border-color: var(--df-accent-primary);
     color: var(--df-accent-primary);
-    
+
     &:hover:not(:disabled) {
       border-color: var(--df-accent-success);
       color: var(--df-accent-success);
     }
-    
+
     &:disabled {
       border-color: var(--df-text-disabled);
       color: var(--df-text-disabled);
@@ -538,7 +538,7 @@ onMounted(() => {
 .terms-link {
   color: var(--df-accent-primary);
   text-decoration: none;
-  
+
   &:hover {
     color: var(--df-accent-success);
     text-decoration: underline;
@@ -549,13 +549,13 @@ onMounted(() => {
   text-align: center;
   margin-top: var(--df-spacing-lg);
   color: var(--df-text-secondary);
-  
+
   a {
     color: var(--df-accent-primary);
     text-decoration: none;
     font-weight: 500;
     margin-left: var(--df-spacing-xs);
-    
+
     &:hover {
       color: var(--df-accent-success);
       text-decoration: underline;
@@ -565,12 +565,12 @@ onMounted(() => {
 
 :deep(.ant-form-item) {
   margin-bottom: var(--df-spacing-lg);
-  
+
   .ant-form-item-label > label {
     color: var(--df-text-primary);
     font-weight: 500;
   }
-  
+
   .ant-form-item-explain {
     color: var(--df-accent-error);
   }
@@ -579,21 +579,21 @@ onMounted(() => {
 :deep(.ant-input-affix-wrapper) {
   background: var(--df-primary-bg);
   border-color: var(--df-text-disabled);
-  
+
   &:hover, &:focus, &.ant-input-affix-wrapper-focused {
     border-color: var(--df-accent-primary);
     box-shadow: 0 0 0 2px rgba(142, 93, 255, 0.1);
   }
-  
+
   .ant-input {
     background: transparent;
     color: var(--df-text-primary);
-    
+
     &::placeholder {
       color: var(--df-text-secondary);
     }
   }
-  
+
   .anticon {
     color: var(--df-text-secondary);
   }
@@ -602,19 +602,19 @@ onMounted(() => {
 :deep(.ant-checkbox-wrapper) {
   color: var(--df-text-primary);
   font-size: var(--df-font-size-sm);
-  
+
   .ant-checkbox {
     .ant-checkbox-inner {
       background: var(--df-primary-bg);
       border-color: var(--df-text-disabled);
     }
-    
+
     &.ant-checkbox-checked .ant-checkbox-inner {
       background: var(--df-accent-primary);
       border-color: var(--df-accent-primary);
     }
   }
-  
+
   &:hover .ant-checkbox-inner {
     border-color: var(--df-accent-primary);
   }
@@ -625,16 +625,16 @@ onMounted(() => {
   border: none;
   font-weight: 500;
   height: 44px;
-  
+
   &:hover, &:focus {
     background: linear-gradient(135deg, #A855F7, #10B981);
     box-shadow: 0 4px 16px rgba(142, 93, 255, 0.3);
   }
-  
+
   &.ant-btn-loading, &:disabled {
     background: var(--df-text-disabled) !important;
   }
-  
+
   .anticon {
     margin-right: var(--df-spacing-xs);
   }
@@ -645,14 +645,14 @@ onMounted(() => {
   .register-page {
     padding: var(--df-spacing-md);
   }
-  
+
   .register-card {
     padding: var(--df-spacing-lg);
   }
-  
+
   .verification-input {
     flex-direction: column;
-    
+
     .code-button {
       width: 100%;
     }

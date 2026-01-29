@@ -107,7 +107,9 @@ class StreamPriceGenerator(DataGenerator[dict]):
         self.base_prices = {symbol: random.uniform(50, 500) for symbol in self.symbols}
         self.last_prices = self.base_prices.copy()
 
-    async def generate_stream(self) -> AsyncGenerator[dict | list[dict], None]:
+    async def generate_stream(
+        self,
+    ) -> AsyncGenerator[dict | list[dict[str, Any]], None]:
         """生成实时价格流"""
         while True:
             batch = []

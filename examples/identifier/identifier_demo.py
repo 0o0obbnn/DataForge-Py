@@ -67,11 +67,7 @@ def parameter_configuration():
 
     # UUID - 不同版本
     print("\nUUID生成器 - 版本配置:")
-    uuid_configs = [
-        {"version": 4},
-        {"version": 1},
-        {"namespace": "example.com"}
-    ]
+    uuid_configs = [{"version": 4}, {"version": 1}, {"namespace": "example.com"}]
     for i, params in enumerate(uuid_configs, 1):
         config = GeneratorConfig("uuid", parameters=params)
         generator = default_factory.create_generator(config)
@@ -85,7 +81,7 @@ def parameter_configuration():
         {"type": "visa"},
         {"type": "mastercard"},
         {"type": "amex"},
-        {"type": "unionpay"}
+        {"type": "unionpay"},
     ]
     for i, params in enumerate(card_configs, 1):
         config = GeneratorConfig("bankcard", parameters=params)
@@ -100,7 +96,7 @@ def parameter_configuration():
         {"country": "CN"},
         {"country": "US"},
         {"country": "UK"},
-        {"country": "JP"}
+        {"country": "JP"},
     ]
     for i, params in enumerate(passport_configs, 1):
         config = GeneratorConfig("passport", parameters=params)
@@ -115,7 +111,7 @@ def parameter_configuration():
         {"company": "fedex"},
         {"company": "ups"},
         {"company": "dhl"},
-        {"company": "ems"}
+        {"company": "ems"},
     ]
     for i, params in enumerate(tracking_configs, 1):
         config = GeneratorConfig("tracking_number", parameters=params)
@@ -130,7 +126,7 @@ def parameter_configuration():
         {"type": "enterprise"},
         {"type": "individual"},
         {"type": "organization"},
-        {"type": "government"}
+        {"type": "government"},
     ]
     for i, params in enumerate(uscc_configs, 1):
         config = GeneratorConfig("uscc", parameters=params)
@@ -177,7 +173,7 @@ def batch_generation():
             "bankcard": card_gen.generate(),
             "passport": passport_gen.generate(),
             "idcard": idcard_gen.generate(),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         identifier_data.append(data)
 
@@ -186,11 +182,21 @@ def batch_generation():
     print(f"{'ID':<4} | {'UUID':<36} | {'ULID':<26} | {'银行卡':<19} | {'护照':<18}")
     print("-" * 100)
     for data in identifier_data:
-        uuid = data['uuid'][:34] + "..." if len(data['uuid']) > 36 else data['uuid']
-        ulid = data['ulid'][:24] + "..." if len(data['ulid']) > 26 else data['ulid']
-        card = data['bankcard'][:17] + "..." if len(data['bankcard']) > 19 else data['bankcard']
-        passport = data['passport'][:16] + "..." if len(data['passport']) > 18 else data['passport']
-        print(f"{data['id']:<4} | {uuid:<36} | {ulid:<26} | {card:<19} | {passport:<18}")
+        uuid = data["uuid"][:34] + "..." if len(data["uuid"]) > 36 else data["uuid"]
+        ulid = data["ulid"][:24] + "..." if len(data["ulid"]) > 26 else data["ulid"]
+        card = (
+            data["bankcard"][:17] + "..."
+            if len(data["bankcard"]) > 19
+            else data["bankcard"]
+        )
+        passport = (
+            data["passport"][:16] + "..."
+            if len(data["passport"]) > 18
+            else data["passport"]
+        )
+        print(
+            f"{data['id']:<4} | {uuid:<36} | {ulid:<26} | {card:<19} | {passport:<18}"
+        )
     print("-" * 100)
 
 
@@ -298,7 +304,9 @@ def error_handling():
     # 处理无效的物流公司
     print("\n处理无效的物流公司:")
     try:
-        config = GeneratorConfig("tracking_number", parameters={"company": "invalid_company"})
+        config = GeneratorConfig(
+            "tracking_number", parameters={"company": "invalid_company"}
+        )
         generator = default_factory.create_generator(config)
         result = generator.generate()
         print(f"  生成的物流单号: {result}")
@@ -327,32 +335,28 @@ def best_practices():
         "uuid_settings": {
             "supported_versions": [1, 4],
             "default_version": 4,
-            "namespace_support": True
+            "namespace_support": True,
         },
-        "ulid_settings": {
-            "encoding": "base32",
-            "time_length": 48,
-            "random_length": 80
-        },
+        "ulid_settings": {"encoding": "base32", "time_length": 48, "random_length": 80},
         "bankcard_settings": {
             "supported_types": ["visa", "mastercard", "amex", "unionpay"],
             "default_type": "visa",
-            "luhn_validation": True
+            "luhn_validation": True,
         },
         "passport_settings": {
             "supported_countries": ["CN", "US", "UK", "JP", "DE", "FR"],
             "default_country": "CN",
-            "mrz_support": True
+            "mrz_support": True,
         },
         "idcard_settings": {
             "supported_regions": ["CN", "US", "UK", "JP"],
             "default_region": "CN",
-            "checksum_validation": True
+            "checksum_validation": True,
         },
         "logistics_settings": {
             "supported_companies": ["fedex", "ups", "dhl", "ems", "sf_express"],
-            "tracking_validation": True
-        }
+            "tracking_validation": True,
+        },
     }
 
     print("  标识符配置:")
@@ -383,7 +387,7 @@ def best_practices():
                 ).generate(),
                 "driver_license": default_factory.create_generator(
                     GeneratorConfig("driver_license", parameters={})
-                ).generate()
+                ).generate(),
             },
             "financial_identifiers": {
                 "bankcard": default_factory.create_generator(
@@ -397,7 +401,7 @@ def best_practices():
                 ).generate(),
                 "uscc": default_factory.create_generator(
                     GeneratorConfig("uscc", parameters={"type": "enterprise"})
-                ).generate()
+                ).generate(),
             },
             "logistics_identifiers": {
                 "tracking_number": default_factory.create_generator(
@@ -405,7 +409,7 @@ def best_practices():
                 ).generate(),
                 "waybill": default_factory.create_generator(
                     GeneratorConfig("waybill", parameters={"company": "ups"})
-                ).generate()
+                ).generate(),
             },
             "international_identifiers": {
                 "visa": default_factory.create_generator(
@@ -413,14 +417,14 @@ def best_practices():
                 ).generate(),
                 "lei_code": default_factory.create_generator(
                     GeneratorConfig("lei", parameters={})
-                ).generate()
+                ).generate(),
             },
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
                 "generator_version": "1.0.0",
                 "data_purpose": "testing",
-                "quality_score": 0.95
-            }
+                "quality_score": 0.95,
+            },
         }
         identifier_data.append(identifier_record)
 
@@ -455,7 +459,7 @@ def identifier_demo():
                 ).generate(),
                 "driver_license": default_factory.create_generator(
                     GeneratorConfig("driver_license", parameters={})
-                ).generate()
+                ).generate(),
             },
             "financial_info": {
                 "bankcard": default_factory.create_generator(
@@ -469,7 +473,7 @@ def identifier_demo():
                 ).generate(),
                 "uscc": default_factory.create_generator(
                     GeneratorConfig("uscc", parameters={"type": "enterprise"})
-                ).generate()
+                ).generate(),
             },
             "travel_info": {
                 "visa": default_factory.create_generator(
@@ -477,9 +481,9 @@ def identifier_demo():
                 ).generate(),
                 "lei_code": default_factory.create_generator(
                     GeneratorConfig("lei", parameters={})
-                ).generate()
+                ).generate(),
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
         user_profiles.append(profile)
 
@@ -488,16 +492,22 @@ def identifier_demo():
         print(f"    用户ID: {profile['user_id']}")
         print(f"    会话ID: {profile['session_id']}")
         print("    个人信息:")
-        for key, value in profile['personal_info'].items():
-            display_value = str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+        for key, value in profile["personal_info"].items():
+            display_value = (
+                str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+            )
             print(f"      {key}: {display_value}")
         print("    金融信息:")
-        for key, value in profile['financial_info'].items():
-            display_value = str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+        for key, value in profile["financial_info"].items():
+            display_value = (
+                str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+            )
             print(f"      {key}: {display_value}")
         print("    旅行信息:")
-        for key, value in profile['travel_info'].items():
-            display_value = str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+        for key, value in profile["travel_info"].items():
+            display_value = (
+                str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+            )
             print(f"      {key}: {display_value}")
         print(f"    时间戳: {profile['timestamp'][:19]}")
         print()
@@ -519,40 +529,44 @@ def identifier_demo():
                     GeneratorConfig("waybill", parameters={"company": "ups"})
                 ).generate(),
                 "carrier": "FedEx",
-                "status": "In Transit"
+                "status": "In Transit",
             },
             "sender": {
                 "name": "Sender Name",
                 "address": "123 Sender Street, City, Country",
-                "phone": "+1234567890"
+                "phone": "+1234567890",
             },
             "recipient": {
                 "name": "Recipient Name",
                 "address": "456 Recipient Avenue, City, Country",
-                "phone": "+0987654321"
+                "phone": "+0987654321",
             },
             "package_info": {
                 "weight": "2.5 kg",
                 "dimensions": "30x20x15 cm",
-                "contents": "Electronics"
+                "contents": "Electronics",
             },
             "timeline": [
                 {
                     "timestamp": datetime.now().isoformat(),
                     "location": "Origin Facility",
-                    "status": "Package picked up"
+                    "status": "Package picked up",
                 },
                 {
-                    "timestamp": (datetime.now().replace(hour=datetime.now().hour + 2)).isoformat(),
+                    "timestamp": (
+                        datetime.now().replace(hour=datetime.now().hour + 2)
+                    ).isoformat(),
                     "location": "Transit Hub",
-                    "status": "In transit"
+                    "status": "In transit",
                 },
                 {
-                    "timestamp": (datetime.now().replace(hour=datetime.now().hour + 4)).isoformat(),
+                    "timestamp": (
+                        datetime.now().replace(hour=datetime.now().hour + 4)
+                    ).isoformat(),
                     "location": "Destination Facility",
-                    "status": "Out for delivery"
-                }
-            ]
+                    "status": "Out for delivery",
+                },
+            ],
         }
         shipments.append(shipment)
 
@@ -560,15 +574,17 @@ def identifier_demo():
     for shipment in shipments:
         print(f"    货运ID: {shipment['shipment_id']}")
         print("    追踪信息:")
-        for key, value in shipment['tracking_info'].items():
+        for key, value in shipment["tracking_info"].items():
             print(f"      {key}: {value}")
         print(f"    承运商: {shipment['tracking_info']['carrier']}")
         print(f"    状态: {shipment['tracking_info']['status']}")
         print(f"    发件人: {shipment['sender']['name']}")
         print(f"    收件人: {shipment['recipient']['name']}")
         print("    时间线:")
-        for event in shipment['timeline']:
-            print(f"      {event['timestamp'][:19]} - {event['location']}: {event['status']}")
+        for event in shipment["timeline"]:
+            print(
+                f"      {event['timestamp'][:19]} - {event['location']}: {event['status']}"
+            )
         print()
 
     # 生成企业标识信息
@@ -592,22 +608,22 @@ def identifier_demo():
                 ).generate(),
                 "lei_code": default_factory.create_generator(
                     GeneratorConfig("lei", parameters={})
-                ).generate()
+                ).generate(),
             },
             "company_details": {
                 "name": f"Company {i+1}",
                 "industry": ["Technology", "Finance", "Manufacturing"][i],
                 "established": f"20{20 + i}",
-                "employees": [100, 500, 1000][i]
+                "employees": [100, 500, 1000][i],
             },
             "financial_info": {
                 "bank_account": default_factory.create_generator(
                     GeneratorConfig("bankcard", parameters={"type": "unionpay"})
                 ).generate(),
                 "credit_rating": ["AAA", "AA", "A"][i],
-                "annual_revenue": f"${(i+1) * 1000000:,}"
+                "annual_revenue": f"${(i+1) * 1000000:,}",
             },
-            "registration_date": datetime.now().isoformat()
+            "registration_date": datetime.now().isoformat(),
         }
         companies.append(company)
 
@@ -615,16 +631,20 @@ def identifier_demo():
     for company in companies:
         print(f"    企业ID: {company['company_id']}")
         print("    业务标识:")
-        for key, value in company['business_info'].items():
-            display_value = str(value)[:15] + "..." if len(str(value)) > 15 else str(value)
+        for key, value in company["business_info"].items():
+            display_value = (
+                str(value)[:15] + "..." if len(str(value)) > 15 else str(value)
+            )
             print(f"      {key}: {display_value}")
         print("    企业详情:")
-        for key, value in company['company_details'].items():
+        for key, value in company["company_details"].items():
             print(f"      {key}: {value}")
         print("    财务信息:")
-        for key, value in company['financial_info'].items():
+        for key, value in company["financial_info"].items():
             if key == "bank_account":
-                display_value = str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+                display_value = (
+                    str(value)[:10] + "..." if len(str(value)) > 10 else str(value)
+                )
                 print(f"      {key}: {display_value}")
             else:
                 print(f"      {key}: {value}")
@@ -659,6 +679,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

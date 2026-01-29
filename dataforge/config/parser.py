@@ -146,7 +146,8 @@ class ConfigParser:
             },
         }
 
-        return defaults.get(generator_type, {})
+        result = defaults.get(generator_type, {})
+        return result if isinstance(result, dict) else {}  # type: ignore[return-value]
 
     def save_config(
         self, config_data: dict[str, Any], file_path: str, format_type: str = "yaml"

@@ -3,18 +3,18 @@
 DataForge 数据加载和缓存性能测试 (pytest风格)
 """
 
-import pytest
-import time
 import os
+import time
+
+import pytest
 
 from dataforge.core.cache import get_cache_stats, invalidate_cache
-from dataforge.core.preloader import (
-    get_preload_stats,
-    get_performance_stats,
-    wait_for_data_preload,
-)
 from dataforge.core.factory import GeneratorFactory
 from dataforge.core.generator import GeneratorConfig
+from dataforge.core.preloader import (
+    get_preload_stats,
+    wait_for_data_preload,
+)
 
 
 @pytest.mark.performance

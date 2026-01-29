@@ -40,7 +40,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000  # 转换为毫秒
 
-        print(f"\n姓名生成器性能:")
+        print("\n姓名生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")
@@ -74,7 +74,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000
 
-        print(f"\n年龄生成器性能:")
+        print("\n年龄生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")
@@ -108,7 +108,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000
 
-        print(f"\n邮箱生成器性能:")
+        print("\n邮箱生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")
@@ -141,7 +141,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000
 
-        print(f"\n身份证生成器性能:")
+        print("\n身份证生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")
@@ -174,7 +174,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000
 
-        print(f"\n地址生成器性能:")
+        print("\n地址生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")
@@ -207,7 +207,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000
 
-        print(f"\nUUID生成器性能:")
+        print("\nUUID生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")
@@ -241,7 +241,7 @@ class TestSingleGeneratorPerformance:
         elapsed = end_time - start_time
         avg_time = elapsed / iterations * 1000
 
-        print(f"\n手机号生成器性能:")
+        print("\n手机号生成器性能:")
         print(f"  总时间: {elapsed:.3f}秒")
         print(f"  平均时间: {avg_time:.3f}毫秒/次")
         print(f"  吞吐量: {iterations/elapsed:.0f}次/秒")

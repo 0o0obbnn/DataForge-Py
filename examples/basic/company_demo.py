@@ -93,7 +93,7 @@ def uscc_with_parameters():
         ("enterprise", "企业"),
         ("individual", "个体工商户"),
         ("organization", "社会组织"),
-        ("government", "政府机关")
+        ("government", "政府机关"),
     ]
 
     for uscc_type, description in uscc_types:
@@ -133,19 +133,27 @@ def complete_company_profile():
             "组织机构代码": org_code_gen.generate(),
             "工商注册号": business_num_gen.generate(),
             "注册日期": datetime.now().strftime("%Y-%m-%d"),
-            "企业状态": "正常"
+            "企业状态": "正常",
         }
         companies.append(company)
 
     # 打印表格
     print("-" * 120)
-    print(f"{'序号':<4} | {'企业名称':<30} | {'统一社会信用代码':<20} | {'组织机构代码':<12} | {'工商注册号':<18}")
+    print(
+        f"{'序号':<4} | {'企业名称':<30} | {'统一社会信用代码':<20} | {'组织机构代码':<12} | {'工商注册号':<18}"
+    )
     print("-" * 120)
 
     for company in companies:
-        name = company['企业名称'][:28] + ".." if len(company['企业名称']) > 30 else company['企业名称']
-        print(f"{company['序号']:<4} | {name:<30} | {company['统一社会信用代码']:<20} | "
-              f"{company['组织机构代码']:<12} | {company['工商注册号']:<18}")
+        name = (
+            company["企业名称"][:28] + ".."
+            if len(company["企业名称"]) > 30
+            else company["企业名称"]
+        )
+        print(
+            f"{company['序号']:<4} | {name:<30} | {company['统一社会信用代码']:<20} | "
+            f"{company['组织机构代码']:<12} | {company['工商注册号']:<18}"
+        )
 
     print("-" * 120)
 
@@ -210,24 +218,24 @@ def export_to_json():
                 "uscc": uscc_gen.generate(),
                 "organization_code": org_code_gen.generate(),
                 "registration_date": datetime.now().strftime("%Y-%m-%d"),
-                "status": "active"
+                "status": "active",
             },
             "business_info": {
                 "industry": ["科技", "金融", "制造"][i % 3],
                 "business_scope": "技术开发、技术咨询、技术服务",
-                "registered_capital": f"{(i+1) * 1000}万元人民币"
+                "registered_capital": f"{(i+1) * 1000}万元人民币",
             },
             "contact_info": {
                 "address": f"北京市海淀区中关村大街{(i+1)*100}号",
                 "postal_code": "100000",
                 "phone": f"010-{8000+i}{5000+i:04d}",
-                "email": f"contact@company{i+1}.com"
+                "email": f"contact@company{i+1}.com",
             },
             "metadata": {
                 "created_at": datetime.now().isoformat(),
                 "data_source": "DataForge Generator",
-                "version": "1.0.0"
-            }
+                "version": "1.0.0",
+            },
         }
         companies_data.append(company)
 
@@ -284,7 +292,7 @@ def batch_generation_demo():
         company = {
             "id": i + 1,
             "name": company_name_gen.generate(),
-            "uscc": uscc_gen.generate()
+            "uscc": uscc_gen.generate(),
         }
         companies.append(company)
 
@@ -304,7 +312,9 @@ def batch_generation_demo():
     # 统计信息
     print("\n统计信息:")
     print(f"  总数: {len(companies)} 家企业")
-    print(f"  平均企业名称长度: {sum(len(c['name']) for c in companies) / len(companies):.1f} 字符")
+    print(
+        f"  平均企业名称长度: {sum(len(c['name']) for c in companies) / len(companies):.1f} 字符"
+    )
     print(f"  USCC长度: {len(companies[0]['uscc'])} 字符 (统一)")
 
 
@@ -318,7 +328,7 @@ def industry_specific_demo():
         "FINANCE": "金融服务",
         "RETAIL": "零售贸易",
         "MANUFACTURING": "制造业",
-        "EDUCATION": "教育培训"
+        "EDUCATION": "教育培训",
     }
 
     uscc_gen = default_factory.create_generator(
@@ -331,10 +341,10 @@ def industry_specific_demo():
         print(f"{industry_name} ({industry_code}):")
 
         company_name_gen = default_factory.create_generator(
-            GeneratorConfig("company_name", parameters={
-                "industry": industry_code,
-                "prefix_region": True
-            })
+            GeneratorConfig(
+                "company_name",
+                parameters={"industry": industry_code, "prefix_region": True},
+            )
         )
 
         for i in range(3):
@@ -357,10 +367,9 @@ def real_world_scenario():
 
     # 生成企业基本信息
     company_name_gen = default_factory.create_generator(
-        GeneratorConfig("company_name", parameters={
-            "industry": "IT",
-            "prefix_region": True
-        })
+        GeneratorConfig(
+            "company_name", parameters={"industry": "IT", "prefix_region": True}
+        )
     )
     uscc_gen = default_factory.create_generator(
         GeneratorConfig("uscc", parameters={"type": "enterprise"})
@@ -385,9 +394,13 @@ def real_world_scenario():
 
     # 验证信息
     print("\n数据验证:")
-    print(f"  企业名称格式: {'✅ 有效' if company_name_gen.validate(company_name) else '❌ 无效'}")
+    print(
+        f"  企业名称格式: {'✅ 有效' if company_name_gen.validate(company_name) else '❌ 无效'}"
+    )
     print(f"  USCC格式: {'✅ 有效' if uscc_gen.validate(uscc) else '❌ 无效'}")
-    print(f"  组织机构代码格式: {'✅ 有效' if org_code_gen.validate(org_code) else '❌ 无效'}")
+    print(
+        f"  组织机构代码格式: {'✅ 有效' if org_code_gen.validate(org_code) else '❌ 无效'}"
+    )
 
     print("\n📋 企业证照已生成，可用于:")
     print("  • 开设银行账户")
@@ -433,6 +446,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

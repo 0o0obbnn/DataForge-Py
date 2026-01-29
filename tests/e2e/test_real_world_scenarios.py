@@ -18,10 +18,10 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
-        from dataforge.generators.contact.phone import PhoneGenerator
         from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.uuid import UUIDGenerator
+        from dataforge.generators.contact.phone import PhoneGenerator
 
         registry.register("name", NameGenerator)
         registry.register("phone", PhoneGenerator)
@@ -49,7 +49,7 @@ class TestRealWorldScenarios:
         assert all(v is not None for v in order.values())
         assert order["order_id"] != ""
 
-        print(f"\n电商订单数据:")
+        print("\n电商订单数据:")
         for key, value in order.items():
             print(f"  {key}: {value}")
 
@@ -59,12 +59,12 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.identifier.id import IDGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.identifier.id import IDGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -99,7 +99,7 @@ class TestRealWorldScenarios:
         assert all(v is not None for v in patient.values())
         assert 0 <= patient["age"] <= 100
 
-        print(f"\n医疗患者数据:")
+        print("\n医疗患者数据:")
         for key, value in patient.items():
             print(f"  {key}: {value}")
 
@@ -109,13 +109,13 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.education import EducationGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.identifier.id import IDGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.education import EducationGenerator
+        from dataforge.generators.identifier.id import IDGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -153,7 +153,7 @@ class TestRealWorldScenarios:
         assert all(v is not None for v in student.values())
         assert 6 <= student["age"] <= 25
 
-        print(f"\n教育学生数据:")
+        print("\n教育学生数据:")
         for key, value in student.items():
             print(f"  {key}: {value}")
 
@@ -163,13 +163,13 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.education import EducationGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.occupation import OccupationGenerator
         from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.education import EducationGenerator
-        from dataforge.generators.basic.occupation import OccupationGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -206,7 +206,7 @@ class TestRealWorldScenarios:
         # 验证候选人数据
         assert all(v is not None for v in candidate.values())
 
-        print(f"\n招聘候选人数据:")
+        print("\n招聘候选人数据:")
         for key, value in candidate.items():
             print(f"  {key}: {value}")
 
@@ -216,9 +216,9 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
+        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.identifier.logistics import LogisticsNumberGenerator
 
         registry.register("name", NameGenerator)
@@ -248,7 +248,7 @@ class TestRealWorldScenarios:
         # 验证物流数据
         assert all(v is not None for v in delivery.values())
 
-        print(f"\n物流配送数据:")
+        print("\n物流配送数据:")
         for key, value in delivery.items():
             print(f"  {key}: {value}")
 
@@ -258,12 +258,12 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
-        from dataforge.generators.basic.username import UsernameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.contact.email import EmailGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.password import PasswordGenerator
+        from dataforge.generators.basic.username import UsernameGenerator
+        from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
         registry.register("username", UsernameGenerator)
@@ -298,7 +298,7 @@ class TestRealWorldScenarios:
         assert all(v is not None for v in profile.values())
         assert 13 <= profile["age"] <= 80
 
-        print(f"\n社交媒体档案:")
+        print("\n社交媒体档案:")
         for key, value in profile.items():
             if key != "password":  # 不显示密码
                 print(f"  {key}: {value}")
@@ -311,8 +311,8 @@ class TestRealWorldScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所需的生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -345,6 +345,6 @@ class TestRealWorldScenarios:
             all(v is not None for v in record.values()) for record in migration_data
         )
 
-        print(f"\n批量数据迁移:")
+        print("\n批量数据迁移:")
         print(f"  迁移记录数: {len(migration_data)}")
         print(f"  示例记录: {migration_data[0]}")

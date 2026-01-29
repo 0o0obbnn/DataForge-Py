@@ -1,6 +1,6 @@
 # 返回类型修复报告
 
-**日期**: 2025-11-08  
+**日期**: 2025-11-08
 **任务**: 修复Identifier生成器返回类型不匹配问题
 
 ---
@@ -43,11 +43,11 @@ def generate_single(self, context=None):
 
 def generate(self, context=None):
     license_number = self._generate_license_number(province_code)
-    
+
     # 如果只需要字符串，直接返回
     if self.parameters.get('string_only', False):
         return license_number
-    
+
     # 否则返回完整dict
     return {...}
 
@@ -55,11 +55,11 @@ def validate(self, data):
     # 类型检查
     if not isinstance(data, (str, dict)):
         return False
-    
+
     # 字符串转dict
     if isinstance(data, str):
         data = {"license_number": data}
-    
+
     return self.validator.validate(data)
 ```
 
@@ -84,21 +84,21 @@ def validate(self, data):
 ```python
 def generate(self, context=None):
     tracking_number = self._generate_tracking_number(self.carrier)
-    
+
     # 如果只需要字符串，直接返回
     if self.parameters.get('string_only', False):
         return tracking_number
-    
+
     # 否则返回完整dict
     return {...}
 
 def validate(self, data):
     if not isinstance(data, (str, dict)):
         return False
-    
+
     if isinstance(data, str):
         data = {"tracking_number": data}
-    
+
     return self.validator.validate(data)
 ```
 
@@ -127,11 +127,11 @@ from typing import Optional, Union
 
 def generate(self, context=None):
     visa_number = self._generate_visa_number(self.country)
-    
+
     # 如果只需要字符串，直接返回
     if self.parameters.get('string_only', False):
         return visa_number
-    
+
     # 否则返回完整dict
     return {...}
 
@@ -143,7 +143,7 @@ def validate(self, data):
         if not isinstance(visa_number, str) or len(visa_number) < 8:
             return False
         return bool(re.match(r'^[A-Z0-9]{8,}$', visa_number))
-    
+
     # 完整验证
     ...
 ```
@@ -222,14 +222,14 @@ class BaseIdentifierGenerator:
         """
         Args:
             output_format: 'string' | 'dict' | 'object'
-        
+
         Returns:
             string: 主要标识符字符串
             dict: 完整信息字典
             object: 数据类对象
         """
         full_data = self._generate_full_data()
-        
+
         if output_format == 'string':
             return full_data[self.primary_key]
         elif output_format == 'dict':

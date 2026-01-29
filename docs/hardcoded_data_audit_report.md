@@ -27,7 +27,7 @@
 
 **数据量**: 约 200+ 行硬编码数据
 
-**建议**: 
+**建议**:
 - 创建 `resources/education_zh.yaml` 和 `resources/education_en.yaml`
 - 将学校列表、学历级别、学历名称等迁移到配置文件
 
@@ -192,6 +192,6 @@ dataforge/resources/
 
 ---
 
-**报告生成时间**: 2025-12-22  
-**审计人员**: AI Assistant  
+**报告生成时间**: 2025-12-22
+**审计人员**: AI Assistant
 **审核状态**: 待审核

@@ -6,6 +6,7 @@
 """
 
 import pytest
+
 from dataforge.core.factory import GeneratorFactory
 from dataforge.core.generator import GeneratorConfig
 

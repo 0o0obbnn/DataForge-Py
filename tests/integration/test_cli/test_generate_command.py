@@ -147,8 +147,8 @@ class TestGenerateCommand:
 
     def test_cli_generate_to_file(self):
         """测试输出到文件"""
-        import tempfile
         import os
+        import tempfile
 
         try:
             with tempfile.NamedTemporaryFile(
@@ -247,7 +247,12 @@ class TestGenerateCommand:
 
             # 验证批量生成成功
             if result.returncode == 0:
-                lines = result.stdout.strip().split("\n")
-                assert len(lines) >= 10  # 至少有一些输出
+                import json
+
+                # 解析JSON输出（当前是JSON数组格式）
+                data = json.loads(result.stdout.strip())
+                # 检查是否生成了足够的数据
+                assert isinstance(data, list)
+                assert len(data) >= 10  # 至少有一些输出
         except (subprocess.TimeoutExpired, FileNotFoundError):
             pytest.skip("CLI not available or timeout")

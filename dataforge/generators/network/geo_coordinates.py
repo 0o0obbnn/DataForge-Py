@@ -71,6 +71,9 @@ class GeoCoordinatesValidator(Validator):
 class GeoCoordinatesGenerator(DataGenerator[str]):
     """地理坐标生成器"""
 
+    # 声明validator类型
+    validator: "GeoCoordinatesValidator | None"
+
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
         self.format = "decimal"

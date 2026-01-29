@@ -70,7 +70,7 @@
 <body>
     <div class="container">
         <h1>🚀 DataForge API 前后端联调测试</h1>
-        
+
         <div class="test-section">
             <h3>1. 健康检查</h3>
             <button onclick="testHealth()">测试健康检查</button>
@@ -125,7 +125,7 @@
                     },
                     ...options
                 });
-                
+
                 const data = await response.json();
                 return { success: response.ok, data, status: response.status };
             } catch (error) {
@@ -136,7 +136,7 @@
         function displayResult(elementId, result) {
             const element = document.getElementById(elementId);
             element.className = 'result ' + (result.success ? 'success' : 'error');
-            
+
             if (result.success) {
                 element.textContent = JSON.stringify(result.data, null, 2);
             } else {
@@ -157,7 +157,7 @@
         async function testGenerate() {
             const generatorType = document.getElementById('generator-type').value;
             const count = parseInt(document.getElementById('count').value);
-            
+
             const requestBody = {
                 generator_type: generatorType,
                 count: count,
@@ -169,7 +169,7 @@
                 method: 'POST',
                 body: JSON.stringify(requestBody)
             });
-            
+
             displayResult('generate-result', result);
         }
 
@@ -188,7 +188,7 @@
                 method: 'POST',
                 body: JSON.stringify(requestBody)
             });
-            
+
             displayResult('batch-result', result);
         }
 
@@ -200,7 +200,7 @@
                     count: 1
                 })
             });
-            
+
             displayResult('error-result', result);
         }
 

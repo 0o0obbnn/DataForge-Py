@@ -4,11 +4,11 @@
  */
 
 import { http } from '@/plugins/axios'
-import type { 
-  UserInfo, 
-  LoginForm, 
-  RegisterForm, 
-  ApiResponse 
+import type {
+  UserInfo,
+  LoginForm,
+  RegisterForm,
+  ApiResponse
 } from '@/utils/types'
 
 // 登录请求
@@ -185,7 +185,7 @@ export class AuthService {
   static async uploadAvatar(file: File): Promise<ApiResponse<UploadAvatarResponse>> {
     const formData = new FormData()
     formData.append('avatar', file)
-    
+
     return http.post<UploadAvatarResponse>('/auth/upload-avatar', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'

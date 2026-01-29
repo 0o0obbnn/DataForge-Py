@@ -180,9 +180,7 @@ class IDCardGenerator(DataGenerator[str]):
         # 默认随机选择一个
         return secrets.choice(self.all_district_codes)
 
-    def _get_random_birth_date(
-        self, context: GenerationContext | None = None
-    ) -> date:
+    def _get_random_birth_date(self, context: GenerationContext | None = None) -> date:
         """
         获取一个随机的出生日期。
         如果上下文中存在'age'，则根据年龄计算出生日期。

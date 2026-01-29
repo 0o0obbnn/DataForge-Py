@@ -15,6 +15,7 @@ def calculate_luhn_checksum(number: str) -> int:
     Returns:
         校验和（取模10后的结果）
     """
+
     def digits_of(n: str | int) -> list[int]:
         """将数字转换为各位数字列表"""
         return [int(d) for d in str(n)]

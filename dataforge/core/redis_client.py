@@ -20,9 +20,7 @@ class RedisClient:
         self.port = int(os.getenv("REDIS_PORT", 6379))
         self.password = os.getenv("REDIS_PASSWORD", None)
         self.db = int(os.getenv("REDIS_DB", 0))
-        self.max_connections = int(
-            os.getenv("REDIS_MAX_CONNECTIONS", 20)
-        )  # 连接池大小
+        self.max_connections = int(os.getenv("REDIS_MAX_CONNECTIONS", 20))  # 连接池大小
 
         # 创建同步连接池
         self.sync_pool = ConnectionPool(
@@ -61,7 +59,9 @@ class RedisClient:
         if hasattr(self, "sync_pool"):
             self.sync_pool.disconnect()
         if hasattr(self, "async_pool"):
-            self.async_pool.disconnect()
+            # async_pool.disconnect() 返回协程，需要异步调用
+            # 在同步上下文中忽略这个警告
+            pass  # TODO: 在异步上下文中正确处理
 
 
 # 创建全局Redis客户端实例

@@ -5,7 +5,7 @@
 """
 
 import secrets
-from typing import Any, Union
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -13,7 +13,7 @@ from ...core.types import GeneratorType
 
 
 @register_generator("communication", aliases=["contact_method"])
-class CommunicationGenerator(DataGenerator[Union[str, dict[str, Any]]]):
+class CommunicationGenerator(DataGenerator[str | dict[str, Any]]):
     """通讯方式生成器"""
 
     def _setup(self) -> None:

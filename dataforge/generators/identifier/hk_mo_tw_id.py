@@ -8,7 +8,7 @@
 
 import re
 import secrets
-from typing import Any, Union
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext, GeneratorConfig
@@ -105,7 +105,7 @@ class HkMoTwIdValidator(Validator):
         return "Invalid Hong Kong, Macao or Taiwan resident ID format"
 
 
-class HkMoTwIdGenerator(DataGenerator[Union[str, dict[str, Any]]]):
+class HkMoTwIdGenerator(DataGenerator[str | dict[str, Any]]):
     """港澳台居民证件生成器"""
 
     def __init__(self, config: GeneratorConfig):

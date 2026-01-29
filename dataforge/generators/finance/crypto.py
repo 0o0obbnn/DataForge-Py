@@ -5,7 +5,7 @@
 """
 
 import secrets
-from typing import Any, Union
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -308,7 +308,7 @@ class GenericCryptoAddressGenerator(CryptoAddressGenerator):
 
 # 通用加密货币生成器已在文件开头定义
 # 这里的重复定义应该被移除或合并
-class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
+class CryptoGenerator(DataGenerator[str | dict[str, Any]]):
     """通用加密货币数据生成器"""
 
     def _setup(self) -> None:

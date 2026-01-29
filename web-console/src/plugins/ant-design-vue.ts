@@ -16,38 +16,38 @@ const themeConfig = {
     colorSuccess: '#00E676',
     colorWarning: '#FFC107',
     colorError: '#FF5252',
-    
+
     // 背景色
     colorBgBase: '#1A1A2E',
     colorBgContainer: '#282845',
     colorBgElevated: '#282845',
     colorBgLayout: '#1A1A2E',
-    
+
     // 文本色
     colorTextBase: '#E0E0E0',
     colorText: '#E0E0E0',
     colorTextSecondary: '#B0B0B0',
     colorTextTertiary: '#4A4A6D',
-    
+
     // 边框色
     colorBorder: '#4A4A6D',
     colorBorderSecondary: '#4A4A6D',
-    
+
     // 圆角
     borderRadius: 8,
     borderRadiusLG: 12,
     borderRadiusSM: 4,
-    
+
     // 字体
     fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontSize: 14,
     fontSizeLG: 16,
     fontSizeSM: 12,
-    
+
     // 阴影
     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
     boxShadowSecondary: '0 1px 4px rgba(0, 0, 0, 0.1)',
-    
+
     // 间距
     padding: 16,
     paddingLG: 24,
@@ -104,7 +104,7 @@ export function setupAntDesignVue(app: App) {
   app.use(Antd, {
     theme: themeConfig
   })
-  
+
   // 全局配置
   message.config({
     top: '20px',
@@ -121,7 +121,7 @@ export function setupAntDesignVue(app: App) {
   Modal.config({
     centered: true,
   })
-  
+
   // 挂载到全局
   app.config.globalProperties.$message = message
   app.config.globalProperties.$notification = notification

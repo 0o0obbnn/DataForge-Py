@@ -14,22 +14,22 @@
         <aside class="field-library">
           <div class="library-header">
             <h2>生成器库</h2>
-            <a-button 
-              size="small" 
+            <a-button
+              size="small"
               :loading="workbenchStore.apiConnecting || workbenchStore.loadingGenerators"
               @click="workbenchStore.loadAvailableGenerators"
             >
               <ReloadOutlined />
             </a-button>
           </div>
-          
+
           <a-input-search
             v-model:value="searchKeyword"
             placeholder="搜索生成器..."
             @search="handleSearch"
             allow-clear
           />
-          
+
           <!-- API 连接状态 -->
           <div class="connection-status">
             <a-space>
@@ -41,12 +41,12 @@
               </span>
             </a-space>
           </div>
-          
+
           <!-- 生成器分类 -->
           <div class="generator-categories" v-if="workbenchStore.apiConnected">
             <a-collapse v-model:activeKey="activeCategories" ghost>
-              <a-collapse-panel 
-                v-for="(generators, category) in filteredCategories" 
+              <a-collapse-panel
+                v-for="(generators, category) in filteredCategories"
                 :key="category"
                 :header="category"
                 :show-arrow="generators.length > 0"
@@ -54,10 +54,10 @@
                 <template #extra>
                   <a-tag size="small">{{ generators.length }}</a-tag>
                 </template>
-                
+
                 <div class="generator-list">
-                  <div 
-                    v-for="generator in generators" 
+                  <div
+                    v-for="generator in generators"
                     :key="generator.name"
                     class="generator-item"
                     draggable="true"
@@ -67,9 +67,9 @@
                     <div class="generator-info">
                       <h4>{{ generator.name }}</h4>
                       <p>{{ generator.description }}</p>
-                      <a-tag 
-                        v-if="generator.parameters.length > 0" 
-                        size="small" 
+                      <a-tag
+                        v-if="generator.parameters.length > 0"
+                        size="small"
                         color="blue"
                       >
                         {{ generator.parameters.length }} 参数
@@ -80,15 +80,15 @@
               </a-collapse-panel>
             </a-collapse>
           </div>
-          
+
           <!-- 未连接状态 -->
           <div v-else class="no-connection">
-            <a-empty 
+            <a-empty
               description="DataForge API 未连接"
               image="/empty-state.svg"
             >
-              <a-button 
-                type="primary" 
+              <a-button
+                type="primary"
                 @click="workbenchStore.checkApiConnection"
                 :loading="workbenchStore.apiConnecting"
               >
@@ -103,16 +103,16 @@
           <div class="canvas-header">
             <h2>数据结构画布</h2>
             <a-space>
-              <a-button 
-                size="small" 
+              <a-button
+                size="small"
                 @click="workbenchStore.resetCanvas"
                 :disabled="!workbenchStore.hasFields"
               >
                 <ClearOutlined />
                 清空画布
               </a-button>
-              <a-button 
-                size="small" 
+              <a-button
+                size="small"
                 type="primary"
                 @click="previewData"
                 :disabled="!workbenchStore.canPreview"
@@ -123,8 +123,8 @@
               </a-button>
             </a-space>
           </div>
-          
-          <div 
+
+          <div
             class="canvas-content"
             @drop="handleDrop"
             @dragover="handleDragOver"
@@ -140,12 +140,12 @@
                 <p>从左侧生成器库拖拽生成器到这里，或点击生成器添加字段</p>
               </div>
             </div>
-            
+
             <!-- 字段列表 -->
             <div v-else class="field-list">
               <TransitionGroup name="field" tag="div">
-                <div 
-                  v-for="(field, index) in workbenchStore.fields" 
+                <div
+                  v-for="(field, index) in workbenchStore.fields"
                   :key="field.id"
                   class="field-card"
                   :class="{ 'field-selected': workbenchStore.selectedFieldId === field.id }"
@@ -157,16 +157,16 @@
                       <a-tag size="small" color="blue">{{ field.generatorType }}</a-tag>
                     </div>
                     <div class="field-actions">
-                      <a-button 
-                        type="text" 
+                      <a-button
+                        type="text"
                         size="small"
                         @click.stop="duplicateField(field.id)"
                         title="复制字段"
                       >
                         <CopyOutlined />
                       </a-button>
-                      <a-button 
-                        type="text" 
+                      <a-button
+                        type="text"
                         size="small"
                         @click.stop="removeField(field.id)"
                         title="删除字段"
@@ -176,12 +176,12 @@
                       </a-button>
                     </div>
                   </div>
-                  
+
                   <div class="field-details">
                     <p class="field-description">{{ getGeneratorDescription(field.generatorType) }}</p>
                     <div v-if="field.parameters && Object.keys(field.parameters).length > 0" class="field-parameters">
-                      <a-tag 
-                        v-for="(value, key) in field.parameters" 
+                      <a-tag
+                        v-for="(value, key) in field.parameters"
                         :key="key"
                         size="small"
                       >
@@ -193,13 +193,13 @@
               </TransitionGroup>
             </div>
           </div>
-          
+
           <!-- 预览数据 -->
           <div v-if="workbenchStore.previewData.length > 0" class="preview-section">
             <div class="preview-header">
               <h3>数据预览</h3>
-              <a-button 
-                size="small" 
+              <a-button
+                size="small"
                 @click="workbenchStore.clearPreviewData"
               >
                 <CloseOutlined />
@@ -220,7 +220,7 @@
         <!-- 右侧字段配置面板 -->
         <aside class="config-panel">
           <h2>字段配置</h2>
-          
+
           <!-- 未选中字段 -->
           <div v-if="!workbenchStore.selectedField" class="config-placeholder">
             <div class="placeholder-content">
@@ -228,7 +228,7 @@
               <p>请从画布中选择一个字段进行配置</p>
             </div>
           </div>
-          
+
           <!-- 字段配置表单 -->
           <div v-else class="config-content">
             <a-form
@@ -237,76 +237,76 @@
               @finish="updateFieldConfig"
             >
               <!-- 基础配置 -->
-              <a-form-item 
-                label="字段名称" 
+              <a-form-item
+                label="字段名称"
                 name="name"
                 :rules="[{ required: true, message: '请输入字段名称' }]"
               >
-                <a-input 
-                  v-model:value="fieldConfigForm.name" 
+                <a-input
+                  v-model:value="fieldConfigForm.name"
                   placeholder="输入字段名称"
                   @blur="updateFieldName"
                 />
               </a-form-item>
-              
+
               <a-form-item label="生成器类型">
-                <a-input 
-                  :value="workbenchStore.selectedField.generatorType" 
+                <a-input
+                  :value="workbenchStore.selectedField.generatorType"
                   disabled
                   suffix="不可修改"
                 />
               </a-form-item>
-              
+
               <a-form-item label="字段描述">
-                <a-textarea 
-                  v-model:value="fieldConfigForm.description" 
+                <a-textarea
+                  v-model:value="fieldConfigForm.description"
                   placeholder="输入字段描述（可选）"
                   :rows="2"
                   @blur="updateFieldDescription"
                 />
               </a-form-item>
-              
+
               <!-- 生成器参数配置 -->
               <a-divider>生成器参数</a-divider>
-              
+
               <div v-if="selectedGeneratorInfo" class="generator-params">
-                <div 
-                  v-for="paramName in selectedGeneratorInfo.parameters" 
+                <div
+                  v-for="paramName in selectedGeneratorInfo.parameters"
                   :key="paramName"
                   class="param-item"
                 >
                   <a-form-item :label="paramName">
-                    <a-input 
+                    <a-input
                       v-model:value="fieldConfigForm.parameters[paramName]"
                       :placeholder="`输入 ${paramName} 参数值`"
                       @blur="updateFieldParameters"
                     />
                   </a-form-item>
                 </div>
-                
+
                 <div v-if="selectedGeneratorInfo.parameters.length === 0" class="no-params">
                   <p>该生成器无需额外参数</p>
                 </div>
               </div>
-              
+
               <!-- 示例参数 -->
               <div v-if="selectedGeneratorInfo?.example_parameters" class="example-params">
                 <a-divider>参数示例</a-divider>
                 <pre class="example-code">{{ JSON.stringify(selectedGeneratorInfo.example_parameters, null, 2) }}</pre>
-                <a-button 
-                  size="small" 
+                <a-button
+                  size="small"
                   @click="applyExampleParams"
                   style="margin-top: 8px;"
                 >
                   应用示例参数
                 </a-button>
               </div>
-              
+
               <!-- 操作按钮 -->
               <a-divider />
               <a-space direction="vertical" style="width: 100%;">
-                <a-button 
-                  type="primary" 
+                <a-button
+                  type="primary"
                   size="small"
                   @click="testFieldGeneration"
                   :loading="testingField"
@@ -315,8 +315,8 @@
                   <PlayCircleOutlined />
                   测试生成
                 </a-button>
-                
-                <a-button 
+
+                <a-button
                   size="small"
                   @click="duplicateCurrentField"
                   block
@@ -324,9 +324,9 @@
                   <CopyOutlined />
                   复制字段
                 </a-button>
-                
-                <a-button 
-                  danger 
+
+                <a-button
+                  danger
                   size="small"
                   @click="removeCurrentField"
                   block
@@ -352,8 +352,8 @@
               style="width: 120px;"
               @change="handleCountChange"
             />
-            <a-select 
-              v-model:value="workbenchStore.generationConfig.format" 
+            <a-select
+              v-model:value="workbenchStore.generationConfig.format"
               style="width: 120px"
               @change="handleFormatChange"
             >
@@ -362,7 +362,7 @@
               <a-select-option value="xml">XML</a-select-option>
               <a-select-option value="sql">SQL</a-select-option>
             </a-select>
-            <a-button 
+            <a-button
               @click="previewData"
               :disabled="!workbenchStore.canPreview"
               :loading="previewing"
@@ -370,7 +370,7 @@
               <EyeOutlined />
               预览数据
             </a-button>
-            <a-button 
+            <a-button
               @click="workbenchStore.resetCanvas"
               :disabled="!workbenchStore.hasFields"
             >
@@ -380,8 +380,8 @@
             <span v-if="estimatedFileSize" class="file-size-estimate">
               预估大小: {{ estimatedFileSize }}
             </span>
-            <a-button 
-              type="primary" 
+            <a-button
+              type="primary"
               @click="generateAndDownload"
               :disabled="!workbenchStore.canGenerate"
               :loading="workbenchStore.isGenerating"
@@ -400,7 +400,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { message } from 'ant-design-vue'
-import { 
+import {
   ReloadOutlined, ClearOutlined, EyeOutlined, DownloadOutlined,
   DatabaseOutlined, SettingOutlined, CopyOutlined, DeleteOutlined,
   CloseOutlined, PlayCircleOutlined
@@ -431,12 +431,12 @@ const filteredCategories = computed(() => {
   if (!searchKeyword.value.trim()) {
     return workbenchStore.generatorCategories
   }
-  
+
   const filtered: Record<string, GeneratorInfo[]> = {}
   const keyword = searchKeyword.value.toLowerCase()
-  
+
   Object.entries(workbenchStore.generatorCategories).forEach(([category, generators]) => {
-    const matchedGenerators = generators.filter(generator => 
+    const matchedGenerators = generators.filter(generator =>
       generator.name.toLowerCase().includes(keyword) ||
       generator.description.toLowerCase().includes(keyword)
     )
@@ -444,7 +444,7 @@ const filteredCategories = computed(() => {
       filtered[category] = matchedGenerators
     }
   })
-  
+
   return filtered
 })
 
@@ -459,7 +459,7 @@ const selectedGeneratorInfo = computed(() => {
 // 预览数据的表格列配置
 const previewColumns = computed(() => {
   if (workbenchStore.previewData.length === 0) return []
-  
+
   const firstRow = workbenchStore.previewData[0]
   return Object.keys(firstRow).map(key => ({
     title: key,
@@ -511,11 +511,11 @@ const handleDragLeave = (event: DragEvent) => {
 const handleDrop = (event: DragEvent) => {
   event.preventDefault()
   isDragOver.value = false
-  
+
   try {
     const dragDataStr = event.dataTransfer?.getData('text/plain')
     if (!dragDataStr) return
-    
+
     const dragData = JSON.parse(dragDataStr)
     if (dragData.type === 'generator') {
       addGeneratorToCanvas(dragData.generator)
@@ -540,7 +540,7 @@ const addGeneratorToCanvas = (generator: GeneratorInfo) => {
     parameters: {},
     required: true
   }
-  
+
   workbenchStore.addField(fieldConfig)
   message.success(`已添加生成器：${generator.name}`)
 }
@@ -599,7 +599,7 @@ const applyExampleParams = () => {
 // 测试字段生成
 const testFieldGeneration = async () => {
   if (!workbenchStore.selectedField) return
-  
+
   testingField.value = true
   try {
     const result = await workbenchStore.generatePreviewData(
@@ -607,7 +607,7 @@ const testFieldGeneration = async () => {
       workbenchStore.selectedField.parameters || {},
       3
     )
-    
+
     if (result) {
       message.success('测试生成成功')
     }
@@ -637,7 +637,7 @@ const previewData = async () => {
     message.warning('请先配置字段信息')
     return
   }
-  
+
   previewing.value = true
   try {
     // 构建批量生成配置
@@ -645,9 +645,9 @@ const previewData = async () => {
       generator_type: field.generatorType,
       parameters: field.parameters || {}
     }))
-    
+
     const result = await workbenchStore.generateBatchData(configurations, 5)
-    
+
     if (result) {
       message.success('预览数据生成成功')
       // 更新文件大小估算
@@ -668,22 +668,22 @@ const generateAndDownload = async () => {
     message.warning('请先配置字段和生成参数')
     return
   }
-  
+
   try {
     workbenchStore.setGenerating(true)
-    
+
     // 构建批量生成配置
     const configurations = workbenchStore.fields.map(field => ({
       generator_type: field.generatorType,
       parameters: field.parameters || {}
     }))
-    
+
     // 生成数据
     const result = await workbenchStore.generateBatchData(
-      configurations, 
+      configurations,
       workbenchStore.generationConfig.count
     )
-    
+
     if (result && result.data) {
       // 验证数据
       const validation = ExportService.validateExportData(result.data)
@@ -691,17 +691,17 @@ const generateAndDownload = async () => {
         message.error(`数据验证失败: ${validation.message}`)
         return
       }
-      
+
       // 准备导出选项
       const exportOptions = {
         format: workbenchStore.generationConfig.format as ExportFormat,
         filename: `${workbenchStore.currentTaskName}_${result.count}条数据`,
         formatOptions: workbenchStore.generationConfig.formatOptions
       }
-      
+
       // 导出文件
       await ExportService.exportData(result.data, exportOptions)
-      
+
       message.success(`成功生成并导出 ${result.count} 条数据`)
     } else {
       message.error('数据生成失败')
@@ -744,10 +744,10 @@ const handleCountChange = () => {
   if (workbenchStore.previewData.length > 0 && workbenchStore.generationConfig.count > 0) {
     const ratio = workbenchStore.generationConfig.count / workbenchStore.previewData.length
     const previewSize = ExportService.estimateFileSize(
-      workbenchStore.previewData, 
+      workbenchStore.previewData,
       workbenchStore.generationConfig.format as ExportFormat
     )
-    
+
     // 简单的大小估算
     const sizeMatch = previewSize.match(/(\d+\.?\d*)\s*(\w+)/)
     if (sizeMatch) {
@@ -779,13 +779,13 @@ onMounted(async () => {
     // TODO: 加载指定模板
     console.log('加载模板:', templateId)
   }
-  
+
   // 监听选中字段变化
   workbenchStore.$subscribe((mutation, state) => {
     if (mutation.type === 'direct' && 'selectedFieldId' in mutation.payload) {
       syncFieldConfigForm()
     }
-    
+
     // 监听预览数据变化，更新文件大小估算
     if (mutation.type === 'direct' && 'previewData' in mutation.payload) {
       updateFileSizeEstimate()
@@ -810,13 +810,13 @@ onMounted(async () => {
   background: var(--df-secondary-bg);
   padding: var(--df-spacing-md) var(--df-spacing-lg);
   border-bottom: 1px solid var(--df-text-disabled);
-  
+
   .task-name {
     color: var(--df-text-primary);
     font-size: var(--df-font-size-xl);
     margin: 0;
     cursor: text;
-    
+
     &:focus {
       outline: 2px solid var(--df-accent-primary);
       outline-offset: 2px;
@@ -836,40 +836,40 @@ onMounted(async () => {
   border-right: 1px solid var(--df-text-disabled);
   padding: var(--df-spacing-md);
   overflow-y: auto;
-  
+
   .library-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--df-spacing-md);
-    
+
     h2 {
       color: var(--df-text-primary);
       font-size: var(--df-font-size-lg);
       margin: 0;
     }
   }
-  
+
   .connection-status {
     margin: var(--df-spacing-md) 0;
     padding: var(--df-spacing-sm);
     background: var(--df-secondary-bg);
     border-radius: var(--df-radius-md);
-    
+
     .generator-count {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-sm);
     }
   }
-  
+
   .generator-categories {
     margin-top: var(--df-spacing-md);
-    
+
     .generator-list {
       display: flex;
       flex-direction: column;
       gap: var(--df-spacing-sm);
-      
+
       .generator-item {
         background: var(--df-secondary-bg);
         border: 1px solid var(--df-text-disabled);
@@ -877,13 +877,13 @@ onMounted(async () => {
         padding: var(--df-spacing-sm);
         cursor: pointer;
         transition: all 0.2s ease;
-        
+
         &:hover {
           border-color: var(--df-accent-primary);
           box-shadow: 0 2px 4px rgba(139, 92, 246, 0.1);
           transform: translateY(-1px);
         }
-        
+
         .generator-info {
           h4 {
             color: var(--df-text-primary);
@@ -891,7 +891,7 @@ onMounted(async () => {
             font-weight: 600;
             margin: 0 0 var(--df-spacing-xs) 0;
           }
-          
+
           p {
             color: var(--df-text-secondary);
             font-size: var(--df-font-size-xs);
@@ -902,7 +902,7 @@ onMounted(async () => {
       }
     }
   }
-  
+
   .no-connection {
     display: flex;
     flex-direction: column;
@@ -919,17 +919,17 @@ onMounted(async () => {
   padding: var(--df-spacing-md);
   display: flex;
   flex-direction: column;
-  
+
   .canvas-header {
     margin-bottom: var(--df-spacing-md);
-    
+
     h2 {
       color: var(--df-text-primary);
       font-size: var(--df-font-size-lg);
       margin: 0;
     }
   }
-  
+
   .canvas-content {
     flex: 1;
     border: 2px dashed var(--df-text-disabled);
@@ -937,46 +937,46 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     min-height: 400px;
-    
+
     &.drag-over {
       border-color: var(--df-accent-primary);
       background: rgba(139, 92, 246, 0.05);
     }
-    
+
     .canvas-placeholder {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       .placeholder-content {
         text-align: center;
         color: var(--df-text-secondary);
-        
+
         .placeholder-icon {
           font-size: 48px;
           color: var(--df-text-disabled);
           margin-bottom: var(--df-spacing-md);
         }
-        
+
         h3 {
           color: var(--df-text-primary);
           margin: var(--df-spacing-md) 0;
         }
-        
+
         p {
           color: var(--df-text-secondary);
           margin: 0;
         }
       }
     }
-    
+
     .field-list {
       padding: var(--df-spacing-md);
       display: flex;
       flex-direction: column;
       gap: var(--df-spacing-md);
-      
+
       .field-card {
         background: var(--df-primary-bg);
         border: 1px solid var(--df-text-disabled);
@@ -984,26 +984,26 @@ onMounted(async () => {
         padding: var(--df-spacing-md);
         cursor: pointer;
         transition: all 0.2s ease;
-        
+
         &:hover {
           border-color: var(--df-accent-primary);
           box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
         }
-        
+
         &.field-selected {
           border-color: var(--df-accent-primary);
           box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.2);
         }
-        
+
         .field-header {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
           margin-bottom: var(--df-spacing-sm);
-          
+
           .field-info {
             flex: 1;
-            
+
             .field-name {
               color: var(--df-text-primary);
               font-size: var(--df-font-size-md);
@@ -1011,20 +1011,20 @@ onMounted(async () => {
               margin: 0 0 var(--df-spacing-xs) 0;
             }
           }
-          
+
           .field-actions {
             display: flex;
             gap: var(--df-spacing-xs);
           }
         }
-        
+
         .field-details {
           .field-description {
             color: var(--df-text-secondary);
             font-size: var(--df-font-size-sm);
             margin: var(--df-spacing-xs) 0;
           }
-          
+
           .field-parameters {
             display: flex;
             flex-wrap: wrap;
@@ -1034,20 +1034,20 @@ onMounted(async () => {
         }
       }
     }
-    
+
     .preview-section {
       margin-top: var(--df-spacing-md);
       background: var(--df-primary-bg);
       border: 1px solid var(--df-text-disabled);
       border-radius: var(--df-radius-md);
-      
+
       .preview-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: var(--df-spacing-md);
         border-bottom: 1px solid var(--df-text-disabled);
-        
+
         h3 {
           color: var(--df-text-primary);
           margin: 0;
@@ -1055,7 +1055,7 @@ onMounted(async () => {
           font-weight: 600;
         }
       }
-      
+
       .preview-content {
         padding: var(--df-spacing-md);
       }
@@ -1069,13 +1069,13 @@ onMounted(async () => {
   border-left: 1px solid var(--df-text-disabled);
   padding: var(--df-spacing-md);
   overflow-y: auto;
-  
+
   h2 {
     color: var(--df-text-primary);
     font-size: var(--df-font-size-lg);
     margin-bottom: var(--df-spacing-md);
   }
-  
+
   .config-placeholder {
     display: flex;
     flex-direction: column;
@@ -1084,40 +1084,40 @@ onMounted(async () => {
     height: 200px;
     text-align: center;
     color: var(--df-text-secondary);
-    
+
     .placeholder-content {
       .placeholder-icon {
         font-size: 48px;
         color: var(--df-text-disabled);
         margin-bottom: var(--df-spacing-md);
       }
-      
+
       p {
         margin: 0;
       }
     }
   }
-  
+
   .config-content {
     .generator-params {
       .param-item {
         margin-bottom: var(--df-spacing-sm);
       }
-      
+
       .no-params {
         text-align: center;
         color: var(--df-text-secondary);
         padding: var(--df-spacing-lg);
         background: var(--df-secondary-bg);
         border-radius: var(--df-radius-md);
-        
+
         p {
           margin: 0;
           font-size: var(--df-font-size-sm);
         }
       }
     }
-    
+
     .example-params {
       .example-code {
         background: var(--df-secondary-bg);
@@ -1138,11 +1138,11 @@ onMounted(async () => {
   background: var(--df-secondary-bg);
   padding: var(--df-spacing-md) var(--df-spacing-lg);
   border-top: 1px solid var(--df-text-disabled);
-  
+
   .footer-controls {
     display: flex;
     justify-content: center;
-    
+
     .file-size-estimate {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-sm);
@@ -1174,7 +1174,7 @@ onMounted(async () => {
     .field-library {
       width: 260px;
     }
-    
+
     .config-panel {
       width: 300px;
     }
@@ -1184,7 +1184,7 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .workbench-content {
     flex-direction: column;
-    
+
     .field-library,
     .config-panel {
       width: 100%;
@@ -1193,17 +1193,17 @@ onMounted(async () => {
       border-radius: var(--df-radius-md);
       margin-bottom: var(--df-spacing-md);
     }
-    
+
     .field-library {
       border-right: none;
       border-bottom: 1px solid var(--df-text-disabled);
     }
-    
+
     .config-panel {
       border-left: none;
     }
   }
-  
+
   .workbench-footer {
     .footer-controls {
       :deep(.ant-space) {

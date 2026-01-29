@@ -18,9 +18,9 @@ class TestGeneratorFactoryIntegration:
         factory = GeneratorFactory(registry)
 
         # 注册多个生成器
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -124,10 +124,10 @@ class TestGeneratorFactoryIntegration:
         factory = GeneratorFactory(registry)
 
         # 注册所有基础生成器
-        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         generators_to_register = {
             "name": NameGenerator,

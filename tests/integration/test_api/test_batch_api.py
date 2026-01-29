@@ -5,6 +5,7 @@ DataForge API 批量生成功能测试 (pytest风格)
 
 import pytest
 from fastapi.testclient import TestClient
+
 from dataforge.api.main import app
 
 
@@ -42,8 +43,12 @@ def test_batch_generate_with_invalid_generator(api_client: TestClient):
     response = api_client.post("/batch/generate", json=payload)
     assert response.status_code == 404  # Not Found
     result = response.json()
-    assert result["success"] is False
-    assert "Generator 'invalid-generator-type' not found" in result["error"]
+    # API错误响应格式: {"error": {"type": ..., "message": ..., "details": ...}}
+    assert "error" in result
+    assert (
+        "invalid-generator-type" in result["error"]["message"]
+        or "not found" in result["error"]["message"].lower()
+    )
 
 
 def test_batch_generate_multiple_generators(api_client: TestClient):

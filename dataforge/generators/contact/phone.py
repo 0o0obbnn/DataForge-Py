@@ -3,8 +3,6 @@ import logging
 import re
 import secrets
 
-logger = logging.getLogger(__name__)
-
 from ...core.factory import register_generator
 from ...core.generator import (
     DataGenerator,
@@ -12,6 +10,8 @@ from ...core.generator import (
     GeneratorType,
 )
 from ...data.loader import load_json
+
+logger = logging.getLogger(__name__)
 
 
 class PhoneNumberGenerator(DataGenerator[str]):
@@ -31,6 +31,7 @@ class PhoneNumberGenerator(DataGenerator[str]):
             "operator", None
         )  # 运营商代码 (CMCC, CUCC, CTCC)
         self.valid = self.parameters.get("valid", True)  # 是否生成有效号码
+        self.invalid_prefixes = []  # 初始化无效前缀列表
 
         # 加载手机号段数据from配置文件
         try:

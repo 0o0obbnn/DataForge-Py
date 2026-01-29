@@ -8,6 +8,7 @@
 import re
 import secrets
 from dataclasses import dataclass
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -71,7 +72,7 @@ class DriverLicenseValidator(Validator):
         return "Invalid driver's license format"
 
 
-class DriverLicenseGenerator(DataGenerator[dict[str, str | int]]):
+class DriverLicenseGenerator(DataGenerator[Any]):
     """中国驾驶证号码生成器
 
     功能特性：

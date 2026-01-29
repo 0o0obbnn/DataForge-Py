@@ -28,6 +28,10 @@ class HouseholdRegisterValidator(Validator):
         # 户口簿号码格式：18位数字
         return bool(re.match(r"^\d{18}$", data))
 
+    @property
+    def error_message(self) -> str:
+        return "户口簿号码格式错误，应为18位数字"
+
 
 class OfficerCardValidator(Validator):
     """军官证验证器"""
@@ -41,6 +45,10 @@ class OfficerCardValidator(Validator):
         # 军官证格式：军+数字 或 纯数字
         return bool(re.match(r"^军\d{8,12}$|^\d{9,18}$", data))
 
+    @property
+    def error_message(self) -> str:
+        return "军官证号码格式错误，应为'军'加8-12位数字或9-18位纯数字"
+
 
 class SoldierCardValidator(Validator):
     """士兵证验证器"""
@@ -53,6 +61,10 @@ class SoldierCardValidator(Validator):
             return False
         # 士兵证格式：士+数字 或 纯数字
         return bool(re.match(r"^士\d{8,12}$|^\d{9,18}$", data))
+
+    @property
+    def error_message(self) -> str:
+        return "士兵证号码格式错误，应为'士'加8-12位数字或9-18位纯数字"
 
 
 class TemporaryIDCardValidator(Validator):
@@ -85,6 +97,10 @@ class TemporaryIDCardValidator(Validator):
             return False
         return True
 
+    @property
+    def error_message(self) -> str:
+        return "临时身份证号码格式错误，应为18位数字（最后一位可为X）"
+
 
 class ForeignerResidenceValidator(Validator):
     """外国人居留证验证器"""
@@ -97,6 +113,10 @@ class ForeignerResidenceValidator(Validator):
             return False
         # 外国人居留证格式：15位数字
         return bool(re.match(r"^\d{15}$", data))
+
+    @property
+    def error_message(self) -> str:
+        return "外国人居留证号码格式错误，应为15位数字"
 
 
 class PoliceOfficerCardValidator(Validator):
@@ -111,6 +131,10 @@ class PoliceOfficerCardValidator(Validator):
         # 警官证格式：警+数字 或 纯数字
         return bool(re.match(r"^警\d{8,12}$|^\d{9,18}$", data))
 
+    @property
+    def error_message(self) -> str:
+        return "警官证号码格式错误，应为'警'加8-12位数字或9-18位纯数字"
+
 
 class WujingCardValidator(Validator):
     """武警官兵证验证器"""
@@ -123,6 +147,10 @@ class WujingCardValidator(Validator):
             return False
         # 武警官兵证格式：武+数字 或 纯数字
         return bool(re.match(r"^武\d{8,12}$|^\d{9,18}$", data))
+
+    @property
+    def error_message(self) -> str:
+        return "武警官兵证号码格式错误，应为'武'加8-12位数字或9-18位纯数字"
 
 
 class HongKongIDValidator(Validator):
@@ -137,6 +165,10 @@ class HongKongIDValidator(Validator):
         # 香港身份证格式：1-2个字母+6位数字+(0-9或A)
         return bool(re.match(r"^[A-Z]{1,2}\d{6}\([0-9A]\)$", data))
 
+    @property
+    def error_message(self) -> str:
+        return "香港身份证号码格式错误，应为1-2个字母+6位数字+(0-9或A)"
+
 
 class MacauIDValidator(Validator):
     """澳门身份证验证器"""
@@ -149,6 +181,10 @@ class MacauIDValidator(Validator):
             return False
         # 澳门身份证格式：1个数字+6位数字+(0-9或A)
         return bool(re.match(r"^\d{1}\d{6}\([0-9A]\)$", data))
+
+    @property
+    def error_message(self) -> str:
+        return "澳门身份证号码格式错误，应为1位数字+6位数字+(0-9或A)"
 
 
 class TaiwanIDValidator(Validator):
@@ -163,6 +199,10 @@ class TaiwanIDValidator(Validator):
         # 台湾身份证格式：1个字母+9位数字
         return bool(re.match(r"^[A-Z]{1}\d{9}$", data))
 
+    @property
+    def error_message(self) -> str:
+        return "台湾身份证号码格式错误，应为1个字母+9位数字"
+
 
 class ForeignPermanentResidenceValidator(Validator):
     """外国人永久居留身份证验证器"""
@@ -176,6 +216,10 @@ class ForeignPermanentResidenceValidator(Validator):
         # 外国人永久居留身份证格式：15位数字
         return bool(re.match(r"^\d{15}$", data))
 
+    @property
+    def error_message(self) -> str:
+        return "外国人永久居留身份证号码格式错误，应为15位数字"
+
 
 class ForeignPassportValidator(Validator):
     """外国护照验证器"""
@@ -188,6 +232,10 @@ class ForeignPassportValidator(Validator):
             return False
         # 外国护照格式：各国不同，常见格式：2个字母+7位数字
         return bool(re.match(r"^[A-Z]{2}\d{7}$", data))
+
+    @property
+    def error_message(self) -> str:
+        return "外国护照号码格式错误，常见格式为2个字母+7位数字"
 
 
 # ==================== 生成器 ====================

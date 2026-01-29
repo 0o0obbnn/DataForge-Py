@@ -99,16 +99,16 @@ def process_items(
 ) -> list[T]:
     """
     处理数据项列表
-    
+
     Args:
         items: 待处理的数据项序列
         callback: 处理函数
         max_workers: 最大工作线程数
         timeout: 超时时间（秒）
-    
+
     Returns:
         处理结果列表
-        
+
     Raises:
         TimeoutError: 处理超时
         ValueError: 参数无效
@@ -169,12 +169,12 @@ async def fetch_data_batch(
 ) -> AsyncIterator[dict]:
     """并发获取数据，控制并发数"""
     semaphore = asyncio.Semaphore(max_concurrent)
-    
+
     async def fetch_one(url: str) -> dict:
         async with semaphore:
             # 实际请求逻辑
             ...
-    
+
     tasks = [fetch_one(url) for url in urls]
     for coro in asyncio.as_completed(tasks):
         yield await coro
@@ -312,7 +312,7 @@ class UserCreate(BaseModel):
     email: str = Field(..., pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
     username: str = Field(..., min_length=3, max_length=50)
     password: str = Field(..., min_length=8)
-    
+
     model_config = ConfigDict(
         str_strip_whitespace=True,
         json_schema_extra={
@@ -331,7 +331,7 @@ class UserResponse(BaseModel):
     email: str
     username: str
     is_active: bool
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -357,7 +357,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
         docs_url="/docs" if settings.DEBUG else None,
     )
-    
+
     # 中间件
     app.add_middleware(
         CORSMiddleware,
@@ -366,39 +366,39 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     # 路由
     from .api.routes import users, health
     app.include_router(health.router, tags=["health"])
     app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
-    
+
     return app
 
 
 # === Service Layer ===
 class UserService:
     """用户服务"""
-    
+
     def __init__(self, db: AsyncSession):
         self.db = db
-    
+
     async def create_user(self, user_data: UserCreate) -> UserResponse:
         """
         创建新用户
-        
+
         Args:
             user_data: 用户创建数据
-            
+
         Returns:
             创建的用户信息
-            
+
         Raises:
             HTTPException: 用户已存在或创建失败
         """
         from .repositories.user_repository import UserRepository
-        
+
         repo = UserRepository(self.db)
-        
+
         # 检查用户是否存在
         existing = await repo.get_by_email(user_data.email)
         if existing:
@@ -406,11 +406,11 @@ class UserService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered"
             )
-        
+
         # 创建用户
         user = await repo.create(user_data)
         logger.info(f"User created: {user.id}")
-        
+
         return UserResponse.model_validate(user)
 
 
@@ -427,7 +427,7 @@ async def create_user(
 ) -> UserResponse:
     """
     创建新用户
-    
+
     - **email**: 有效的邮箱地址
     - **username**: 3-50 个字符
     - **password**: 至少 8 个字符
@@ -468,25 +468,25 @@ class PipelineConfig:
 class DataPipeline(Generic[T, U]):
     """
     异步数据处理管道
-    
+
     Example:
         >>> pipeline = DataPipeline[dict, dict](config)
         >>> pipeline.add_stage(validate_data)
         >>> pipeline.add_stage(transform_data)
         >>> results = await pipeline.run(input_data)
     """
-    
+
     def __init__(self, config: PipelineConfig):
         self.config = config
         self.stages: list[Callable] = []
-    
+
     def add_stage(self, processor: Callable[[T], U]) -> 'DataPipeline':
         """添加处理阶段"""
         self.stages.append(processor)
         return self
-    
+
     async def process_batch(
-        self, 
+        self,
         batch: list[T]
     ) -> list[U]:
         """处理单个批次"""
@@ -497,7 +497,7 @@ class DataPipeline(Generic[T, U]):
             else:
                 results = [stage(item) for item in results]
         return results
-    
+
     async def run(self, data: AsyncIterator[T]) -> AsyncIterator[U]:
         """运行管道"""
         batch = []
@@ -508,7 +508,7 @@ class DataPipeline(Generic[T, U]):
                 for result in results:
                     yield result
                 batch = []
-        
+
         # 处理剩余数据
         if batch:
             results = await self.process_batch(batch)
@@ -520,7 +520,7 @@ class DataPipeline(Generic[T, U]):
 def process_large_dataset(file_path: str) -> pl.DataFrame:
     """
     高性能数据处理示例
-    
+
     使用 Polars 进行大规模数据处理
     """
     return (
@@ -572,7 +572,7 @@ async def db_session() -> AsyncSession:
 
 class TestUserAPI:
     """用户 API 测试套件"""
-    
+
     @pytest.mark.asyncio
     async def test_create_user_success(self, client: AsyncClient):
         """测试成功创建用户"""
@@ -581,15 +581,15 @@ class TestUserAPI:
             "username": "testuser",
             "password": "SecurePass123!"
         }
-        
+
         response = await client.post("/api/v1/users/", json=user_data)
-        
+
         assert response.status_code == 201
         data = response.json()
         assert data["email"] == user_data["email"]
         assert data["username"] == user_data["username"]
         assert "password" not in data
-    
+
     @pytest.mark.asyncio
     async def test_create_user_duplicate_email(self, client: AsyncClient):
         """测试重复邮箱"""
@@ -598,14 +598,14 @@ class TestUserAPI:
             "username": "testuser",
             "password": "SecurePass123!"
         }
-        
+
         # 第一次创建
         await client.post("/api/v1/users/", json=user_data)
-        
+
         # 第二次创建应该失败
         response = await client.post("/api/v1/users/", json=user_data)
         assert response.status_code == 400
-    
+
     @pytest.mark.parametrize("invalid_email", [
         "notanemail",
         "@example.com",
@@ -614,8 +614,8 @@ class TestUserAPI:
     ])
     @pytest.mark.asyncio
     async def test_create_user_invalid_email(
-        self, 
-        client: AsyncClient, 
+        self,
+        client: AsyncClient,
         invalid_email: str
     ):
         """测试无效邮箱"""
@@ -624,7 +624,7 @@ class TestUserAPI:
             "username": "testuser",
             "password": "SecurePass123!"
         }
-        
+
         response = await client.post("/api/v1/users/", json=user_data)
         assert response.status_code == 422
 ```
@@ -644,46 +644,46 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     """应用配置"""
-    
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
     )
-    
+
     # 应用配置
     APP_NAME: str = "My API"
     VERSION: str = "1.0.0"
     DEBUG: bool = False
     ENVIRONMENT: Literal["development", "staging", "production"] = "development"
-    
+
     # 服务器配置
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     WORKERS: int = 4
-    
+
     # 数据库配置
     DATABASE_URL: PostgresDsn = Field(
         default="postgresql+asyncpg://user:pass@localhost/db"
     )
     DATABASE_POOL_SIZE: int = 20
     DATABASE_MAX_OVERFLOW: int = 10
-    
+
     # Redis 配置
     REDIS_URL: RedisDsn = Field(default="redis://localhost:6379/0")
-    
+
     # JWT 配置
     SECRET_KEY: str = Field(..., min_length=32)
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    
+
     # CORS 配置
     ALLOWED_ORIGINS: list[str] = ["http://localhost:3000"]
-    
+
     # 日志配置
     LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
-    
+
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def validate_database_url(cls, v: str) -> str:
@@ -979,7 +979,7 @@ async def get_user(
 # 小规模 (< 10GB)
 Pandas + SQLite/PostgreSQL + Celery
 
-# 中等规模 (10GB - 100GB)  
+# 中等规模 (10GB - 100GB)
 Polars + DuckDB + asyncio
 
 # 大规模 (> 100GB)
@@ -993,15 +993,15 @@ from pathlib import Path
 
 class DataPipeline:
     """高性能数据处理管道"""
-    
+
     async def process_files(
-        self, 
+        self,
         input_dir: Path,
         output_dir: Path,
     ) -> None:
         """批量处理文件"""
         files = list(input_dir.glob("*.csv"))
-        
+
         for file in files:
             df = (
                 pl.scan_csv(file)
@@ -1016,7 +1016,7 @@ class DataPipeline:
                     pl.count().alias("count"),
                 ])
             )
-            
+
             output_file = output_dir / f"processed_{file.name}"
             df.collect().write_parquet(output_file)
 ```
@@ -1054,16 +1054,16 @@ async def predict(request: PredictionRequest):
     """模型推理"""
     # 准备输入
     input_data = np.array([request.features], dtype=np.float32)
-    
+
     # 推理
     outputs = session.run(
         None,
         {"input": input_data}
     )
-    
+
     prediction = float(outputs[0][0])
     confidence = float(outputs[1][0])
-    
+
     return PredictionResponse(
         prediction=prediction,
         confidence=confidence
@@ -1088,32 +1088,32 @@ from typing import AsyncIterator
 
 class AsyncCrawler:
     """异步爬虫"""
-    
+
     def __init__(self, max_concurrent: int = 10):
         self.semaphore = asyncio.Semaphore(max_concurrent)
         self.session: aiohttp.ClientSession | None = None
-    
+
     async def __aenter__(self):
         self.session = aiohttp.ClientSession()
         return self
-    
+
     async def __aexit__(self, *args):
         if self.session:
             await self.session.close()
-    
+
     async def fetch(self, url: str) -> str:
         """获取单个 URL"""
         async with self.semaphore:
             async with self.session.get(url) as response:
                 return await response.text()
-    
+
     async def crawl_urls(
-        self, 
+        self,
         urls: list[str]
     ) -> AsyncIterator[dict]:
         """批量爬取 URL"""
         tasks = [self.fetch(url) for url in urls]
-        
+
         for coro in asyncio.as_completed(tasks):
             html = await coro
             soup = BeautifulSoup(html, 'html.parser')
@@ -1123,7 +1123,7 @@ class AsyncCrawler:
 # 使用示例
 async def main():
     urls = ["http://example.com"] * 100
-    
+
     async with AsyncCrawler(max_concurrent=20) as crawler:
         async for data in crawler.crawl_urls(urls):
             print(data)
@@ -1217,7 +1217,7 @@ executor = ProcessPoolExecutor()
 async def fast_handler():
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(
-        executor, 
+        executor,
         expensive_cpu_operation
     )
     return result
@@ -1262,30 +1262,30 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11", "3.12"]
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Install dependencies
       run: |
         pip install poetry
         poetry install
-    
+
     - name: Lint with ruff
       run: poetry run ruff check .
-    
+
     - name: Type check with mypy
       run: poetry run mypy src/
-    
+
     - name: Test with pytest
       run: |
         poetry run pytest --cov=src --cov-report=xml
-    
+
     - name: Upload coverage
       uses: codecov/codecov-action@v3
       with:
@@ -1326,7 +1326,7 @@ from typing import Any
 def sanitize_log(data: dict[str, Any]) -> dict[str, Any]:
     """脱敏日志数据"""
     sensitive_keys = {"password", "token", "secret", "api_key"}
-    
+
     return {
         k: "***REDACTED***" if k.lower() in sensitive_keys else v
         for k, v in data.items()
@@ -1380,13 +1380,13 @@ if __name__ == "__main__":
 
 作为 Claude Code Python 专家，我将：
 
-✅ **设计优先**: 先理解需求，再选择最合适的技术方案  
-✅ **类型安全**: 100% 类型注解 + mypy strict 模式  
-✅ **异步优先**: 默认使用 async/await，充分利用异步 I/O  
-✅ **性能意识**: 主动识别性能瓶颈，提供优化方案  
-✅ **测试完善**: 单元测试 + 集成测试 + E2E 测试  
-✅ **文档齐全**: 代码注释 + API 文档 + 部署文档  
-✅ **安全第一**: SQL 注入、XSS、敏感信息保护  
+✅ **设计优先**: 先理解需求，再选择最合适的技术方案
+✅ **类型安全**: 100% 类型注解 + mypy strict 模式
+✅ **异步优先**: 默认使用 async/await，充分利用异步 I/O
+✅ **性能意识**: 主动识别性能瓶颈，提供优化方案
+✅ **测试完善**: 单元测试 + 集成测试 + E2E 测试
+✅ **文档齐全**: 代码注释 + API 文档 + 部署文档
+✅ **安全第一**: SQL 注入、XSS、敏感信息保护
 ✅ **可维护性**: 清晰的架构、合理的抽象、符合 SOLID 原则
 
 让我们开始构建高质量的 Python 应用！

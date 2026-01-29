@@ -19,11 +19,15 @@ class TestLogisticsGenerator:
 
         config = GeneratorConfig(generator_type="logistics", parameters={})
         generator = generator_factory.create_generator(config)
-        tracking_number = generator.generate_single()
+        logistics_info = generator.generate_single()
 
+        # 生成器返回字典，包含完整的物流信息
+        assert isinstance(logistics_info, dict)
+        assert "tracking_number" in logistics_info
+        tracking_number = logistics_info["tracking_number"]
         assert isinstance(tracking_number, str)
         assert len(tracking_number) >= 10
-        assert generator.validate(tracking_number)
+        assert generator.validate(logistics_info)
 
     def test_generate_batch(self, generator_factory):
         """测试批量生成物流单号"""
@@ -33,12 +37,15 @@ class TestLogisticsGenerator:
 
         config = GeneratorConfig(generator_type="logistics", parameters={})
         generator = generator_factory.create_generator(config)
-        tracking_numbers = generator.generate_batch(10)
+        logistics_list = generator.generate_batch(10)
 
-        assert len(tracking_numbers) == 10
-        for number in tracking_numbers:
-            assert isinstance(number, str)
-            assert len(number) >= 10
+        assert len(logistics_list) == 10
+        for info in logistics_list:
+            assert isinstance(info, dict)
+            assert "tracking_number" in info
+            tracking_number = info["tracking_number"]
+            assert isinstance(tracking_number, str)
+            assert len(tracking_number) >= 10
 
     def test_sf_express(self, generator_factory):
         """测试顺丰快递单号"""
@@ -50,8 +57,12 @@ class TestLogisticsGenerator:
             generator_type="logistics", parameters={"carrier": "sf_express"}
         )
         generator = generator_factory.create_generator(config)
-        tracking_number = generator.generate_single()
+        logistics_info = generator.generate_single()
 
+        # 返回字典格式
+        assert isinstance(logistics_info, dict)
+        assert "tracking_number" in logistics_info
+        tracking_number = logistics_info["tracking_number"]
         # SF Express format: 12 digits
         assert isinstance(tracking_number, str)
         assert len(tracking_number) >= 10
@@ -66,8 +77,11 @@ class TestLogisticsGenerator:
             generator_type="logistics", parameters={"carrier": "ems"}
         )
         generator = generator_factory.create_generator(config)
-        tracking_number = generator.generate_single()
+        logistics_info = generator.generate_single()
 
+        assert isinstance(logistics_info, dict)
+        assert "tracking_number" in logistics_info
+        tracking_number = logistics_info["tracking_number"]
         # EMS format: 13 characters (2 letters + 9 digits + 2 letters)
         assert isinstance(tracking_number, str)
 
@@ -81,8 +95,11 @@ class TestLogisticsGenerator:
             generator_type="logistics", parameters={"carrier": "yto"}
         )
         generator = generator_factory.create_generator(config)
-        tracking_number = generator.generate_single()
+        logistics_info = generator.generate_single()
 
+        assert isinstance(logistics_info, dict)
+        assert "tracking_number" in logistics_info
+        tracking_number = logistics_info["tracking_number"]
         assert isinstance(tracking_number, str)
         assert len(tracking_number) >= 10
 
@@ -96,13 +113,14 @@ class TestLogisticsGenerator:
         generator = generator_factory.create_generator(config)
 
         # Valid tracking number
-        tracking_number = generator.generate_single()
-        assert generator.validate(tracking_number)
+        logistics_info = generator.generate_single()
+        assert generator.validate(logistics_info)
 
         # Invalid tracking numbers
-        assert not generator.validate("123")  # Too short
-        assert not generator.validate("")
-        assert not generator.validate(123)
+        assert not generator.validate({"tracking_number": "123"})  # Too short
+        assert not generator.validate({})  # Missing tracking_number
+        assert not generator.validate("")  # Not a dict
+        assert not generator.validate(123)  # Not a dict
 
     def test_uniqueness(self, generator_factory):
         """测试物流单号唯一性"""
@@ -112,10 +130,10 @@ class TestLogisticsGenerator:
 
         config = GeneratorConfig(generator_type="logistics", parameters={})
         generator = generator_factory.create_generator(config)
-        tracking_numbers = generator.generate_batch(50)
+        logistics_list = generator.generate_batch(50)
 
         # All tracking numbers should be unique
-        unique_numbers = set(tracking_numbers)
+        unique_numbers = {info["tracking_number"] for info in logistics_list}
         assert len(unique_numbers) == 50
 
     def test_format(self, generator_factory):
@@ -126,9 +144,10 @@ class TestLogisticsGenerator:
 
         config = GeneratorConfig(generator_type="logistics", parameters={})
         generator = generator_factory.create_generator(config)
-        tracking_number = generator.generate_single()
+        logistics_info = generator.generate_single()
 
-        # Should be alphanumeric
+        # tracking_number 应该是字母数字
+        tracking_number = logistics_info["tracking_number"]
         assert tracking_number.isalnum()
 
     def test_edge_cases(self, generator_factory):
@@ -142,7 +161,10 @@ class TestLogisticsGenerator:
 
         # Generate multiple times
         for _ in range(10):
-            number = generator.generate_single()
-            assert number is not None
-            assert len(number) >= 10
-            assert number.isalnum()
+            logistics_info = generator.generate_single()
+            assert logistics_info is not None
+            assert isinstance(logistics_info, dict)
+            assert "tracking_number" in logistics_info
+            tracking_number = logistics_info["tracking_number"]
+            assert len(tracking_number) >= 10
+            assert tracking_number.isalnum()

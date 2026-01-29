@@ -1,6 +1,6 @@
 # DataForge 项目当前状态报告
 
-**日期**: 2025-11-08  
+**日期**: 2025-11-08
 **报告人**: AI Assistant
 
 ---
@@ -51,7 +51,7 @@
 
 #### 1. 返回类型不匹配 (约120个测试)
 
-**问题描述**: 
+**问题描述**:
 - 生成器返回dict对象
 - 测试期望str字符串
 
@@ -148,11 +148,11 @@ TypeError: argument of type 'int' is not iterable
 class DriversLicenseGenerator:
     def generate_single(self, context=None):
         result = self._generate_full_data()
-        
+
         # 如果只需要字符串
         if self.parameters.get('string_only', False):
             return result['license_number']
-        
+
         return result
 
 # 2. 修复PassportGenerator配置访问
@@ -219,7 +219,7 @@ class BaseIdentifierGenerator:
             output_format: 'string' | 'dict' | 'object'
         """
         full_data = self._generate_full_data()
-        
+
         if output_format == 'string':
             return full_data['primary_id']
         elif output_format == 'dict':

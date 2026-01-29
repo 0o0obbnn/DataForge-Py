@@ -47,7 +47,8 @@ class TestUSCCGenerator:
     def test_registration_authority(self, generator_factory):
         """测试登记管理部门代码"""
         config = GeneratorConfig(
-            generator_type="uscc", parameters={"authority": "1"}  # 机构编制
+            generator_type="uscc",
+            parameters={"authority": "1"},  # 机构编制
         )
         generator = generator_factory.create_generator(config)
         uscc = generator.generate_single()
@@ -58,7 +59,8 @@ class TestUSCCGenerator:
     def test_organization_type(self, generator_factory):
         """测试机构类别代码"""
         config = GeneratorConfig(
-            generator_type="uscc", parameters={"org_type": "1"}  # 企业
+            generator_type="uscc",
+            parameters={"org_type": "1"},  # 企业
         )
         generator = generator_factory.create_generator(config)
         uscc = generator.generate_single()

@@ -5,11 +5,6 @@
 import pytest
 
 from dataforge.core.generator import GeneratorConfig
-from dataforge.resources.name_config_loader import (
-    clear_name_config_cache,
-    load_name_en_config,
-    load_pinyin_map,
-)
 
 
 @pytest.mark.unit

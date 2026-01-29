@@ -179,11 +179,12 @@ class LogisticsGenerator(DataGenerator[dict[str, str | int]]):
             carrier = "SF"
 
         config = self.carrier_config[carrier]
-        prefix = secrets.choice(config["prefix"])
+        prefix_list: list[str] = config["prefix"]  # type: ignore
+        prefix: str = secrets.choice(prefix_list)  # type: ignore
 
         # 计算数字部分长度，确保总长度符合要求
         prefix_length = len(prefix)
-        target_length = config["length"]
+        target_length: int = config["length"]  # type: ignore[index, assignment]
         digits_length = target_length - prefix_length
 
         # 生成数字部分
@@ -302,7 +303,9 @@ class LogisticsGenerator(DataGenerator[dict[str, str | int]]):
         return True
 
 
-@register_generator("generic_tracking_number", aliases=["tracking_number", "物流单号"])
+@register_generator(
+    "generic_tracking_number", aliases=["tracking_number", "物流单号", "logistics"]
+)
 class GenericTrackingNumberGenerator(LogisticsGenerator):
     """通用物流单号生成器注册版本"""
 

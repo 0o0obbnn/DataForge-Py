@@ -51,7 +51,7 @@ def parameter_configuration():
         {"format": "database"},
         {"timezone": "UTC"},
         {"timezone": "Asia/Shanghai"},
-        {"timezone": "America/New_York"}
+        {"timezone": "America/New_York"},
     ]
     for i, params in enumerate(timestamp_formats, 1):
         config = GeneratorConfig("advanced_timestamp", parameters=params)
@@ -69,7 +69,7 @@ def parameter_configuration():
         {"format": "daily", "count": 7},
         {"format": "hourly", "count": 24},
         {"format": "monthly", "count": 12},
-        {"format": "yearly", "count": 5}
+        {"format": "yearly", "count": 5},
     ]
     for i, params in enumerate(range_configs, 1):
         config = GeneratorConfig("datetime_range", parameters=params)
@@ -87,18 +87,16 @@ def batch_generation():
     print("\n批量生成时间序列数据:")
 
     # 生成时间戳序列
-    timestamp_config = GeneratorConfig("advanced_timestamp", parameters={
-        "format": "iso8601",
-        "timezone": "UTC"
-    })
+    timestamp_config = GeneratorConfig(
+        "advanced_timestamp", parameters={"format": "iso8601", "timezone": "UTC"}
+    )
     timestamp_gen = default_factory.create_generator(timestamp_config)
 
     # 生成日期范围
-    range_config = GeneratorConfig("datetime_range", parameters={
-        "start": "2024-01-01",
-        "days": 30,
-        "format": "daily"
-    })
+    range_config = GeneratorConfig(
+        "datetime_range",
+        parameters={"start": "2024-01-01", "days": 30, "format": "daily"},
+    )
     range_gen = default_factory.create_generator(range_config)
 
     # 生成5个时间序列
@@ -108,7 +106,7 @@ def batch_generation():
             "timestamp": timestamp_gen.generate(),
             "date_range": range_gen.generate(),
             "created_at": datetime.now().isoformat(),
-            "series_id": f"TS_{i+1:03d}"
+            "series_id": f"TS_{i+1:03d}",
         }
         time_series.append(series)
 
@@ -117,18 +115,20 @@ def batch_generation():
     print(f"{'序列ID':<8} | {'时间戳':<25} | {'日期范围':<40} | {'创建时间'}")
     print("-" * 100)
     for series in time_series:
-        series_id = series['series_id']
-        timestamp = series['timestamp']
+        series_id = series["series_id"]
+        timestamp = series["timestamp"]
         # 处理整数时间戳
         if isinstance(timestamp, int):
             timestamp_str = str(timestamp)
-            timestamp = timestamp_str[:23] + "..." if len(timestamp_str) > 25 else timestamp_str
+            timestamp = (
+                timestamp_str[:23] + "..." if len(timestamp_str) > 25 else timestamp_str
+            )
         else:
             timestamp = timestamp[:23] + "..." if len(timestamp) > 25 else timestamp
 
-        date_range = series['date_range']
+        date_range = series["date_range"]
         date_range = date_range[:37] + "..." if len(date_range) > 40 else date_range
-        created = series['created_at'][:19]
+        created = series["created_at"][:19]
         print(f"{series_id:<8} | {timestamp:<25} | {date_range:<40} | {created}")
     print("-" * 100)
 
@@ -157,10 +157,9 @@ def validation_examples():
 
     # 日期范围验证
     print("\n日期范围格式验证:")
-    config = GeneratorConfig("datetime_range", parameters={
-        "start": "2024-01-01",
-        "end": "2024-12-31"
-    })
+    config = GeneratorConfig(
+        "datetime_range", parameters={"start": "2024-01-01", "end": "2024-12-31"}
+    )
     generator = default_factory.create_generator(config)
 
     for i in range(3):
@@ -191,10 +190,9 @@ def error_handling():
     # 处理无效的日期范围
     print("\n处理无效的日期范围:")
     try:
-        config = GeneratorConfig("datetime_range", parameters={
-            "start": "invalid-date",
-            "end": "2024-12-31"
-        })
+        config = GeneratorConfig(
+            "datetime_range", parameters={"start": "invalid-date", "end": "2024-12-31"}
+        )
         generator = default_factory.create_generator(config)
         result = generator.generate()
         print(f"  生成的日期范围: {result}")
@@ -204,9 +202,9 @@ def error_handling():
     # 处理无效的时区
     print("\n处理无效的时区:")
     try:
-        config = GeneratorConfig("advanced_timestamp", parameters={
-            "timezone": "Invalid/Timezone"
-        })
+        config = GeneratorConfig(
+            "advanced_timestamp", parameters={"timezone": "Invalid/Timezone"}
+        )
         generator = default_factory.create_generator(config)
         result = generator.generate()
         print(f"  生成的时间戳: {result}")
@@ -225,21 +223,32 @@ def best_practices():
         "timestamp_settings": {
             "default_format": "iso8601",
             "default_timezone": "UTC",
-            "supported_formats": ["unix", "iso8601", "rfc3339", "human_readable", "database"],
-            "supported_timezones": ["UTC", "Asia/Shanghai", "America/New_York", "Europe/London"]
+            "supported_formats": [
+                "unix",
+                "iso8601",
+                "rfc3339",
+                "human_readable",
+                "database",
+            ],
+            "supported_timezones": [
+                "UTC",
+                "Asia/Shanghai",
+                "America/New_York",
+                "Europe/London",
+            ],
         },
         "range_settings": {
             "default_format": "daily",
             "max_range_days": 3650,
             "min_interval_hours": 1,
-            "supported_formats": ["daily", "hourly", "monthly", "yearly"]
+            "supported_formats": ["daily", "hourly", "monthly", "yearly"],
         },
         "validation_rules": {
             "min_timestamp": 0,
             "max_timestamp": 253402300799,  # 2050-01-01 00:00:00 UTC
             "allow_future": False,
-            "allow_past": True
-        }
+            "allow_past": True,
+        },
     }
 
     print("  时间序列配置:")
@@ -257,45 +266,51 @@ def best_practices():
             "record_id": f"record_{i+1:03d}",
             "timestamps": {
                 "creation": default_factory.create_generator(
-                    GeneratorConfig("advanced_timestamp", parameters={
-                        "format": "iso8601",
-                        "timezone": "UTC"
-                    })
+                    GeneratorConfig(
+                        "advanced_timestamp",
+                        parameters={"format": "iso8601", "timezone": "UTC"},
+                    )
                 ).generate(),
                 "last_modified": default_factory.create_generator(
-                    GeneratorConfig("advanced_timestamp", parameters={
-                        "format": "unix",
-                        "timezone": "UTC"
-                    })
+                    GeneratorConfig(
+                        "advanced_timestamp",
+                        parameters={"format": "unix", "timezone": "UTC"},
+                    )
                 ).generate(),
                 "expiry": default_factory.create_generator(
-                    GeneratorConfig("advanced_timestamp", parameters={
-                        "format": "rfc3339",
-                        "timezone": "Asia/Shanghai"
-                    })
-                ).generate()
+                    GeneratorConfig(
+                        "advanced_timestamp",
+                        parameters={"format": "rfc3339", "timezone": "Asia/Shanghai"},
+                    )
+                ).generate(),
             },
             "date_ranges": {
                 "active_period": default_factory.create_generator(
-                    GeneratorConfig("datetime_range", parameters={
-                        "start": "2024-01-01",
-                        "days": 30,
-                        "format": "daily"
-                    })
+                    GeneratorConfig(
+                        "datetime_range",
+                        parameters={
+                            "start": "2024-01-01",
+                            "days": 30,
+                            "format": "daily",
+                        },
+                    )
                 ).generate(),
                 "project_lifecycle": default_factory.create_generator(
-                    GeneratorConfig("datetime_range", parameters={
-                        "start": "2020-01-01",
-                        "end": "2024-12-31",
-                        "format": "monthly"
-                    })
-                ).generate()
+                    GeneratorConfig(
+                        "datetime_range",
+                        parameters={
+                            "start": "2020-01-01",
+                            "end": "2024-12-31",
+                            "format": "monthly",
+                        },
+                    )
+                ).generate(),
             },
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
                 "generator_version": "1.0.0",
-                "data_quality": "high"
-            }
+                "data_quality": "high",
+            },
         }
         time_data.append(time_record)
 
@@ -311,11 +326,10 @@ def time_series_demo():
     print("\n生成时间序列数据:")
 
     # 生成过去一年的每日数据
-    daily_config = GeneratorConfig("datetime_range", parameters={
-        "start": "2023-01-01",
-        "days": 365,
-        "format": "daily"
-    })
+    daily_config = GeneratorConfig(
+        "datetime_range",
+        parameters={"start": "2023-01-01", "days": 365, "format": "daily"},
+    )
     daily_gen = default_factory.create_generator(daily_config)
     daily_data = daily_gen.generate()
 
@@ -323,11 +337,10 @@ def time_series_demo():
     print(f"    范围: {daily_data}")
 
     # 生成过去一个月的小时数据
-    hourly_config = GeneratorConfig("datetime_range", parameters={
-        "start": "2024-01-01",
-        "days": 30,
-        "format": "hourly"
-    })
+    hourly_config = GeneratorConfig(
+        "datetime_range",
+        parameters={"start": "2024-01-01", "days": 30, "format": "hourly"},
+    )
     hourly_gen = default_factory.create_generator(hourly_config)
     hourly_data = hourly_gen.generate()
 
@@ -335,10 +348,9 @@ def time_series_demo():
     print(f"    范围: {hourly_data}")
 
     # 生成时间戳序列
-    timestamp_config = GeneratorConfig("advanced_timestamp", parameters={
-        "format": "unix",
-        "timezone": "UTC"
-    })
+    timestamp_config = GeneratorConfig(
+        "advanced_timestamp", parameters={"format": "unix", "timezone": "UTC"}
+    )
     timestamp_gen = default_factory.create_generator(timestamp_config)
 
     print("\n  生成时间戳序列:")
@@ -354,11 +366,14 @@ def time_series_demo():
     base_timestamp = "1704067200"  # 2024-01-01 00:00:00 UTC
 
     for tz in timezones:
-        config = GeneratorConfig("advanced_timestamp", parameters={
-            "format": "iso8601",
-            "timezone": tz,
-            "timestamp": base_timestamp
-        })
+        config = GeneratorConfig(
+            "advanced_timestamp",
+            parameters={
+                "format": "iso8601",
+                "timezone": tz,
+                "timestamp": base_timestamp,
+            },
+        )
         gen = default_factory.create_generator(config)
         result = gen.generate()
         print(f"    {tz}: {result}")
@@ -366,10 +381,25 @@ def time_series_demo():
     # 生成业务相关的时间范围
     print("\n  业务时间范围:")
     business_ranges = [
-        {"name": "Q1 2024", "start": "2024-01-01", "end": "2024-03-31", "format": "monthly"},
-        {"name": "H1 2024", "start": "2024-01-01", "end": "2024-06-30", "format": "monthly"},
-        {"name": "项目周期", "start": "2023-01-01", "end": "2024-12-31", "format": "quarterly"},
-        {"name": "冲刺阶段", "start": "2024-11-01", "days": 30, "format": "daily"}
+        {
+            "name": "Q1 2024",
+            "start": "2024-01-01",
+            "end": "2024-03-31",
+            "format": "monthly",
+        },
+        {
+            "name": "H1 2024",
+            "start": "2024-01-01",
+            "end": "2024-06-30",
+            "format": "monthly",
+        },
+        {
+            "name": "项目周期",
+            "start": "2023-01-01",
+            "end": "2024-12-31",
+            "format": "quarterly",
+        },
+        {"name": "冲刺阶段", "start": "2024-11-01", "days": 30, "format": "daily"},
     ]
 
     for range_def in business_ranges:
@@ -406,6 +436,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

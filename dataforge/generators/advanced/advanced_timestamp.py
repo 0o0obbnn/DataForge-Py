@@ -5,7 +5,7 @@
 import secrets
 import time
 from datetime import datetime, timedelta, timezone
-from typing import Any, Union
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -26,7 +26,7 @@ from ...core.types import GeneratorType
 
 
 @register_generator("advanced_timestamp", ["高级时间戳", "时间戳"])
-class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
+class AdvancedTimestampGenerator(DataGenerator[int | str]):
     """
     高级时间戳生成器
 
@@ -77,9 +77,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
         # 自定义格式
         self.custom_format = self.parameters.get("custom_format", "%Y-%m-%d %H:%M:%S")
 
-    def _generate_raw(
-        self, context: GenerationContext | None = None
-    ) -> int | str:
+    def _generate_raw(self, context: GenerationContext | None = None) -> int | str:
         """生成时间戳"""
         # 获取基础时间
         base_time = self._get_base_datetime()
@@ -270,9 +268,7 @@ class AdvancedTimestampGenerator(DataGenerator[Union[int, str]]):
             "custom_format",  # 自定义格式字符串
         ]
 
-    def generate_single(
-        self, context: GenerationContext | None = None
-    ) -> int | str:
+    def generate_single(self, context: GenerationContext | None = None) -> int | str:
         """生成单个数据项 - TODO: Implement generation logic"""
         return self._generate_raw(context)
 
@@ -377,7 +373,7 @@ class AdvancedDateTimeRangeGenerator(DataGenerator[str]):
             hours = (total_seconds % 86400) // 3600
             minutes = (total_seconds % 3600) // 60
 
-            duration_parts = []
+            duration_parts: list[Any] = []
             if days > 0:
                 duration_parts.append(f"{days}天")
             if hours > 0:

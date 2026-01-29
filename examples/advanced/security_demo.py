@@ -69,11 +69,7 @@ def parameter_configuration():
 
     # UUID - 不同版本
     print("\nUUID生成器 - 版本配置:")
-    uuid_configs = [
-        {"version": 4},
-        {"version": 1},
-        {"namespace": "example.com"}
-    ]
+    uuid_configs = [{"version": 4}, {"version": 1}, {"namespace": "example.com"}]
     for i, params in enumerate(uuid_configs, 1):
         config = GeneratorConfig("uuid", parameters=params)
         generator = default_factory.create_generator(config)
@@ -87,7 +83,7 @@ def parameter_configuration():
         {"length": 8, "strength": "weak"},
         {"length": 16, "strength": "medium"},
         {"length": 24, "strength": "strong"},
-        {"include_symbols": True, "include_numbers": True}
+        {"include_symbols": True, "include_numbers": True},
     ]
     for i, params in enumerate(password_configs, 1):
         config = GeneratorConfig("password", parameters=params)
@@ -102,7 +98,7 @@ def parameter_configuration():
         {"length": 16},
         {"length": 32},
         {"length": 64},
-        {"prefix": "sess_"}
+        {"prefix": "sess_"},
     ]
     for i, params in enumerate(token_configs, 1):
         config = GeneratorConfig("session_token", parameters=params)
@@ -117,7 +113,7 @@ def parameter_configuration():
         {"type": "bearer"},
         {"type": "basic"},
         {"type": "jwt"},
-        {"length": 64, "prefix": "auth_"}
+        {"length": 64, "prefix": "auth_"},
     ]
     for i, params in enumerate(auth_configs, 1):
         config = GeneratorConfig("auth_token", parameters=params)
@@ -132,7 +128,7 @@ def parameter_configuration():
         {"format": "hex"},
         {"format": "base64"},
         {"length": 32},
-        {"prefix": "sid_"}
+        {"prefix": "sid_"},
     ]
     for i, params in enumerate(session_configs, 1):
         config = GeneratorConfig("session_id", parameters=params)
@@ -154,19 +150,27 @@ def batch_generation():
     uuid_gen = default_factory.create_generator(uuid_config)
 
     # 生成密码
-    password_config = GeneratorConfig("password", parameters={"length": 16, "strength": "strong"})
+    password_config = GeneratorConfig(
+        "password", parameters={"length": 16, "strength": "strong"}
+    )
     password_gen = default_factory.create_generator(password_config)
 
     # 生成会话令牌
-    session_config = GeneratorConfig("session_token", parameters={"length": 32, "prefix": "sess_"})
+    session_config = GeneratorConfig(
+        "session_token", parameters={"length": 32, "prefix": "sess_"}
+    )
     session_gen = default_factory.create_generator(session_config)
 
     # 生成认证令牌
-    auth_config = GeneratorConfig("auth_token", parameters={"type": "jwt", "length": 64})
+    auth_config = GeneratorConfig(
+        "auth_token", parameters={"type": "jwt", "length": 64}
+    )
     auth_gen = default_factory.create_generator(auth_config)
 
     # 生成会话ID
-    sid_config = GeneratorConfig("session_id", parameters={"length": 32, "prefix": "sid_"})
+    sid_config = GeneratorConfig(
+        "session_id", parameters={"length": 32, "prefix": "sid_"}
+    )
     sid_gen = default_factory.create_generator(sid_config)
 
     # 生成5个安全凭证集
@@ -180,7 +184,9 @@ def batch_generation():
             "auth_token": auth_gen.generate(),
             "session_id": sid_gen.generate(),
             "created_at": datetime.now().isoformat(),
-            "expires_at": (datetime.now().replace(year=datetime.now().year + 1)).isoformat()
+            "expires_at": (
+                datetime.now().replace(year=datetime.now().year + 1)
+            ).isoformat(),
         }
         credentials.append(credential)
 
@@ -189,10 +195,22 @@ def batch_generation():
     print(f"{'凭证ID':<10} | {'UUID':<25} | {'会话令牌':<25} | {'认证令牌':<25}")
     print("-" * 100)
     for cred in credentials:
-        uid = cred['user_uuid'][:23] + "..." if len(cred['user_uuid']) > 25 else cred['user_uuid']
-        session = cred['session_token'][:23] + "..." if len(cred['session_token']) > 25 else cred['session_token']
-        auth = cred['auth_token'][:23] + "..." if len(cred['auth_token']) > 25 else cred['auth_token']
-        cred_id = cred['credential_id']
+        uid = (
+            cred["user_uuid"][:23] + "..."
+            if len(cred["user_uuid"]) > 25
+            else cred["user_uuid"]
+        )
+        session = (
+            cred["session_token"][:23] + "..."
+            if len(cred["session_token"]) > 25
+            else cred["session_token"]
+        )
+        auth = (
+            cred["auth_token"][:23] + "..."
+            if len(cred["auth_token"]) > 25
+            else cred["auth_token"]
+        )
+        cred_id = cred["credential_id"]
         print(f"{cred_id:<10} | {uid:<25} | {session:<25} | {auth:<25}")
     print("-" * 100)
 
@@ -216,7 +234,9 @@ def validation_examples():
 
     # 密码验证
     print("\n密码格式验证:")
-    config = GeneratorConfig("password", parameters={"length": 16, "strength": "strong"})
+    config = GeneratorConfig(
+        "password", parameters={"length": 16, "strength": "strong"}
+    )
     generator = default_factory.create_generator(config)
 
     for i in range(3):
@@ -333,21 +353,27 @@ def best_practices():
             ).generate(),
             "session_uuid": default_factory.create_generator(
                 GeneratorConfig("uuid", parameters={"version": 1})
-            ).generate()
+            ).generate(),
         },
         "authentication": {
             "password": default_factory.create_generator(
-                GeneratorConfig("password", parameters={"length": 24, "strength": "strong"})
+                GeneratorConfig(
+                    "password", parameters={"length": 24, "strength": "strong"}
+                )
             ).generate(),
             "session_token": default_factory.create_generator(
-                GeneratorConfig("session_token", parameters={"length": 64, "prefix": "sess_"})
+                GeneratorConfig(
+                    "session_token", parameters={"length": 64, "prefix": "sess_"}
+                )
             ).generate(),
             "auth_token": default_factory.create_generator(
                 GeneratorConfig("auth_token", parameters={"type": "jwt", "length": 128})
             ).generate(),
             "session_id": default_factory.create_generator(
-                GeneratorConfig("session_id", parameters={"length": 32, "prefix": "sid_"})
-            ).generate()
+                GeneratorConfig(
+                    "session_id", parameters={"length": 32, "prefix": "sid_"}
+                )
+            ).generate(),
         },
         "security_tokens": {
             "email_verification": default_factory.create_generator(
@@ -355,8 +381,8 @@ def best_practices():
             ).generate(),
             "sms_verification": default_factory.create_generator(
                 GeneratorConfig("sms_verification", parameters={"length": 6})
-            ).generate()
-        }
+            ).generate(),
+        },
     }
 
     print("  安全配置:")
@@ -366,10 +392,16 @@ def best_practices():
             if isinstance(value, dict):
                 print(f"      {key}:")
                 for sub_key, sub_value in value.items():
-                    display_value = str(sub_value)[:30] + "..." if len(str(sub_value)) > 30 else str(sub_value)
+                    display_value = (
+                        str(sub_value)[:30] + "..."
+                        if len(str(sub_value)) > 30
+                        else str(sub_value)
+                    )
                     print(f"        {sub_key}: {display_value}")
             else:
-                display_value = str(value)[:30] + "..." if len(str(value)) > 30 else str(value)
+                display_value = (
+                    str(value)[:30] + "..." if len(str(value)) > 30 else str(value)
+                )
                 print(f"      {key}: {display_value}")
 
     # 实践2: 批量导出安全凭证
@@ -385,27 +417,37 @@ def best_practices():
                     GeneratorConfig("uuid", parameters={"version": 4})
                 ).generate(),
                 "password": default_factory.create_generator(
-                    GeneratorConfig("password", parameters={"length": 20, "strength": "strong"})
+                    GeneratorConfig(
+                        "password", parameters={"length": 20, "strength": "strong"}
+                    )
                 ).generate(),
                 "session_token": default_factory.create_generator(
-                    GeneratorConfig("session_token", parameters={"length": 64, "prefix": "tok_"})
+                    GeneratorConfig(
+                        "session_token", parameters={"length": 64, "prefix": "tok_"}
+                    )
                 ).generate(),
                 "auth_token": default_factory.create_generator(
-                    GeneratorConfig("auth_token", parameters={"type": "jwt", "length": 128})
+                    GeneratorConfig(
+                        "auth_token", parameters={"type": "jwt", "length": 128}
+                    )
                 ).generate(),
                 "session_id": default_factory.create_generator(
-                    GeneratorConfig("session_id", parameters={"length": 32, "prefix": "sid_"})
-                ).generate()
+                    GeneratorConfig(
+                        "session_id", parameters={"length": 32, "prefix": "sid_"}
+                    )
+                ).generate(),
             },
             "metadata": {
                 "created_at": datetime.now().isoformat(),
-                "expires_at": (datetime.now().replace(year=datetime.now().year + 1)).isoformat(),
+                "expires_at": (
+                    datetime.now().replace(year=datetime.now().year + 1)
+                ).isoformat(),
                 "last_rotated": datetime.now().isoformat(),
                 "rotation_interval": "90 days",
                 "permissions": ["read", "write", "admin"],
                 "ip_restrictions": ["192.168.1.0/24", "10.0.0.0/8"],
-                "rate_limit": "1000 requests/hour"
-            }
+                "rate_limit": "1000 requests/hour",
+            },
         }
         credentials_data.append(credential_data)
 
@@ -431,7 +473,7 @@ def security_demo():
         salt = salt_gen.generate()
         # 模拟密码哈希（实际应用中应使用专门的密码哈希函数）
         hash_obj = hashlib.sha256()
-        hash_obj.update((password + salt).encode('utf-8'))
+        hash_obj.update((password + salt).encode("utf-8"))
         password_hash = hash_obj.hexdigest()
 
         print(f"  密码: {password}")
@@ -455,7 +497,7 @@ def security_demo():
         "name": "John Doe",
         "iat": int(datetime.now().timestamp()),
         "exp": int((datetime.now().replace(year=datetime.now().year + 1)).timestamp()),
-        "roles": ["user", "admin"]
+        "roles": ["user", "admin"],
     }
 
     print(f"  JWT载荷: {json.dumps(jwt_payload, ensure_ascii=False, indent=4)}")
@@ -467,18 +509,26 @@ def security_demo():
     session_tokens = []
     for i in range(5):
         token = default_factory.create_generator(
-            GeneratorConfig("session_token", parameters={"length": 64, "prefix": "sess_"})
+            GeneratorConfig(
+                "session_token", parameters={"length": 64, "prefix": "sess_"}
+            )
         ).generate()
-        session_tokens.append({
-            "token_id": f"token_{i+1}",
-            "session_token": token,
-            "created_at": datetime.now().isoformat(),
-            "status": "active" if i < 3 else "inactive"
-        })
+        session_tokens.append(
+            {
+                "token_id": f"token_{i+1}",
+                "session_token": token,
+                "created_at": datetime.now().isoformat(),
+                "status": "active" if i < 3 else "inactive",
+            }
+        )
 
     print("  会话令牌列表:")
     for token_info in session_tokens:
-        display_token = token_info['session_token'][:20] + "..." if len(token_info['session_token']) > 20 else token_info['session_token']
+        display_token = (
+            token_info["session_token"][:20] + "..."
+            if len(token_info["session_token"]) > 20
+            else token_info["session_token"]
+        )
         print(f"    {token_info['token_id']}: {display_token} ({token_info['status']})")
 
     # 数字签名验证演示
@@ -529,7 +579,7 @@ def security_demo():
         "signature_algorithm": "SHA256withRSA",
         "signature": default_factory.create_generator(
             GeneratorConfig("uuid", parameters={"version": 4})
-        ).generate()
+        ).generate(),
     }
 
     print("  证书信息:")
@@ -568,6 +618,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

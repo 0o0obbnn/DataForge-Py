@@ -13,10 +13,10 @@ pinia.use(
   createPersistedState({
     // 存储键名前缀
     key: (id) => `dataforge_${id}`,
-    
+
     // 存储方式
     storage: localStorage,
-    
+
     // 序列化配置
     serializer: {
       serialize: JSON.stringify,

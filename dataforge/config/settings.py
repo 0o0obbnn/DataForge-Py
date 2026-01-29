@@ -66,6 +66,7 @@ class AppSettings(BaseModel):
         elif self.development_mode:
             # 开发模式：生成一个安全的开发密钥（每次重启都会变化）
             import secrets
+
             logger.warning("⚠️  Using auto-generated development JWT key!")
             logger.warning("⚠️  Set JWT_SECRET_KEY environment variable for production!")
             return secrets.token_hex(32)

@@ -97,7 +97,7 @@ export class DataForgeService {
    * 生成单一类型数据
    */
   static async generateData(
-    generatorName: string, 
+    generatorName: string,
     request: Omit<GeneratorRequest, 'generator_type'>
   ): Promise<ApiResponse<GenerationResult>> {
     return dataforgeHttp.post<GenerationResult>(`/generate/${generatorName}`, {
@@ -151,7 +151,7 @@ export class DataForgeService {
     if (options?.limit) {
       params.append('limit', options.limit.toString())
     }
-    
+
     const queryString = params.toString()
     return dataforgeHttp.get<{
       total: number

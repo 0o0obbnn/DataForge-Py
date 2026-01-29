@@ -18,7 +18,7 @@
 # 修复前
 class MaritalStatusGenerator(DataGenerator):
 
-# 修复后  
+# 修复后
 class MaritalStatusGenerator(DataGenerator[str]):
 ```
 
@@ -95,6 +95,6 @@ tests\integration\test_marital_complete.py..............                        
 
 通过系统性的类型修复和API设计改进，成功解决了 `MaritalStatusGenerator` 的所有类型错误问题。修复方案既保证了类型安全，又维持了向后兼容性，为项目的长期维护奠定了坚实基础。
 
-**修复时间**: 2025年9月16日  
-**修复状态**: ✅ 完成  
+**修复时间**: 2025年9月16日
+**修复状态**: ✅ 完成
 **测试状态**: ✅ 全部通过

@@ -125,7 +125,7 @@ class DataPreloader:
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 分批处理有依赖关系的数据源
             current_batch = []
-            completed_sources = set()
+            completed_sources: set[str] = set()
 
             for source_name in load_order:
                 config = self._get_config_by_name(source_name)
@@ -260,8 +260,8 @@ class DataPreloader:
     def _resolve_dependencies(self) -> list[str]:
         """解析依赖关系，返回加载顺序"""
         # 使用拓扑排序解决依赖关系
-        in_degree = {}
-        graph = {}
+        in_degree: dict[str, int] = {}
+        graph: dict[str, list[str]] = {}
 
         # 初始化
         for config in self._preload_configs:
@@ -304,7 +304,7 @@ class DataPreloader:
     def _process_batch(
         self,
         executor: ThreadPoolExecutor,
-        batch: list[dict],
+        batch: list[dict[str, Any]],
         results: dict,
         completed_sources: set,
         timeout: float | None,

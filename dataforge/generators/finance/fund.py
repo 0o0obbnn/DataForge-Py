@@ -92,11 +92,12 @@ class FundCodeGenerator(DataGenerator[str]):
             selected_category = secrets.choice(categories)
 
         category_info = self.china_public_funds[selected_category]
-        prefix = secrets.choice(category_info["prefix"])
+        prefix_list: list[str] = category_info["prefix"]  # type: ignore
+        prefix: str = secrets.choice(prefix_list)  # type: ignore
 
         # 生成6位代码
         suffix = str(secrets.randbelow(9999) + 1).zfill(4)
-        code = prefix + suffix
+        code: str = prefix + suffix  # type: ignore
 
         # 确保6位长度
         if len(code) > 6:
@@ -114,10 +115,11 @@ class FundCodeGenerator(DataGenerator[str]):
         if selected_category not in self.china_private_funds:
             selected_category = secrets.choice(categories)
 
-        prefix = secrets.choice(self.china_private_funds[selected_category]["prefix"])
+        prefix_list: list[str] = self.china_private_funds[selected_category]["prefix"]  # type: ignore
+        prefix: str = secrets.choice(prefix_list)  # type: ignore
         suffix = str(secrets.randbelow(999999) + 1).zfill(6)
 
-        return prefix + suffix
+        return prefix + suffix  # type: ignore
 
     def _generate_hk_fund(self) -> str:
         """生成香港基金代码"""
@@ -128,10 +130,11 @@ class FundCodeGenerator(DataGenerator[str]):
             selected_category = secrets.choice(categories)
 
         category_info = self.hk_funds[selected_category]
-        prefix = secrets.choice(category_info["prefix"])
+        prefix_list: list[str] = category_info["prefix"]  # type: ignore
+        prefix: str = secrets.choice(prefix_list)  # type: ignore
         suffix = str(secrets.randbelow(9999) + 1).zfill(4)
 
-        code = prefix + suffix
+        code: str = prefix + suffix  # type: ignore
 
         if self.include_suffix and self.format == "FULL":
             code += ".HK"
@@ -147,7 +150,7 @@ class FundCodeGenerator(DataGenerator[str]):
             selected_category = secrets.choice(categories)
 
         length_range = self.us_funds[selected_category]["length"]
-        length = secrets.choice(length_range)
+        length: int = secrets.choice(length_range)  # type: ignore
 
         # 生成大写字母代码
         code = "".join(random.choices("ABCDEFGHIJKLMNOPQRSTUVWXYZ", k=length))
@@ -195,7 +198,8 @@ class FundCodeGenerator(DataGenerator[str]):
 
         code_int = int(code)
         for _category, info in self.hk_funds.items():
-            if info["range"][0] <= code_int <= info["range"][1]:
+            range_tuple: tuple[int, int] = info["range"]  # type: ignore[index, assignment]
+            if range_tuple[0] <= code_int <= range_tuple[1]:
                 return True
 
         return False

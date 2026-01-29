@@ -133,20 +133,20 @@ python start_api.py
 ## 🔧 修复的问题
 
 ### 1. 配置初始化问题 ✅
-**问题**: settings在模块加载时就初始化，导致环境变量检查失败  
+**问题**: settings在模块加载时就初始化，导致环境变量检查失败
 **修复**: 改为延迟初始化模式
 
 ### 2. 缺少依赖 ✅
-**问题**: 缺少redis模块  
+**问题**: 缺少redis模块
 **修复**: `pip install redis`
 
 ### 3. ValidatedDataGenerator导入错误 ✅
-**问题**: 36个文件导入不存在的ValidatedDataGenerator  
+**问题**: 36个文件导入不存在的ValidatedDataGenerator
 **修复**: 批量替换为DataGenerator
 
 ### 4. 生成器未注册 ✅
-**问题**: 生成器模块未导入，导致注册失败  
-**修复**: 
+**问题**: 生成器模块未导入，导致注册失败
+**修复**:
 - 在API main.py中导入generators模块
 - 为basic/__init__.py添加导入
 - 为idcard.py添加@register_generator装饰器

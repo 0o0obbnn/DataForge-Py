@@ -8,7 +8,7 @@
             <h1 class="app-title">DataForge</h1>
           </router-link>
         </div>
-        
+
         <nav class="main-nav">
           <router-link to="/workbench" class="nav-item">
             <DatabaseOutlined />
@@ -23,7 +23,7 @@
             <span>API管理</span>
           </router-link>
         </nav>
-        
+
         <div class="header-right">
           <a-dropdown v-if="authStore.isAuthenticated">
             <a-button type="text" class="user-menu">
@@ -47,14 +47,14 @@
               </a-menu>
             </template>
           </a-dropdown>
-          
+
           <router-link v-else to="/login" class="login-btn">
             <a-button type="primary">登录</a-button>
           </router-link>
         </div>
       </div>
     </header>
-    
+
     <!-- 主要内容区域 -->
     <main class="app-main" :class="{ 'with-header': shouldShowHeader }">
       <router-view />
@@ -115,7 +115,7 @@ const handleLogout = () => {
   left: 0;
   right: 0;
   z-index: 1000;
-  
+
   .header-content {
     max-width: 1400px;
     margin: 0 auto;
@@ -125,11 +125,11 @@ const handleLogout = () => {
     justify-content: space-between;
     height: 64px;
   }
-  
+
   .header-left {
     .logo-link {
       text-decoration: none;
-      
+
       .app-title {
         color: var(--df-accent-primary);
         font-size: var(--df-font-size-xl);
@@ -142,11 +142,11 @@ const handleLogout = () => {
       }
     }
   }
-  
+
   .main-nav {
     display: flex;
     gap: var(--df-spacing-md);
-    
+
     .nav-item {
       display: flex;
       align-items: center;
@@ -156,35 +156,35 @@ const handleLogout = () => {
       text-decoration: none;
       border-radius: var(--df-radius-md);
       transition: all 0.2s ease;
-      
+
       &:hover {
         color: var(--df-text-primary);
         background: rgba(139, 92, 246, 0.1);
       }
-      
+
       &.router-link-active {
         color: var(--df-accent-primary);
         background: rgba(139, 92, 246, 0.15);
       }
-      
+
       span {
         font-weight: 500;
       }
     }
   }
-  
+
   .header-right {
     .user-menu {
       display: flex;
       align-items: center;
       gap: var(--df-spacing-xs);
       color: var(--df-text-primary);
-      
+
       .username {
         font-weight: 500;
       }
     }
-    
+
     .login-btn {
       text-decoration: none;
     }
@@ -193,7 +193,7 @@ const handleLogout = () => {
 
 .app-main {
   min-height: 100vh;
-  
+
   &.with-header {
     padding-top: 64px;
   }
@@ -205,7 +205,7 @@ const handleLogout = () => {
     .header-content {
       padding: 0 var(--df-spacing-md);
     }
-    
+
     .main-nav {
       display: none; // 在移动端隐藏导航，可以后续添加移动端菜单
     }
@@ -218,7 +218,7 @@ const handleLogout = () => {
       .app-title {
         font-size: var(--df-font-size-lg);
       }
-      
+
       .user-menu .username {
         display: none;
       }

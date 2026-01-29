@@ -20,8 +20,8 @@ class TestStability:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -58,7 +58,7 @@ class TestStability:
         end_time = time.time()
         elapsed = end_time - start_time
 
-        print(f"\n长时间运行测试完成:")
+        print("\n长时间运行测试完成:")
         print(f"  运行时间: {elapsed:.2f}秒")
         print(f"  总迭代: {iterations}")
         print(f"  错误数: {errors}")
@@ -109,7 +109,7 @@ class TestStability:
         total_generated = sum(r[0] for r in results)
         total_errors = sum(r[1] for r in results)
 
-        print(f"\n并发稳定性测试完成:")
+        print("\n并发稳定性测试完成:")
         print(f"  工作线程: {num_workers}")
         print(f"  每线程迭代: {iterations_per_worker}")
         print(f"  总生成: {total_generated}")
@@ -146,7 +146,7 @@ class TestStability:
             if (i + 1) % 20 == 0:
                 print(f"\n已创建和销毁 {i + 1} 个生成器")
 
-        print(f"\n资源清理测试完成")
+        print("\n资源清理测试完成")
 
     def test_error_recovery(self):
         """测试错误恢复"""
@@ -174,7 +174,7 @@ class TestStability:
         names2 = [generator.generate_single() for _ in range(100)]
         assert len(names2) == 100
 
-        print(f"\n错误恢复测试完成")
+        print("\n错误恢复测试完成")
 
     def test_repeated_operations(self):
         """测试重复操作稳定性"""
@@ -201,4 +201,4 @@ class TestStability:
             if (i + 1) % 10 == 0:
                 print(f"\n完成 {i + 1} 轮重复操作")
 
-        print(f"\n重复操作稳定性测试完成")
+        print("\n重复操作稳定性测试完成")

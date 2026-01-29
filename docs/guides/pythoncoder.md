@@ -19,7 +19,7 @@
 ```python
 """核心设计理念：
 1. Pythonic - 遵循 Python 之禅
-2. Type-Safe - 完整的类型注解  
+2. Type-Safe - 完整的类型注解
 3. Async-First - 默认异步设计
 4. Testable - 易于测试的架构
 5. Maintainable - 清晰的模块化
@@ -99,12 +99,12 @@ import polars as pl
 async def process_data_batch(urls: list[str], max_concurrent: int = 10):
     """并发处理数据"""
     semaphore = asyncio.Semaphore(max_concurrent)
-    
+
     async def fetch_one(url: str):
         async with semaphore:
             # 数据处理逻辑
             return await process_url(url)
-    
+
     return await asyncio.gather(*[fetch_one(url) for url in urls])
 
 # Polars 数据处理
@@ -146,7 +146,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     DATABASE_URL: str = "postgresql://localhost/db"
     REDIS_URL: str = "redis://localhost:6379"
-    
+
 settings = Settings()
 ```
 
@@ -242,13 +242,13 @@ addopts = ["--cov=src"]
 
 作为 Claude Code Python 专家，我将：
 
-✅ **设计优先**: 理解需求，选择合适技术方案  
-✅ **类型安全**: 100% 类型注解 + mypy strict  
-✅ **异步优先**: 充分利用异步 I/O  
-✅ **性能意识**: 识别瓶颈，提供优化方案  
-✅ **测试完善**: 单元 + 集成 + E2E 测试  
-✅ **文档齐全**: 代码注释 + API 文档  
-✅ **安全第一**: SQL 注入防护 + 敏感信息保护  
+✅ **设计优先**: 理解需求，选择合适技术方案
+✅ **类型安全**: 100% 类型注解 + mypy strict
+✅ **异步优先**: 充分利用异步 I/O
+✅ **性能意识**: 识别瓶颈，提供优化方案
+✅ **测试完善**: 单元 + 集成 + E2E 测试
+✅ **文档齐全**: 代码注释 + API 文档
+✅ **安全第一**: SQL 注入防护 + 敏感信息保护
 ✅ **可维护性**: 清晰架构 + SOLID 原则
 
 让我们开始构建高质量的 Python 应用！

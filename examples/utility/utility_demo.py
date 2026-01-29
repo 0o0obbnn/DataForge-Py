@@ -67,7 +67,7 @@ def parameter_configuration():
         {"structure": "simple", "depth": 1},
         {"structure": "nested", "depth": 3},
         {"structure": "array", "array_size": 5},
-        {"structure": "mixed", "depth": 2, "array_size": 3}
+        {"structure": "mixed", "depth": 2, "array_size": 3},
     ]
     for i, params in enumerate(json_configs, 1):
         config = GeneratorConfig("json_generator", parameters=params)
@@ -84,7 +84,7 @@ def parameter_configuration():
         {"root_tag": "user", "include_attributes": True},
         {"root_tag": "product", "include_attributes": False},
         {"root_tag": "order", "include_attributes": True, "depth": 2},
-        {"root_tag": "data", "include_cdata": True}
+        {"root_tag": "data", "include_cdata": True},
     ]
     for i, params in enumerate(xml_configs, 1):
         config = GeneratorConfig("xml_generator", parameters=params)
@@ -101,7 +101,7 @@ def parameter_configuration():
         {"format": "simple", "depth": 1},
         {"format": "nested", "depth": 3},
         {"format": "array", "array_size": 3},
-        {"format": "complex", "depth": 2, "include_lists": True}
+        {"format": "complex", "depth": 2, "include_lists": True},
     ]
     for i, params in enumerate(yaml_configs, 1):
         config = GeneratorConfig("yaml_generator", parameters=params)
@@ -118,7 +118,7 @@ def parameter_configuration():
         {"file_type": "image", "include_metadata": True},
         {"file_type": "video", "include_metadata": True},
         {"file_type": "audio", "include_metadata": False},
-        {"file_type": "document", "include_metadata": True}
+        {"file_type": "document", "include_metadata": True},
     ]
     for i, params in enumerate(media_configs, 1):
         config = GeneratorConfig("media_file", parameters=params)
@@ -136,13 +136,19 @@ def batch_generation():
     print("\n批量生成实用工具数据:")
 
     # 创建生成器
-    json_config = GeneratorConfig("json_generator", parameters={"structure": "mixed", "depth": 2})
+    json_config = GeneratorConfig(
+        "json_generator", parameters={"structure": "mixed", "depth": 2}
+    )
     json_gen = default_factory.create_generator(json_config)
 
-    xml_config = GeneratorConfig("xml_generator", parameters={"root_tag": "item", "include_attributes": True})
+    xml_config = GeneratorConfig(
+        "xml_generator", parameters={"root_tag": "item", "include_attributes": True}
+    )
     xml_gen = default_factory.create_generator(xml_config)
 
-    yaml_config = GeneratorConfig("yaml_generator", parameters={"format": "nested", "depth": 2})
+    yaml_config = GeneratorConfig(
+        "yaml_generator", parameters={"format": "nested", "depth": 2}
+    )
     yaml_gen = default_factory.create_generator(yaml_config)
 
     media_config = GeneratorConfig("media_file", parameters={"include_metadata": True})
@@ -157,21 +163,41 @@ def batch_generation():
             "xml_data": xml_gen.generate(),
             "yaml_data": yaml_gen.generate(),
             "media_data": media_gen.generate(),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         utility_data.append(data)
 
     # 打印实用工具数据
     print("-" * 120)
-    print(f"{'ID':<8} | {'JSON数据':<30} | {'XML数据':<30} | {'YAML数据':<30} | {'媒体数据'}")
+    print(
+        f"{'ID':<8} | {'JSON数据':<30} | {'XML数据':<30} | {'YAML数据':<30} | {'媒体数据'}"
+    )
     print("-" * 120)
     for data in utility_data:
-        json_short = data["json_data"][:28] + ".." if len(data["json_data"]) > 30 else data["json_data"]
-        xml_short = data["xml_data"][:28] + ".." if len(data["xml_data"]) > 30 else data["xml_data"]
-        yaml_short = data["yaml_data"][:28] + ".." if len(data["yaml_data"]) > 30 else data["yaml_data"]
-        media_short = str(data["media_data"])[:38] + ".." if len(str(data["media_data"])) > 40 else str(data["media_data"])
+        json_short = (
+            data["json_data"][:28] + ".."
+            if len(data["json_data"]) > 30
+            else data["json_data"]
+        )
+        xml_short = (
+            data["xml_data"][:28] + ".."
+            if len(data["xml_data"]) > 30
+            else data["xml_data"]
+        )
+        yaml_short = (
+            data["yaml_data"][:28] + ".."
+            if len(data["yaml_data"]) > 30
+            else data["yaml_data"]
+        )
+        media_short = (
+            str(data["media_data"])[:38] + ".."
+            if len(str(data["media_data"])) > 40
+            else str(data["media_data"])
+        )
 
-        print(f"{data['id']:<8} | {json_short:<30} | {xml_short:<30} | {yaml_short:<30} | {media_short}")
+        print(
+            f"{data['id']:<8} | {json_short:<30} | {xml_short:<30} | {yaml_short:<30} | {media_short}"
+        )
     print("-" * 120)
 
 
@@ -206,7 +232,7 @@ def validation_examples():
     for i in range(3):
         xml_str = generator.generate()
         is_valid = generator.validate(xml_str)
-        has_xml_tag = xml_str.strip().startswith('<') and xml_str.strip().endswith('>')
+        has_xml_tag = xml_str.strip().startswith("<") and xml_str.strip().endswith(">")
         print(f"  {i+1}. {xml_str[:50]}...")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     XML标签: {'✅ 是' if has_xml_tag else '❌ 否'}")
@@ -219,7 +245,7 @@ def validation_examples():
     for i in range(3):
         yaml_str = generator.generate()
         is_valid = generator.validate(yaml_str)
-        has_yaml_structure = ':' in yaml_str or '-' in yaml_str
+        has_yaml_structure = ":" in yaml_str or "-" in yaml_str
         print(f"  {i+1}. {yaml_str[:50]}...")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     YAML结构: {'✅ 是' if has_yaml_structure else '❌ 否'}")
@@ -232,7 +258,7 @@ def validation_examples():
     for i in range(3):
         media_data = generator.generate()
         is_valid = generator.validate(media_data)
-        has_file_extension = '.' in str(media_data)
+        has_file_extension = "." in str(media_data)
         print(f"  {i+1}. {media_data}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     文件扩展名: {'✅ 有' if has_file_extension else '❌ 无'}")
@@ -294,31 +320,40 @@ def best_practices():
 
     # JSON配置文件
     json_config_gen = default_factory.create_generator(
-        GeneratorConfig("json_generator", parameters={
-            "structure": "nested",
-            "depth": 3,
-            "include_types": ["string", "number", "boolean", "array"]
-        })
+        GeneratorConfig(
+            "json_generator",
+            parameters={
+                "structure": "nested",
+                "depth": 3,
+                "include_types": ["string", "number", "boolean", "array"],
+            },
+        )
     )
 
     # XML配置文件
     xml_config_gen = default_factory.create_generator(
-        GeneratorConfig("xml_generator", parameters={
-            "root_tag": "configuration",
-            "include_attributes": True,
-            "include_cdata": True,
-            "depth": 2
-        })
+        GeneratorConfig(
+            "xml_generator",
+            parameters={
+                "root_tag": "configuration",
+                "include_attributes": True,
+                "include_cdata": True,
+                "depth": 2,
+            },
+        )
     )
 
     # YAML配置文件
     yaml_config_gen = default_factory.create_generator(
-        GeneratorConfig("yaml_generator", parameters={
-            "format": "complex",
-            "depth": 2,
-            "include_lists": True,
-            "include_mappings": True
-        })
+        GeneratorConfig(
+            "yaml_generator",
+            parameters={
+                "format": "complex",
+                "depth": 2,
+                "include_lists": True,
+                "include_mappings": True,
+            },
+        )
     )
 
     print("  配置文件示例:")
@@ -335,18 +370,23 @@ def best_practices():
     for media_type in media_types:
         for i in range(3):
             media_gen = default_factory.create_generator(
-                GeneratorConfig("media_file", parameters={
-                    "file_type": media_type,
-                    "include_metadata": True,
-                    "include_thumbnails": True
-                })
+                GeneratorConfig(
+                    "media_file",
+                    parameters={
+                        "file_type": media_type,
+                        "include_metadata": True,
+                        "include_thumbnails": True,
+                    },
+                )
             )
             media_info = media_gen.generate()
-            media_metadata.append({
-                "type": media_type,
-                "info": media_info,
-                "generated_at": datetime.now().isoformat()
-            })
+            media_metadata.append(
+                {
+                    "type": media_type,
+                    "info": media_info,
+                    "generated_at": datetime.now().isoformat(),
+                }
+            )
 
     print("  媒体元数据:")
     for item in media_metadata[:6]:  # 只显示前6条
@@ -374,7 +414,7 @@ def best_practices():
         ).generate(),
         "active": default_factory.create_generator(
             GeneratorConfig("boolean", parameters={"true_probability": 0.7})
-        ).generate()
+        ).generate(),
     }
 
     # 转换为不同格式
@@ -411,7 +451,9 @@ def utility_demo():
 
     api_response = {
         "status": default_factory.create_generator(
-            GeneratorConfig("enum", parameters={"options": ["success", "error", "pending"]})
+            GeneratorConfig(
+                "enum", parameters={"options": ["success", "error", "pending"]}
+            )
         ).generate(),
         "code": default_factory.create_generator(
             GeneratorConfig("integer", parameters={"min": 200, "max": 599})
@@ -419,22 +461,30 @@ def utility_demo():
         "message": default_factory.create_generator(
             GeneratorConfig("chinese_text", parameters={"length": 30})
         ).generate(),
-        "data": json.loads(default_factory.create_generator(
-            GeneratorConfig("json_generator", parameters={"structure": "nested", "depth": 2})
-        ).generate()),
+        "data": json.loads(
+            default_factory.create_generator(
+                GeneratorConfig(
+                    "json_generator", parameters={"structure": "nested", "depth": 2}
+                )
+            ).generate()
+        ),
         "metadata": {
             "timestamp": datetime.now().isoformat(),
             "version": "1.0.0",
             "request_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 16, "type": "alphanumeric"})
-            ).generate()
-        }
+                GeneratorConfig(
+                    "string", parameters={"length": 16, "type": "alphanumeric"}
+                )
+            ).generate(),
+        },
     }
 
     print(f"  状态: {api_response['status']}")
     print(f"  代码: {api_response['code']}")
     print(f"  消息: {api_response['message']}")
-    print(f"  数据键: {list(api_response['data'].keys()) if isinstance(api_response['data'], dict) else 'N/A'}")
+    print(
+        f"  数据键: {list(api_response['data'].keys()) if isinstance(api_response['data'], dict) else 'N/A'}"
+    )
     print(f"  请求ID: {api_response['metadata']['request_id']}")
 
     # 生成配置文件
@@ -443,11 +493,10 @@ def utility_demo():
     config_types = ["development", "testing", "production"]
     for config_type in config_types:
         config_content = default_factory.create_generator(
-            GeneratorConfig("yaml_generator", parameters={
-                "format": "complex",
-                "depth": 3,
-                "include_lists": True
-            })
+            GeneratorConfig(
+                "yaml_generator",
+                parameters={"format": "complex", "depth": 3, "include_lists": True},
+            )
         ).generate()
 
         print(f"  {config_type.title()} 配置:")
@@ -465,18 +514,23 @@ def utility_demo():
                 "id": f"{category[: -1]}_{i+1:03d}",
                 "category": category,
                 "file_info": default_factory.create_generator(
-                    GeneratorConfig("media_file", parameters={
-                        "file_type": category[: -1],
-                        "include_metadata": True
-                    })
+                    GeneratorConfig(
+                        "media_file",
+                        parameters={
+                            "file_type": category[:-1],
+                            "include_metadata": True,
+                        },
+                    )
                 ).generate(),
                 "tags": [
                     default_factory.create_generator(
-                        GeneratorConfig("string", parameters={"length": 6, "type": "alphabetic"})
+                        GeneratorConfig(
+                            "string", parameters={"length": 6, "type": "alphabetic"}
+                        )
                     ).generate()
                     for _ in range(3)
                 ],
-                "created_at": (datetime.now() - timedelta(days=i+1)).isoformat()
+                "created_at": (datetime.now() - timedelta(days=i + 1)).isoformat(),
             }
             media_library.append(media_item)
 
@@ -504,41 +558,42 @@ def utility_demo():
                 ).generate(),
                 "email": default_factory.create_generator(
                     GeneratorConfig("email", parameters={})
-                ).generate()
+                ).generate(),
             }
             for _ in range(2)
         ],
         "products": [
             {
                 "id": default_factory.create_generator(
-                    GeneratorConfig("string", parameters={"length": 8, "type": "alphanumeric"})
+                    GeneratorConfig(
+                        "string", parameters={"length": 8, "type": "alphanumeric"}
+                    )
                 ).generate(),
                 "name": default_factory.create_generator(
                     GeneratorConfig("chinese_text", parameters={"length": 15})
                 ).generate(),
                 "price": default_factory.create_generator(
-                    GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
-                ).generate()
+                    GeneratorConfig(
+                        "decimal",
+                        parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2},
+                    )
+                ).generate(),
             }
             for _ in range(2)
-        ]
+        ],
     }
 
     # 转换为不同格式
     json_data = json.dumps(sample_data, ensure_ascii=False, indent=2)
 
     xml_data = default_factory.create_generator(
-        GeneratorConfig("xml_generator", parameters={
-            "root_tag": "data",
-            "include_attributes": True
-        })
+        GeneratorConfig(
+            "xml_generator", parameters={"root_tag": "data", "include_attributes": True}
+        )
     ).generate()
 
     yaml_data = default_factory.create_generator(
-        GeneratorConfig("yaml_generator", parameters={
-            "format": "complex",
-            "depth": 2
-        })
+        GeneratorConfig("yaml_generator", parameters={"format": "complex", "depth": 2})
     ).generate()
 
     print(f"  JSON格式 ({len(json_data)} 字符):")
@@ -577,6 +632,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

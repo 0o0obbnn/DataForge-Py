@@ -59,10 +59,10 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
         self.include_user_agent = True
         self.include_cookies = False
         self.include_auth = False
-        self.custom_headers = {}
+        self.custom_headers: dict[str, str] = {}
         self.min_headers = 3
         self.max_headers = 10
-        self.validator = None
+        self.validator: HTTPHeaderValidator | None = None
 
         # 常见HTTP请求头
         self.common_request_headers = {
@@ -253,7 +253,7 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
 
     def get_header_info(self, headers: dict[str, str]) -> dict[str, Any]:
         """获取HTTP头信息"""
-        info = {
+        info: dict[str, Any] = {
             "total_headers": len(headers),
             "header_types": {},
             "has_auth": False,
@@ -261,6 +261,8 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
             "content_type": None,
             "user_agent": None,
         }
+        header_types: dict[str, int] = {}  # 明确类型
+        info["header_types"] = header_types
 
         for key, value in headers.items():
             key_lower = key.lower()
@@ -334,9 +336,6 @@ class HTTPHeaderGenerator(DataGenerator[dict[str, str]]):
 
 class GenericHTTPHeaderGenerator(HTTPHeaderGenerator):
     """通用HTTP头生成器注册版本"""
-
-    # 添加类型提示以避免 Pylance 错误
-    validator: HTTPHeaderValidator | None
 
     def generate_single(
         self, context: GenerationContext | None = None

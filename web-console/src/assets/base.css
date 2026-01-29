@@ -6,18 +6,18 @@
   /* 主色调 (Primary/Base) */
   --df-primary-bg: #1A1A2E;         /* 深空蓝 - 背景主色 */
   --df-secondary-bg: #282845;       /* 深邃紫 - 卡片、面板背景 */
-  
+
   /* 辅助色 (Accent/Interactive) */
   --df-accent-primary: #8E5DFF;     /* 未来紫 - 主要交互色 */
   --df-accent-success: #00E676;     /* 霓虹绿 - 成功提示 */
   --df-accent-error: #FF5252;       /* 警告红 - 错误提示 */
   --df-accent-warning: #FFC107;     /* 提示黄 - 警告状态 */
-  
+
   /* 中性色 (Neutral) */
   --df-text-primary: #E0E0E0;       /* 亮灰 - 主要文本 */
   --df-text-secondary: #B0B0B0;     /* 中灰 - 次要文本 */
   --df-text-disabled: #4A4A6D;      /* 暗灰 - 禁用状态 */
-  
+
   /* 间距系统 - 基于8px栅格 */
   --df-spacing-xs: 4px;
   --df-spacing-sm: 8px;
@@ -25,11 +25,11 @@
   --df-spacing-lg: 24px;
   --df-spacing-xl: 32px;
   --df-spacing-2xl: 40px;
-  
+
   /* 字体系统 */
   --df-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --df-font-family-code: 'JetBrains Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
-  
+
   --df-font-size-xs: 12px;
   --df-font-size-sm: 14px;
   --df-font-size-base: 16px;
@@ -37,24 +37,24 @@
   --df-font-size-xl: 20px;
   --df-font-size-2xl: 24px;
   --df-font-size-3xl: 32px;
-  
+
   /* 圆角系统 */
   --df-radius-sm: 4px;
   --df-radius-md: 6px;
   --df-radius-lg: 8px;
   --df-radius-xl: 12px;
-  
+
   /* 阴影系统 */
   --df-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.15);
   --df-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.2);
   --df-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.25);
   --df-shadow-glow: 0 0 20px rgba(142, 93, 255, 0.3);
-  
+
   /* 过渡动画 */
   --df-transition-fast: all 0.15s ease;
   --df-transition-base: all 0.3s ease;
   --df-transition-slow: all 0.5s ease;
-  
+
   /* Z-index系统 */
   --df-z-dropdown: 1000;
   --df-z-sticky: 1020;

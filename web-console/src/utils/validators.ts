@@ -142,8 +142,8 @@ export function validateFileType(file: File, allowedTypes: string[]): boolean {
   const fileType = file.type
   const fileName = file.name
   const fileExtension = fileName.split('.').pop()?.toLowerCase()
-  
-  return allowedTypes.some(type => 
+
+  return allowedTypes.some(type =>
     fileType.includes(type) || (fileExtension && type.includes(fileExtension))
   )
 }
@@ -231,24 +231,3 @@ export function validateDateRange(startDate: string, endDate: string): boolean {
   const end = new Date(endDate)
   return start <= end
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

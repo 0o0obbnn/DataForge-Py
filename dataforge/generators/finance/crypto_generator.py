@@ -5,7 +5,7 @@
 """
 
 import secrets
-from typing import Any, Union
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GenerationContext
@@ -13,7 +13,7 @@ from ...core.types import GeneratorType
 
 
 @register_generator("crypto", aliases=["cryptocurrency"])
-class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
+class CryptoGenerator(DataGenerator[str | dict[str, Any]]):
     """通用加密货币数据生成器"""
 
     def _setup(self) -> None:
@@ -104,7 +104,7 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         """生成加密货币符号"""
         return secrets.choice(self.crypto_symbols)
 
-    def _generate_price(self) -> str | dict[str, Any]:
+    def _generate_price(self) -> str:
         """生成加密货币价格"""
         # 生成随机价格，范围从0.01到100000
         price_range = secrets.choice(
@@ -150,7 +150,8 @@ class CryptoGenerator(DataGenerator[Union[str, dict[str, Any]]]):
         """生成完整的加密货币数据"""
         symbol = self._generate_symbol()
         name = self.crypto_names.get(symbol, symbol)
-        price = self._generate_price()
+        price_str = self._generate_price()
+        price = float(price_str)
 
         # 生成市值和交易量
         market_cap = round(price * secrets.randbelow(1000000000) + 100000000, 2)

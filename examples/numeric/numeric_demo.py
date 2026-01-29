@@ -71,7 +71,7 @@ def parameter_configuration():
         {"min": 0, "max": 10},
         {"min": 100, "max": 200},
         {"min": -50, "max": 50},
-        {"min": 1000, "max": 2000}
+        {"min": 1000, "max": 2000},
     ]
     for i, params in enumerate(int_configs, 1):
         config = GeneratorConfig("integer", parameters=params)
@@ -87,7 +87,7 @@ def parameter_configuration():
         {"type": "float", "min": -100.0, "max": 100.0},
         {"type": "float", "decimal_places": 2},
         {"type": "float", "decimal_places": 4},
-        {"type": "float", "decimal_places": 6}
+        {"type": "float", "decimal_places": 6},
     ]
     for i, params in enumerate(float_configs, 1):
         config = GeneratorConfig("number", parameters=params)
@@ -103,7 +103,7 @@ def parameter_configuration():
         {"min": 0, "max": 1000, "decimal_places": 3},
         {"min": -100, "max": 100, "decimal_places": 4},
         {"decimal_places": 1},
-        {"decimal_places": 5}
+        {"decimal_places": 5},
     ]
     for i, params in enumerate(decimal_configs, 1):
         config = GeneratorConfig("decimal", parameters=params)
@@ -119,7 +119,7 @@ def parameter_configuration():
         {"min": 0, "max": 1},
         {"min": -50, "max": 50},
         {"precision": 1},
-        {"precision": 3}
+        {"precision": 3},
     ]
     for i, params in enumerate(percent_configs, 1):
         config = GeneratorConfig("percentage", parameters=params)
@@ -135,7 +135,7 @@ def parameter_configuration():
         {"min_exponent": -10, "max_exponent": 10},
         {"precision": 2},
         {"precision": 4},
-        {"precision": 6}
+        {"precision": 6},
     ]
     for i, params in enumerate(scientific_configs, 1):
         config = GeneratorConfig("scientific", parameters=params)
@@ -157,15 +157,22 @@ def batch_generation():
     int_gen = default_factory.create_generator(int_config)
 
     # 生成浮点数
-    float_config = GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 1.0, "decimal_places": 3})
+    float_config = GeneratorConfig(
+        "number",
+        parameters={"type": "float", "min": 0.0, "max": 1.0, "decimal_places": 3},
+    )
     float_gen = default_factory.create_generator(float_config)
 
     # 生成小数
-    decimal_config = GeneratorConfig("decimal", parameters={"min": 0, "max": 1000, "decimal_places": 2})
+    decimal_config = GeneratorConfig(
+        "decimal", parameters={"min": 0, "max": 1000, "decimal_places": 2}
+    )
     decimal_gen = default_factory.create_generator(decimal_config)
 
     # 生成百分比
-    percent_config = GeneratorConfig("percentage", parameters={"min": 0, "max": 100, "precision": 1})
+    percent_config = GeneratorConfig(
+        "percentage", parameters={"min": 0, "max": 100, "precision": 1}
+    )
     percent_gen = default_factory.create_generator(percent_config)
 
     # 生成科学计数法
@@ -182,16 +189,20 @@ def batch_generation():
             "decimal": decimal_gen.generate(),
             "percentage": percent_gen.generate(),
             "scientific": scientific_gen.generate(),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         numeric_data.append(data)
 
     # 打印数值数据
     print("-" * 100)
-    print(f"{'ID':<4} | {'整数':<8} | {'浮点数':<10} | {'小数':<12} | {'百分比':<10} | {'科学计数法'}")
+    print(
+        f"{'ID':<4} | {'整数':<8} | {'浮点数':<10} | {'小数':<12} | {'百分比':<10} | {'科学计数法'}"
+    )
     print("-" * 100)
     for data in numeric_data:
-        print(f"{data['id']:<4} | {data['integer']:<8} | {data['float']:<10} | {data['decimal']:<12} | {data['percentage']:<10} | {data['scientific']}")
+        print(
+            f"{data['id']:<4} | {data['integer']:<8} | {data['float']:<10} | {data['decimal']:<12} | {data['percentage']:<10} | {data['scientific']}"
+        )
     print("-" * 100)
 
 
@@ -215,7 +226,9 @@ def validation_examples():
 
     # 浮点数验证
     print("\n浮点数格式验证:")
-    config = GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 1.0})
+    config = GeneratorConfig(
+        "number", parameters={"type": "float", "min": 0.0, "max": 1.0}
+    )
     generator = default_factory.create_generator(config)
 
     for i in range(3):
@@ -228,19 +241,23 @@ def validation_examples():
 
     # 小数验证
     print("\n小数格式验证:")
-    config = GeneratorConfig("decimal", parameters={"min": 0, "max": 100, "decimal_places": 2})
+    config = GeneratorConfig(
+        "decimal", parameters={"min": 0, "max": 100, "decimal_places": 2}
+    )
     generator = default_factory.create_generator(config)
 
     for i in range(3):
         num = generator.generate()
         is_valid = generator.validate(num)
         in_range = 0 <= num <= 100
-        decimal_places = len(str(num).split('.')[-1]) if '.' in str(num) else 0
+        decimal_places = len(str(num).split(".")[-1]) if "." in str(num) else 0
         correct_places = decimal_places <= 2
         print(f"  {i+1}. {num}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
-        print(f"     小数位数: {decimal_places} (≤2: {'✅' if correct_places else '❌'})")
+        print(
+            f"     小数位数: {decimal_places} (≤2: {'✅' if correct_places else '❌'})"
+        )
 
     # 百分比验证
     print("\n百分比格式验证:")
@@ -251,7 +268,7 @@ def validation_examples():
         percent = generator.generate()
         is_valid = generator.validate(percent)
         try:
-            value = float(percent.rstrip('%'))
+            value = float(percent.rstrip("%"))
             in_range = 0 <= value <= 100
         except:
             in_range = False
@@ -267,7 +284,7 @@ def validation_examples():
     for i in range(3):
         scientific = generator.generate()
         is_valid = generator.validate(scientific)
-        has_e = 'e' in scientific.lower()
+        has_e = "e" in scientific.lower()
         print(f"  {i+1}. {scientific}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '❌ 无效'}")
         print(f"     科学计数法: {'✅ 是' if has_e else '❌ 否'}")
@@ -291,7 +308,9 @@ def error_handling():
     # 处理无效的浮点数精度
     print("\n处理无效的浮点数精度:")
     try:
-        config = GeneratorConfig("number", parameters={"type": "float", "decimal_places": -1})
+        config = GeneratorConfig(
+            "number", parameters={"type": "float", "decimal_places": -1}
+        )
         generator = default_factory.create_generator(config)
         result = generator.generate()
         print(f"  生成的浮点数: {result}")
@@ -340,31 +359,31 @@ def best_practices():
         "integer_settings": {
             "default_range": {"min": 0, "max": 100},
             "max_range": {"min": -1000000, "max": 1000000},
-            "allow_custom_range": True
+            "allow_custom_range": True,
         },
         "float_settings": {
             "default_range": {"min": 0.0, "max": 1.0},
             "default_precision": 6,
             "max_precision": 15,
-            "allow_custom_precision": True
+            "allow_custom_precision": True,
         },
         "decimal_settings": {
             "default_range": {"min": 0, "max": 100},
             "default_decimal_places": 2,
             "max_decimal_places": 10,
-            "allow_custom_places": True
+            "allow_custom_places": True,
         },
         "percentage_settings": {
             "default_range": {"min": 0, "max": 100},
             "default_precision": 2,
-            "allow_custom_range": True
+            "allow_custom_range": True,
         },
         "scientific_settings": {
             "default_precision": 6,
             "min_exponent": -20,
             "max_exponent": 20,
-            "allow_custom_exponent": True
-        }
+            "allow_custom_exponent": True,
+        },
     }
 
     print("  数值配置:")
@@ -385,63 +404,138 @@ def best_practices():
             "record_id": f"numeric_{i+1:03d}",
             "measurements": {
                 "temperature": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": -50.0, "max": 50.0, "decimal_places": 1})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": -50.0,
+                            "max": 50.0,
+                            "decimal_places": 1,
+                        },
+                    )
                 ).generate(),
                 "humidity": default_factory.create_generator(
-                    GeneratorConfig("percentage", parameters={"min": 0, "max": 100, "precision": 1})
+                    GeneratorConfig(
+                        "percentage", parameters={"min": 0, "max": 100, "precision": 1}
+                    )
                 ).generate(),
                 "pressure": default_factory.create_generator(
-                    GeneratorConfig("decimal", parameters={"min": 900, "max": 1100, "decimal_places": 2})
+                    GeneratorConfig(
+                        "decimal",
+                        parameters={"min": 900, "max": 1100, "decimal_places": 2},
+                    )
                 ).generate(),
                 "wind_speed": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 2})
-                ).generate()
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.0,
+                            "max": 100.0,
+                            "decimal_places": 2,
+                        },
+                    )
+                ).generate(),
             },
             "statistics": {
                 "count": default_factory.create_generator(
                     GeneratorConfig("integer", parameters={"min": 1, "max": 1000})
                 ).generate(),
                 "mean": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.0,
+                            "max": 100.0,
+                            "decimal_places": 3,
+                        },
+                    )
                 ).generate(),
                 "median": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.0,
+                            "max": 100.0,
+                            "decimal_places": 3,
+                        },
+                    )
                 ).generate(),
                 "std_dev": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 50.0, "decimal_places": 3})
-                ).generate()
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.0,
+                            "max": 50.0,
+                            "decimal_places": 3,
+                        },
+                    )
+                ).generate(),
             },
             "financial": {
                 "price": default_factory.create_generator(
-                    GeneratorConfig("decimal", parameters={"min": 0.01, "max": 10000.0, "decimal_places": 2})
+                    GeneratorConfig(
+                        "decimal",
+                        parameters={"min": 0.01, "max": 10000.0, "decimal_places": 2},
+                    )
                 ).generate(),
                 "change": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": -100.0, "max": 100.0, "decimal_places": 2})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": -100.0,
+                            "max": 100.0,
+                            "decimal_places": 2,
+                        },
+                    )
                 ).generate(),
                 "change_percent": default_factory.create_generator(
-                    GeneratorConfig("percentage", parameters={"min": -100, "max": 100, "precision": 2})
+                    GeneratorConfig(
+                        "percentage",
+                        parameters={"min": -100, "max": 100, "precision": 2},
+                    )
                 ).generate(),
                 "volume": default_factory.create_generator(
-                    GeneratorConfig("integer", parameters={"min": 1000, "max": 10000000})
-                ).generate()
+                    GeneratorConfig(
+                        "integer", parameters={"min": 1000, "max": 10000000}
+                    )
+                ).generate(),
             },
             "scientific": {
                 "atomic_mass": default_factory.create_generator(
                     GeneratorConfig("scientific", parameters={"precision": 6})
                 ).generate(),
                 "planetary_distance": default_factory.create_generator(
-                    GeneratorConfig("scientific", parameters={"min_exponent": 6, "max_exponent": 12, "precision": 4})
+                    GeneratorConfig(
+                        "scientific",
+                        parameters={
+                            "min_exponent": 6,
+                            "max_exponent": 12,
+                            "precision": 4,
+                        },
+                    )
                 ).generate(),
                 "quantum_energy": default_factory.create_generator(
-                    GeneratorConfig("scientific", parameters={"min_exponent": -20, "max_exponent": -10, "precision": 3})
-                ).generate()
+                    GeneratorConfig(
+                        "scientific",
+                        parameters={
+                            "min_exponent": -20,
+                            "max_exponent": -10,
+                            "precision": 3,
+                        },
+                    )
+                ).generate(),
             },
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
                 "generator_version": "1.0.0",
                 "data_purpose": "testing",
-                "quality_score": 0.95
-            }
+                "quality_score": 0.95,
+            },
         }
         numeric_data.append(numeric_record)
 
@@ -460,63 +554,170 @@ def numeric_demo():
     print("\n统计报告:")
     stats_report = {
         "report_id": default_factory.create_generator(
-            GeneratorConfig("string", parameters={"length": 8, "type": "alphanumeric", "prefix": "STAT_"})
+            GeneratorConfig(
+                "string",
+                parameters={"length": 8, "type": "alphanumeric", "prefix": "STAT_"},
+            )
         ).generate(),
         "sample_size": default_factory.create_generator(
             GeneratorConfig("integer", parameters={"min": 100, "max": 10000})
         ).generate(),
         "metrics": {
             "mean": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "median": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "mode": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "std_dev": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 50.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 50.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "variance": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 2500.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 2500.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "skewness": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": -5.0, "max": 5.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": -5.0,
+                        "max": 5.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "kurtosis": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": -5.0, "max": 10.0, "decimal_places": 3})
-            ).generate()
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": -5.0,
+                        "max": 10.0,
+                        "decimal_places": 3,
+                    },
+                )
+            ).generate(),
         },
         "percentiles": {
             "p25": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "p50": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "p75": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "p90": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "p95": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
             ).generate(),
             "p99": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 100.0, "decimal_places": 3})
-            ).generate()
-        }
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 0.0,
+                        "max": 100.0,
+                        "decimal_places": 3,
+                    },
+                )
+            ).generate(),
+        },
     }
 
     print(f"  报告ID: {stats_report['report_id']}")
     print(f"  样本大小: {stats_report['sample_size']}")
     print("  指标:")
-    for key, value in stats_report['metrics'].items():
+    for key, value in stats_report["metrics"].items():
         print(f"    {key}: {value}")
     print("  百分位数:")
-    for key, value in stats_report['percentiles'].items():
+    for key, value in stats_report["percentiles"].items():
         print(f"    {key}: {value}")
 
     # 生成财务数据
@@ -526,29 +727,58 @@ def numeric_demo():
     for i in range(3):
         stock = {
             "symbol": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 4, "type": "alphabetic", "prefix": "STK_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 4, "type": "alphabetic", "prefix": "STK_"},
+                )
             ).generate(),
             "price": default_factory.create_generator(
-                GeneratorConfig("decimal", parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "decimal",
+                    parameters={"min": 10.0, "max": 1000.0, "decimal_places": 2},
+                )
             ).generate(),
             "change": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": -50.0, "max": 50.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": -50.0,
+                        "max": 50.0,
+                        "decimal_places": 2,
+                    },
+                )
             ).generate(),
             "change_percent": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": -20, "max": 20, "precision": 2})
+                GeneratorConfig(
+                    "percentage", parameters={"min": -20, "max": 20, "precision": 2}
+                )
             ).generate(),
             "volume": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 10000, "max": 10000000})
             ).generate(),
             "market_cap": default_factory.create_generator(
-                GeneratorConfig("scientific", parameters={"min_exponent": 9, "max_exponent": 12, "precision": 4})
+                GeneratorConfig(
+                    "scientific",
+                    parameters={"min_exponent": 9, "max_exponent": 12, "precision": 4},
+                )
             ).generate(),
             "pe_ratio": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 5.0, "max": 100.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 5.0,
+                        "max": 100.0,
+                        "decimal_places": 2,
+                    },
+                )
             ).generate(),
             "dividend_yield": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 0, "max": 10, "precision": 2})
-            ).generate()
+                GeneratorConfig(
+                    "percentage", parameters={"min": 0, "max": 10, "precision": 2}
+                )
+            ).generate(),
         }
         stocks.append(stock)
 
@@ -570,40 +800,112 @@ def numeric_demo():
     for i in range(3):
         experiment = {
             "experiment_id": default_factory.create_generator(
-                GeneratorConfig("string", parameters={"length": 8, "type": "alphanumeric", "prefix": "EXP_"})
+                GeneratorConfig(
+                    "string",
+                    parameters={"length": 8, "type": "alphanumeric", "prefix": "EXP_"},
+                )
             ).generate(),
             "measurements": {
                 "temperature": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": -273.15, "max": 5000.0, "decimal_places": 2})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": -273.15,
+                            "max": 5000.0,
+                            "decimal_places": 2,
+                        },
+                    )
                 ).generate(),
                 "pressure": default_factory.create_generator(
-                    GeneratorConfig("scientific", parameters={"min_exponent": -1, "max_exponent": 9, "precision": 4})
+                    GeneratorConfig(
+                        "scientific",
+                        parameters={
+                            "min_exponent": -1,
+                            "max_exponent": 9,
+                            "precision": 4,
+                        },
+                    )
                 ).generate(),
                 "concentration": default_factory.create_generator(
-                    GeneratorConfig("scientific", parameters={"min_exponent": -10, "max_exponent": 0, "precision": 6})
+                    GeneratorConfig(
+                        "scientific",
+                        parameters={
+                            "min_exponent": -10,
+                            "max_exponent": 0,
+                            "precision": 6,
+                        },
+                    )
                 ).generate(),
                 "ph": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.0, "max": 14.0, "decimal_places": 2})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.0,
+                            "max": 14.0,
+                            "decimal_places": 2,
+                        },
+                    )
                 ).generate(),
                 "viscosity": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.001, "max": 10000.0, "decimal_places": 4})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.001,
+                            "max": 10000.0,
+                            "decimal_places": 4,
+                        },
+                    )
                 ).generate(),
                 "density": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.1, "max": 50.0, "decimal_places": 3})
-                ).generate()
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.1,
+                            "max": 50.0,
+                            "decimal_places": 3,
+                        },
+                    )
+                ).generate(),
             },
             "uncertainty": {
                 "temperature_err": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.01, "max": 10.0, "decimal_places": 3})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.01,
+                            "max": 10.0,
+                            "decimal_places": 3,
+                        },
+                    )
                 ).generate(),
                 "pressure_err": default_factory.create_generator(
-                    GeneratorConfig("number", parameters={"type": "float", "min": 0.001, "max": 100.0, "decimal_places": 3})
+                    GeneratorConfig(
+                        "number",
+                        parameters={
+                            "type": "float",
+                            "min": 0.001,
+                            "max": 100.0,
+                            "decimal_places": 3,
+                        },
+                    )
                 ).generate(),
                 "concentration_err": default_factory.create_generator(
-                    GeneratorConfig("scientific", parameters={"min_exponent": -12, "max_exponent": -2, "precision": 3})
-                ).generate()
+                    GeneratorConfig(
+                        "scientific",
+                        parameters={
+                            "min_exponent": -12,
+                            "max_exponent": -2,
+                            "precision": 3,
+                        },
+                    )
+                ).generate(),
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
         experiments.append(experiment)
 
@@ -611,10 +913,10 @@ def numeric_demo():
     for exp in experiments:
         print(f"    实验ID: {exp['experiment_id']}")
         print("    测量值:")
-        for key, value in exp['measurements'].items():
+        for key, value in exp["measurements"].items():
             print(f"      {key}: {value}")
         print("    不确定度:")
-        for key, value in exp['uncertainty'].items():
+        for key, value in exp["uncertainty"].items():
             print(f"      {key}: ±{value}")
         print(f"    时间戳: {exp['timestamp'][:19]}")
         print()
@@ -625,76 +927,139 @@ def numeric_demo():
     performance_metrics = {
         "response_time": {
             "min": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 10.0, "max": 100.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 10.0,
+                        "max": 100.0,
+                        "decimal_places": 2,
+                    },
+                )
             ).generate(),
             "max": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 1000.0, "max": 10000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 1000.0,
+                        "max": 10000.0,
+                        "decimal_places": 2,
+                    },
+                )
             ).generate(),
             "mean": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 100.0, "max": 1000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 100.0,
+                        "max": 1000.0,
+                        "decimal_places": 2,
+                    },
+                )
             ).generate(),
             "p95": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 500.0, "max": 5000.0, "decimal_places": 2})
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 500.0,
+                        "max": 5000.0,
+                        "decimal_places": 2,
+                    },
+                )
             ).generate(),
             "p99": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 1000.0, "max": 10000.0, "decimal_places": 2})
-            ).generate()
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 1000.0,
+                        "max": 10000.0,
+                        "decimal_places": 2,
+                    },
+                )
+            ).generate(),
         },
         "throughput": {
             "requests_per_second": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 100, "max": 10000})
             ).generate(),
             "bytes_per_second": default_factory.create_generator(
-                GeneratorConfig("scientific", parameters={"min_exponent": 6, "max_exponent": 9, "precision": 3})
+                GeneratorConfig(
+                    "scientific",
+                    parameters={"min_exponent": 6, "max_exponent": 9, "precision": 3},
+                )
             ).generate(),
             "concurrent_users": default_factory.create_generator(
                 GeneratorConfig("integer", parameters={"min": 10, "max": 1000})
-            ).generate()
+            ).generate(),
         },
         "error_rates": {
             "error_rate": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 0, "max": 5, "precision": 3})
+                GeneratorConfig(
+                    "percentage", parameters={"min": 0, "max": 5, "precision": 3}
+                )
             ).generate(),
             "timeout_rate": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 0, "max": 2, "precision": 3})
+                GeneratorConfig(
+                    "percentage", parameters={"min": 0, "max": 2, "precision": 3}
+                )
             ).generate(),
             "failure_rate": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 0, "max": 1, "precision": 3})
-            ).generate()
+                GeneratorConfig(
+                    "percentage", parameters={"min": 0, "max": 1, "precision": 3}
+                )
+            ).generate(),
         },
         "resource_usage": {
             "cpu_usage": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 10, "max": 90, "precision": 1})
+                GeneratorConfig(
+                    "percentage", parameters={"min": 10, "max": 90, "precision": 1}
+                )
             ).generate(),
             "memory_usage": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 20, "max": 80, "precision": 1})
+                GeneratorConfig(
+                    "percentage", parameters={"min": 20, "max": 80, "precision": 1}
+                )
             ).generate(),
             "disk_usage": default_factory.create_generator(
-                GeneratorConfig("percentage", parameters={"min": 30, "max": 70, "precision": 1})
+                GeneratorConfig(
+                    "percentage", parameters={"min": 30, "max": 70, "precision": 1}
+                )
             ).generate(),
             "network_usage": default_factory.create_generator(
-                GeneratorConfig("number", parameters={"type": "float", "min": 1.0, "max": 1000.0, "decimal_places": 2})
-            ).generate()
-        }
+                GeneratorConfig(
+                    "number",
+                    parameters={
+                        "type": "float",
+                        "min": 1.0,
+                        "max": 1000.0,
+                        "decimal_places": 2,
+                    },
+                )
+            ).generate(),
+        },
     }
 
     print("  响应时间 (ms):")
-    for key, value in performance_metrics['response_time'].items():
+    for key, value in performance_metrics["response_time"].items():
         print(f"    {key}: {value}")
 
     print("  吞吐量:")
-    for key, value in performance_metrics['throughput'].items():
+    for key, value in performance_metrics["throughput"].items():
         if key == "bytes_per_second":
             print(f"    {key}: {value} bytes/s")
         else:
             print(f"    {key}: {value}")
 
     print("  错误率:")
-    for key, value in performance_metrics['error_rates'].items():
+    for key, value in performance_metrics["error_rates"].items():
         print(f"    {key}: {value}")
 
     print("  资源使用率:")
-    for key, value in performance_metrics['resource_usage'].items():
+    for key, value in performance_metrics["resource_usage"].items():
         unit = "%" if "usage" in key else "Mbps"
         print(f"    {key}: {value} {unit}")
 
@@ -725,6 +1090,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

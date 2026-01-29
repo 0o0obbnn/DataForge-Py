@@ -191,7 +191,7 @@ class URLGenerator(DataGenerator[str]):
 
     def generate(self, context: GenerationContext | None = None) -> str:
         """生成完整URL"""
-        url_parts = []
+        url_parts: list[Any] = []
 
         # 1. 协议部分
         protocol = self._get_protocol()
@@ -324,7 +324,7 @@ class URLGenerator(DataGenerator[str]):
             return ""
 
         params = {}
-        used_keys = set()
+        used_keys: set[str] = set()
 
         for _ in range(params_count):
             # 确保生成唯一的key
@@ -476,7 +476,7 @@ class GenericURLGenerator(URLGenerator):
     """通用URL生成器注册版本"""
 
     # 添加类型提示以避免 Pylance 错误
-    validator: Optional["URLValidator"]
+    validator: "URLValidator"  # type: ignore
 
     def __init__(self, config: GeneratorConfig | None = None, **kwargs):
         """初始化通用URL生成器"""

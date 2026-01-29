@@ -21,8 +21,8 @@
   ```python
   # 修复前
   register_generator("special_chars", SpecialCharGenerator)
-  
-  # 修复后  
+
+  # 修复后
   register_generator("special_chars")(SpecialCharGenerator)
   ```
 

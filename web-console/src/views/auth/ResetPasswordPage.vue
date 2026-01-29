@@ -4,7 +4,7 @@
       <div class="reset-card">
         <h1 class="reset-title">重置密码</h1>
         <p class="reset-subtitle">请输入您的邮箱，我们将发送重置密码的验证码</p>
-        
+
         <!-- 步骤指示器 -->
         <a-steps :current="currentStep" size="small" class="reset-steps">
           <a-step title="验证邮箱" />
@@ -112,12 +112,12 @@
                   <LockOutlined />
                 </template>
               </a-input-password>
-              
+
               <!-- 密码强度指示器 -->
               <div v-if="resetForm.newPassword" class="password-strength">
                 <div class="strength-bar">
-                  <div 
-                    class="strength-level" 
+                  <div
+                    class="strength-level"
                     :class="passwordStrength.level"
                     :style="{ width: passwordStrength.width }"
                   ></div>
@@ -169,7 +169,7 @@
           </div>
           <h3>密码重置成功！</h3>
           <p>您的密码已成功重置，请使用新密码登录。</p>
-          
+
           <a-button
             type="primary"
             size="large"
@@ -238,19 +238,19 @@ const resetForm = reactive({
 const passwordStrength = computed(() => {
   const password = resetForm.newPassword
   if (!password) return { level: '', width: '0%', text: '' }
-  
+
   let score = 0
-  
+
   // 长度评分
   if (password.length >= 8) score += 25
   else if (password.length >= 6) score += 15
-  
+
   // 复杂度评分
   if (/[a-z]/.test(password)) score += 15
   if (/[A-Z]/.test(password)) score += 15
   if (/\d/.test(password)) score += 15
   if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 30
-  
+
   if (score >= 80) return { level: 'strong', width: '100%', text: '强' }
   if (score >= 60) return { level: 'medium', width: '66%', text: '中' }
   if (score >= 30) return { level: 'weak', width: '33%', text: '弱' }
@@ -302,13 +302,13 @@ const confirmPasswordRules: Rule[] = [
 const handleEmailSubmit = async () => {
   try {
     loading.value = true
-    
+
     const result = await authStore.sendVerificationCode(
-      emailForm.email, 
-      undefined, 
+      emailForm.email,
+      undefined,
       'reset_password'
     )
-    
+
     if (result.success) {
       message.success(result.message)
       currentStep.value = 1
@@ -327,14 +327,14 @@ const handleEmailSubmit = async () => {
 const handleResetSubmit = async () => {
   try {
     loading.value = true
-    
+
     const result = await authStore.resetPassword(
       emailForm.email,
       resetForm.verificationCode,
       resetForm.newPassword,
       resetForm.confirmPassword
     )
-    
+
     if (result.success) {
       message.success(result.message)
       currentStep.value = 2
@@ -358,13 +358,13 @@ const handlePasswordInput = () => {
 const resendCode = async () => {
   try {
     codeLoading.value = true
-    
+
     const result = await authStore.sendVerificationCode(
-      emailForm.email, 
-      undefined, 
+      emailForm.email,
+      undefined,
       'reset_password'
     )
-    
+
     if (result.success) {
       message.success(result.message)
       startCountdown()
@@ -381,7 +381,7 @@ const resendCode = async () => {
 
 const startCountdown = () => {
   codeCountdown.value = 60
-  
+
   countdownTimer = setInterval(() => {
     codeCountdown.value--
     if (codeCountdown.value <= 0) {
@@ -459,45 +459,45 @@ onMounted(() => {
 
 .reset-steps {
   margin-bottom: var(--df-spacing-xl);
-  
+
   :deep(.ant-steps-item) {
     .ant-steps-item-title {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-sm);
     }
-    
+
     &.ant-steps-item-active .ant-steps-item-title {
       color: var(--df-text-primary);
     }
-    
+
     .ant-steps-item-icon {
       background: var(--df-primary-bg);
       border-color: var(--df-text-disabled);
-      
+
       .ant-steps-icon {
         color: var(--df-text-secondary);
       }
     }
-    
+
     &.ant-steps-item-active .ant-steps-item-icon {
       background: var(--df-accent-primary);
       border-color: var(--df-accent-primary);
-      
+
       .ant-steps-icon {
         color: white;
       }
     }
-    
+
     &.ant-steps-item-finish .ant-steps-item-icon {
       background: var(--df-accent-success);
       border-color: var(--df-accent-success);
-      
+
       .ant-steps-icon {
         color: white;
       }
     }
   }
-  
+
   :deep(.ant-steps-item-tail)::after {
     background: var(--df-text-disabled);
   }
@@ -510,19 +510,19 @@ onMounted(() => {
 .success-content {
   text-align: center;
   padding: var(--df-spacing-lg) 0;
-  
+
   .success-icon {
     font-size: 64px;
     color: var(--df-accent-success);
     margin-bottom: var(--df-spacing-lg);
   }
-  
+
   h3 {
     color: var(--df-text-primary);
     font-size: var(--df-font-size-xl);
     margin-bottom: var(--df-spacing-md);
   }
-  
+
   p {
     color: var(--df-text-secondary);
     margin-bottom: var(--df-spacing-xl);
@@ -532,17 +532,17 @@ onMounted(() => {
 .verification-input {
   display: flex;
   gap: var(--df-spacing-sm);
-  
+
   .resend-button {
     min-width: 100px;
     border-color: var(--df-accent-primary);
     color: var(--df-accent-primary);
-    
+
     &:hover:not(:disabled) {
       border-color: var(--df-accent-success);
       color: var(--df-accent-success);
     }
-    
+
     &:disabled {
       border-color: var(--df-text-disabled);
       color: var(--df-text-disabled);
@@ -556,36 +556,36 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: var(--df-spacing-sm);
-  
+
   .strength-bar {
     flex: 1;
     height: 4px;
     background: var(--df-text-disabled);
     border-radius: 2px;
     overflow: hidden;
-    
+
     .strength-level {
       height: 100%;
       transition: all 0.3s ease;
-      
+
       &.very-weak {
         background: #FF5252;
       }
-      
+
       &.weak {
         background: #FF9800;
       }
-      
+
       &.medium {
         background: #FFC107;
       }
-      
+
       &.strong {
         background: #00E676;
       }
     }
   }
-  
+
   .strength-text {
     font-size: var(--df-font-size-xs);
     color: var(--df-text-secondary);
@@ -596,7 +596,7 @@ onMounted(() => {
 .back-to-login {
   text-align: center;
   margin-top: var(--df-spacing-lg);
-  
+
   a {
     color: var(--df-text-secondary);
     text-decoration: none;
@@ -604,7 +604,7 @@ onMounted(() => {
     display: inline-flex;
     align-items: center;
     gap: var(--df-spacing-xs);
-    
+
     &:hover {
       color: var(--df-accent-primary);
       text-decoration: underline;
@@ -614,7 +614,7 @@ onMounted(() => {
 
 :deep(.ant-form-item) {
   margin-bottom: var(--df-spacing-lg);
-  
+
   .ant-form-item-explain {
     color: var(--df-accent-error);
   }
@@ -623,21 +623,21 @@ onMounted(() => {
 :deep(.ant-input-affix-wrapper) {
   background: var(--df-primary-bg);
   border-color: var(--df-text-disabled);
-  
+
   &:hover, &:focus, &.ant-input-affix-wrapper-focused {
     border-color: var(--df-accent-primary);
     box-shadow: 0 0 0 2px rgba(142, 93, 255, 0.1);
   }
-  
+
   .ant-input {
     background: transparent;
     color: var(--df-text-primary);
-    
+
     &::placeholder {
       color: var(--df-text-secondary);
     }
   }
-  
+
   .anticon {
     color: var(--df-text-secondary);
   }
@@ -648,16 +648,16 @@ onMounted(() => {
   border: none;
   font-weight: 500;
   height: 44px;
-  
+
   &:hover, &:focus {
     background: linear-gradient(135deg, #A855F7, #10B981);
     box-shadow: 0 4px 16px rgba(142, 93, 255, 0.3);
   }
-  
+
   &.ant-btn-loading {
     background: var(--df-text-disabled) !important;
   }
-  
+
   .anticon {
     margin-right: var(--df-spacing-xs);
   }
@@ -668,24 +668,24 @@ onMounted(() => {
   .reset-password-page {
     padding: var(--df-spacing-md);
   }
-  
+
   .reset-card {
     padding: var(--df-spacing-lg);
   }
-  
+
   .verification-input {
     flex-direction: column;
-    
+
     .resend-button {
       width: 100%;
     }
   }
-  
+
   :deep(.ant-space) {
     display: flex !important;
     flex-direction: column;
     width: 100%;
-    
+
     .ant-btn {
       width: 100%;
     }

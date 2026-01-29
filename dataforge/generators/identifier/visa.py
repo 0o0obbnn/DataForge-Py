@@ -9,6 +9,7 @@ import re
 import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import Any
 
 from ...core.factory import register_generator
 from ...core.generator import (
@@ -95,7 +96,7 @@ class VisaValidator(Validator):
         return "Invalid visa information format"
 
 
-class VisaGenerator(DataGenerator[dict[str, str]]):
+class VisaGenerator(DataGenerator[Any]):
     """签证号生成器
 
     功能特性：
@@ -242,7 +243,7 @@ class VisaGenerator(DataGenerator[dict[str, str]]):
             country = "CN"
 
         format_config = self.country_formats[country]
-        length = format_config["length"]
+        length: int = format_config["length"]  # type: ignore[index, assignment]
 
         if country == "CN":
             # 中国签证：纯数字9位

@@ -3,7 +3,6 @@
 """
 
 import pytest
-from dataforge.resources.name_config_loader import clear_name_config_cache
 
 from dataforge.core.generator import GeneratorConfig
 

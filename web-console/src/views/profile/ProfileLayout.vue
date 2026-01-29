@@ -18,7 +18,7 @@
           </a-menu-item>
         </a-menu>
       </a-layout-sider>
-      
+
       <a-layout>
         <a-layout-content class="profile-content">
           <router-view />
@@ -52,7 +52,7 @@ const handleMenuSelect = ({ key }: { key: string }) => {
 .profile-layout {
   min-height: 100vh;
   background: var(--df-primary-bg);
-  
+
   .ant-layout {
     background: transparent;
   }

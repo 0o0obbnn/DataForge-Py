@@ -1,6 +1,5 @@
 import time
 from datetime import datetime, timedelta
-from typing import Union
 
 import pytz
 
@@ -41,7 +40,7 @@ class EnhancedTimestampValidator(Validator):
         return "Invalid timestamp format or value"
 
 
-class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
+class EnhancedTimestampGenerator(DataGenerator[int | float | str]):
     """增强版时间戳生成器，支持多种精度和格式"""
 
     def __init__(self, config: GeneratorConfig | dict | None = None):
@@ -71,9 +70,7 @@ class EnhancedTimestampGenerator(DataGenerator[Union[int, float, str]]):
         self.relative_to = self.parameters.get("relative_to", "EPOCH")
         self.offset_seconds = self.parameters.get("offset_seconds", 0)
 
-    def generate(
-        self, context: GenerationContext | None = None
-    ) -> int | float | str:
+    def generate(self, context: GenerationContext | None = None) -> int | float | str:
         """生成原始时间戳"""
         base_time = self._get_base_time()
 

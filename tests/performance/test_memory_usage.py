@@ -33,7 +33,7 @@ class TestMemoryUsage:
         total_size = sum(sys.getsizeof(name) for name in names)
         avg_size = total_size / len(names)
 
-        print(f"\n单个生成器内存使用:")
+        print("\n单个生成器内存使用:")
         print(f"  生成数量: {len(names)}")
         print(f"  总内存: {total_size/1024:.2f} KB")
         print(f"  平均每条: {avg_size:.2f} bytes")
@@ -60,7 +60,7 @@ class TestMemoryUsage:
         total_size = sum(sys.getsizeof(name) for name in names)
         avg_size = total_size / len(names)
 
-        print(f"\n批量生成内存使用:")
+        print("\n批量生成内存使用:")
         print(f"  批量大小: {batch_size}")
         print(f"  总内存: {total_size/1024:.2f} KB")
         print(f"  平均每条: {avg_size:.2f} bytes")
@@ -72,9 +72,9 @@ class TestMemoryUsage:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -101,7 +101,7 @@ class TestMemoryUsage:
         total_size = sum(sys.getsizeof(str(p)) for p in profiles)
         avg_size = total_size / len(profiles)
 
-        print(f"\n多生成器内存使用:")
+        print("\n多生成器内存使用:")
         print(f"  生成数量: {len(profiles)}")
         print(f"  总内存: {total_size/1024:.2f} KB")
         print(f"  平均每条: {avg_size:.2f} bytes")
@@ -147,7 +147,7 @@ class TestMemoryUsage:
         total_size = sum(sys.getsizeof(gen) for gen in generators)
         avg_size = total_size / len(generators)
 
-        print(f"\n生成器实例内存:")
+        print("\n生成器实例内存:")
         print(f"  实例数量: {len(generators)}")
         print(f"  总内存: {total_size/1024:.2f} KB")
         print(f"  平均每个: {avg_size:.2f} bytes")

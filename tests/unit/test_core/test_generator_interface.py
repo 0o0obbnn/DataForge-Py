@@ -12,7 +12,7 @@ Usage:
 import ast
 import inspect
 from pathlib import Path
-from typing import Any, List, Type
+from typing import Any
 
 import pytest
 
@@ -20,14 +20,14 @@ from dataforge.core.generator import DataGenerator
 from dataforge.core.types import GeneratorType
 
 
-def discover_all_generator_classes() -> List[Type[DataGenerator[Any]]]:
+def discover_all_generator_classes() -> list[type[DataGenerator[Any]]]:
     """
     Discover all generator classes in the codebase.
 
     Returns:
         List of generator class types found
     """
-    generator_classes: List[Type[DataGenerator[Any]]] = []
+    generator_classes: list[type[DataGenerator[Any]]] = []
 
     # Find generators directory
     generators_path = Path(__file__).parent.parent / "dataforge" / "generators"
@@ -86,7 +86,7 @@ def check_file_for_method(file_path: Path, class_name: str, method_name: str) ->
         True if method is defined in the class
     """
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             tree = ast.parse(f.read(), filename=str(file_path))
 
         for node in ast.walk(tree):
@@ -104,7 +104,7 @@ ALL_GENERATORS = discover_all_generator_classes()
 
 
 @pytest.mark.parametrize("generator_class", ALL_GENERATORS, ids=lambda g: g.__name__)
-def test_generator_implements_interface(generator_class: Type[DataGenerator[Any]]):
+def test_generator_implements_interface(generator_class: type[DataGenerator[Any]]):
     """
     Verify generator implements the DataGenerator interface completely.
 
@@ -132,11 +132,11 @@ def test_generator_implements_interface(generator_class: Type[DataGenerator[Any]
 
     # Check it's a method, not property
     assert callable(
-        getattr(generator_class, "generate_single")
+        generator_class.generate_single
     ), f"{generator_class.__name__}.generate_single must be callable"
 
     assert callable(
-        getattr(generator_class, "validate")
+        generator_class.validate
     ), f"{generator_class.__name__}.validate must be callable"
 
     # Check required properties
@@ -159,7 +159,7 @@ def test_generator_implements_interface(generator_class: Type[DataGenerator[Any]
 
 
 @pytest.mark.parametrize("generator_class", ALL_GENERATORS, ids=lambda g: g.__name__)
-def test_generator_has_proper_methods(generator_class: Type[DataGenerator[Any]]):
+def test_generator_has_proper_methods(generator_class: type[DataGenerator[Any]]):
     """
     Verify no legacy method names are used.
 
@@ -189,7 +189,7 @@ def test_generator_has_proper_methods(generator_class: Type[DataGenerator[Any]])
 
 
 @pytest.mark.parametrize("generator_class", ALL_GENERATORS, ids=lambda g: g.__name__)
-def test_generator_type_is_valid(generator_class: Type[DataGenerator[Any]]):
+def test_generator_type_is_valid(generator_class: type[DataGenerator[Any]]):
     """
     Verify generator_type property returns a valid GeneratorType enum value.
 
@@ -237,7 +237,7 @@ def test_generator_type_is_valid(generator_class: Type[DataGenerator[Any]]):
 
 
 @pytest.mark.parametrize("generator_class", ALL_GENERATORS, ids=lambda g: g.__name__)
-def test_supported_parameters_is_list(generator_class: Type[DataGenerator[Any]]):
+def test_supported_parameters_is_list(generator_class: type[DataGenerator[Any]]):
     """
     Verify supported_parameters property returns a list.
 
@@ -272,7 +272,7 @@ def test_supported_parameters_is_list(generator_class: Type[DataGenerator[Any]])
 
 
 @pytest.mark.parametrize("generator_class", ALL_GENERATORS, ids=lambda g: g.__name__)
-def test_generator_has_type_hints(generator_class: Type[DataGenerator[Any]]):
+def test_generator_has_type_hints(generator_class: type[DataGenerator[Any]]):
     """
     Verify generator methods have proper type hints.
 
@@ -329,7 +329,7 @@ def test_generator_interface_summary():
         if hasattr(gen_class, "supported_parameters"):
             with_supported_parameters += 1
 
-    print(f"\n=== Generator Interface Compliance Summary ===")
+    print("\n=== Generator Interface Compliance Summary ===")
     print(f"Total generators: {total}")
     print(f"With generate_single(): {with_generate_single}/{total}")
     print(f"With validate(): {with_validate}/{total}")

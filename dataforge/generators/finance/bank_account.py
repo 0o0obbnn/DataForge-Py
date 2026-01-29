@@ -10,8 +10,8 @@ from ...core.generator import (
     DataGenerator,
     GenerationContext,
 )
-from ...core.types import GeneratorType
 from ...core.luhn import calculate_luhn_check_digit, validate_luhn
+from ...core.types import GeneratorType
 
 
 @register_generator("bank_account", aliases=["account", "bank_account_number"])
@@ -19,14 +19,10 @@ class BankAccountGenerator(DataGenerator[str]):
     """银行账号生成器"""
 
     def __init__(self, config):
-        super().__init__(config)
-        self.bank_name = "工商银行"
-        self.account_type = "SAVINGS"  # SAVINGS, CHECKING, CREDIT
-        self.include_bank_name = False
-        self.format = "ACCOUNT"  # ACCOUNT, FULL
-
-        # 初始化银行映射表
+        # 先初始化银行映射表（在 super().__init__ 调用 _setup() 之前）
         self._init_bank_mappings()
+
+        super().__init__(config)  # ACCOUNT, FULL
 
     def _setup(self) -> None:
         """初始化银行账号生成器参数"""
@@ -143,8 +139,8 @@ class BankAccountGenerator(DataGenerator[str]):
     def _generate_china_bank_account(self) -> str:
         """生成中国银行账号"""
         bank_info = self.china_banks[self.bank_name]
-        account_length = bank_info["account_length"]
-        prefix = bank_info["prefix"]
+        account_length: int = bank_info["account_length"]  # type: ignore[index, assignment]
+        prefix: str = bank_info["prefix"]  # type: ignore[index, assignment]
 
         # 生成银行卡号
         if self.account_type in ["SAVINGS", "CHECKING"]:
@@ -182,7 +178,7 @@ class BankAccountGenerator(DataGenerator[str]):
         bank_info = self.us_banks[self.bank_name]
         routing_number = bank_info["routing_number"]
         account_lengths = bank_info["account_length"]
-        account_length = secrets.choice(account_lengths)
+        account_length: int = secrets.choice(account_lengths)  # type: ignore[arg-type, assignment]
 
         # 生成账号
         account_number = "".join(
@@ -209,9 +205,10 @@ class BankAccountGenerator(DataGenerator[str]):
         if normalized in self.bank_name_mapping:
             return self.bank_name_mapping[normalized]
 
-        # 如果直接匹配失败，尝试模糊匹配
+        # 如果直接匹配失败，尝试模糊匹配（检查key是否是normalized的子串）
         for key, value in self.bank_name_mapping.items():
-            if normalized in key.lower().replace(" ", ""):
+            key_normalized = key.lower().replace(" ", "")
+            if key_normalized in normalized or normalized in key_normalized:
                 return value
 
         # 默认返回工商银行

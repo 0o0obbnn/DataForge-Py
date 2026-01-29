@@ -73,7 +73,7 @@ def parameter_configuration():
         {"type": "currency"},
         {"type": "arrows"},
         {"type": "brackets"},
-        {"type": "quotes"}
+        {"type": "quotes"},
     ]
     for i, params in enumerate(char_configs, 1):
         config = GeneratorConfig("special_chars", parameters=params)
@@ -90,7 +90,7 @@ def parameter_configuration():
         {"category": "currency"},
         {"category": "emoticons"},
         {"category": "geometric"},
-        {"category": "dingbats"}
+        {"category": "dingbats"},
     ]
     for i, params in enumerate(symbol_configs, 1):
         config = GeneratorConfig("unicode_symbols", parameters=params)
@@ -106,7 +106,7 @@ def parameter_configuration():
         {"true_probability": 0.2},
         {"true_probability": 0.5},
         {"true_probability": 0.0},
-        {"true_probability": 1.0}
+        {"true_probability": 1.0},
     ]
     for i, params in enumerate(bool_configs, 1):
         config = GeneratorConfig("boolean", parameters=params)
@@ -123,7 +123,7 @@ def parameter_configuration():
         {"min": -50, "max": 50},
         {"min": 0, "max": 1000},
         {"precision": 2},
-        {"precision": 4}
+        {"precision": 4},
     ]
     for i, params in enumerate(percent_configs, 1):
         config = GeneratorConfig("percentage", parameters=params)
@@ -140,7 +140,7 @@ def parameter_configuration():
         {"precision": 6},
         {"min_exponent": -10, "max_exponent": 10},
         {"min_exponent": -5, "max_exponent": 5},
-        {"min_exponent": 0, "max_exponent": 5}
+        {"min_exponent": 0, "max_exponent": 5},
     ]
     for i, params in enumerate(scientific_configs, 1):
         config = GeneratorConfig("scientific", parameters=params)
@@ -158,31 +158,25 @@ def batch_generation():
     print("\n批量生成格式化数据:")
 
     # 生成特殊字符
-    char_config = GeneratorConfig("special_chars", parameters={
-        "type": "mixed",
-        "count": 10
-    })
+    char_config = GeneratorConfig(
+        "special_chars", parameters={"type": "mixed", "count": 10}
+    )
     char_gen = default_factory.create_generator(char_config)
 
     # 生成Unicode符号
-    symbol_config = GeneratorConfig("unicode_symbols", parameters={
-        "category": "mixed",
-        "count": 10
-    })
+    symbol_config = GeneratorConfig(
+        "unicode_symbols", parameters={"category": "mixed", "count": 10}
+    )
     symbol_gen = default_factory.create_generator(symbol_config)
 
     # 生成布尔值序列
-    bool_config = GeneratorConfig("boolean", parameters={
-        "true_probability": 0.6
-    })
+    bool_config = GeneratorConfig("boolean", parameters={"true_probability": 0.6})
     bool_gen = default_factory.create_generator(bool_config)
 
     # 生成百分比序列
-    percent_config = GeneratorConfig("percentage", parameters={
-        "min": 0,
-        "max": 100,
-        "precision": 1
-    })
+    percent_config = GeneratorConfig(
+        "percentage", parameters={"min": 0, "max": 100, "precision": 1}
+    )
     percent_gen = default_factory.create_generator(percent_config)
 
     # 生成5个格式化数据集
@@ -197,22 +191,34 @@ def batch_generation():
                 GeneratorConfig("scientific", parameters={"precision": 3})
             ).generate(),
             "created_at": datetime.now().isoformat(),
-            "data_id": f"FD_{i+1:03d}"
+            "data_id": f"FD_{i+1:03d}",
         }
         format_data.append(data)
 
     # 打印格式化数据
     print("-" * 100)
-    print(f"{'ID':<6} | {'特殊字符':<15} | {'Unicode符号':<15} | {'布尔值':<8} | {'百分比':<10} | {'科学计数法'}")
+    print(
+        f"{'ID':<6} | {'特殊字符':<15} | {'Unicode符号':<15} | {'布尔值':<8} | {'百分比':<10} | {'科学计数法'}"
+    )
     print("-" * 100)
     for data in format_data:
-        special = data['special_chars'][:13] + ".." if len(data['special_chars']) > 15 else data['special_chars']
-        unicode = data['unicode_symbols'][:13] + ".." if len(data['unicode_symbols']) > 15 else data['unicode_symbols']
-        boolean = str(data['boolean'])
-        percentage = data['percentage']
-        scientific = data['scientific']
-        data_id = data['data_id']
-        print(f"{data_id:<6} | {special:<15} | {unicode:<15} | {boolean:<8} | {percentage:<10} | {scientific}")
+        special = (
+            data["special_chars"][:13] + ".."
+            if len(data["special_chars"]) > 15
+            else data["special_chars"]
+        )
+        unicode = (
+            data["unicode_symbols"][:13] + ".."
+            if len(data["unicode_symbols"]) > 15
+            else data["unicode_symbols"]
+        )
+        boolean = str(data["boolean"])
+        percentage = data["percentage"]
+        scientific = data["scientific"]
+        data_id = data["data_id"]
+        print(
+            f"{data_id:<6} | {special:<15} | {unicode:<15} | {boolean:<8} | {percentage:<10} | {scientific}"
+        )
     print("-" * 100)
 
 
@@ -256,7 +262,7 @@ def validation_examples():
         print(f"  {i+1}. {percentage}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '无效'}")
         try:
-            value = float(percentage.rstrip('%'))
+            value = float(percentage.rstrip("%"))
             in_range = 0 <= value <= 100
             print(f"     范围检查: {'✅ 在范围内' if in_range else '❌ 超出范围'}")
         except:
@@ -273,9 +279,11 @@ def validation_examples():
         print(f"  {i+1}. {scientific}")
         print(f"     验证结果: {'✅ 有效' if is_valid else '无效'}")
         # 检查是否包含'E'（科学计数法标识符）
-        has_e = 'e' in scientific.lower()
+        has_e = "e" in scientific.lower()
         print(f"     科学计数法: {'✅ 是' if has_e else '❌ 否'}")
-        print(f"     包含数字: {'✅ 是' if any(c.isdigit() for c in scientific) else '❌ 否'}")
+        print(
+            f"     包含数字: {'✅ 是' if any(c.isdigit() for c in scientific) else '❌ 否'}"
+        )
 
 
 def error_handling():
@@ -334,40 +342,54 @@ def best_practices():
     format_config = {
         "character_settings": {
             "special_chars": {
-                "supported_types": ["punctuation", "mathematical", "currency", "arrows", "brackets", "quotes"],
+                "supported_types": [
+                    "punctuation",
+                    "mathematical",
+                    "currency",
+                    "arrows",
+                    "brackets",
+                    "quotes",
+                ],
                 "default_count": 10,
                 "max_count": 100,
-                "exclude_similar": True
+                "exclude_similar": True,
             },
             "unicode_symbols": {
-                "supported_categories": ["arrows", "mathematical", "currency", "emoticons", "geometric", "dingbats"],
+                "supported_categories": [
+                    "arrows",
+                    "mathematical",
+                    "currency",
+                    "emoticons",
+                    "geometric",
+                    "dingbats",
+                ],
                 "default_category": "mixed",
                 "default_count": 10,
-                "max_count": 50
-            }
+                "max_count": 50,
+            },
         },
         "number_settings": {
             "boolean": {
                 "default_true_probability": 0.5,
-                "allow_custom_probability": True
+                "allow_custom_probability": True,
             },
             "percentage": {
                 "default_range": [0, 100],
                 "default_precision": 2,
-                "allow_custom_range": True
+                "allow_custom_range": True,
             },
             "scientific": {
                 "default_precision": 6,
                 "min_exponent": -10,
                 "max_exponent": 10,
-                "allow_custom_range": True
-            }
+                "allow_custom_range": True,
+            },
         },
         "validation_rules": {
             "max_length": 100,
             "allow_empty": False,
-            "custom_validation": True
-        }
+            "custom_validation": True,
+        },
     }
 
     print("  格式化系统配置:")
@@ -385,49 +407,69 @@ def best_practices():
             "record_id": f"format_{i+1:03d}",
             "characters": {
                 "punctuation": default_factory.create_generator(
-                    GeneratorConfig("special_chars", parameters={"type": "punctuation", "count": 5})
+                    GeneratorConfig(
+                        "special_chars", parameters={"type": "punctuation", "count": 5}
+                    )
                 ).generate(),
                 "mathematical": default_factory.create_generator(
-                    GeneratorConfig("special_chars", parameters={"type": "mathematical", "count": 5})
+                    GeneratorConfig(
+                        "special_chars", parameters={"type": "mathematical", "count": 5}
+                    )
                 ).generate(),
                 "currency": default_factory.create_generator(
-                    GeneratorConfig("special_chars", parameters={"type": "currency", "count": 5})
-                ).generate()
+                    GeneratorConfig(
+                        "special_chars", parameters={"type": "currency", "count": 5}
+                    )
+                ).generate(),
             },
             "symbols": {
                 "arrows": default_factory.create_generator(
-                    GeneratorConfig("unicode_symbols", parameters={"category": "arrows", "count": 3})
+                    GeneratorConfig(
+                        "unicode_symbols", parameters={"category": "arrows", "count": 3}
+                    )
                 ).generate(),
                 "mathematical": default_factory.create_generator(
-                    GeneratorConfig("unicode_symbols", parameters={"category": "mathematical", "count": 3})
+                    GeneratorConfig(
+                        "unicode_symbols",
+                        parameters={"category": "mathematical", "count": 3},
+                    )
                 ).generate(),
                 "emoticons": default_factory.create_generator(
-                    GeneratorConfig("unicode_symbols", parameters={"category": "emoticons", "count": 3})
-                ).generate()
+                    GeneratorConfig(
+                        "unicode_symbols",
+                        parameters={"category": "emoticons", "count": 3},
+                    )
+                ).generate(),
             },
             "numbers": {
                 "boolean_sequence": [
                     default_factory.create_generator(
                         GeneratorConfig("boolean", parameters={"true_probability": 0.7})
-                    ).generate() for _ in range(5)
+                    ).generate()
+                    for _ in range(5)
                 ],
                 "percentages": [
                     default_factory.create_generator(
-                        GeneratorConfig("percentage", parameters={"min": 0, "max": 100, "precision": 1})
-                    ).generate() for _ in range(5)
+                        GeneratorConfig(
+                            "percentage",
+                            parameters={"min": 0, "max": 100, "precision": 1},
+                        )
+                    ).generate()
+                    for _ in range(5)
                 ],
                 "scientific_values": [
                     default_factory.create_generator(
                         GeneratorConfig("scientific", parameters={"precision": 4})
-                    ).generate() for _ in range(5)
-                ]
+                    ).generate()
+                    for _ in range(5)
+                ],
             },
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
                 "generator_version": "1.0.0",
                 "data_purpose": "testing",
-                "quality_score": 0.95
-            }
+                "quality_score": 0.95,
+            },
         }
         format_data.append(format_record)
 
@@ -447,23 +489,25 @@ def formatting_demo():
     strength_levels = [
         {"level": "weak", "chars": 8, "complexity": "low"},
         {"level": "medium", "chars": 12, "complexity": "medium"},
-        {"level": "strong", "chars": 16, "complexity": "high"}
+        {"level": "strong", "chars": 16, "complexity": "high"},
     ]
 
     for level_info in strength_levels:
         # 生成对应强度的密码
-        password_config = GeneratorConfig("password", parameters={
-            "length": level_info["chars"],
-            "strength": level_info["complexity"]
-        })
+        password_config = GeneratorConfig(
+            "password",
+            parameters={
+                "length": level_info["chars"],
+                "strength": level_info["complexity"],
+            },
+        )
         password_gen = default_factory.create_generator(password_config)
         password = password_gen.generate()
 
         # 生成对应的特殊字符来装饰
-        char_config = GeneratorConfig("special_chars", parameters={
-            "type": "symbols",
-            "count": 5
-        })
+        char_config = GeneratorConfig(
+            "special_chars", parameters={"type": "symbols", "count": 5}
+        )
         char_gen = default_factory.create_generator(char_config)
         symbols = char_gen.generate()
 
@@ -481,7 +525,7 @@ def formatting_demo():
         "user_id": "user_001",
         "score": 85.67,
         "ratio": 0.75,
-        "completion": 0.92
+        "completion": 0.92,
     }
 
     # 生成格式化字符串
@@ -510,13 +554,15 @@ def formatting_demo():
     table_data = [
         {"name": "产品A", "price": 299.99, "stock": 150, "rating": 4.5},
         {"name": "产品B", "price": 199.99, "stock": 75, "rating": 4.2},
-        {"name": "产品C", "price": 99.99, "stock": 200, "rating": 4.8}
+        {"name": "产品C", "price": 99.99, "stock": 200, "rating": 4.8},
     ]
 
     print("    产品名称    | 价格     | 库存  | 评分")
     print("    ----------|----------|------|------")
     for item in table_data:
-        print(f"    {item['name']:<10} | {item['price']:>8.2f} | {item['stock']:>6} | {item['rating']:>5.1f}")
+        print(
+            f"    {item['name']:<10} | {item['price']:>8.2f} | {item['stock']:>6} | {item['rating']:>5.1f}"
+        )
 
     # 生成进度条
     print("\n进度条演示:")
@@ -536,11 +582,13 @@ def formatting_demo():
         {"status": "success", "symbol": "✅", "color": "green"},
         {"status": "warning", "symbol": "⚠️", "color": "yellow"},
         {"status": "error", "symbol": "❌", "color": "red"},
-        {"status": "info", "symbol": "ℹ️", "color": "blue"}
+        {"status": "info", "symbol": "ℹ️", "color": "blue"},
     ]
 
     for status_info in statuses:
-        print(f"    {status_info['symbol']} {status_info['status']} ({status_info['color']})")
+        print(
+            f"    {status_info['symbol']} {status_info['status']} ({status_info['color']})"
+        )
 
 
 def main():
@@ -569,6 +617,7 @@ def main():
     except Exception as e:
         print(f"\n❌ 运行示例时发生错误: {e}")
         import traceback
+
         traceback.print_exc()
 
 

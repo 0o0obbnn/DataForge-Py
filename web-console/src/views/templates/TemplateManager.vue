@@ -49,9 +49,9 @@
             @change="handleCategoryChange"
           >
             <a-select-option value="">全部分类</a-select-option>
-            <a-select-option 
-              v-for="category in categories" 
-              :key="category.id" 
+            <a-select-option
+              v-for="category in categories"
+              :key="category.id"
               :value="category.id"
             >
               {{ category.name }} ({{ category.templateCount }})
@@ -77,7 +77,7 @@
           <a-spin size="large" />
           <p>加载模板中...</p>
         </div>
-        
+
         <div v-else-if="filteredTemplates.length === 0" class="empty-state">
           <div class="empty-content">
             <FileTextOutlined class="empty-icon" />
@@ -91,8 +91,8 @@
         </div>
 
         <div v-else class="templates-grid">
-          <div 
-            v-for="template in paginatedTemplates" 
+          <div
+            v-for="template in paginatedTemplates"
             :key="template.id"
             class="template-card"
           >
@@ -137,7 +137,7 @@
 
             <div class="card-content">
               <p class="template-description">{{ template.description }}</p>
-              
+
               <div class="template-stats">
                 <div class="stat-item">
                   <DatabaseOutlined />
@@ -154,9 +154,9 @@
               </div>
 
               <div v-if="template.metadata.tags.length > 0" class="template-tags">
-                <a-tag 
-                  v-for="tag in template.metadata.tags.slice(0, 3)" 
-                  :key="tag" 
+                <a-tag
+                  v-for="tag in template.metadata.tags.slice(0, 3)"
+                  :key="tag"
                   size="small"
                 >
                   {{ tag }}
@@ -168,9 +168,9 @@
             </div>
 
             <div class="card-footer">
-              <a-button 
-                type="primary" 
-                block 
+              <a-button
+                type="primary"
+                block
                 @click="useTemplate(template)"
               >
                 <PlayCircleOutlined />
@@ -208,42 +208,42 @@
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 18 }"
       >
-        <a-form-item 
-          label="模板名称" 
+        <a-form-item
+          label="模板名称"
           name="name"
           :rules="[{ required: true, message: '请输入模板名称' }]"
         >
           <a-input v-model:value="createForm.name" placeholder="输入模板名称" />
         </a-form-item>
-        
-        <a-form-item 
-          label="模板描述" 
+
+        <a-form-item
+          label="模板描述"
           name="description"
           :rules="[{ required: true, message: '请输入模板描述' }]"
         >
-          <a-textarea 
-            v-model:value="createForm.description" 
+          <a-textarea
+            v-model:value="createForm.description"
             placeholder="描述模板的用途和特点"
             :rows="3"
           />
         </a-form-item>
-        
-        <a-form-item 
-          label="模板分类" 
+
+        <a-form-item
+          label="模板分类"
           name="category"
           :rules="[{ required: true, message: '请选择模板分类' }]"
         >
           <a-select v-model:value="createForm.category" placeholder="选择分类">
-            <a-select-option 
-              v-for="category in categories" 
-              :key="category.id" 
+            <a-select-option
+              v-for="category in categories"
+              :key="category.id"
               :value="category.id"
             >
               {{ category.name }}
             </a-select-option>
           </a-select>
         </a-form-item>
-        
+
         <a-form-item label="标签" name="tags">
           <a-select
             v-model:value="createForm.tags"
@@ -252,9 +252,9 @@
             :max-tag-count="5"
           />
         </a-form-item>
-        
+
         <a-form-item label="公开模板" name="isPublic">
-          <a-switch 
+          <a-switch
             v-model:checked="createForm.isPublic"
             checked-children="公开"
             un-checked-children="私有"
@@ -403,10 +403,10 @@ const handleMenuClick = ({ key }: { key: string }, template: GenerationTemplate)
 const useTemplate = (template: GenerationTemplate) => {
   // 增加使用次数
   TemplateService.incrementUsageCount(template.id)
-  
+
   // 加载模板到工作台
   workbenchStore.loadTemplate(template)
-  
+
   // 跳转到工作台
   router.push('/workbench')
   message.success(`已加载模板: ${template.name}`)
@@ -455,7 +455,7 @@ const handleImportTemplate = async (file: File) => {
 const handleCreateTemplate = async () => {
   try {
     await createFormRef.value.validate()
-    
+
     // 从当前工作台状态创建模板
     if (!workbenchStore.hasFields) {
       message.warning('请先在工作台中配置字段，然后再创建模板')
@@ -540,21 +540,21 @@ export default {
   background: var(--df-secondary-bg);
   border-bottom: 1px solid var(--df-text-disabled);
   padding: var(--df-spacing-lg);
-  
+
   .header-content {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+
     .header-left {
       h1 {
         color: var(--df-text-primary);
         font-size: var(--df-font-size-xxl);
         margin: 0;
       }
-      
+
       p {
         color: var(--df-text-secondary);
         margin: var(--df-spacing-xs) 0 0 0;
@@ -571,7 +571,7 @@ export default {
 
 .search-section {
   margin-bottom: var(--df-spacing-lg);
-  
+
   .search-controls {
     display: flex;
     gap: var(--df-spacing-md);
@@ -586,7 +586,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: var(--df-spacing-xxl);
-  
+
   p {
     color: var(--df-text-secondary);
     margin-top: var(--df-spacing-md);
@@ -598,21 +598,21 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  
+
   .empty-content {
     text-align: center;
-    
+
     .empty-icon {
       font-size: 64px;
       color: var(--df-text-disabled);
       margin-bottom: var(--df-spacing-lg);
     }
-    
+
     h3 {
       color: var(--df-text-primary);
       margin-bottom: var(--df-spacing-md);
     }
-    
+
     p {
       color: var(--df-text-secondary);
       margin-bottom: var(--df-spacing-lg);
@@ -633,22 +633,22 @@ export default {
   border-radius: var(--df-radius-lg);
   padding: var(--df-spacing-lg);
   transition: all 0.2s ease;
-  
+
   &:hover {
     border-color: var(--df-accent-primary);
     box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
     transform: translateY(-2px);
   }
-  
+
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: var(--df-spacing-md);
-    
+
     .card-title {
       flex: 1;
-      
+
       h3 {
         color: var(--df-text-primary);
         font-size: var(--df-font-size-lg);
@@ -656,23 +656,23 @@ export default {
       }
     }
   }
-  
+
   .card-content {
     margin-bottom: var(--df-spacing-lg);
-    
+
     .template-description {
       color: var(--df-text-secondary);
       font-size: var(--df-font-size-sm);
       line-height: 1.5;
       margin-bottom: var(--df-spacing-md);
     }
-    
+
     .template-stats {
       display: flex;
       flex-direction: column;
       gap: var(--df-spacing-xs);
       margin-bottom: var(--df-spacing-md);
-      
+
       .stat-item {
         display: flex;
         align-items: center;
@@ -681,7 +681,7 @@ export default {
         font-size: var(--df-font-size-sm);
       }
     }
-    
+
     .template-tags {
       display: flex;
       flex-wrap: wrap;
@@ -715,16 +715,16 @@ export default {
       align-items: flex-start;
     }
   }
-  
+
   .search-controls {
     flex-direction: column;
     align-items: stretch !important;
-    
+
     > * {
       width: 100% !important;
     }
   }
-  
+
   .templates-grid {
     grid-template-columns: 1fr;
   }

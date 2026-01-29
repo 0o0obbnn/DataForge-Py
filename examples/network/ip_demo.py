@@ -20,8 +20,8 @@ import re
 import sys
 
 # 设置环境
-sys.path.insert(0, '.')
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key'
+sys.path.insert(0, ".")
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 from dataforge.core.factory import default_registry
 from dataforge.core.generator import GeneratorConfig
@@ -48,8 +48,8 @@ def basic_usage():
     # 演示IP地址生成
     print_subsection("IP地址生成器 (ipaddress)")
     try:
-        config = GeneratorConfig('ipaddress', {}, count=5)
-        generator_class = default_registry.get_generator_class('ipaddress')
+        config = GeneratorConfig("ipaddress", {}, count=5)
+        generator_class = default_registry.get_generator_class("ipaddress")
         generator = generator_class(config)
         ip_addresses = generator.generate_batch(5)
 
@@ -61,8 +61,8 @@ def basic_usage():
     # 演示MAC地址生成
     print_subsection("MAC地址生成器 (mac_address)")
     try:
-        config = GeneratorConfig('mac_address', {}, count=5)
-        generator_class = default_registry.get_generator_class('mac_address')
+        config = GeneratorConfig("mac_address", {}, count=5)
+        generator_class = default_registry.get_generator_class("mac_address")
         generator = generator_class(config)
         mac_addresses = generator.generate_batch(5)
 
@@ -74,8 +74,8 @@ def basic_usage():
     # 演示域名生成
     print_subsection("域名生成器 (domain)")
     try:
-        config = GeneratorConfig('domain', {}, count=5)
-        generator_class = default_registry.get_generator_class('domain')
+        config = GeneratorConfig("domain", {}, count=5)
+        generator_class = default_registry.get_generator_class("domain")
         generator = generator_class(config)
         domains = generator.generate_batch(5)
 
@@ -87,8 +87,8 @@ def basic_usage():
     # 演示URL生成
     print_subsection("URL生成器 (url)")
     try:
-        config = GeneratorConfig('url', {}, count=5)
-        generator_class = default_registry.get_generator_class('url')
+        config = GeneratorConfig("url", {}, count=5)
+        generator_class = default_registry.get_generator_class("url")
         generator = generator_class(config)
         urls = generator.generate_batch(5)
 
@@ -100,8 +100,8 @@ def basic_usage():
     # 演示端口号生成
     print_subsection("端口号生成器 (port)")
     try:
-        config = GeneratorConfig('port', {}, count=5)
-        generator_class = default_registry.get_generator_class('port')
+        config = GeneratorConfig("port", {}, count=5)
+        generator_class = default_registry.get_generator_class("port")
         generator = generator_class(config)
         ports = generator.generate_batch(5)
 
@@ -128,8 +128,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('ipaddress', params, count=3)
-            generator_class = default_registry.get_generator_class('ipaddress')
+            config = GeneratorConfig("ipaddress", params, count=3)
+            generator_class = default_registry.get_generator_class("ipaddress")
             generator = generator_class(config)
             ip_addresses = generator.generate_batch(3)
 
@@ -145,14 +145,14 @@ def parameter_configuration():
         configs = [
             {},  # 默认配置
             {"vendor": "cisco"},  # 思科
-            {"vendor": "hp"},     # 惠普
-            {"vendor": "dell"},   # 戴尔
+            {"vendor": "hp"},  # 惠普
+            {"vendor": "dell"},  # 戴尔
         ]
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('mac_address', params, count=3)
-            generator_class = default_registry.get_generator_class('mac_address')
+            config = GeneratorConfig("mac_address", params, count=3)
+            generator_class = default_registry.get_generator_class("mac_address")
             generator = generator_class(config)
             mac_addresses = generator.generate_batch(3)
 
@@ -167,15 +167,15 @@ def parameter_configuration():
     try:
         configs = [
             {},  # 默认配置
-            {"domain_type": "com"},   # .com域名
-            {"domain_type": "cn"},    # .cn域名
-            {"domain_type": "org"},   # .org域名
+            {"domain_type": "com"},  # .com域名
+            {"domain_type": "cn"},  # .cn域名
+            {"domain_type": "org"},  # .org域名
         ]
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('domain', params, count=3)
-            generator_class = default_registry.get_generator_class('domain')
+            config = GeneratorConfig("domain", params, count=3)
+            generator_class = default_registry.get_generator_class("domain")
             generator = generator_class(config)
             domains = generator.generate_batch(3)
 
@@ -193,12 +193,14 @@ def batch_generation():
     # 批量生成网络信息
     print_subsection("批量生成网络信息")
     try:
-        network_generators = ['ipaddress', 'mac_address', 'domain', 'url', 'port']
+        network_generators = ["ipaddress", "mac_address", "domain", "url", "port"]
         batch_size = 5
 
         print(f"  生成 {batch_size} 个网络设备信息:")
         print("  " + "-" * 120)
-        print("  序号 | IP地址       | MAC地址        | 域名              | URL                        | 端口")
+        print(
+            "  序号 | IP地址       | MAC地址        | 域名              | URL                        | 端口"
+        )
         print("  " + "-" * 120)
 
         for i in range(batch_size):
@@ -208,7 +210,9 @@ def batch_generation():
             for generator_name in network_generators:
                 try:
                     config = GeneratorConfig(generator_name, {}, count=1)
-                    generator_class = default_registry.get_generator_class(generator_name)
+                    generator_class = default_registry.get_generator_class(
+                        generator_name
+                    )
                     generator = generator_class(config)
                     result = generator.generate_single()
                     network_info.append(str(result))
@@ -237,8 +241,8 @@ def validation_examples():
     # 验证IP地址格式
     print_subsection("IP地址格式验证")
     try:
-        config = GeneratorConfig('ipaddress', {}, count=5)
-        generator_class = default_registry.get_generator_class('ipaddress')
+        config = GeneratorConfig("ipaddress", {}, count=5)
+        generator_class = default_registry.get_generator_class("ipaddress")
         generator = generator_class(config)
         ip_addresses = generator.generate_batch(5)
 
@@ -264,13 +268,13 @@ def validation_examples():
     # 验证MAC地址格式
     print_subsection("MAC地址格式验证")
     try:
-        config = GeneratorConfig('mac_address', {}, count=5)
-        generator_class = default_registry.get_generator_class('mac_address')
+        config = GeneratorConfig("mac_address", {}, count=5)
+        generator_class = default_registry.get_generator_class("mac_address")
         generator = generator_class(config)
         mac_addresses = generator.generate_batch(5)
 
         print("  生成的MAC地址:")
-        mac_pattern = re.compile(r'^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$')
+        mac_pattern = re.compile(r"^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")
 
         for i, mac in enumerate(mac_addresses, 1):
             print(f"    {i}. {mac}")
@@ -280,7 +284,7 @@ def validation_examples():
             print(f"       格式验证: {'✅ 有效' if is_valid else '❌ 无效'}")
 
             # 验证MAC地址长度
-            length_valid = len(mac.replace(':', '')) == 12
+            length_valid = len(mac.replace(":", "")) == 12
             print(f"       长度验证: {'✅ 有效' if length_valid else '❌ 无效'}")
 
     except Exception as e:
@@ -294,8 +298,8 @@ def error_handling():
     # 处理不存在的IP版本
     print_subsection("处理不存在的IP版本")
     try:
-        config = GeneratorConfig('ipaddress', {"version": "不存在的版本"}, count=1)
-        generator_class = default_registry.get_generator_class('ipaddress')
+        config = GeneratorConfig("ipaddress", {"version": "不存在的版本"}, count=1)
+        generator_class = default_registry.get_generator_class("ipaddress")
         generator = generator_class(config)
         ip = generator.generate_single()
         print(f"  生成的IP地址: {ip}")
@@ -305,8 +309,8 @@ def error_handling():
     # 处理无效的域名类型
     print_subsection("处理无效的域名类型")
     try:
-        config = GeneratorConfig('domain', {"domain_type": "不存在的类型"}, count=1)
-        generator_class = default_registry.get_generator_class('domain')
+        config = GeneratorConfig("domain", {"domain_type": "不存在的类型"}, count=1)
+        generator_class = default_registry.get_generator_class("domain")
         generator = generator_class(config)
         domain = generator.generate_single()
         print(f"  生成的域名: {domain}")
@@ -325,22 +329,22 @@ def best_practices():
         device_info = {}
 
         # 生成IP地址
-        ip_config = GeneratorConfig('ipaddress', {"version": "ipv4"}, count=1)
-        ip_class = default_registry.get_generator_class('ipaddress')
+        ip_config = GeneratorConfig("ipaddress", {"version": "ipv4"}, count=1)
+        ip_class = default_registry.get_generator_class("ipaddress")
         ip_gen = ip_class(ip_config)
-        device_info['ip_address'] = ip_gen.generate_single()
+        device_info["ip_address"] = ip_gen.generate_single()
 
         # 生成关联的MAC地址
-        mac_config = GeneratorConfig('mac_address', {"vendor": "cisco"}, count=1)
-        mac_class = default_registry.get_generator_class('mac_address')
+        mac_config = GeneratorConfig("mac_address", {"vendor": "cisco"}, count=1)
+        mac_class = default_registry.get_generator_class("mac_address")
         mac_gen = mac_class(mac_config)
-        device_info['mac_address'] = mac_gen.generate_single()
+        device_info["mac_address"] = mac_gen.generate_single()
 
         # 生成主机名
-        domain_config = GeneratorConfig('domain', {"domain_type": "com"}, count=1)
-        domain_class = default_registry.get_generator_class('domain')
+        domain_config = GeneratorConfig("domain", {"domain_type": "com"}, count=1)
+        domain_class = default_registry.get_generator_class("domain")
         domain_gen = domain_class(domain_config)
-        device_info['domain'] = domain_gen.generate_single()
+        device_info["domain"] = domain_gen.generate_single()
 
         print("  生成的网络设备信息:")
         for key, value in device_info.items():
@@ -361,21 +365,21 @@ def best_practices():
             record = {}
 
             # 生成网络信息
-            for field in ['ipaddress', 'mac_address', 'domain', 'url', 'port']:
+            for field in ["ipaddress", "mac_address", "domain", "url", "port"]:
                 config = GeneratorConfig(field, {}, count=1)
                 generator_class = default_registry.get_generator_class(field)
                 generator = generator_class(config)
                 record[field] = generator.generate_single()
 
             # 添加设备信息
-            name_config = GeneratorConfig('name', {}, count=1)
-            name_class = default_registry.get_generator_class('name')
+            name_config = GeneratorConfig("name", {}, count=1)
+            name_class = default_registry.get_generator_class("name")
             name_gen = name_class(name_config)
-            record['device_name'] = name_gen.generate_single()
+            record["device_name"] = name_gen.generate_single()
 
             # 添加设备类型
-            device_types = ['路由器', '交换机', '防火墙', '服务器', '负载均衡器']
-            record['device_type'] = device_types[i % len(device_types)]
+            device_types = ["路由器", "交换机", "防火墙", "服务器", "负载均衡器"]
+            record["device_type"] = device_types[i % len(device_types)]
 
             network_data.append(record)
 
@@ -406,7 +410,7 @@ def network_topology_demo():
                 "gateway": f"192.168.{i+1}.0.1",
                 "dns_servers": ["8.8.8.8", "8.8.4.4"],
                 "devices": [],
-                "created_at": f"2025-11-10T{i+9:02d}:00:00"
+                "created_at": f"2025-11-10T{i+9:02d}:00:00",
             }
 
             # 生成设备列表
@@ -418,7 +422,7 @@ def network_topology_demo():
                     "device_type": ["路由器", "交换机", "防火墙", "服务器"][j % 4],
                     "ip_address": f"192.168.{i+1}.{j+1}.{j+1}",
                     "mac_address": f"00:1B:44:11:{i+1:02d}:{j+1:02d}:{j+1:02d}",
-                    "status": "online"
+                    "status": "online",
                 }
                 topology["devices"].append(device)
 
@@ -434,7 +438,7 @@ def network_topology_demo():
             print(f"    设备数量: {len(topology['devices'])}")
             print("    设备列表:")
 
-            for device in topology['devices'][:3]:  # 只显示前3个设备
+            for device in topology["devices"][:3]:  # 只显示前3个设备
                 print(f"      - {device['device_name']} ({device['device_type']})")
                 print(f"        IP: {device['ip_address']}")
                 print(f"        MAC: {device['mac_address']}")

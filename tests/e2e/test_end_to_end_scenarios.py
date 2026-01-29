@@ -20,13 +20,13 @@ class TestEndToEndScenarios:
         factory = GeneratorFactory(registry)
 
         # 注册所有需要的生成器
-        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.address import AddressGenerator
         from dataforge.generators.basic.age import AgeGenerator
         from dataforge.generators.basic.gender import GenderGenerator
-        from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.basic.uuid import UUIDGenerator
         from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
-        from dataforge.generators.basic.uuid import UUIDGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -78,8 +78,8 @@ class TestEndToEndScenarios:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
@@ -119,9 +119,9 @@ class TestEndToEndScenarios:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.identifier.bankcard import BankCardGenerator
-        from dataforge.generators.finance.bank_account import BankAccountGenerator
         from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.finance.bank_account import BankAccountGenerator
+        from dataforge.generators.identifier.bankcard import BankCardGenerator
 
         registry.register("bankcard", BankCardGenerator)
         registry.register("bank_account", BankAccountGenerator)
@@ -152,24 +152,24 @@ class TestEndToEndScenarios:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
+        from dataforge.generators.basic.idcard import IDCardGenerator
         from dataforge.generators.basic.name import NameGenerator
-        from dataforge.generators.identifier.id import IDGenerator
         from dataforge.generators.contact.phone import PhoneGenerator
 
         registry.register("name", NameGenerator)
-        registry.register("id", IDGenerator)
+        registry.register("idcard", IDCardGenerator)
         registry.register("phone", PhoneGenerator)
 
         generators = {
             "name": factory.create_generator(GeneratorConfig("name", {})),
-            "id": factory.create_generator(GeneratorConfig("id", {})),
+            "idcard": factory.create_generator(GeneratorConfig("idcard", {})),
             "phone": factory.create_generator(GeneratorConfig("phone", {})),
         }
 
         # 生成身份验证数据
         identity_data = {
             "name": generators["name"].generate_single(),
-            "id_number": generators["id"].generate_single(),
+            "id_number": generators["idcard"].generate_single(),
             "phone": generators["phone"].generate_single(),
         }
 
@@ -187,8 +187,8 @@ class TestEndToEndScenarios:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("address", AddressGenerator)
@@ -220,8 +220,8 @@ class TestEndToEndScenarios:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
         from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)
@@ -255,10 +255,10 @@ class TestEndToEndScenarios:
         registry = GeneratorRegistry()
         factory = GeneratorFactory(registry)
 
-        from dataforge.generators.basic.name import NameGenerator
-        from dataforge.generators.basic.age import AgeGenerator
-        from dataforge.generators.contact.email import EmailGenerator
         from dataforge.generators.basic.address import AddressGenerator
+        from dataforge.generators.basic.age import AgeGenerator
+        from dataforge.generators.basic.name import NameGenerator
+        from dataforge.generators.contact.email import EmailGenerator
 
         registry.register("name", NameGenerator)
         registry.register("age", AgeGenerator)

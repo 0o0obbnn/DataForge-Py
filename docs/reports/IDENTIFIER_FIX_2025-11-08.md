@@ -1,7 +1,7 @@
 # Identifier生成器问题修复报告
 
-**日期**: 2025-11-08  
-**任务**: 修复Identifier模块的3个测试问题  
+**日期**: 2025-11-08
+**任务**: 修复Identifier模块的3个测试问题
 **状态**: ✅ 完成
 
 ---
@@ -148,7 +148,7 @@ def generate(self, context=None) -> str:
 # 3. 实现美国SSN生成
 def _generate_us_ssn(self) -> str:
     """生成美国社会安全号码 (SSN)
-    
+
     格式: XXX-XX-XXXX
     - 前3位: Area Number (001-899, 不包括666)
     - 中2位: Group Number (01-99)
@@ -158,13 +158,13 @@ def _generate_us_ssn(self) -> str:
     area = secrets.randbelow(899) + 1
     while area == 666:
         area = secrets.randbelow(899) + 1
-    
+
     # 生成Group Number (01-99)
     group = secrets.randbelow(99) + 1
-    
+
     # 生成Serial Number (0001-9999)
     serial = secrets.randbelow(9999) + 1
-    
+
     # 格式化
     if self.format_style.upper() == "NO_SEPARATOR":
         return f"{area:03d}{group:02d}{serial:04d}"
@@ -286,9 +286,9 @@ def _generate_us_ssn(self) -> str:
 
 ### 修复成果
 
-✅ **3个Identifier测试全部通过**  
-✅ **整体通过率提升1.1%**  
-✅ **Identifier模块100%稳定**  
+✅ **3个Identifier测试全部通过**
+✅ **整体通过率提升1.1%**
+✅ **Identifier模块100%稳定**
 ✅ **添加美国SSN支持**
 
 ### 技术价值

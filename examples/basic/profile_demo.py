@@ -18,8 +18,8 @@ import os
 import sys
 
 # 设置环境
-sys.path.insert(0, '.')
-os.environ['JWT_SECRET_KEY'] = 'test-secret-key'
+sys.path.insert(0, ".")
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 from dataforge.core.factory import default_registry
 from dataforge.core.generator import GeneratorConfig
@@ -46,8 +46,8 @@ def basic_usage():
     # 演示职业生成
     print_subsection("职业生成器 (occupation)")
     try:
-        config = GeneratorConfig('occupation', {}, count=3)
-        generator_class = default_registry.get_generator_class('occupation')
+        config = GeneratorConfig("occupation", {}, count=3)
+        generator_class = default_registry.get_generator_class("occupation")
         if generator_class is None:
             raise ValueError("找不到 'occupation' 生成器类")
         generator = generator_class(config)
@@ -61,8 +61,8 @@ def basic_usage():
     # 演示教育背景生成
     print_subsection("教育背景生成器 (education)")
     try:
-        config = GeneratorConfig('education', {}, count=3)
-        generator_class = default_registry.get_generator_class('education')
+        config = GeneratorConfig("education", {}, count=3)
+        generator_class = default_registry.get_generator_class("education")
         if generator_class is None:
             raise ValueError("找不到 'education' 生成器类")
         generator = generator_class(config)
@@ -76,8 +76,8 @@ def basic_usage():
     # 演示婚姻状况生成
     print_subsection("婚姻状况生成器 (marital_status)")
     try:
-        config = GeneratorConfig('marital_status', {}, count=3)
-        generator_class = default_registry.get_generator_class('marital_status')
+        config = GeneratorConfig("marital_status", {}, count=3)
+        generator_class = default_registry.get_generator_class("marital_status")
         if generator_class is None:
             raise ValueError("找不到 'marital_status' 生成器类")
         generator = generator_class(config)
@@ -91,8 +91,8 @@ def basic_usage():
     # 演示公司名称生成
     print_subsection("公司名称生成器 (company_name)")
     try:
-        config = GeneratorConfig('company_name', {}, count=3)
-        generator_class = default_registry.get_generator_class('company_name')
+        config = GeneratorConfig("company_name", {}, count=3)
+        generator_class = default_registry.get_generator_class("company_name")
         if generator_class is None:
             raise ValueError("找不到 'company_name' 生成器类")
         generator = generator_class(config)
@@ -121,8 +121,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('occupation', params, count=2)
-            generator_class = default_registry.get_generator_class('occupation')
+            config = GeneratorConfig("occupation", params, count=2)
+            generator_class = default_registry.get_generator_class("occupation")
             if generator_class is None:
                 raise ValueError("找不到 'occupation' 生成器类")
             generator = generator_class(config)
@@ -146,8 +146,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('education', params, count=2)
-            generator_class = default_registry.get_generator_class('education')
+            config = GeneratorConfig("education", params, count=2)
+            generator_class = default_registry.get_generator_class("education")
             if generator_class is None:
                 raise ValueError("找不到 'education' 生成器类")
             generator = generator_class(config)
@@ -171,8 +171,8 @@ def parameter_configuration():
 
         for i, params in enumerate(configs, 1):
             print(f"  配置 {i}: {params}")
-            config = GeneratorConfig('company_name', params, count=2)
-            generator_class = default_registry.get_generator_class('company_name')
+            config = GeneratorConfig("company_name", params, count=2)
+            generator_class = default_registry.get_generator_class("company_name")
             if generator_class is None:
                 raise ValueError("找不到 'company_name' 生成器类")
             generator = generator_class(config)
@@ -192,7 +192,14 @@ def batch_generation():
     # 批量生成完整个人档案
     print_subsection("批量生成完整个人档案")
     try:
-        profile_generators = ['name', 'age', 'gender', 'occupation', 'education', 'company_name']
+        profile_generators = [
+            "name",
+            "age",
+            "gender",
+            "occupation",
+            "education",
+            "company_name",
+        ]
         batch_size = 5
 
         print(f"  生成 {batch_size} 个人的完整档案:")
@@ -204,8 +211,8 @@ def batch_generation():
             profile_info = []
 
             # 首先生成姓名
-            name_config = GeneratorConfig('name', {}, count=1)
-            name_class = default_registry.get_generator_class('name')
+            name_config = GeneratorConfig("name", {}, count=1)
+            name_class = default_registry.get_generator_class("name")
             if name_class is None:
                 raise ValueError("找不到 'name' 生成器类")
             name_gen = name_class(name_config)
@@ -213,10 +220,18 @@ def batch_generation():
             profile_info.append(name)
 
             # 生成其他档案信息
-            for generator_name in ['age', 'gender', 'occupation', 'education', 'company_name']:
+            for generator_name in [
+                "age",
+                "gender",
+                "occupation",
+                "education",
+                "company_name",
+            ]:
                 try:
                     config = GeneratorConfig(generator_name, {}, count=1)
-                    generator_class = default_registry.get_generator_class(generator_name)
+                    generator_class = default_registry.get_generator_class(
+                        generator_name
+                    )
                     if generator_class is None:
                         raise ValueError(f"找不到 '{generator_name}' 生成器类")
                     generator = generator_class(config)
@@ -233,7 +248,9 @@ def batch_generation():
             education = profile_info[4][:10].ljust(10)
             company = profile_info[5][:20].ljust(20)
 
-            print(f"  {i+1:2d}    | {name} | {age} | {gender} | {occupation} | {education} | {company}")
+            print(
+                f"  {i+1:2d}    | {name} | {age} | {gender} | {occupation} | {education} | {company}"
+            )
 
         print("  " + "-" * 120)
 
@@ -248,8 +265,8 @@ def validation_examples():
     # 验证生成的数据
     print_subsection("公司名称验证")
     try:
-        config = GeneratorConfig('company_name', {}, count=3)
-        generator_class = default_registry.get_generator_class('company_name')
+        config = GeneratorConfig("company_name", {}, count=3)
+        generator_class = default_registry.get_generator_class("company_name")
         if generator_class is None:
             raise ValueError("找不到 'company_name' 生成器类")
         generator = generator_class(config)
@@ -261,10 +278,12 @@ def validation_examples():
 
             # 验证公司名称长度
             is_valid_length = len(company) >= 4  # 最少4个字符
-            print(f"       长度验证: {'✅ 有效' if is_valid_length else '❌ 无效'} (长度: {len(company)})")
+            print(
+                f"       长度验证: {'✅ 有效' if is_valid_length else '❌ 无效'} (长度: {len(company)})"
+            )
 
             # 验证是否包含中文
-            has_chinese = any('\u4e00' <= char <= '\u9fff' for char in company)
+            has_chinese = any("\u4e00" <= char <= "\u9fff" for char in company)
             print(f"       中文验证: {'✅ 包含中文' if has_chinese else '❌ 无中文'}")
 
     except Exception as e:
@@ -278,7 +297,7 @@ def error_handling():
     # 处理不存在的生成器
     print_subsection("处理不存在的生成器")
     try:
-        generator_class = default_registry.get_generator_class('nonexistent_generator')
+        generator_class = default_registry.get_generator_class("nonexistent_generator")
         if not generator_class:
             print("  ✅ 正确处理了不存在的生成器")
     except Exception as e:
@@ -287,8 +306,8 @@ def error_handling():
     # 处理无效参数
     print_subsection("处理无效参数")
     try:
-        config = GeneratorConfig('occupation', {"industry": "不存在的行业"}, count=1)
-        generator_class = default_registry.get_generator_class('occupation')
+        config = GeneratorConfig("occupation", {"industry": "不存在的行业"}, count=1)
+        generator_class = default_registry.get_generator_class("occupation")
         if generator_class is None:
             raise ValueError("找不到 'occupation' 生成器类")
         generator = generator_class(config)
@@ -309,19 +328,23 @@ def best_practices():
         person_profile = {}
 
         # 生成基本信息
-        name_config = GeneratorConfig('name', {}, count=1)
-        name_class = default_registry.get_generator_class('name')
+        name_config = GeneratorConfig("name", {}, count=1)
+        name_class = default_registry.get_generator_class("name")
         if name_class is None:
             raise ValueError("找不到 'name' 生成器类")
         name_gen = name_class(name_config)
-        person_profile['name'] = name_gen.generate_single()
+        person_profile["name"] = name_gen.generate_single()
 
         # 生成档案信息
         profile_configs = {
-            'age': GeneratorConfig('age', {"min_age": 25, "max_age": 45}, count=1),
-            'occupation': GeneratorConfig('occupation', {"industry": "technology"}, count=1),
-            'education': GeneratorConfig('education', {"level": "bachelor"}, count=1),
-            'company_name': GeneratorConfig('company_name', {"company_type": "technology"}, count=1)
+            "age": GeneratorConfig("age", {"min_age": 25, "max_age": 45}, count=1),
+            "occupation": GeneratorConfig(
+                "occupation", {"industry": "technology"}, count=1
+            ),
+            "education": GeneratorConfig("education", {"level": "bachelor"}, count=1),
+            "company_name": GeneratorConfig(
+                "company_name", {"company_type": "technology"}, count=1
+            ),
         }
 
         for key, config in profile_configs.items():
@@ -350,15 +373,15 @@ def best_practices():
             record = {}
 
             # 生成基本信息
-            name_config = GeneratorConfig('name', {}, count=1)
-            name_class = default_registry.get_generator_class('name')
+            name_config = GeneratorConfig("name", {}, count=1)
+            name_class = default_registry.get_generator_class("name")
             if name_class is None:
                 raise ValueError("找不到 'name' 生成器类")
             name_gen = name_class(name_config)
-            record['name'] = name_gen.generate_single()
+            record["name"] = name_gen.generate_single()
 
             # 生成档案信息
-            for field in ['age', 'gender', 'occupation', 'education', 'marital_status']:
+            for field in ["age", "gender", "occupation", "education", "marital_status"]:
                 config = GeneratorConfig(field, {}, count=1)
                 generator_class = default_registry.get_generator_class(field)
                 if generator_class is None:
@@ -384,7 +407,7 @@ def extended_profile_demo():
     # 演示扩展档案信息
     print_subsection("扩展档案信息生成")
     try:
-        extended_generators = ['zodiac', 'blood_type', 'ethnicity']
+        extended_generators = ["zodiac", "blood_type", "ethnicity"]
 
         print("  生成扩展档案信息:")
         for gen_name in extended_generators:

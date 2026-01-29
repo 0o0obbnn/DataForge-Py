@@ -69,7 +69,9 @@ class SessionIDGenerator(DataGenerator[str]):
         config.update(self.parameters)
         return config
 
-    def _generate_raw(self, context: GenerationContext | None = None) -> str:
+    def _generate_raw(
+        self, context: GenerationContext | None = None
+    ) -> str | dict[str, Any]:
         """生成原始会话ID数据"""
         import base64
         import random
@@ -264,7 +266,19 @@ class SessionIDGenerator(DataGenerator[str]):
         # 重新生成会话数据
         new_session = self._generate_raw()
 
+        # 确保返回的是字典类型
+        if isinstance(new_session, str):
+            # 如果返回字符串，构建字典
+            new_session = {
+                "session_id": new_session,
+                "length": len(new_session),
+                "encoding": "unknown",
+                "created_at": datetime.now().isoformat(),
+                "expires_at": (datetime.now() + timedelta(seconds=7200)).isoformat(),
+            }
+
         # 保留原有会话ID但更新时间
+        assert isinstance(new_session, dict)  # 类型守卫
         new_session["session_id"] = session_data["session_id"]
         new_session["created_at"] = session_data["created_at"]  # 保持创建时间
 

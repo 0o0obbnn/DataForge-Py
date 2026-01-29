@@ -1,15 +1,15 @@
 # DataForge 测试代码整理规范化计划
 
-**文档日期**: 2025-01-07  
-**文档类型**: 测试重组计划  
+**文档日期**: 2025-01-07
+**文档类型**: 测试重组计划
 **目标**: 规范测试代码结构，提升测试质量和可维护性
 
 ---
 
 ## 复核结果
 
-**复核日期**: 2025-01-07  
-**复核状态**: ✅ 已复核并优化  
+**复核日期**: 2025-01-07
+**复核状态**: ✅ 已复核并优化
 **主要补充**: 增加实际目录检查、细化操作步骤、补充遗漏点
 
 ---
@@ -234,7 +234,7 @@ tests/
    - 检查并保留有内容的 __init__.py
    - 删除完全空白的 __init__.py
 
-**验收**: 
+**验收**:
 - [ ] 无非测试文件存在
 - [ ] 无临时数据文件
 - [ ] 运行 `pytest tests/ --collect-only` 无错误
@@ -261,12 +261,12 @@ tests/
    ```
 
 2. **移动和合并测试文件**:
-   
+
    **Contact 模块**:
    ```bash
    # 移动 email 测试
    move tests\unit\test_email.py tests\unit\test_generators\test_contact\test_email.py
-   
+
    # 合并 phone 测试（需要手动合并内容）
    # 1. 读取三个文件内容
    # 2. 去重合并测试用例
@@ -306,7 +306,7 @@ tests/
    - `test_enhanced_coverage.py` → 分拆到对应模块
    - `test_new_generators.py` → 分拆到对应模块
 
-**验收**: 
+**验收**:
 - [ ] 根目录无测试文件
 - [ ] unit/ 下按模块分类清晰
 - [ ] 所有测试文件可被 pytest 发现
@@ -322,22 +322,22 @@ tests/
 **操作**:
 
 1. **移动测试文件**:
-   - `generators/advanced/test_advanced_timestamp.py` 
+   - `generators/advanced/test_advanced_timestamp.py`
      → `unit/test_generators/test_datetime/test_advanced_timestamp.py`
-   
+
    - `generators/basic/test_marital_status.py`
      → 合并到 `unit/test_generators/test_basic/test_marital_status.py`
-   
-   - `generators/datetime/*` 
+
+   - `generators/datetime/*`
      → `unit/test_generators/test_datetime/`
-   
+
    - `generators/network/*`
      → `unit/test_generators/test_network/`
 
 2. **删除 generators/ 目录**:
    - 所有测试已移动后删除整个目录
 
-**验收**: 
+**验收**:
 - [ ] generators/ 目录不存在
 - [ ] 所有测试已迁移到 unit/test_generators/
 - [ ] 运行 `pytest tests/unit/test_generators/ -v` 全部通过
@@ -365,7 +365,7 @@ tests/
    - 在 `test_api/` 下创建 API 集成测试
    - 在 `test_cli/` 下创建 CLI 集成测试
 
-**验收**: 
+**验收**:
 - [ ] 无重复测试
 - [ ] test_api/ 和 test_cli/ 有实际测试文件
 - [ ] 运行 `pytest tests/integration/ -v` 全部通过
@@ -389,7 +389,7 @@ tests/
    @pytest.mark.unit
    def test_feature():
        pass
-   
+
    @pytest.mark.integration
    def test_integration_feature():
        pass
@@ -426,7 +426,7 @@ def test_email_generation(generator_factory):
     assert email
 ```
 
-**验收**: 
+**验收**:
 - [ ] 所有测试使用 pytest 风格
 - [ ] 无 `if __name__ == "__main__"` 代码块
 - [ ] 所有测试函数有 `@pytest.mark` 标记
@@ -461,7 +461,7 @@ class TestModuleGenerator:
         result = generator.generate_single()
         assert result is not None
         assert generator.validate(result)
-    
+
     def test_generate_batch(self, generator_factory):
         config = GeneratorConfig(
             generator_type="module_name",
@@ -472,7 +472,7 @@ class TestModuleGenerator:
         assert len(results) == 10
         for result in results:
             assert generator.validate(result)
-    
+
     def test_with_parameters(self, generator_factory):
         config = GeneratorConfig(
             generator_type="module_name",
@@ -484,7 +484,7 @@ class TestModuleGenerator:
         assert result is not None
 ```
 
-**验收**: 
+**验收**:
 - [ ] 测试覆盖率 > 80%
 - [ ] 核心模块覆盖率 > 90%
 - [ ] 运行 `pytest --cov=dataforge --cov-report=term-missing` 查看详细报告
@@ -548,7 +548,7 @@ def pytest_collection_modifyitems(config, items):
                 item.add_marker(skip_slow)
 ```
 
-**验收**: 
+**验收**:
 - [ ] conftest.py 功能完善
 - [ ] 所有 fixtures 有文档字符串
 - [ ] 测试选项正常工作
@@ -633,7 +633,7 @@ def test_heavy_operation():
 - 总体: 80%
 ```
 
-**验收**: 
+**验收**:
 - [ ] 文档完整清晰
 - [ ] 包含所有测试命令示例
 - [ ] 新开发者可根据文档快速上手
@@ -844,8 +844,8 @@ git branch -D test-reorg-batch-N
 
 ---
 
-**文档状态**: ✅ 已复核优化，可执行  
-**复核人**: AI Assistant  
+**文档状态**: ✅ 已复核优化，可执行
+**复核人**: AI Assistant
 **下一步**: 获得确认后开始批次 1 执行
 
 **变更记录**:

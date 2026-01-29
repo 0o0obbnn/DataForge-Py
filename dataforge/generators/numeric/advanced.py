@@ -5,7 +5,6 @@
 import random
 import secrets
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Union
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
@@ -131,7 +130,7 @@ class DecimalGenerator(DataGenerator[Decimal]):
         return self.min_value <= data <= self.max_value
 
 
-class PercentageGenerator(DataGenerator[Union[float, str]]):
+class PercentageGenerator(DataGenerator[float | str]):
     """百分比生成器"""
 
     @property
@@ -169,9 +168,7 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         value = random.uniform(min_val, max_val)
         return round(value, self.precision)
 
-    def generate(
-        self, context: GenerationContext | None = None
-    ) -> float | str:
+    def generate(self, context: GenerationContext | None = None) -> float | str:
         """生成百分比"""
         value = self._generate_raw(context)
         if self.include_symbol:
@@ -179,9 +176,7 @@ class PercentageGenerator(DataGenerator[Union[float, str]]):
         else:
             return value
 
-    def generate_single(
-        self, context: GenerationContext | None = None
-    ) -> float | str:
+    def generate_single(self, context: GenerationContext | None = None) -> float | str:
         """生成单个数据项"""
         return self.generate(context)
 

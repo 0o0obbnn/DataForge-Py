@@ -4,9 +4,9 @@
 支持生成沪深A股、港股、美股等市场的股票代码
 """
 
+import re
 import secrets
 import string
-import re
 
 from ...core.factory import register_generator
 from ...core.generator import (  # WARNING: This file uses random.randint/randrange/normalvariate that needs manual review; Conversion patterns:; secrets.randbelow(b - a + 1) + a → secrets.randbelow(b - a + 1) + a; random.randrange(n) → secrets.randbelow(n); For statistical distributions, consider if CSPRNG is necessary
@@ -75,10 +75,12 @@ class StockCodeGenerator(DataGenerator[str]):
             selected_sector = secrets.choice(sectors)
 
         sector_info = self.a_share_codes[selected_sector]
-        code_range = sector_info["range"]
+        code_range: tuple[int, int] = sector_info["range"]  # type: ignore
 
         # 生成代码并确保6位
-        code_num = secrets.randbelow(code_range[1] - code_range[0] + 1) + code_range[0]
+        code_num = secrets.randbelow(int(code_range[1]) - int(code_range[0]) + 1) + int(
+            code_range[0]
+        )
         code = str(code_num).zfill(6)
 
         # 添加后缀
@@ -119,7 +121,7 @@ class StockCodeGenerator(DataGenerator[str]):
             selected_exchange = secrets.choice(exchanges)
 
         length_range = self.us_codes[selected_exchange]["length"]
-        length = secrets.choice(length_range)
+        length: int = secrets.choice(length_range)  # type: ignore[arg-type, assignment]
 
         # 生成大写字母代码（使用密码学安全的随机数）
         code = "".join(secrets.choice(string.ascii_uppercase) for _ in range(length))
@@ -150,7 +152,8 @@ class StockCodeGenerator(DataGenerator[str]):
 
         code_int = int(code)
         for _sector, info in self.a_share_codes.items():
-            if info["range"][0] <= code_int <= info["range"][1]:
+            code_range: tuple[int, int] = info["range"]  # type: ignore
+            if int(code_range[0]) <= code_int <= int(code_range[1]):
                 return True
 
         return False
@@ -162,7 +165,8 @@ class StockCodeGenerator(DataGenerator[str]):
 
         code_int = int(code)
         for _sector, info in self.hk_codes.items():
-            if info["range"][0] <= code_int <= info["range"][1]:
+            code_range: tuple[int, int] = info["range"]  # type: ignore
+            if int(code_range[0]) <= code_int <= int(code_range[1]):
                 return True
 
         return False

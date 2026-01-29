@@ -1,8 +1,8 @@
 # DataForge 测试代码整理优化计划
 
-**创建日期**: 2025-11-07  
-**状态**: 待执行  
-**负责人**: AI Assistant  
+**创建日期**: 2025-11-07
+**状态**: 待执行
+**负责人**: AI Assistant
 **预计工期**: 3-5天
 
 ---
@@ -43,7 +43,7 @@ tests/
 #### 严重问题 (P0)
 1. **测试覆盖率严重不足**: 当前仅18% (目标80%)
 2. **大量空测试目录**: finance, identifier, numeric, text, utils, security, cli
-3. **生成器测试缺失**: 
+3. **生成器测试缺失**:
    - basic/: 18个生成器 vs 3个测试
    - finance/: 8个生成器 vs 0个测试
    - identifier/: 10个生成器 vs 0个测试
@@ -165,19 +165,19 @@ class TestXXXGenerator:
     def test_generate_single(self, generator_factory):
         """测试生成单个数据"""
         pass
-    
+
     def test_generate_batch(self, generator_factory):
         """测试批量生成"""
         pass
-    
+
     def test_with_parameters(self, generator_factory):
         """测试参数化生成"""
         pass
-    
+
     def test_validation(self, generator_factory):
         """测试数据验证"""
         pass
-    
+
     def test_edge_cases(self, generator_factory):
         """测试边界情况"""
         pass
@@ -682,6 +682,6 @@ class TestXXXGenerator:
 
 ---
 
-**文档版本**: v1.0  
-**最后更新**: 2025-11-07  
+**文档版本**: v1.0
+**最后更新**: 2025-11-07
 **下次审查**: 执行完成后

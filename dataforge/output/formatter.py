@@ -73,9 +73,9 @@ class OutputFormatter:
                 generator_type, values = next(iter(data.items()))
                 if values and isinstance(values[0], dict):
                     # 对象类型数据
-                    fieldnames = list(values[0].keys())
+                    fieldnames_old: list[str] = list(values[0].keys())  # type: ignore[arg-type]
                     csv_dict_writer: csv.DictWriter[str] = csv.DictWriter(
-                        output, fieldnames=fieldnames
+                        output, fieldnames=fieldnames_old
                     )
                     csv_dict_writer.writeheader()
                     csv_dict_writer.writerows(values)
@@ -173,7 +173,7 @@ class OutputFormatter:
                 columns_str = ", ".join(f"`{col}`" for col in columns)
 
                 for record in data:
-                    values_list = []
+                    values_list: list[Any] = []
                     for col in columns:
                         val = record.get(col, "")
                         if isinstance(val, str):

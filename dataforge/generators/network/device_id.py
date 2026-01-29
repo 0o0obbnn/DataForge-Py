@@ -3,16 +3,16 @@
 支持生成各种设备标识符
 """
 
-import secrets
 import string
+from typing import Any
 
 from ...core.context import GenerationContext
+from ...core.crypto_utils import generate_random_alphanumeric, generate_random_string
 from ...core.factory import register_generator
 from ...core.generator import DataGenerator, GeneratorConfig
+from ...core.luhn import calculate_luhn_check_digit
 from ...core.protocols import Validator
 from ...core.types import GeneratorType
-from ...core.luhn import calculate_luhn_check_digit
-from ...core.crypto_utils import generate_random_string, generate_random_alphanumeric
 
 
 class DeviceIDValidator(Validator):
@@ -65,6 +65,9 @@ class DeviceIDValidator(Validator):
 @register_generator("device_id", aliases=["deviceid", "imei", "imsi"])
 class DeviceIDGenerator(DataGenerator[str]):
     """设备ID/IMEI/IMSI生成器"""
+
+    # 声明validator类型
+    validator: "DeviceIDValidator | None"
 
     def __init__(self, config: GeneratorConfig):
         super().__init__(config)
@@ -176,7 +179,7 @@ class DeviceIDGenerator(DataGenerator[str]):
         """获取设备信息"""
         clean_value = value.replace("-", "").replace(" ", "")
 
-        info = {
+        info: dict[str, Any] = {
             "type": self.device_type,
             "length": len(clean_value),
             "format": self.format,
@@ -188,12 +191,14 @@ class DeviceIDGenerator(DataGenerator[str]):
             info["check_digit"] = clean_value[14]  # Check Digit
 
         elif self.device_type == "IMSI":
-            info["mcc"] = clean_value[:3]  # Mobile Country Code
-            info["mnc"] = (
+            mcc: str = clean_value[:3]  # Mobile Country Code
+            mnc: str = (
                 clean_value[3:5] if len(clean_value[3:5]) == 2 else clean_value[3:6]
             )  # Mobile Network Code
+            info["mcc"] = mcc
+            info["mnc"] = mnc
             info["msin"] = clean_value[
-                len(info["mcc"]) + len(info["mnc"]) :
+                len(mcc) + len(mnc) :
             ]  # Mobile Subscription Identification Number
 
         return info

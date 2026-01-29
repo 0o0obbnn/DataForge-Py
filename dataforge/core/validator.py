@@ -41,9 +41,7 @@ class RegexValidator(DataValidator):
 class LengthValidator(DataValidator):
     """长度校验器"""
 
-    def __init__(
-        self, min_length: int | None = None, max_length: int | None = None
-    ):
+    def __init__(self, min_length: int | None = None, max_length: int | None = None):
         self.min_length = min_length
         self.max_length = max_length
 
@@ -71,9 +69,7 @@ class LengthValidator(DataValidator):
 class RangeValidator(DataValidator):
     """数值范围校验器"""
 
-    def __init__(
-        self, min_value: float | None = None, max_value: float | None = None
-    ):
+    def __init__(self, min_value: float | None = None, max_value: float | None = None):
         self.min_value = min_value
         self.max_value = max_value
 

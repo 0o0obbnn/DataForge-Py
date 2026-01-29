@@ -3,7 +3,7 @@
     <div class="page-header">
       <h1>API 管理</h1>
     </div>
-    
+
     <div class="page-content">
       <a-tabs v-model:activeKey="activeTab">
         <a-tab-pane key="keys" tab="我的API Key">
@@ -11,7 +11,7 @@
             <div class="section-header">
               <a-button type="primary" @click="generateApiKey">生成新的 API Key</a-button>
             </div>
-            
+
             <a-table
               :columns="keysColumns"
               :data-source="apiKeysData"
@@ -41,7 +41,7 @@
             </a-table>
           </div>
         </a-tab-pane>
-        
+
         <a-tab-pane key="stats" tab="API 调用统计">
           <div class="api-stats-section">
             <div class="stats-filters">
@@ -51,7 +51,7 @@
                 <a-select-option value="90d">近90天</a-select-option>
               </a-select>
             </div>
-            
+
             <div class="stats-charts">
               <a-card title="调用次数统计" class="chart-card">
                 <div class="chart-placeholder">
@@ -59,7 +59,7 @@
                 </div>
               </a-card>
             </div>
-            
+
             <div class="call-logs">
               <h3>API 调用日志</h3>
               <a-input-search
@@ -67,7 +67,7 @@
                 placeholder="筛选日志..."
                 style="width: 300px; margin-bottom: 16px"
               />
-              
+
               <a-table
                 :columns="logsColumns"
                 :data-source="callLogsData"
@@ -210,7 +210,7 @@ onMounted(() => {
 
 .page-header {
   margin-bottom: var(--df-spacing-lg);
-  
+
   h1 {
     color: var(--df-text-primary);
     font-size: var(--df-font-size-2xl);
@@ -223,17 +223,17 @@ onMounted(() => {
   border-radius: var(--df-radius-lg);
   padding: var(--df-spacing-lg);
   border: 1px solid var(--df-text-disabled);
-  
+
   :deep(.ant-tabs) {
     .ant-tabs-nav {
       .ant-tabs-tab {
         color: var(--df-text-secondary);
-        
+
         &.ant-tabs-tab-active {
           color: var(--df-accent-primary);
         }
       }
-      
+
       .ant-tabs-ink-bar {
         background: var(--df-accent-primary);
       }
@@ -251,7 +251,7 @@ onMounted(() => {
   font-family: monospace;
   cursor: pointer;
   color: var(--df-accent-primary);
-  
+
   &:hover {
     color: var(--df-accent-success);
   }
@@ -261,24 +261,24 @@ onMounted(() => {
   .stats-filters {
     margin-bottom: var(--df-spacing-lg);
   }
-  
+
   .stats-charts {
     margin-bottom: var(--df-spacing-xl);
   }
-  
+
   .chart-card {
     background: transparent;
     border: 1px solid var(--df-text-disabled);
-    
+
     :deep(.ant-card-head) {
       background: transparent;
       border-bottom-color: var(--df-text-disabled);
-      
+
       .ant-card-head-title {
         color: var(--df-text-primary);
       }
     }
-    
+
     .chart-placeholder {
       height: 200px;
       display: flex;
@@ -287,7 +287,7 @@ onMounted(() => {
       color: var(--df-text-secondary);
     }
   }
-  
+
   .call-logs {
     h3 {
       color: var(--df-text-primary);
@@ -298,19 +298,19 @@ onMounted(() => {
 
 :deep(.ant-table) {
   background: transparent;
-  
+
   .ant-table-thead > tr > th {
     background: var(--df-primary-bg);
     color: var(--df-text-primary);
     border-bottom-color: var(--df-text-disabled);
   }
-  
+
   .ant-table-tbody > tr > td {
     background: transparent;
     color: var(--df-text-primary);
     border-bottom-color: var(--df-text-disabled);
   }
-  
+
   .ant-table-tbody > tr:hover > td {
     background: rgba(142, 93, 255, 0.1);
   }

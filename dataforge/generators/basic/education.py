@@ -6,6 +6,7 @@
 """
 
 import random
+from typing import Any
 
 from dataforge.core.context import GenerationContext
 from dataforge.core.factory import register_generator
@@ -102,7 +103,7 @@ class EducationGenerator(DataGenerator):
             return False
 
         # 检查是否包含有效的学历或学校名称
-        all_valid_parts = []
+        all_valid_parts: list[Any] = []
         for system in [self.china_system, self.international_system]:
             for level_data in system.values():
                 all_valid_parts.extend(level_data["degrees"])

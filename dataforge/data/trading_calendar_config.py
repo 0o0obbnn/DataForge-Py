@@ -11,22 +11,12 @@
 
 import json
 import os
+from importlib.util import find_spec
 from pathlib import Path
 from typing import Any, Optional
 
-try:
-    import yaml
-
-    YAML_AVAILABLE = True
-except ImportError:
-    YAML_AVAILABLE = False
-
-try:
-    import yaml
-
-    YAML_AVAILABLE = True
-except ImportError:
-    YAML_AVAILABLE = False
+# 使用find_spec检查yaml是否可用，避免F401错误
+YAML_AVAILABLE = find_spec("yaml") is not None
 
 
 class TradingCalendarConfig:

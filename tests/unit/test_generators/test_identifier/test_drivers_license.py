@@ -71,7 +71,8 @@ class TestDriversLicenseGenerator:
         generator_factory.registry.register("drivers_license", DriversLicenseGenerator)
 
         config = GeneratorConfig(
-            generator_type="drivers_license", parameters={"region": "110000"}  # Beijing
+            generator_type="drivers_license",
+            parameters={"region": "110000"},  # Beijing
         )
         generator = generator_factory.create_generator(config)
         license_num = generator.generate_single()

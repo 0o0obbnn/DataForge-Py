@@ -227,7 +227,7 @@ class TradingCalendarGenerator(DataGenerator[dict[str, str | bool | None]]):
             }
 
         # 返回随机一个符合条件的日期
-        return secrets.choice(filtered_dates)
+        return secrets.choice(filtered_dates)  # type: ignore[arg-type]
 
     def generate_single(
         self, context: GenerationContext | None = None

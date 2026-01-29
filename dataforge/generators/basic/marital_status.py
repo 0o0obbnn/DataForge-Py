@@ -5,12 +5,19 @@
 """
 
 import random
-from typing import Any
+import sys
+from typing import TYPE_CHECKING, Any
 
-try:
-    from typing import override
-except ImportError:
-    from typing_extensions import override
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 11):
+        from typing import override
+    else:
+        from typing_extensions import override
+else:
+    # 运行时创建一个dummy的override装饰器
+    def override(func):
+        return func
+
 
 from dataforge.core.factory import register_generator
 from dataforge.core.generator import (
